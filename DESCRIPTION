@@ -14,4 +14,6 @@ LazyData: true
 Imports: 
     htmltools,
     htmlwidgets,
-    reactR
+    reactR,
+    shiny,
+    jsonlite

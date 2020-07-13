@@ -28,7 +28,8 @@ class AmBarChart extends React.PureComponent {
       draggable = this.props.draggable,
       tooltipStyle = this.props.tooltip,
       valueFormatter = this.props.valueFormatter,
-      columnStyle = this.props.columnStyle;
+      columnStyle = this.props.columnStyle,
+      shinyId = this.props.shinyId;
 
     console.log(data);
 
@@ -237,8 +238,9 @@ class AmBarChart extends React.PureComponent {
       });
 
       /* ~~~~\  bullet  /~~~~ */
+      let bullet;
       if(draggable) {
-        var bullet = series.bullets.create();
+        bullet = series.bullets.create();
         bullet.fill = columnStyle.fill[value];
         bullet.stroke =
           columnStyle.stroke || chart.colors.getIndex(i).saturate(0.7);
@@ -266,8 +268,8 @@ class AmBarChart extends React.PureComponent {
           event.target.isHover = false;
           dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
           if(window.Shiny) {
-            Shiny.setInputValue(id + ":rAmCharts4.dataframe", dataCopy);
-            Shiny.setInputValue(id + "_change", {
+            Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+            Shiny.setInputValue(shinyId + "_change", {
               index: dataItem.index,
               category: dataItem.categoryX,
               field: value,
@@ -354,7 +356,9 @@ class AmBarChart extends React.PureComponent {
         // when columns position changes, adjust minX/maxX of bullets so that we could only dragg vertically
         columnTemplate.events.on("positionchanged", event => {
           var dataItem = event.target.dataItem;
-          if(dataItem.bullets !== undefined) {
+          if(dataItem.bullets) {
+          console.log('dataItem.bullets', dataItem.bullets);
+          console.log('bullet.uid', bullet.uid);
             var itemBullet = dataItem.bullets.getKey(bullet.uid);
             var column = dataItem.column;
             itemBullet.minX = column.pixelX + column.pixelWidth / 2;

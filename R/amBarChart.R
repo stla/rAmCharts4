@@ -3,6 +3,7 @@
 #' <Add Description>
 #'
 #' @import htmlwidgets
+#' @importFrom shiny validateCssUnit
 #'
 #' @export
 amBarChart <- function(
@@ -222,7 +223,8 @@ amBarChart <- function(
       button = button,
       width = width,
       height = height,
-      chartId = chartId
+      chartId = chartId,
+      shinyId = elementId
     )
   )
   # create widget
@@ -258,19 +260,20 @@ amBarChart <- function(
 #'
 #' @export
 amBarChartOutput <- function(outputId, width = '100%', height = '400px'){
-  htmlwidgets::shinyWidgetOutput(outputId, 'amBarChart', width, height, package = 'rAmCharts4')
+  htmlwidgets::shinyWidgetOutput(outputId, 'amChart4', width, height, package = 'rAmCharts4')
 }
 
 #' @rdname amBarChart-shiny
 #' @export
 renderAmBarChart <- function(expr, env = parent.frame(), quoted = FALSE) {
+  expr[["prepend"]] <- NULL
   if (!quoted) { expr <- substitute(expr) } # force quoted
   htmlwidgets::shinyRenderWidget(expr, amBarChartOutput, env, quoted = TRUE)
 }
 
 #' Called by HTMLWidgets to produce the widget's root element.
 #' @rdname amBarChart-shiny
-amBarChart_html <- function(id, style, class, ...) {
+amChart4_html <- function(id, style, class, ...) {
   htmltools::tagList(
     # Necessary for RStudio viewer version < 1.2
     reactR::html_dependency_corejs(),
