@@ -2,7 +2,7 @@ import { reactWidget } from 'reactR';
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import * as barChart from "./utils/barChart";
+//import * as barChart from "./utils/barChart";
 
 am4core.useTheme(am4themes_animated);
 
@@ -10,6 +10,15 @@ class AmBarChart extends React.PureComponent {
 
   constructor(props) {
     super(props);
+    this.style = this.style.bind(this);
+  }
+
+  style() {
+    if(window.Shiny) {
+      return {width: "100%", height: "100%"};
+    } else {
+      return {width: this.props.width, height: this.props.height};
+    }
   }
 
   componentDidMount() {
@@ -30,8 +39,6 @@ class AmBarChart extends React.PureComponent {
       valueFormatter = this.props.valueFormatter,
       columnStyle = this.props.columnStyle,
       shinyId = this.props.shinyId;
-
-    console.log(data);
 
     let chart = am4core.create(this.props.chartId, am4charts.XYChart);
 
@@ -384,7 +391,7 @@ class AmBarChart extends React.PureComponent {
     return (
       <div
         id = {this.props.chartId}
-        style = {{width: this.props.width, height: this.props.height}}
+        style = {this.style()}
       ></div>
     );
   }
