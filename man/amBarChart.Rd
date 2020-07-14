@@ -38,7 +38,10 @@ amBarChart(
 \arguments{
 \item{data}{a dataframe}
 
-\item{data2}{a dataframe used to update the data with the button}
+\item{data2}{\code{NULL} or a dataframe used to update the data with the
+button; its column names must include the column names of \code{data}
+given in \code{values} and it must have the same number of rows as
+\code{data}}
 
 \item{category}{name of the column of \code{data} to be used on the
 category axis}
@@ -73,8 +76,8 @@ all bars, otherwise a named list of the form
 dragging for each bar corresponding to a column given in \code{values}}
 
 \item{tooltip}{tooltip settings given as a list, or just a string for the
-\code{text} field, or \code{NULL} for no tooltip; the \code{text} field is
-given as a formatted string; see
+\code{text} field, or \code{FALSE} for no tooltip, or \code{NULL} for the
+default tooltip; the \code{text} field must be a formatted string:
 \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}}
 
 \item{columnStyle}{settings of the columns style; \code{NULL} for default,
@@ -88,12 +91,12 @@ the radius of the corners of the columns}
 
 \item{cellWidth}{cell width in percent; for a simple bar chart, this is the
 width of the columns; for a grouped bar chart, this is the width of the
-clusters of columns}
+clusters of columns; \code{NULL} for the default value}
 
 \item{columnWidth}{column width, a percentage of the cell width; set to 100
 for a simple bar chart and use \code{cellWidth} to control the width of the
 columns; for a grouped bar chart, this controls the spacing between the
-columns within a cluster of columns}
+columns within a cluster of columns; \code{NULL} for the default value}
 
 \item{xAxis}{settings of the category axis given as a list, or just a string
 for the axis title}
@@ -135,6 +138,12 @@ chart is displayed in Shiny, in which case the id is given by the Shiny id}
 }
 \description{
 Create a HTML widget displaying a bar chart.
+}
+\note{
+A color can be given by the name of a R color, the name of a CSS
+color, e.g. \code{"transparent"} or \code{"fuchsia"}, an HEX code like
+\code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
+like \code{"hsl(360,11,255)"}.
 }
 \examples{
 # a simple bar chart ####

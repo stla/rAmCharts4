@@ -28,7 +28,10 @@ validateColor <- function(color){
 #' @description Create a HTML widget displaying a bar chart.
 #'
 #' @param data a dataframe
-#' @param data2 a dataframe used to update the data with the button
+#' @param data2 \code{NULL} or a dataframe used to update the data with the
+#' button; its column names must include the column names of \code{data}
+#' given in \code{values} and it must have the same number of rows as
+#' \code{data}
 #' @param category name of the column of \code{data} to be used on the
 #' category axis
 #' @param values name(s) of the column(s) of \code{data} to be used on the
@@ -53,8 +56,8 @@ validateColor <- function(color){
 #' \code{list(value1 = TRUE, value2 = FALSE, ...)} to enable/disable the
 #' dragging for each bar corresponding to a column given in \code{values}
 #' @param tooltip tooltip settings given as a list, or just a string for the
-#' \code{text} field, or \code{NULL} for no tooltip; the \code{text} field is
-#' given as a formatted string; see
+#' \code{text} field, or \code{FALSE} for no tooltip, or \code{NULL} for the
+#' default tooltip; the \code{text} field must be a formatted string:
 #' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}
 #' @param columnStyle settings of the columns style; \code{NULL} for default,
 #' otherwise a named list with three fields: \code{fill} to set the colors
@@ -65,11 +68,11 @@ validateColor <- function(color){
 #' @param backgroundColor a color for the chart background
 #' @param cellWidth cell width in percent; for a simple bar chart, this is the
 #' width of the columns; for a grouped bar chart, this is the width of the
-#' clusters of columns
+#' clusters of columns; \code{NULL} for the default value
 #' @param columnWidth column width, a percentage of the cell width; set to 100
 #' for a simple bar chart and use \code{cellWidth} to control the width of the
 #' columns; for a grouped bar chart, this controls the spacing between the
-#' columns within a cluster of columns
+#' columns within a cluster of columns; \code{NULL} for the default value
 #' @param xAxis settings of the category axis given as a list, or just a string
 #' for the axis title
 #' @param yAxis settings of the value axis given as a list, or just a string
@@ -97,8 +100,14 @@ validateColor <- function(color){
 #' @param elementId a HTML id for the container of the chart; ignored if the
 #' chart is displayed in Shiny, in which case the id is given by the Shiny id
 #'
+#' @note A color can be given by the name of a R color, the name of a CSS
+#' color, e.g. \code{"transparent"} or \code{"fuchsia"}, an HEX code like
+#' \code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
+#' like \code{"hsl(360,11,255)"}.
+#'
 #' @import htmlwidgets
 #' @importFrom shiny validateCssUnit
+#' @importFrom stringi stri_rand_strings
 #' @export
 #'
 #' @examples # a simple bar chart ####
@@ -183,8 +192,39 @@ amBarChart <- function(
   elementId = NULL
 ) {
 
+  if(!all(values %in% names(data))){
+    stop("Invalid `values` argument.", .call = TRUE)
+  }
+
   if(is.null(valueNames)){
     valueNames <- setNames(as.list(values), values)
+  }else if(is.list(valueNames)){
+    if(!all(values %in% names(valueNames))){
+      stop(
+        paste0(
+          "Invalid `valueNames` list. ",
+          "It must be a named list giving a name for every column ",
+          "given in the `values` argument."
+        ),
+        .call = TRUE
+      )
+    }
+  }else{
+    stop(
+      paste0(
+        "Invalid `valueNames` argument. ",
+        "It must be a named list giving a name for every column ",
+        "given in the `values` argument."
+      ),
+      .call = TRUE
+    )
+  }
+
+  if(!is.null(data2) &&
+     (!is.data.frame(data2) ||
+      nrow(data2) != nrow(data) ||
+      !all(values %in% names(data2)))){
+    stop("Invalid `data2` argument.", .call = TRUE)
   }
 
   if(is.character(chartTitle)){
@@ -195,22 +235,58 @@ amBarChart <- function(
   }
 
   if(is.atomic(draggable)){
+    if(length(draggable) != 1L || !is.logical(draggable)){
+      stop(
+        paste0(
+          "Invalid `draggable` argument. ",
+          "It must be a named list defining `TRUE` or `FALSE` ",
+          "for every column given in the `values` argument, ",
+          "or just `TRUE` or `FALSE`."
+        ),
+        .call = TRUE
+      )
+    }
     draggable <- setNames(rep(list(draggable), length(values)), values)
+  }else if(is.list(draggable)){
+    if(!all(values %in% names(draggable)) ||
+       !all(draggable %in% c(FALSE,TRUE))){
+      stop(
+        paste0(
+          "Invalid `draggable` list. ",
+          "It must be a named list defining `TRUE` or `FALSE` ",
+          "for every column given in the `values` argument, ",
+          "or just `TRUE` or `FALSE`."
+        ),
+        .call = TRUE
+      )
+    }
+  }else{
+    stop(
+      paste0(
+        "Invalid `draggable` argument. ",
+        "It must be a named list defining `TRUE` or `FALSE` ",
+        "for every column given in the `values` argument, ",
+        "or just `TRUE` or `FALSE`."
+      ),
+      .call = TRUE
+    )
   }
 
-  if(is.list(tooltip)){
-    tooltip$labelColor <- validateColor(tooltip$labelColor)
-    tooltip$backgroundColor <- validateColor(tooltip$backgroundColor)
-  }else if(is.null(tooltip)){
-    tooltip <- list(
-      text = "[bold]{name}:\n{valueY}[/]",
-      labelColor = "#ffffff",
-      backgroundColor = "#101010",
-      backgroundOpacity = 1,
-      scale = 1
-    )
-  }else if(is.character(tooltip)){
-    tooltip <- list(text = tooltip)
+  if(!isFALSE(tooltip)){
+    if(is.list(tooltip)){
+      tooltip$labelColor <- validateColor(tooltip$labelColor)
+      tooltip$backgroundColor <- validateColor(tooltip$backgroundColor)
+    }else if(is.null(tooltip)){
+      tooltip <- list(
+        text = "[bold]{name}:\n{valueY}[/]",
+        labelColor = "#ffffff",
+        backgroundColor = "#101010",
+        backgroundOpacity = 1,
+        scale = 1
+      )
+    }else if(is.character(tooltip)){
+      tooltip <- list(text = tooltip)
+    }
   }
 
   if(!is.null(columnStyle[["stroke"]])){
@@ -229,6 +305,17 @@ amBarChart <- function(
         values
       )
   }else if(is.list(columnStyle[["fill"]])){
+    if(!all(values %in% columnStyle[["fill"]])){
+      stop(
+        paste0(
+          "Invalid `fill` field of `columnStyle`. ",
+          "It must be a named list defining a color for every column ",
+          "given in the `values` argument, or just a color that will be ",
+          "applied to each column."
+        ),
+        .call = TRUE
+      )
+    }
     columnStyle[["fill"]] <-
       sapply(columnStyle[["fill"]], validateColor, simplify = FALSE, USE.NAMES = TRUE)
   }
@@ -343,11 +430,11 @@ amBarChart <- function(
       )
   }else if(is.character(button)){
     button <- list(
-        text = button,
-        color = NULL,
-        fill = NULL,
-        position = 0.8
-      )
+      text = button,
+      color = NULL,
+      fill = NULL,
+      position = 0.8
+    )
   }else if(is.list(button)){
     button[["color"]] <- validateColor(button[["color"]])
     button[["fill"]] <- validateColor(button[["fill"]])

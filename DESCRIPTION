@@ -16,5 +16,6 @@ Imports:
     htmlwidgets,
     reactR,
     shiny,
-    jsonlite
+    jsonlite,
+    stringi
 RoxygenNote: 7.0.2
