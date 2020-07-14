@@ -119698,10 +119698,10 @@ class AmBarChart extends React.PureComponent {
     var theme = this.props.theme,
         data = HTMLWidgets.dataframeToD3(this.props.data),
         dataCopy = HTMLWidgets.dataframeToD3(this.props.data),
+        data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(this.props.data2) : null,
         values = this.props.values,
         valueNames = this.props.valueNames,
         category = this.props.category,
-        data2 = this.props.data2,
         cellWidth = this.props.cellWidth,
         columnWidth = this.props.columnWidth,
         xAxis = this.props.xAxis,
@@ -119967,10 +119967,10 @@ class AmBarChart extends React.PureComponent {
 
       var bullet;
 
-      if (draggable) {
+      if (draggable[value]) {
         bullet = series.bullets.create();
         bullet.fill = columnStyle.fill[value];
-        bullet.stroke = columnStyle.stroke || chart.colors.getIndex(i).saturate(0.7);
+        bullet.stroke = columnStyle.stroke || chart.colors.getIndex(index).saturate(0.7);
         bullet.strokeWidth = 3;
         bullet.opacity = 0; // initially invisible
 
@@ -120014,7 +120014,7 @@ class AmBarChart extends React.PureComponent {
       var columnTemplate = series.columns.template;
       columnTemplate.width = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](columnWidth);
       columnTemplate.fill = columnStyle.fill[value];
-      columnTemplate.stroke = columnStyle.stroke || chart.colors.getIndex(i).saturate(0.7);
+      columnTemplate.stroke = columnStyle.stroke || chart.colors.getIndex(index).saturate(0.7);
       columnTemplate.strokeOpacity = 1;
       columnTemplate.column.fillOpacity = 0.8;
       columnTemplate.column.strokeWidth = 1;
@@ -120080,7 +120080,7 @@ class AmBarChart extends React.PureComponent {
         });
       }
 
-      if (draggable) {
+      if (draggable[value]) {
         // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
         columnTemplate.events.on("down", event => {
           var dataItem = event.target.dataItem;

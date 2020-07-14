@@ -79,8 +79,59 @@ color2hex <- function(color){
 #'
 #' @import htmlwidgets
 #' @importFrom shiny validateCssUnit
-#'
 #' @export
+#'
+#' @examples # a simple bar chart ####
+#'
+#' dat <- data.frame(
+#'   country = c("USA", "China", "Japan", "Germany", "UK", "France"),
+#'   visits = c(3025, 1882, 1809, 1322, 1122, 1114)
+#' )
+#'
+#' amBarChart(
+#'   data = dat, data2 = dat,
+#'   width = "600px",
+#'   category = "country", values = "visits",
+#'   draggable = TRUE,
+#'   tooltip = "[font-style:italic;#ffff00]{valueY}[/]",
+#'   chartTitle =
+#'     list(text = "Visits per country", fontSize = 22, color = "orangered"),
+#'   xAxis = list(title = list(text = "Country", color = "maroon")),
+#'   yAxis = list(title = list(text = "Visits", color = "maroon")),
+#'   minValue = 0, maxValue = 4000,
+#'   valueFormatter = "#.",
+#'   caption = list(text = "Year 2018", color = "red"),
+#'   theme = "material")
+#'
+#' # a grouped barchart
+#'
+#' set.seed(666)
+#' dat <- data.frame(
+#'   country = c("USA", "China", "Japan", "Germany", "UK", "France"),
+#'   visits = c(3025, 1882, 1809, 1322, 1122, 1114),
+#'   income = rpois(6, 25),
+#'   expenses = rpois(6, 20)
+#' )
+#'
+#' amBarChart(
+#'   data = dat,
+#'   width = "700px",
+#'   category = "country",
+#'   values = c("income", "expenses"),
+#'   valueNames = list(income = "Income", expenses = "Expenses"),
+#'   draggable = list(income = TRUE, expenses = FALSE),
+#'   backgroundColor = "#30303d",
+#'   columnStyle = list(
+#'     fill = list(income = "darkmagenta", expenses = "darkred"),
+#'     stroke = "#cccccc"
+#'   ),
+#'   chartTitle = list(text = "Income and expenses per country"),
+#'   xAxis = list(title = list(text = "Country")),
+#'   yAxis = list(title = list(text = "Income and expenses")),
+#'   minValue = 0, maxValue = 41,
+#'   valueFormatter = "#.#",
+#'   caption = list(text = "Year 2018"),
+#'   theme = "dark")
 amBarChart <- function(
   data,
   data2 = NULL,
