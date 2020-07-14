@@ -1,5 +1,25 @@
-color2hex <- function(color){
+regex_255 <- "\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*"
+
+regex_rgb <- paste0("^rgb\\(",
+                    "(", regex_255, "),",
+                    "(", regex_255, "),",
+                    "(", regex_255, ")\\)$")
+
+regex_360 <- "\\s*([012]?[0-9]?[0-9]|3[0-5][0-9]|360)\\s*"
+
+regex_hsl <- paste0("^hsl\\(",
+                    "(", regex_360, "),",
+                    "(", regex_255, "),",
+                    "(", regex_255, ")\\)$")
+
+cssColors <- c("transparent", "aqua", "crimson", "fuchsia", "indigo", "lime",
+               "olive", "rebeccapurple", "silver", "teal")
+
+validateColor <- function(color){
   if(is.null(color)) return(NULL)
+  if(grepl(regex_rgb, color) || grepl(regex_hsl, color) || color %in% cssColors){
+    return(color)
+  }
   RGB <- col2rgb(color)[,1]
   rgb(RGB["red"], RGB["green"], RGB["blue"], maxColorValue = 255)
 }
@@ -171,7 +191,7 @@ amBarChart <- function(
     chartTitle <- list(text = chartTitle, fontSize = 22, color = NULL)
   }
   if(!is.null(chartTitle$color)){
-    chartTitle$color <- color2hex(chartTitle$color)
+    chartTitle$color <- validateColor(chartTitle$color)
   }
 
   if(is.atomic(draggable)){
@@ -179,8 +199,8 @@ amBarChart <- function(
   }
 
   if(is.list(tooltip)){
-    tooltip$labelColor <- color2hex(tooltip$labelColor)
-    tooltip$backgroundColor <- color2hex(tooltip$backgroundColor)
+    tooltip$labelColor <- validateColor(tooltip$labelColor)
+    tooltip$backgroundColor <- validateColor(tooltip$backgroundColor)
   }else if(is.null(tooltip)){
     tooltip <- list(
       text = "[bold]{name}:\n{valueY}[/]",
@@ -194,7 +214,7 @@ amBarChart <- function(
   }
 
   if(!is.null(columnStyle[["stroke"]])){
-    columnStyle[["stroke"]] <- color2hex(columnStyle[["stroke"]])
+    columnStyle[["stroke"]] <- validateColor(columnStyle[["stroke"]])
   }
   if(is.null(columnStyle)){
     columnStyle <- list(
@@ -205,12 +225,12 @@ amBarChart <- function(
   }else if(is.character(columnStyle[["fill"]])){
     columnStyle[["fill"]] <-
       setNames(
-        rep(list(color2hex(columnStyle[["fill"]])), length(values)),
+        rep(list(validateColor(columnStyle[["fill"]])), length(values)),
         values
       )
   }else if(is.list(columnStyle[["fill"]])){
     columnStyle[["fill"]] <-
-      sapply(columnStyle[["fill"]], color2hex, simplify = FALSE, USE.NAMES = TRUE)
+      sapply(columnStyle[["fill"]], validateColor, simplify = FALSE, USE.NAMES = TRUE)
   }
 
   if(is.null(cellWidth)){
@@ -227,9 +247,9 @@ amBarChart <- function(
 
   if(is.list(xAxis)){
     if(is.list(xAxis[["title"]])){
-      xAxis[["title"]][["color"]] <- color2hex(xAxis[["title"]][["color"]])
+      xAxis[["title"]][["color"]] <- validateColor(xAxis[["title"]][["color"]])
     }
-    xAxis[["labels"]][["color"]] <- color2hex(xAxis[["labels"]][["color"]])
+    xAxis[["labels"]][["color"]] <- validateColor(xAxis[["labels"]][["color"]])
   }
   if(is.null(xAxis)){
     xAxis <- list(
@@ -260,9 +280,9 @@ amBarChart <- function(
 
   if(is.list(yAxis)){
     if(is.list(yAxis[["title"]])){
-      yAxis[["title"]][["color"]] <- color2hex(yAxis[["title"]][["color"]])
+      yAxis[["title"]][["color"]] <- validateColor(yAxis[["title"]][["color"]])
     }
-    yAxis[["labels"]][["color"]] <- color2hex(yAxis[["labels"]][["color"]])
+    yAxis[["labels"]][["color"]] <- validateColor(yAxis[["labels"]][["color"]])
   }
   if(is.null(yAxis)){
     yAxis <- list(
@@ -300,7 +320,7 @@ amBarChart <- function(
       width = NULL
     )
   }else{
-    gridLines[["color"]] <- color2hex(gridLines[["color"]])
+    gridLines[["color"]] <- validateColor(gridLines[["color"]])
   }
 
   if(is.null(legend)){
@@ -310,7 +330,7 @@ amBarChart <- function(
   if(is.character(caption)){
     caption <- list(text = caption)
   }else if(!is.null(caption)){
-    caption[["color"]] <- color2hex(caption[["color"]])
+    caption[["color"]] <- validateColor(caption[["color"]])
   }
 
   if(is.null(button)){
@@ -329,8 +349,8 @@ amBarChart <- function(
         position = 0.8
       )
   }else if(is.list(button)){
-    button[["color"]] <- color2hex(button[["color"]])
-    button[["fill"]] <- color2hex(button[["fill"]])
+    button[["color"]] <- validateColor(button[["color"]])
+    button[["fill"]] <- validateColor(button[["fill"]])
   }
 
   if(is.null(width)){
@@ -369,7 +389,7 @@ amBarChart <- function(
       draggable = draggable,
       tooltip = tooltip,
       columnStyle = columnStyle,
-      backgroundColor = color2hex(backgroundColor),
+      backgroundColor = validateColor(backgroundColor),
       cellWidth = cellWidth,
       columnWidth = columnWidth,
       xAxis = xAxis,
