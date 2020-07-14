@@ -119681,7 +119681,7 @@ class AmBarChart extends React.PureComponent {
   }
 
   style() {
-    if (window.Shiny) {
+    if (window.Shiny && !window.FlexDashboard) {
       return {
         width: "100%",
         height: "100%"
@@ -119711,6 +119711,7 @@ class AmBarChart extends React.PureComponent {
         tooltipStyle = this.props.tooltip,
         valueFormatter = this.props.valueFormatter,
         columnStyle = this.props.columnStyle,
+        chartId = this.props.chartId,
         shinyId = this.props.shinyId;
 
     switch (theme) {
@@ -119998,6 +119999,10 @@ class AmBarChart extends React.PureComponent {
           dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
 
           if (window.Shiny) {
+            if (shinyId === undefined) {
+              shinyId = $(document.getElementById(chartId)).parent().attr("id");
+            }
+
             Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
             Shiny.setInputValue(shinyId + "_change", {
               index: dataItem.index,
