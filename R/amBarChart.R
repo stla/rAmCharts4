@@ -1,6 +1,81 @@
-#' <Add Title>
+color2hex <- function(color){
+  if(is.null(color)) return(NULL)
+  RGB <- col2rgb(color)[,1]
+  rgb(RGB["red"], RGB["green"], RGB["blue"], maxColorValue = 255)
+}
+
+#' Create a HTML widget displaying a bar chart
+#' @description Create a HTML widget displaying a bar chart.
 #'
-#' <Add Description>
+#' @param data a dataframe
+#' @param data2 a dataframe used to update the data with the button
+#' @param category name of the column of \code{data} to be used on the
+#' category axis
+#' @param values name(s) of the column(s) of \code{data} to be used on the
+#' value axis
+#' @param valueNames names of the values variables, to appear in the legend;
+#' \code{NULL} to use \code{values} as names, otherwise a named list of the
+#' form \code{list(value1 = "ValueName1", value2 = "ValueName2", ...)} where
+#' \code{value1}, \code{value2}, ... are the column names given in
+#' \code{values} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
+#' desired names to appear in the legend
+#' @param minValue minimum value of the y-axis
+#' @param maxValue maximum value of the y-axis
+#' @param valueFormatter a number formatter; see
+#' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}
+#' @param chartTitle chart title, \code{NULL}, character, or list of settings
+#' @param theme theme, \code{NULL} or one of \code{"dataviz"},
+#' \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
+#' \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
+#' \code{"microchart"}
+#' @param draggable \code{TRUE}/\code{FALSE} to enable/disable dragging of
+#' all bars, otherwise a named list of the form
+#' \code{list(value1 = TRUE, value2 = FALSE, ...)} to enable/disable the
+#' dragging for each bar corresponding to a column given in \code{values}
+#' @param tooltip tooltip settings given as a list, or just a string for the
+#' \code{text} field, or \code{NULL} for no tooltip; the \code{text} field is
+#' given as a formatted string; see
+#' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}
+#' @param columnStyle settings of the columns style; \code{NULL} for default,
+#' otherwise a named list with three fields: \code{fill} to set the colors
+#' of the columns, given as a single color or a named list of the form
+#' \code{list(value1 = "red", value2 = "green", ...)}, \code{stroke} to set
+#' the color of the borders of the columns, and \code{cornerRadius} to set
+#' the radius of the corners of the columns
+#' @param backgroundColor a color for the chart background
+#' @param cellWidth cell width in percent; for a simple bar chart, this is the
+#' width of the columns; for a grouped bar chart, this is the width of the
+#' clusters of columns
+#' @param columnWidth column width, a percentage of the cell width; set to 100
+#' for a simple bar chart and use \code{cellWidth} to control the width of the
+#' columns; for a grouped bar chart, this controls the spacing between the
+#' columns within a cluster of columns
+#' @param xAxis settings of the category axis given as a list, or just a string
+#' for the axis title
+#' @param yAxis settings of the value axis given as a list, or just a string
+#' for the axis title
+#' @param scrollbarX logical, whether to add a scrollbar for the category axis
+#' @param scrollbarY logical, whether to add a scrollbar for the value axis
+#' @param gridLines settings of the grid lines
+#' @param legend logical, whether to display the legend
+#' @param caption settings of the caption, or \code{NULL} for no caption
+#' @param button \code{NULL} for the default, \code{FALSE} for no button,
+#' a single character string giving the button label,
+#' or settings of the button given as
+#' a list with these fields: \code{text} for the button label, \code{color} for
+#' the label color, \code{fill} for the button color, and \code{position}
+#' for the button position as a percentage (\code{0} for bottom,
+#' \code{1} for top); this button is used to replace the current data
+#' with \code{data2}
+#' @param width the width of the chart, e.g. \code{"600px"} or \code{"80\%"};
+#' ignored if the chart is displayed in Shiny, in which case the width is
+#' given in \code{\link{amBarChartOutput}}
+#' @param height the height of the chart, e.g. \code{"400px"};
+#' ignored if the chart is displayed in Shiny, in which case the width is
+#' given in \code{\link{amBarChartOutput}}
+#' @param chartId a HTML id for the chart
+#' @param elementId a HTML id for the container of the chart; ignored if the
+#' chart is displayed in Shiny, in which case the id is given by the Shiny id
 #'
 #' @import htmlwidgets
 #' @importFrom shiny validateCssUnit
@@ -44,12 +119,18 @@ amBarChart <- function(
   if(is.character(chartTitle)){
     chartTitle <- list(text = chartTitle, fontSize = 22, color = NULL)
   }
+  if(!is.null(chartTitle$color)){
+    chartTitle$color <- color2hex(chartTitle$color)
+  }
 
   if(is.atomic(draggable)){
     draggable <- setNames(rep(list(draggable), length(values)), values)
   }
 
-  if(is.null(tooltip)){
+  if(is.list(tooltip)){
+    tooltip$labelColor <- color2hex(tooltip$labelColor)
+    tooltip$backgroundColor <- color2hex(tooltip$backgroundColor)
+  }else if(is.null(tooltip)){
     tooltip <- list(
       text = "[bold]{name}:\n{valueY}[/]",
       labelColor = "#ffffff",
@@ -61,6 +142,9 @@ amBarChart <- function(
     tooltip <- list(text = tooltip)
   }
 
+  if(!is.null(columnStyle[["stroke"]])){
+    columnStyle[["stroke"]] <- color2hex(columnStyle[["stroke"]])
+  }
   if(is.null(columnStyle)){
     columnStyle <- list(
       fill = setNames(rep(list(NULL), length(values)), values),
@@ -69,7 +153,13 @@ amBarChart <- function(
     )
   }else if(is.character(columnStyle[["fill"]])){
     columnStyle[["fill"]] <-
-      setNames(rep(list(columnStyle[["fill"]]), length(values)), values)
+      setNames(
+        rep(list(color2hex(columnStyle[["fill"]])), length(values)),
+        values
+      )
+  }else if(is.list(columnStyle[["fill"]])){
+    columnStyle[["fill"]] <-
+      sapply(columnStyle[["fill"]], color2hex, simplify = FALSE, USE.NAMES = TRUE)
   }
 
   if(is.null(cellWidth)){
@@ -84,6 +174,12 @@ amBarChart <- function(
     columnWidth <- max(10, min(columnWidth, 100))
   }
 
+  if(is.list(xAxis)){
+    if(is.list(xAxis[["title"]])){
+      xAxis[["title"]][["color"]] <- color2hex(xAxis[["title"]][["color"]])
+    }
+    xAxis[["labels"]][["color"]] <- color2hex(xAxis[["labels"]][["color"]])
+  }
   if(is.null(xAxis)){
     xAxis <- list(
       title = list(
@@ -111,6 +207,12 @@ amBarChart <- function(
     )
   }
 
+  if(is.list(yAxis)){
+    if(is.list(yAxis[["title"]])){
+      yAxis[["title"]][["color"]] <- color2hex(yAxis[["title"]][["color"]])
+    }
+    yAxis[["labels"]][["color"]] <- color2hex(yAxis[["labels"]][["color"]])
+  }
   if(is.null(yAxis)){
     yAxis <- list(
       title = if(length(values) == 1L) {
@@ -146,6 +248,8 @@ amBarChart <- function(
       opacity = NULL,
       width = NULL
     )
+  }else{
+    gridLines[["color"]] <- color2hex(gridLines[["color"]])
   }
 
   if(is.null(legend)){
@@ -154,6 +258,8 @@ amBarChart <- function(
 
   if(is.character(caption)){
     caption <- list(text = caption)
+  }else if(!is.null(caption)){
+    caption[["color"]] <- color2hex(caption[["color"]])
   }
 
   if(is.null(button)){
@@ -171,6 +277,9 @@ amBarChart <- function(
         fill = NULL,
         position = 0.8
       )
+  }else if(is.list(button)){
+    button[["color"]] <- color2hex(button[["color"]])
+    button[["fill"]] <- color2hex(button[["fill"]])
   }
 
   if(is.null(width)){
@@ -196,7 +305,6 @@ amBarChart <- function(
   component <- reactR::component(
     "AmBarChart",
     list(
-      x = 10,
       data = data,
       data2 = data2,
       category = category,
@@ -210,7 +318,7 @@ amBarChart <- function(
       draggable = draggable,
       tooltip = tooltip,
       columnStyle = columnStyle,
-      backgroundColor = backgroundColor,
+      backgroundColor = color2hex(backgroundColor),
       cellWidth = cellWidth,
       columnWidth = columnWidth,
       xAxis = xAxis,
@@ -242,24 +350,24 @@ amBarChart <- function(
   )
 }
 
-#' Shiny bindings for amBarChart
+#' Shiny bindings for \code{amBarChart}
 #'
-#' Output and render functions for using amBarChart within Shiny
-#' applications and interactive Rmd documents.
+#' @description Output and render functions for using \code{\link{amBarChart}}
+#' within Shiny applications and interactive Rmd documents.
 #'
 #' @param outputId output variable to read from
-#' @param width,height Must be a valid CSS unit (like \code{'100\%%'},
-#'   \code{'400px'}, \code{'auto'}) or a number, which will be coerced to a
-#'   string and have \code{'px'} appended.
-#' @param expr An expression that generates a amBarChart
-#' @param env The environment in which to evaluate \code{expr}.
-#' @param quoted Is \code{expr} a quoted expression (with \code{quote()})? This
-#'   is useful if you want to save an expression in a variable.
+#' @param width,height must be a valid CSS unit (like \code{"100\%"},
+#'   \code{"400px"}, \code{"auto"}) or a number, which will be coerced to a
+#'   string and have \code{"px"} appended
+#' @param expr an expression that generates a bar chart with
+#' \code{\link{amBarChart}}
+#' @param env the environment in which to evaluate \code{expr}
+#' @param quoted whether \code{expr} is a quoted expression
 #'
 #' @name amBarChart-shiny
 #'
 #' @export
-amBarChartOutput <- function(outputId, width = '100%', height = '400px'){
+amBarChartOutput <- function(outputId, width = "100%", height = "400px"){
   htmlwidgets::shinyWidgetOutput(outputId, 'amChart4', width, height, package = 'rAmCharts4')
 }
 
@@ -272,7 +380,7 @@ renderAmBarChart <- function(expr, env = parent.frame(), quoted = FALSE) {
 }
 
 #' Called by HTMLWidgets to produce the widget's root element.
-#' @rdname amBarChart-shiny
+#' @noRd
 amChart4_html <- function(id, style, class, ...) {
   htmltools::tagList(
     # Necessary for RStudio viewer version < 1.2

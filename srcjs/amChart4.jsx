@@ -2,6 +2,15 @@ import { reactWidget } from 'reactR';
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+import am4themes_dark from "@amcharts/amcharts4/themes/dark";
+import am4themes_dataviz from "@amcharts/amcharts4/themes/dataviz";
+import am4themes_frozen from "@amcharts/amcharts4/themes/frozen";
+import am4themes_kelly from "@amcharts/amcharts4/themes/kelly";
+import am4themes_material from "@amcharts/amcharts4/themes/material";
+import am4themes_microchart from "@amcharts/amcharts4/themes/microchart";
+import am4themes_moonrisekingdom from "@amcharts/amcharts4/themes/moonrisekingdom";
+import am4themes_patterns from "@amcharts/amcharts4/themes/patterns";
+import am4themes_spiritedaway from "@amcharts/amcharts4/themes/spiritedaway";
 //import * as barChart from "./utils/barChart";
 
 am4core.useTheme(am4themes_animated);
@@ -39,6 +48,36 @@ class AmBarChart extends React.PureComponent {
       valueFormatter = this.props.valueFormatter,
       columnStyle = this.props.columnStyle,
       shinyId = this.props.shinyId;
+
+    switch(theme) {
+      case "dark":
+        am4core.useTheme(am4themes_dark);
+        break;
+      case "dataviz":
+        am4core.useTheme(am4themes_dataviz);
+        break;
+      case "frozen":
+        am4core.useTheme(am4themes_frozen);
+        break;
+      case "kelly":
+        am4core.useTheme(am4themes_kelly);
+        break;
+      case "material":
+        am4core.useTheme(am4themes_material);
+        break;
+      case "microchart":
+        am4core.useTheme(am4themes_microchart);
+        break;
+      case "moonrisekingdom":
+        am4core.useTheme(am4themes_moonrisekingdom);
+        break;
+      case "patterns":
+        am4core.useTheme(am4themes_patterns);
+        break;
+      case "spiritedaway":
+        am4core.useTheme(am4themes_spiritedaway);
+        break;
+    }
 
     let chart = am4core.create(this.props.chartId, am4charts.XYChart);
 

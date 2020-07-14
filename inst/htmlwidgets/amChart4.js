@@ -117111,6 +117111,350 @@ var theme = function theme(object) {
 
 /***/ }),
 
+/***/ "./node_modules/@amcharts/amcharts4/.internal/themes/dark.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@amcharts/amcharts4/.internal/themes/dark.js ***!
+  \*******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _core_Registry__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/Registry */ "./node_modules/@amcharts/amcharts4/.internal/core/Registry.js");
+/* harmony import */ var _core_utils_Color__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/utils/Color */ "./node_modules/@amcharts/amcharts4/.internal/core/utils/Color.js");
+
+
+
+var theme = function theme(object) {
+  if (Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "InterfaceColorSet")) {
+    object.setFor("stroke", Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#000000"));
+    object.setFor("fill", Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#2b2b2b"));
+    object.setFor("primaryButton", Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#6794dc").lighten(-0.2));
+    object.setFor("primaryButtonHover", Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#6771dc").lighten(-0.2));
+    object.setFor("primaryButtonDown", Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#68dc75").lighten(-0.2));
+    object.setFor("primaryButtonActive", Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#68dc75").lighten(-0.2));
+    object.setFor("primaryButtonText", Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#FFFFFF"));
+    object.setFor("primaryButtonStroke", Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#6794dc"));
+    object.setFor("secondaryButton", Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#3b3b3b"));
+    object.setFor("secondaryButtonHover", Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#3b3b3b").lighten(0.1));
+    object.setFor("secondaryButtonDown", Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#3b3b3b").lighten(0.15));
+    object.setFor("secondaryButtonActive", Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#3b3b3b").lighten(0.15));
+    object.setFor("secondaryButtonText", Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#bbbbbb"));
+    object.setFor("secondaryButtonStroke", Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#3b3b3b").lighten(-0.2));
+    object.setFor("grid", Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#bbbbbb"));
+    object.setFor("background", Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#000000"));
+    object.setFor("alternativeBackground", Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#ffffff"));
+    object.setFor("text", Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#ffffff"));
+    object.setFor("alternativeText", Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#000000"));
+    object.setFor("disabledBackground", Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#bbbbbb"));
+  }
+
+  if (Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "Scrollbar")) {
+    object.background.fillOpacity = 0.4;
+    object.thumb.background.fillOpacity = 0.5;
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (theme);
+
+/***/ }),
+
+/***/ "./node_modules/@amcharts/amcharts4/.internal/themes/dataviz.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/@amcharts/amcharts4/.internal/themes/dataviz.js ***!
+  \**********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _core_Registry__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/Registry */ "./node_modules/@amcharts/amcharts4/.internal/core/Registry.js");
+/* harmony import */ var _core_utils_Color__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/utils/Color */ "./node_modules/@amcharts/amcharts4/.internal/core/utils/Color.js");
+/**
+ * A color scheme inspired by {@link https://datavizproject.com/}
+ */
+
+
+
+var theme = function theme(object) {
+  if (Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "ColorSet")) {
+    object.list = [Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#283250"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#902c2d"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#d5433d"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#f05440")];
+    object.reuse = false;
+    object.stepOptions = {
+      lightness: 0.05,
+      hue: 0
+    };
+    object.passOptions = {};
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (theme);
+
+/***/ }),
+
+/***/ "./node_modules/@amcharts/amcharts4/.internal/themes/frozen.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/@amcharts/amcharts4/.internal/themes/frozen.js ***!
+  \*********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _core_Registry__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/Registry */ "./node_modules/@amcharts/amcharts4/.internal/core/Registry.js");
+/* harmony import */ var _core_utils_Color__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/utils/Color */ "./node_modules/@amcharts/amcharts4/.internal/core/utils/Color.js");
+/**
+ * Color set from Frozen movie borrowed from https://twitter.com/CINEMAPALETTES
+ */
+
+
+
+var theme = function theme(object) {
+  if (Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "ColorSet")) {
+    object.list = [Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#bec4f8"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#a5abee"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#6a6dde"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#4d42cf"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#713e8d"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#a160a0"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#eb6eb0"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#f597bb"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#fbb8c9"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#f8d4d8")];
+    object.minLightness = 0.2;
+    object.maxLightness = 0.7;
+    object.reuse = true;
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (theme);
+
+/***/ }),
+
+/***/ "./node_modules/@amcharts/amcharts4/.internal/themes/kelly.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/@amcharts/amcharts4/.internal/themes/kelly.js ***!
+  \********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _core_Registry__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/Registry */ "./node_modules/@amcharts/amcharts4/.internal/core/Registry.js");
+/* harmony import */ var _core_utils_Color__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/utils/Color */ "./node_modules/@amcharts/amcharts4/.internal/core/utils/Color.js");
+/**
+ * Kelly's colors is a set of 22 highly contrasting colors.
+ *
+ * More info:
+ * {@link https://i.kinja-img.com/gawker-media/image/upload/1015680494325093012.JPG}
+ * {@link https://eleanormaclure.files.wordpress.com/2011/03/colour-coding.pdf}
+ */
+
+
+
+var theme = function theme(object) {
+  if (Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "ColorSet")) {
+    object.list = [Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#F3C300"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#875692"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#F38400"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#A1CAF1"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#BE0032"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#C2B280"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#848482"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#008856"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#E68FAC"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#0067A5"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#F99379"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#604E97"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#F6A600"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#B3446C"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#DCD300"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#882D17"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#8DB600"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#654522"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#E25822"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#2B3D26"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#F2F3F4"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#222222")];
+    object.minLightness = 0.2;
+    object.maxLightness = 0.7;
+    object.reuse = true;
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (theme);
+
+/***/ }),
+
+/***/ "./node_modules/@amcharts/amcharts4/.internal/themes/material.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/@amcharts/amcharts4/.internal/themes/material.js ***!
+  \***********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _core_Registry__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/Registry */ "./node_modules/@amcharts/amcharts4/.internal/core/Registry.js");
+/* harmony import */ var _core_utils_Color__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/utils/Color */ "./node_modules/@amcharts/amcharts4/.internal/core/utils/Color.js");
+
+
+
+var theme = function theme(object) {
+  if (Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "ColorSet")) {
+    object.list = [Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#F44336"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#E91E63"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#9C27B0"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#673AB7"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#3F51B5"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#2196F3"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#03A9F4"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#00BCD4"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#009688"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#4CAF50"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#8BC34A"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#CDDC39"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#FFEB3B"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#FFC107"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#FF9800"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#FF5722"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#795548"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#9E9E9E"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#607D8B")];
+    object.minLightness = 0.2;
+    object.maxLightness = 0.7;
+    object.reuse = true;
+  }
+
+  if (Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "ResizeButton")) {
+    object.background.cornerRadiusTopLeft = 20;
+    object.background.cornerRadiusTopRight = 20;
+    object.background.cornerRadiusBottomLeft = 20;
+    object.background.cornerRadiusBottomRight = 20;
+  }
+
+  if (Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "Tooltip")) {
+    object.animationDuration = 800;
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (theme);
+
+/***/ }),
+
+/***/ "./node_modules/@amcharts/amcharts4/.internal/themes/microchart.js":
+/*!*************************************************************************!*\
+  !*** ./node_modules/@amcharts/amcharts4/.internal/themes/microchart.js ***!
+  \*************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _core_Registry__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/Registry */ "./node_modules/@amcharts/amcharts4/.internal/core/Registry.js");
+
+
+var theme = function theme(object) {
+  if (Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "Sprite")) {
+    object.showSystemTooltip = false;
+  }
+
+  if (Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "Chart")) {
+    object.padding(0, 0, 0, 0);
+  }
+
+  if (Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "Scrollbar")) {
+    object.startGrip.disabled = true;
+    object.endGrip.disabled = true;
+  }
+
+  if (Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "AxisLabel") || Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "AxisLine") || Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "Grid")) {
+    object.disabled = true;
+  }
+
+  if (Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "Axis")) {
+    object.cursorTooltipEnabled = false;
+  }
+
+  if (Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "PercentSeries")) {
+    object.labels.template.disabled = true;
+    object.ticks.template.disabled = true;
+  }
+
+  if (Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "ZoomOutButton")) {
+    object.padding(1, 1, 1, 1);
+  }
+
+  if (Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "Container")) {
+    if (object.minHeight) {
+      object.minHeight = undefined;
+    }
+
+    if (object.minWidth) {
+      object.minWidth = undefined;
+    }
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (theme);
+
+/***/ }),
+
+/***/ "./node_modules/@amcharts/amcharts4/.internal/themes/moonrisekingdom.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/@amcharts/amcharts4/.internal/themes/moonrisekingdom.js ***!
+  \******************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _core_Registry__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/Registry */ "./node_modules/@amcharts/amcharts4/.internal/core/Registry.js");
+/* harmony import */ var _core_utils_Color__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/utils/Color */ "./node_modules/@amcharts/amcharts4/.internal/core/utils/Color.js");
+/**
+ * Color set from Moonrise kingdom movie borrowed from https://twitter.com/CINEMAPALETTES
+ */
+
+
+
+var theme = function theme(object) {
+  if (Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "ColorSet")) {
+    object.list = [Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#3a1302"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#601205"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#8a2b0d"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#c75e24"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#c79f59"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#a4956a"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#868569"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#756f61"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#586160"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#617983")];
+    object.minLightness = 0.2;
+    object.maxLightness = 0.7;
+    object.reuse = true;
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (theme);
+
+/***/ }),
+
+/***/ "./node_modules/@amcharts/amcharts4/.internal/themes/patterns.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/@amcharts/amcharts4/.internal/themes/patterns.js ***!
+  \***********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _core_Registry__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/Registry */ "./node_modules/@amcharts/amcharts4/.internal/core/Registry.js");
+/* harmony import */ var _core_utils_PatternSet__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/utils/PatternSet */ "./node_modules/@amcharts/amcharts4/.internal/core/utils/PatternSet.js");
+/* harmony import */ var _core_utils_InterfaceColorSet__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/utils/InterfaceColorSet */ "./node_modules/@amcharts/amcharts4/.internal/core/utils/InterfaceColorSet.js");
+
+
+
+
+var theme = function theme(object) {
+  // Create PatternSet
+  if (Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "XYChart") || Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "PercentSeries")) {
+    object.patterns = new _core_utils_PatternSet__WEBPACK_IMPORTED_MODULE_1__["PatternSet"]();
+  } // Set up compatible series
+
+
+  if (Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "XYSeries") || Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "PercentSeries")) {
+    // Set up fill for series' tooltip
+    if (object.tooltip) {
+      var ic = new _core_utils_InterfaceColorSet__WEBPACK_IMPORTED_MODULE_2__["InterfaceColorSet"]();
+      object.tooltip.getFillFromObject = false;
+      object.tooltip.fill = ic.getFor("alternativeBackground");
+      object.tooltip.label.fill = ic.getFor("text");
+      object.tooltip.background.stroke = ic.getFor("alternativeBackground");
+    }
+  }
+
+  if (Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "Pattern")) {
+    object.backgroundOpacity = 1;
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (theme);
+
+/***/ }),
+
+/***/ "./node_modules/@amcharts/amcharts4/.internal/themes/spiritedaway.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@amcharts/amcharts4/.internal/themes/spiritedaway.js ***!
+  \***************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _core_Registry__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/Registry */ "./node_modules/@amcharts/amcharts4/.internal/core/Registry.js");
+/* harmony import */ var _core_utils_Color__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/utils/Color */ "./node_modules/@amcharts/amcharts4/.internal/core/utils/Color.js");
+/**
+ * Color set from Spirited away movie borrowed from https://twitter.com/CINEMAPALETTES
+ */
+
+
+
+var theme = function theme(object) {
+  if (Object(_core_Registry__WEBPACK_IMPORTED_MODULE_0__["is"])(object, "ColorSet")) {
+    object.list = [Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#65738e"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#766c91"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#78566f"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#523b58"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#813b3d"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#bc5e52"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#ee8b78"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#f9c885"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#eba05c"), Object(_core_utils_Color__WEBPACK_IMPORTED_MODULE_1__["color"])("#9b5134")];
+    object.minLightness = 0.2;
+    object.maxLightness = 0.7;
+    object.reuse = true;
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (theme);
+
+/***/ }),
+
 /***/ "./node_modules/@amcharts/amcharts4/charts.js":
 /*!****************************************************!*\
   !*** ./node_modules/@amcharts/amcharts4/charts.js ***!
@@ -118686,6 +119030,150 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/@amcharts/amcharts4/themes/dark.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/@amcharts/amcharts4/themes/dark.js ***!
+  \*********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _internal_themes_dark__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../.internal/themes/dark */ "./node_modules/@amcharts/amcharts4/.internal/themes/dark.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _internal_themes_dark__WEBPACK_IMPORTED_MODULE_0__["default"]; });
+
+
+
+/***/ }),
+
+/***/ "./node_modules/@amcharts/amcharts4/themes/dataviz.js":
+/*!************************************************************!*\
+  !*** ./node_modules/@amcharts/amcharts4/themes/dataviz.js ***!
+  \************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _internal_themes_dataviz__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../.internal/themes/dataviz */ "./node_modules/@amcharts/amcharts4/.internal/themes/dataviz.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _internal_themes_dataviz__WEBPACK_IMPORTED_MODULE_0__["default"]; });
+
+
+
+/***/ }),
+
+/***/ "./node_modules/@amcharts/amcharts4/themes/frozen.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/@amcharts/amcharts4/themes/frozen.js ***!
+  \***********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _internal_themes_frozen__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../.internal/themes/frozen */ "./node_modules/@amcharts/amcharts4/.internal/themes/frozen.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _internal_themes_frozen__WEBPACK_IMPORTED_MODULE_0__["default"]; });
+
+
+
+/***/ }),
+
+/***/ "./node_modules/@amcharts/amcharts4/themes/kelly.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/@amcharts/amcharts4/themes/kelly.js ***!
+  \**********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _internal_themes_kelly__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../.internal/themes/kelly */ "./node_modules/@amcharts/amcharts4/.internal/themes/kelly.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _internal_themes_kelly__WEBPACK_IMPORTED_MODULE_0__["default"]; });
+
+
+
+/***/ }),
+
+/***/ "./node_modules/@amcharts/amcharts4/themes/material.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/@amcharts/amcharts4/themes/material.js ***!
+  \*************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _internal_themes_material__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../.internal/themes/material */ "./node_modules/@amcharts/amcharts4/.internal/themes/material.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _internal_themes_material__WEBPACK_IMPORTED_MODULE_0__["default"]; });
+
+
+
+/***/ }),
+
+/***/ "./node_modules/@amcharts/amcharts4/themes/microchart.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/@amcharts/amcharts4/themes/microchart.js ***!
+  \***************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _internal_themes_microchart__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../.internal/themes/microchart */ "./node_modules/@amcharts/amcharts4/.internal/themes/microchart.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _internal_themes_microchart__WEBPACK_IMPORTED_MODULE_0__["default"]; });
+
+
+
+/***/ }),
+
+/***/ "./node_modules/@amcharts/amcharts4/themes/moonrisekingdom.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/@amcharts/amcharts4/themes/moonrisekingdom.js ***!
+  \********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _internal_themes_moonrisekingdom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../.internal/themes/moonrisekingdom */ "./node_modules/@amcharts/amcharts4/.internal/themes/moonrisekingdom.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _internal_themes_moonrisekingdom__WEBPACK_IMPORTED_MODULE_0__["default"]; });
+
+
+
+/***/ }),
+
+/***/ "./node_modules/@amcharts/amcharts4/themes/patterns.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/@amcharts/amcharts4/themes/patterns.js ***!
+  \*************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _internal_themes_patterns__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../.internal/themes/patterns */ "./node_modules/@amcharts/amcharts4/.internal/themes/patterns.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _internal_themes_patterns__WEBPACK_IMPORTED_MODULE_0__["default"]; });
+
+
+
+/***/ }),
+
+/***/ "./node_modules/@amcharts/amcharts4/themes/spiritedaway.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/@amcharts/amcharts4/themes/spiritedaway.js ***!
+  \*****************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _internal_themes_spiritedaway__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../.internal/themes/spiritedaway */ "./node_modules/@amcharts/amcharts4/.internal/themes/spiritedaway.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _internal_themes_spiritedaway__WEBPACK_IMPORTED_MODULE_0__["default"]; });
+
+
+
+/***/ }),
+
 /***/ "./node_modules/tslib/tslib.es6.js":
 /*!*****************************************!*\
   !*** ./node_modules/tslib/tslib.es6.js ***!
@@ -119161,6 +119649,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @amcharts/amcharts4/core */ "./node_modules/@amcharts/amcharts4/core.js");
 /* harmony import */ var _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @amcharts/amcharts4/charts */ "./node_modules/@amcharts/amcharts4/charts.js");
 /* harmony import */ var _amcharts_amcharts4_themes_animated__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @amcharts/amcharts4/themes/animated */ "./node_modules/@amcharts/amcharts4/themes/animated.js");
+/* harmony import */ var _amcharts_amcharts4_themes_dark__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @amcharts/amcharts4/themes/dark */ "./node_modules/@amcharts/amcharts4/themes/dark.js");
+/* harmony import */ var _amcharts_amcharts4_themes_dataviz__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @amcharts/amcharts4/themes/dataviz */ "./node_modules/@amcharts/amcharts4/themes/dataviz.js");
+/* harmony import */ var _amcharts_amcharts4_themes_frozen__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @amcharts/amcharts4/themes/frozen */ "./node_modules/@amcharts/amcharts4/themes/frozen.js");
+/* harmony import */ var _amcharts_amcharts4_themes_kelly__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @amcharts/amcharts4/themes/kelly */ "./node_modules/@amcharts/amcharts4/themes/kelly.js");
+/* harmony import */ var _amcharts_amcharts4_themes_material__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @amcharts/amcharts4/themes/material */ "./node_modules/@amcharts/amcharts4/themes/material.js");
+/* harmony import */ var _amcharts_amcharts4_themes_microchart__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @amcharts/amcharts4/themes/microchart */ "./node_modules/@amcharts/amcharts4/themes/microchart.js");
+/* harmony import */ var _amcharts_amcharts4_themes_moonrisekingdom__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @amcharts/amcharts4/themes/moonrisekingdom */ "./node_modules/@amcharts/amcharts4/themes/moonrisekingdom.js");
+/* harmony import */ var _amcharts_amcharts4_themes_patterns__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @amcharts/amcharts4/themes/patterns */ "./node_modules/@amcharts/amcharts4/themes/patterns.js");
+/* harmony import */ var _amcharts_amcharts4_themes_spiritedaway__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @amcharts/amcharts4/themes/spiritedaway */ "./node_modules/@amcharts/amcharts4/themes/spiritedaway.js");
+
+
+
+
+
+
+
+
+
 
 
 
@@ -119206,6 +119712,45 @@ class AmBarChart extends React.PureComponent {
         valueFormatter = this.props.valueFormatter,
         columnStyle = this.props.columnStyle,
         shinyId = this.props.shinyId;
+
+    switch (theme) {
+      case "dark":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_dark__WEBPACK_IMPORTED_MODULE_4__["default"]);
+        break;
+
+      case "dataviz":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_dataviz__WEBPACK_IMPORTED_MODULE_5__["default"]);
+        break;
+
+      case "frozen":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_frozen__WEBPACK_IMPORTED_MODULE_6__["default"]);
+        break;
+
+      case "kelly":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_kelly__WEBPACK_IMPORTED_MODULE_7__["default"]);
+        break;
+
+      case "material":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_material__WEBPACK_IMPORTED_MODULE_8__["default"]);
+        break;
+
+      case "microchart":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_microchart__WEBPACK_IMPORTED_MODULE_9__["default"]);
+        break;
+
+      case "moonrisekingdom":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_moonrisekingdom__WEBPACK_IMPORTED_MODULE_10__["default"]);
+        break;
+
+      case "patterns":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_patterns__WEBPACK_IMPORTED_MODULE_11__["default"]);
+        break;
+
+      case "spiritedaway":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_spiritedaway__WEBPACK_IMPORTED_MODULE_12__["default"]);
+        break;
+    }
+
     var chart = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["create"](this.props.chartId, _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYChart"]);
     chart.data = data;
     chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect

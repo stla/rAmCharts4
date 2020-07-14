@@ -17,3 +17,4 @@ Imports:
     reactR,
     shiny,
     jsonlite
+RoxygenNote: 7.0.2
