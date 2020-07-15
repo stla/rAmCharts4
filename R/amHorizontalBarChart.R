@@ -167,7 +167,7 @@ amHorizontalBarChart <- function(
 ) {
 
   if(!all(values %in% names(data))){
-    stop("Invalid `values` argument.", .call = TRUE)
+    stop("Invalid `values` argument.", call. = TRUE)
   }
 
   if(is.null(valueNames)){
@@ -180,7 +180,7 @@ amHorizontalBarChart <- function(
           "It must be a named list giving a name for every column ",
           "given in the `values` argument."
         ),
-        .call = TRUE
+        call. = TRUE
       )
     }
   }else{
@@ -190,7 +190,7 @@ amHorizontalBarChart <- function(
         "It must be a named list giving a name for every column ",
         "given in the `values` argument."
       ),
-      .call = TRUE
+      call. = TRUE
     )
   }
 
@@ -198,7 +198,7 @@ amHorizontalBarChart <- function(
      (!is.data.frame(data2) ||
       nrow(data2) != nrow(data) ||
       !all(values %in% names(data2)))){
-    stop("Invalid `data2` argument.", .call = TRUE)
+    stop("Invalid `data2` argument.", call. = TRUE)
   }
 
   if(is.character(chartTitle)){
@@ -217,7 +217,7 @@ amHorizontalBarChart <- function(
           "for every column given in the `values` argument, ",
           "or just `TRUE` or `FALSE`."
         ),
-        .call = TRUE
+        call. = TRUE
       )
     }
     draggable <- setNames(rep(list(draggable), length(values)), values)
@@ -231,7 +231,7 @@ amHorizontalBarChart <- function(
           "for every column given in the `values` argument, ",
           "or just `TRUE` or `FALSE`."
         ),
-        .call = TRUE
+        call. = TRUE
       )
     }
   }else{
@@ -242,7 +242,7 @@ amHorizontalBarChart <- function(
         "for every column given in the `values` argument, ",
         "or just `TRUE` or `FALSE`."
       ),
-      .call = TRUE
+      call. = TRUE
     )
   }
 
@@ -279,7 +279,7 @@ amHorizontalBarChart <- function(
         values
       )
   }else if(is.list(columnStyle[["fill"]])){
-    if(!all(values %in% columnStyle[["fill"]])){
+    if(!all(values %in% names(columnStyle[["fill"]]))){
       stop(
         paste0(
           "Invalid `fill` field of `columnStyle`. ",
@@ -287,7 +287,7 @@ amHorizontalBarChart <- function(
           "given in the `values` argument, or just a color that will be ",
           "applied to each column."
         ),
-        .call = TRUE
+        call. = TRUE
       )
     }
     columnStyle[["fill"]] <-

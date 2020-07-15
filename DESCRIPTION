@@ -17,5 +17,6 @@ Imports:
     reactR,
     shiny,
     jsonlite,
-    stringi
+    stringi,
+    lubridate
 RoxygenNote: 7.0.2

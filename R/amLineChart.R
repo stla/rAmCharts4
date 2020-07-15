@@ -35,11 +35,11 @@
 #' default tooltip; the \code{text} field must be a formatted string:
 #' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}
 #' @param lineStyle settings of the lines style; \code{NULL} for default,
-#' otherwise a named list with XXXX three fields: \code{fill} to set the colors
-#' of the columns, given as a single color or a named list of the form
-#' \code{list(value1 = "red", value2 = "green", ...)}, \code{stroke} to set
-#' the color of the borders of the columns, and \code{cornerRadius} to set
-#' the radius of the corners of the columns
+#' otherwise a named list with XXXX three fields: \code{color} to set the colors
+#' of the lines, given as a single color or a named list of the form
+#' \code{list(yvalue1 = "red", yvalue2 = "green", ...)}, \code{width} to set
+#' the width of the lines, given as a single number or a named list of the form
+#' \code{list(yvalue1 = 1, yvalue2 = 3, ...)}
 #' @param backgroundColor a color for the chart background
 #' @param xAxis settings of the x-axis given as a list, or just a string
 #' for the axis title
@@ -160,10 +160,10 @@ amLineChart <- function(
 ) {
 
   if(!xValue %in% names(data)){
-    stop("Invalid `xValue` argument.", .call = TRUE)
+    stop("Invalid `xValue` argument.", call. = TRUE)
   }
   if(!all(yValues %in% names(data))){
-    stop("Invalid `yValues` argument.", .call = TRUE)
+    stop("Invalid `yValues` argument.", call. = TRUE)
   }
 
   if(lubridate::is.Date(data[[xValue]]) || lubridate::is.POSIXt(data[[xValue]])){
@@ -183,7 +183,7 @@ amLineChart <- function(
           "It must be a named list giving a name for every column ",
           "given in the `yValues` argument."
         ),
-        .call = TRUE
+        call. = TRUE
       )
     }
   }else{
@@ -193,7 +193,7 @@ amLineChart <- function(
         "It must be a named list giving a name for every column ",
         "given in the `yValues` argument."
       ),
-      .call = TRUE
+      call. = TRUE
     )
   }
 
@@ -201,7 +201,7 @@ amLineChart <- function(
      (!is.data.frame(data2) ||
       nrow(data2) != nrow(data) || # XXXX
       !all(yValues %in% names(data2)))){
-    stop("Invalid `data2` argument.", .call = TRUE)
+    stop("Invalid `data2` argument.", call. = TRUE)
   }
 
   if(is.character(chartTitle)){
@@ -220,7 +220,7 @@ amLineChart <- function(
           "for every column given in the `yValues` argument, ",
           "or just `TRUE` or `FALSE`."
         ),
-        .call = TRUE
+        call. = TRUE
       )
     }
     draggable <- setNames(rep(list(draggable), length(yValues)), yValues)
@@ -234,7 +234,7 @@ amLineChart <- function(
           "for every column given in the `yValues` argument, ",
           "or just `TRUE` or `FALSE`."
         ),
-        .call = TRUE
+        call. = TRUE
       )
     }
   }else{
@@ -245,7 +245,7 @@ amLineChart <- function(
         "for every column given in the `yValues` argument, ",
         "or just `TRUE` or `FALSE`."
       ),
-      .call = TRUE
+      call. = TRUE
     )
   }
 
@@ -269,29 +269,51 @@ amLineChart <- function(
   if(is.null(lineStyle)){
     lineStyle <- list(
       color = setNames(rep(list(NULL), length(yValues)), yValues),
+      width = setNames(rep(list(3), length(yValues)), yValues),
       stroke = NULL,
       cornerRadius = NULL
     )
-  }else if(is.character(lineStyle[["color"]])){
-    lineStyle[["color"]] <-
-      setNames(
-        rep(list(validateColor(lineStyle[["color"]])), length(yValues)),
-        values
-      )
-  }else if(is.list(lineStyle[["color"]])){
-    if(!all(yValues %in% lineStyle[["color"]])){
-      stop(
-        paste0(
-          "Invalid `color` field of `lineStyle`. ",
-          "It must be a named list associating a color for every column ",
-          "given in the `yValues` argument, or just a color that will be ",
-          "applied to each line."
-        ),
-        .call = TRUE
-      )
+  }else{
+    if(is.character(lineStyle[["color"]])){
+      lineStyle[["color"]] <-
+        setNames(
+          rep(list(validateColor(lineStyle[["color"]])), length(yValues)),
+          values
+        )
+    }else if(is.list(lineStyle[["color"]])){
+      if(!all(yValues %in% names(lineStyle[["color"]]))){
+        stop(
+          paste0(
+            "Invalid `color` field of `lineStyle`. ",
+            "It must be a named list associating a color for every column ",
+            "given in the `yValues` argument, or just a color that will be ",
+            "applied to each line."
+          ),
+          call. = TRUE
+        )
+      }
+      lineStyle[["color"]] <-
+        sapply(lineStyle[["color"]], validateColor, simplify = FALSE, USE.NAMES = TRUE)
     }
-    lineStyle[["color"]] <-
-      sapply(lineStyle[["color"]], validateColor, simplify = FALSE, USE.NAMES = TRUE)
+    if(is.numeric(lineStyle[["width"]])){
+      lineStyle[["width"]] <-
+        setNames(
+          rep(list(lineStyle[["width"]]), length(yValues)),
+          values
+        )
+    }else if(is.list(lineStyle[["width"]])){
+      if(!all(yValues %in% names(lineStyle[["width"]]))){
+        stop(
+          paste0(
+            "Invalid `width` field of `lineStyle`. ",
+            "It must be a named list associating a width for every column ",
+            "given in the `yValues` argument, or just a width that will be ",
+            "applied to each line."
+          ),
+          call. = TRUE
+        )
+      }
+    }
   }
 
   if(is.list(xAxis)){
