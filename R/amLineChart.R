@@ -79,56 +79,45 @@
 #' @importFrom lubridate is.Date is.POSIXt
 #' @export
 #'
-#' @examples # a simple bar chart ####
-#'
-#' dat <- data.frame(
-#'   country = c("USA", "China", "Japan", "Germany", "UK", "France"),
-#'   visits = c(3025, 1882, 1809, 1322, 1122, 1114)
-#' )
-#'
-#' amBarChart(
-#'   data = dat, data2 = dat,
-#'   width = "600px",
-#'   category = "country", values = "visits",
-#'   draggable = TRUE,
-#'   tooltip = "[font-style:italic;#ffff00]{valueY}[/]",
-#'   chartTitle =
-#'     list(text = "Visits per country", fontSize = 22, color = "orangered"),
-#'   xAxis = list(title = list(text = "Country", color = "maroon")),
-#'   yAxis = list(title = list(text = "Visits", color = "maroon")),
-#'   minValue = 0, maxValue = 4000,
-#'   valueFormatter = "#.",
-#'   caption = list(text = "Year 2018", color = "red"),
-#'   theme = "material")
-#'
-#' # a grouped bar chart ####
+#' @examples # a line chart with numeric x-axis ####
 #'
 #' set.seed(666)
 #' dat <- data.frame(
-#'   country = c("USA", "China", "Japan", "Germany", "UK", "France"),
-#'   visits = c(3025, 1882, 1809, 1322, 1122, 1114),
-#'   income = rpois(6, 25),
-#'   expenses = rpois(6, 20)
+#'   x = 1:10,
+#'   y1 = rnorm(10),
+#'   y2 = rnorm(10)
 #' )
 #'
-#' amBarChart(
+#' amLineChart(
 #'   data = dat,
 #'   width = "700px",
-#'   category = "country",
-#'   values = c("income", "expenses"),
-#'   valueNames = list(income = "Income", expenses = "Expenses"),
-#'   draggable = list(income = TRUE, expenses = FALSE),
+#'   xValue = "x",
+#'   yValues = c("y1", "y2"),
+#'   yValueNames = list(y1 = "Sample 1", y2 = "Sample 2"),
+#'   draggable = list(y1 = TRUE, y2 = FALSE),
 #'   backgroundColor = "#30303d",
-#'   columnStyle = list(
-#'     fill = list(income = "darkmagenta", expenses = "darkred"),
-#'     stroke = "#cccccc"
+#'   lineStyle = list(
+#'     color = list(y1 = "yellow", y2 = "orangered"),
+#'     width = 4
 #'   ),
-#'   chartTitle = list(text = "Income and expenses per country"),
-#'   xAxis = list(title = list(text = "Country")),
-#'   yAxis = list(title = list(text = "Income and expenses")),
-#'   minValue = 0, maxValue = 41,
+#'   chartTitle = list(text = "Gaussian samples", color = "whitesmoke"),
+#'   xAxis = list(title = list(text = "Observation",
+#'                             fontSize = 21,
+#'                             color = "silver"),
+#'                labels = list(color = "whitesmoke",
+#'                              fontSize = 17)),
+#'   yAxis = list(title = list(text = "Value",
+#'                             fontSize = 21,
+#'                             color = "silver"),
+#'                labels = list(color = "whitesmoke",
+#'                              fontSize = 14)),
+#'   minY = -3, maxY = 3,
 #'   valueFormatter = "#.#",
-#'   caption = list(text = "Year 2018"),
+#'   caption = list(text = "[font-style:italic]rAmCharts4[/]",
+#'                  color = "yellow"),
+#'   gridLines = list(color = "whitesmoke",
+#'                    opacity = 0.4,
+#'                    width = 1),
 #'   theme = "dark")
 amLineChart <- function(
   data,
@@ -273,16 +262,14 @@ amLineChart <- function(
   if(is.null(lineStyle)){
     lineStyle <- list(
       color = setNames(rep(list(NULL), length(yValues)), yValues),
-      width = setNames(rep(list(3), length(yValues)), yValues),
-      stroke = NULL,
-      cornerRadius = NULL
+      width = setNames(rep(list(3), length(yValues)), yValues)
     )
   }else{
     if(is.character(lineStyle[["color"]])){
       lineStyle[["color"]] <-
         setNames(
           rep(list(validateColor(lineStyle[["color"]])), length(yValues)),
-          values
+          yValues
         )
     }else if(is.list(lineStyle[["color"]])){
       if(!all(yValues %in% names(lineStyle[["color"]]))){
@@ -303,7 +290,7 @@ amLineChart <- function(
       lineStyle[["width"]] <-
         setNames(
           rep(list(lineStyle[["width"]]), length(yValues)),
-          values
+          yValues
         )
     }else if(is.list(lineStyle[["width"]])){
       if(!all(yValues %in% names(lineStyle[["width"]]))){

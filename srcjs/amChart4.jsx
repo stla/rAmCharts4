@@ -1217,14 +1217,15 @@ class AmLineChart extends React.PureComponent {
         });
         */
       }
-      bullet.fill = lineStyle.color[value];
+      bullet.fill =
+        lineStyle.color ?
+          lineStyle.color[value] :
+          chart.colors.getIndex(index).saturate(0.7);
       bullet.stroke = // XXXX
         lineStyle.stroke || chart.colors.getIndex(index).saturate(0.7);
       bullet.strokeWidth = 3;
       bullet.opacity = 0; // initially invisible
       bullet.defaultState.properties.opacity = 0;
-      // resize cursor when over
-      bullet.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
       // create bullet hover state
       let hoverState = bullet.states.create("hover");
       hoverState.properties.opacity = 1; // visible when hovered
@@ -1235,6 +1236,8 @@ class AmLineChart extends React.PureComponent {
       */
       if(draggable[value]){
         bullet.draggable = true;
+        // resize cursor when over
+        bullet.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
         // while dragging
         bullet.events.on("drag", event => {
           handleDrag(event);
@@ -1244,6 +1247,7 @@ class AmLineChart extends React.PureComponent {
           console.log("bullet dragstop");
           handleDrag(event);
           var dataItem = event.target.dataItem;
+//          console.log("dataItem", dataItem);
           dataItem.component.isHover = false; // XXXX
           event.target.isHover = false;
           dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
@@ -1252,12 +1256,21 @@ class AmLineChart extends React.PureComponent {
               shinyId = $(document.getElementById(chartId)).parent().attr("id");
             }
             Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
-            Shiny.setInputValue(shinyId + "_change", {
-              index: dataItem.index,
-              x: dataItem.values.valueX.value,
-              field: value,
-              y: dataItem.values.valueY.value
-            });
+            if(isDate) {
+              Shiny.setInputValue(shinyId + "_change:rAmCharts4.lineChange", {
+                index: dataItem.index,
+                x: dataItem.dateX,
+                variable: value,
+                y: dataItem.values.valueY.value
+              });
+            } else {
+              Shiny.setInputValue(shinyId + "_change", {
+                index: dataItem.index,
+                x: dataItem.values.valueX.value,
+                variable: value,
+                y: dataItem.values.valueY.value
+              });
+            }
           }
         });
         // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
@@ -1286,13 +1299,16 @@ class AmLineChart extends React.PureComponent {
       let lineTemplate = series.segments.template;
       lineTemplate.interactionsEnabled = true;
       series.strokeWidth = lineStyle.width ? lineStyle.width[value] : 3;
-      series.stroke = lineStyle.color[value];
+      series.stroke =
+        lineStyle.color ?
+          lineStyle.color[value] :
+          chart.colors.getIndex(index).saturate(0.7);
       // line hover state
       let lineHoverState = lineTemplate.states.create("hover");
       // you can change any property on hover state and it will be animated
       lineHoverState.properties.fillOpacity = 1;
-      lineHoverState.properties.strokeWidth =
-        lineStyle.width ? lineStyle.width[value] + 2 : 5;
+      lineHoverState.properties.strokeWidth = series.strokeWidth + 2;
+//        lineStyle.width ? lineStyle.width[value] + 2 : 5;
     });
 
     this.chart = chart;

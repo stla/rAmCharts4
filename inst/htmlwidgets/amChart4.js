@@ -120640,7 +120640,6 @@ class AmLineChart extends React.PureComponent {
         lineStyle = this.props.lineStyle,
         chartId = this.props.chartId,
         shinyId = this.props.shinyId;
-    console.log(tooltipStyle);
 
     if (isDate) {
       data[xValue] = data[xValue].map(_utils__WEBPACK_IMPORTED_MODULE_13__["toDate"]);
@@ -120760,11 +120759,18 @@ class AmLineChart extends React.PureComponent {
     /* ~~~~\  x-axis  /~~~~ */
 
 
-    var XAxis = chart.xAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]());
+    var XAxis;
+
+    if (isDate) {
+      XAxis = chart.xAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["DateAxis"]());
+    } else {
+      XAxis = chart.xAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]());
+    }
+
     XAxis.renderer.grid.template.location = 0;
 
     if (xAxis && xAxis.title && xAxis.title.text !== "") {
-      XAxis.title.text = xAxis.title.text || category;
+      XAxis.title.text = xAxis.title.text || xValue;
       XAxis.title.fontWeight = "bold";
       XAxis.title.fontSize = xAxis.title.fontSize || 20;
       XAxis.title.fill = xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
@@ -120779,7 +120785,13 @@ class AmLineChart extends React.PureComponent {
     }
 
     xAxisLabels.fill = xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
-    XAxis.dataFields.valueX = xValue;
+
+    if (isDate) {
+      XAxis.dataFields.dateX = xValue;
+    } else {
+      XAxis.dataFields.valueX = xValue;
+    }
+
     XAxis.renderer.grid.template.disabled = true;
     XAxis.renderer.minGridDistance = 50;
     XAxis.numberFormatter.numberFormat = valueFormatter;
@@ -120836,7 +120848,13 @@ class AmLineChart extends React.PureComponent {
 
     yValues.forEach(function (value, index) {
       var series = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LineSeries"]());
-      series.dataFields.valueX = xValue;
+
+      if (isDate) {
+        series.dataFields.dateX = xValue;
+      } else {
+        series.dataFields.valueX = xValue;
+      }
+
       series.dataFields.valueY = value;
       series.name = yValueNames[value];
       series.sequencedInterpolation = true;
@@ -120942,15 +120960,13 @@ class AmLineChart extends React.PureComponent {
                 */
       }
 
-      bullet.fill = lineStyle.color[value];
+      bullet.fill = lineStyle.color ? lineStyle.color[value] : chart.colors.getIndex(index).saturate(0.7);
       bullet.stroke = // XXXX
       lineStyle.stroke || chart.colors.getIndex(index).saturate(0.7);
       bullet.strokeWidth = 3;
       bullet.opacity = 0; // initially invisible
 
-      bullet.defaultState.properties.opacity = 0; // resize cursor when over
-
-      bullet.cursorOverStyle = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["MouseCursorStyle"].verticalResize; // create bullet hover state
+      bullet.defaultState.properties.opacity = 0; // create bullet hover state
 
       var hoverState = bullet.states.create("hover");
       hoverState.properties.opacity = 1; // visible when hovered
@@ -120962,7 +120978,9 @@ class AmLineChart extends React.PureComponent {
             */
 
       if (draggable[value]) {
-        bullet.draggable = true; // while dragging
+        bullet.draggable = true; // resize cursor when over
+
+        bullet.cursorOverStyle = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["MouseCursorStyle"].verticalResize; // while dragging
 
         bullet.events.on("drag", event => {
           handleDrag(event);
@@ -120971,7 +120989,8 @@ class AmLineChart extends React.PureComponent {
         bullet.events.on("dragstop", event => {
           console.log("bullet dragstop");
           handleDrag(event);
-          var dataItem = event.target.dataItem;
+          var dataItem = event.target.dataItem; //          console.log("dataItem", dataItem);
+
           dataItem.component.isHover = false; // XXXX
 
           event.target.isHover = false;
@@ -120983,12 +121002,22 @@ class AmLineChart extends React.PureComponent {
             }
 
             Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
-            Shiny.setInputValue(shinyId + "_change", {
-              index: dataItem.index,
-              x: dataItem.values.valueX.value,
-              field: value,
-              y: dataItem.values.valueY.value
-            });
+
+            if (isDate) {
+              Shiny.setInputValue(shinyId + "_change:rAmCharts4.lineChange", {
+                index: dataItem.index,
+                x: dataItem.dateX,
+                variable: value,
+                y: dataItem.values.valueY.value
+              });
+            } else {
+              Shiny.setInputValue(shinyId + "_change", {
+                index: dataItem.index,
+                x: dataItem.values.valueX.value,
+                variable: value,
+                y: dataItem.values.valueY.value
+              });
+            }
           }
         }); // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
 
@@ -121016,15 +121045,14 @@ class AmLineChart extends React.PureComponent {
 
       console.log("series", series);
       var lineTemplate = series.segments.template;
-      lineTemplate.interactionsEnabled = true; //      console.log("lineTemplate", lineTemplate);
-
+      lineTemplate.interactionsEnabled = true;
       series.strokeWidth = lineStyle.width ? lineStyle.width[value] : 3;
-      series.stroke = lineStyle.color[value]; // line hover state
+      series.stroke = lineStyle.color ? lineStyle.color[value] : chart.colors.getIndex(index).saturate(0.7); // line hover state
 
       var lineHoverState = lineTemplate.states.create("hover"); // you can change any property on hover state and it will be animated
 
       lineHoverState.properties.fillOpacity = 1;
-      lineHoverState.properties.strokeWidth = lineStyle.width ? lineStyle.width[value] + 2 : 5;
+      lineHoverState.properties.strokeWidth = series.strokeWidth + 2; //        lineStyle.width ? lineStyle.width[value] + 2 : 5;
     });
     this.chart = chart;
   }
@@ -121066,7 +121094,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toDate", function() { return toDate; });
 var toDate = function toDate(string) {
   var ymd = string.split("-");
-  return new Date(ymd[0], ymd[1] - 1, ymd[3]);
+  return new Date(ymd[0], ymd[1] - 1, ymd[2]);
 };
 
 /***/ }),
