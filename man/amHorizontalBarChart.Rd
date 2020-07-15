@@ -125,11 +125,11 @@ with \code{data2}}
 
 \item{width}{the width of the chart, e.g. \code{"600px"} or \code{"80\%"};
 ignored if the chart is displayed in Shiny, in which case the width is
-given in \code{\link{amBarChartOutput}}}
+given in \code{\link{amChart4Output}}}
 
 \item{height}{the height of the chart, e.g. \code{"400px"};
 ignored if the chart is displayed in Shiny, in which case the width is
-given in \code{\link{amBarChartOutput}}}
+given in \code{\link{amChart4Output}}}
 
 \item{chartId}{a HTML id for the chart}
 
@@ -155,7 +155,7 @@ dat <- data.frame(
 
 amHorizontalBarChart(
   data = dat, data2 = dat,
-  width = "600px",
+  width = "600px", height = "550px",
   category = "country", values = "visits",
   draggable = TRUE,
   tooltip = "[font-style:italic;#ffff00]{valueX}[/]",
@@ -166,7 +166,7 @@ amHorizontalBarChart(
   minValue = 0, maxValue = 4000,
   valueFormatter = "#.",
   caption = list(text = "Year 2018", color = "red"),
-  theme = "material")
+  theme = "moonrisekingdom")
 
 # a grouped horizontal bar chart ####
 

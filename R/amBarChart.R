@@ -66,10 +66,10 @@
 #' with \code{data2}
 #' @param width the width of the chart, e.g. \code{"600px"} or \code{"80\%"};
 #' ignored if the chart is displayed in Shiny, in which case the width is
-#' given in \code{\link{amBarChartOutput}}
+#' given in \code{\link{amChart4Output}}
 #' @param height the height of the chart, e.g. \code{"400px"};
 #' ignored if the chart is displayed in Shiny, in which case the width is
-#' given in \code{\link{amBarChartOutput}}
+#' given in \code{\link{amChart4Output}}
 #' @param chartId a HTML id for the chart
 #' @param elementId a HTML id for the container of the chart; ignored if the
 #' chart is displayed in Shiny, in which case the id is given by the Shiny id

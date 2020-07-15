@@ -467,6 +467,8 @@ class AmHorizontalBarChart extends React.PureComponent {
       data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(this.props.data2) : null,
       values = this.props.values,
       valueNames = this.props.valueNames,
+      minValue = this.props.minValue,
+      maxValue = this.props.maxValue,
       category = this.props.category,
       cellWidth = this.props.cellWidth,
       columnWidth = this.props.columnWidth,
@@ -621,8 +623,8 @@ class AmHorizontalBarChart extends React.PureComponent {
 		  xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
 		// we set fixed min/max and strictMinMax to true, as otherwise value axis will adjust min/max while dragging and it won't look smooth
 		valueAxis.strictMinMax = true;
-		valueAxis.min = this.props.minValue;
-		valueAxis.max = this.props.maxValue;
+		valueAxis.min = minValue;
+		valueAxis.max = maxValue;
 		valueAxis.renderer.minWidth = 60;
 
     /* ~~~~\  legend  /~~~~ */
@@ -741,7 +743,7 @@ class AmHorizontalBarChart extends React.PureComponent {
         bullet.opacity = 0; // initially invisible
         bullet.defaultState.properties.opacity = 0;
         // resize cursor when over
-        bullet.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
+        bullet.cursorOverStyle = am4core.MouseCursorStyle.horizontalResize;
         bullet.draggable = true;
         // create bullet hover state
         var hoverState = bullet.states.create("hover");
@@ -795,34 +797,34 @@ class AmHorizontalBarChart extends React.PureComponent {
 			  });
       }
       var cr = columnStyle.cornerRadius || 8;
-      columnTemplate.column.adapter.add("cornerRadiusTopRight", (x, target) => {
-        if(target.dataItem.valueX > 0) {
-          return target.isHover ? 2 * cr : cr;
-        } else {
-          return 0;
-        }
-      });
-      columnTemplate.column.adapter.add("cornerRadiusBottomRight", (x, target) => {
-        if(target.dataItem.valueX > 0) {
-          return 0;
-        } else {
-          return target.isHover ? 2 * cr : cr;
-        }
-      });
-      columnTemplate.column.adapter.add("cornerRadiusTopLeft", (x, target) => {
-        if(target.dataItem.valueX > 0) {
-          return target.isHover ? 2 * cr : cr;
-        } else {
-          return 0;
-        }
-      });
-      columnTemplate.column.adapter.add("cornerRadiusBottomLeft", (x, target) => {
-        if(target.dataItem.valueX > 0) {
-          return 0;
-        } else {
-          return target.isHover ? 2 * cr : cr;
-        }
-      });
+			columnTemplate.column.adapter.add("cornerRadiusTopRight", (x, target) => {
+				if (target.dataItem.valueX > 0) {
+					return target.isHover ? 2 * cr : cr;
+				} else {
+					return 0;
+				}
+			});
+			columnTemplate.column.adapter.add("cornerRadiusBottomRight", (x, target) => {
+				if (target.dataItem.valueX > 0) {
+					return target.isHover ? 2 * cr : cr;
+				} else {
+					return 0;
+				}
+			});
+			columnTemplate.column.adapter.add("cornerRadiusTopLeft", (x, target) => {
+				if (target.dataItem.valueX > 0) {
+					return 0;
+				} else {
+					return target.isHover ? 2 * cr : cr;
+				}
+			});
+			columnTemplate.column.adapter.add("cornerRadiusBottomLeft", (x, target) => {
+				if (target.dataItem.valueX > 0) {
+					return 0;
+				} else {
+					return target.isHover ? 2 * cr : cr;
+				}
+			});
       // columns hover state
       var columnHoverState = columnTemplate.column.states.create("hover");
       // you can change any property on hover state and it will be animated
@@ -849,7 +851,7 @@ class AmHorizontalBarChart extends React.PureComponent {
           var itemBullet = dataItem.bullets.getKey(bullet.uid);
           itemBullet.dragStart(event.pointer);
         });
-        // when columns position changes, adjust minX/maxX of bullets so that we could only dragg vertically
+        // when columns position changes, adjust minX/maxX of bullets so that we could only dragg horizontally
   			columnTemplate.events.on("positionchanged", event => {
 	  			var dataItem = event.target.dataItem;
 			  	if(dataItem.bullets !== undefined){
