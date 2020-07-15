@@ -1,5 +1,5 @@
-#' Create a HTML widget displaying a bar chart
-#' @description Create a HTML widget displaying a bar chart.
+#' Create a HTML widget displaying a horizontal bar chart
+#' @description Create a HTML widget displaying a horizontal bar chart.
 #'
 #' @param data a dataframe
 #' @param data2 \code{NULL} or a dataframe used to update the data with the
@@ -84,19 +84,19 @@
 #' @importFrom stringi stri_rand_strings
 #' @export
 #'
-#' @examples # a simple bar chart ####
+#' @examples # a simple horizontal bar chart ####
 #'
 #' dat <- data.frame(
 #'   country = c("USA", "China", "Japan", "Germany", "UK", "France"),
 #'   visits = c(3025, 1882, 1809, 1322, 1122, 1114)
 #' )
 #'
-#' amBarChart(
+#' amHorizontalBarChart(
 #'   data = dat, data2 = dat,
 #'   width = "600px",
 #'   category = "country", values = "visits",
 #'   draggable = TRUE,
-#'   tooltip = "[font-style:italic;#ffff00]{valueY}[/]",
+#'   tooltip = "[font-style:italic;#ffff00]{valueX}[/]",
 #'   chartTitle =
 #'     list(text = "Visits per country", fontSize = 22, color = "orangered"),
 #'   xAxis = list(title = list(text = "Country", color = "maroon")),
@@ -106,7 +106,7 @@
 #'   caption = list(text = "Year 2018", color = "red"),
 #'   theme = "material")
 #'
-#' # a grouped bar chart ####
+#' # a grouped horizontal bar chart ####
 #'
 #' set.seed(666)
 #' dat <- data.frame(
@@ -116,7 +116,7 @@
 #'   expenses = rpois(6, 20)
 #' )
 #'
-#' amBarChart(
+#' amHorizontalBarChart(
 #'   data = dat,
 #'   width = "700px",
 #'   category = "country",
@@ -135,7 +135,7 @@
 #'   valueFormatter = "#.#",
 #'   caption = list(text = "Year 2018"),
 #'   theme = "dark")
-amBarChart <- function(
+amHorizontalBarChart <- function(
   data,
   data2 = NULL,
   category,
@@ -252,7 +252,7 @@ amBarChart <- function(
       tooltip$backgroundColor <- validateColor(tooltip$backgroundColor)
     }else if(is.null(tooltip)){
       tooltip <- list(
-        text = "[bold]{name}:\n{valueY}[/]",
+        text = "[bold]{name}:\n{valueX}[/]",
         labelColor = "#ffffff",
         backgroundColor = "#101010",
         backgroundOpacity = 1,
@@ -314,11 +314,13 @@ amBarChart <- function(
   }
   if(is.null(xAxis)){
     xAxis <- list(
-      title = list(
-        text = category,
-        fontSize = 20,
-        color = NULL
-      ),
+      title = if(length(values) == 1L) {
+        list(
+          text = values,
+          fontSize = 20,
+          color = NULL
+        )
+      },
       labels = list(
         color = NULL,
         fontSize = 18,
@@ -347,13 +349,11 @@ amBarChart <- function(
   }
   if(is.null(yAxis)){
     yAxis <- list(
-      title = if(length(values) == 1L) {
-        list(
-          text = values,
-          fontSize = 20,
-          color = NULL
-        )
-      },
+      title = list(
+        text = category,
+        fontSize = 20,
+        color = NULL
+      ),
       labels = list(
         color = NULL,
         fontSize = 18,
@@ -430,12 +430,12 @@ amBarChart <- function(
   }
 
   if(is.null(chartId)){
-    chartId <- paste0("barchart-", stringi::stri_rand_strings(1, 15))
+    chartId <- paste0("horizontalbarchart-", stringi::stri_rand_strings(1, 15))
   }
 
   # describe a React component to send to the browser for rendering.
   component <- reactR::component(
-    "AmBarChart",
+    "AmHorizontalBarChart",
     list(
       data = data,
       data2 = data2,
