@@ -255,7 +255,11 @@ amLineChart <- function(
       tooltip$backgroundColor <- validateColor(tooltip$backgroundColor)
     }else if(is.null(tooltip)){
       tooltip <- list(
-        text = "[bold]({valueX},{valueY})[/]",
+        text =
+          ifelse(isDate,
+                 "[bold][font-style:italic]{dateX}:[/] {valueY}[/]",
+                 "[bold]({valueX},{valueY})[/]"
+          ),
         labelColor = "#ffffff",
         backgroundColor = "#101010",
         backgroundOpacity = 1,

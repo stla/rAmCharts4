@@ -925,8 +925,6 @@ class AmLineChart extends React.PureComponent {
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
-    console.log(tooltipStyle);
-
     if(isDate) {
       data[xValue] = data[xValue].map(utils.toDate);
     }
@@ -1031,10 +1029,15 @@ class AmLineChart extends React.PureComponent {
 		}
 
 		/* ~~~~\  x-axis  /~~~~ */
-		let XAxis = chart.xAxes.push(new am4charts.ValueAxis());
+		let XAxis;
+		if(isDate) {
+		  XAxis = chart.xAxes.push(new am4charts.DateAxis());
+		} else {
+		  XAxis = chart.xAxes.push(new am4charts.ValueAxis());
+		}
 		XAxis.renderer.grid.template.location = 0;
 		if(xAxis && xAxis.title && xAxis.title.text !== ""){
-  		XAxis.title.text = xAxis.title.text || category;
+  		XAxis.title.text = xAxis.title.text || xValue;
   		XAxis.title.fontWeight = "bold";
   		XAxis.title.fontSize = xAxis.title.fontSize || 20;
   		XAxis.title.fill =
@@ -1048,7 +1051,11 @@ class AmLineChart extends React.PureComponent {
 		}
 		xAxisLabels.fill =
 		  xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
-		XAxis.dataFields.valueX = xValue;
+		if(isDate) {
+		  XAxis.dataFields.dateX = xValue;
+		} else {
+  		XAxis.dataFields.valueX = xValue;
+  	}
 		XAxis.renderer.grid.template.disabled = true;
 		XAxis.renderer.minGridDistance = 50;
 		XAxis.numberFormatter.numberFormat = valueFormatter;
@@ -1106,7 +1113,11 @@ class AmLineChart extends React.PureComponent {
 
 		yValues.forEach(function(value, index){
       let series = chart.series.push(new am4charts.LineSeries());
-      series.dataFields.valueX = xValue;
+      if(isDate) {
+        series.dataFields.dateX = xValue;
+      } else {
+        series.dataFields.valueX = xValue;
+      }
       series.dataFields.valueY = value;
       series.name = yValueNames[value];
       series.sequencedInterpolation = true;
