@@ -360,7 +360,7 @@ amHorizontalBarChart <- function(
         rotation = 0
       )
     )
-  }else if(is.character(xAxis)){
+  }else if(is.character(yAxis)){
     yAxis <- list(title = list(text = yAxis))
   }else if(is.character(yAxis[["title"]])){
     yAxis[["title"]] <- list(text = yAxis[["title"]])

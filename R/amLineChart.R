@@ -1,23 +1,24 @@
-#' Create a HTML widget displaying a bar chart
-#' @description Create a HTML widget displaying a bar chart.
+#' Create a HTML widget displaying a line chart
+#' @description Create a HTML widget displaying a line chart.
 #'
 #' @param data a dataframe
 #' @param data2 \code{NULL} or a dataframe used to update the data with the
 #' button; its column names must include the column names of \code{data}
 #' given in \code{values} and it must have the same number of rows as
 #' \code{data}
-#' @param category name of the column of \code{data} to be used on the
-#' category axis
-#' @param values name(s) of the column(s) of \code{data} to be used on the
-#' value axis
-#' @param valueNames names of the values variables, to appear in the legend;
-#' \code{NULL} to use \code{values} as names, otherwise a named list of the
-#' form \code{list(value1 = "ValueName1", value2 = "ValueName2", ...)} where
-#' \code{value1}, \code{value2}, ... are the column names given in
-#' \code{values} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
+#' @param xValue name of the column of \code{data} to be used on the
+#' x-axis
+#' @param yValues name(s) of the column(s) of \code{data} to be used on the
+#' y-axis
+#' @param yValueNames names of the variables on the y-axis,
+#' to appear in the legend;
+#' \code{NULL} to use \code{yValues} as names, otherwise a named list of the
+#' form \code{list(yvalue1 = "ValueName1", yvalue2 = "ValueName2", ...)} where
+#' \code{yvalue1}, \code{yvalue2}, ... are the column names given in
+#' \code{yValues} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
 #' desired names to appear in the legend
-#' @param minValue minimum value of the y-axis
-#' @param maxValue maximum value of the y-axis
+#' @param minY minimum value of the y-axis
+#' @param maxY maximum value of the y-axis
 #' @param valueFormatter a number formatter; see
 #' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}
 #' @param chartTitle chart title, \code{NULL}, character, or list of settings
@@ -26,30 +27,23 @@
 #' \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
 #' \code{"microchart"}
 #' @param draggable \code{TRUE}/\code{FALSE} to enable/disable dragging of
-#' all bars, otherwise a named list of the form
-#' \code{list(value1 = TRUE, value2 = FALSE, ...)} to enable/disable the
-#' dragging for each bar corresponding to a column given in \code{values}
+#' all lines, otherwise a named list of the form
+#' \code{list(yvalue1 = TRUE, yvalue2 = FALSE, ...)} to enable/disable the
+#' dragging for each bar corresponding to a column given in \code{yValues}
 #' @param tooltip tooltip settings given as a list, or just a string for the
 #' \code{text} field, or \code{FALSE} for no tooltip, or \code{NULL} for the
 #' default tooltip; the \code{text} field must be a formatted string:
 #' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}
-#' @param columnStyle settings of the columns style; \code{NULL} for default,
-#' otherwise a named list with three fields: \code{fill} to set the colors
+#' @param lineStyle settings of the lines style; \code{NULL} for default,
+#' otherwise a named list with XXXX three fields: \code{fill} to set the colors
 #' of the columns, given as a single color or a named list of the form
 #' \code{list(value1 = "red", value2 = "green", ...)}, \code{stroke} to set
 #' the color of the borders of the columns, and \code{cornerRadius} to set
 #' the radius of the corners of the columns
 #' @param backgroundColor a color for the chart background
-#' @param cellWidth cell width in percent; for a simple bar chart, this is the
-#' width of the columns; for a grouped bar chart, this is the width of the
-#' clusters of columns; \code{NULL} for the default value
-#' @param columnWidth column width, a percentage of the cell width; set to 100
-#' for a simple bar chart and use \code{cellWidth} to control the width of the
-#' columns; for a grouped bar chart, this controls the spacing between the
-#' columns within a cluster of columns; \code{NULL} for the default value
-#' @param xAxis settings of the category axis given as a list, or just a string
+#' @param xAxis settings of the x-axis given as a list, or just a string
 #' for the axis title
-#' @param yAxis settings of the value axis given as a list, or just a string
+#' @param yAxis settings of the y-axis given as a list, or just a string
 #' for the axis title
 #' @param scrollbarX logical, whether to add a scrollbar for the category axis
 #' @param scrollbarY logical, whether to add a scrollbar for the value axis
@@ -82,6 +76,7 @@
 #' @import htmlwidgets
 #' @importFrom shiny validateCssUnit
 #' @importFrom stringi stri_rand_strings
+#' @importFrom lubridate is.Date is.POSIXt
 #' @export
 #'
 #' @examples # a simple bar chart ####
@@ -135,23 +130,21 @@
 #'   valueFormatter = "#.#",
 #'   caption = list(text = "Year 2018"),
 #'   theme = "dark")
-amBarChart <- function(
+amLineChart <- function(
   data,
   data2 = NULL,
-  category,
-  values,
-  valueNames = NULL, # default
-  minValue,
-  maxValue,
+  xValue,
+  yValues,
+  yValueNames = NULL, # default
+  minY,
+  maxY,
   valueFormatter = "#.",
   chartTitle = NULL,
   theme = NULL,
   draggable = FALSE,
   tooltip = NULL, # default
-  columnStyle = NULL, # default
+  lineStyle = NULL, # default
   backgroundColor = NULL,
-  cellWidth = NULL, # default
-  columnWidth = NULL, # default
   xAxis = NULL, # default
   yAxis = NULL, # default
   scrollbarX = FALSE,
@@ -166,19 +159,29 @@ amBarChart <- function(
   elementId = NULL
 ) {
 
-  if(!all(values %in% names(data))){
-    stop("Invalid `values` argument.", .call = TRUE)
+  if(!xValue %in% names(data)){
+    stop("Invalid `xValue` argument.", .call = TRUE)
+  }
+  if(!all(yValues %in% names(data))){
+    stop("Invalid `yValues` argument.", .call = TRUE)
   }
 
-  if(is.null(valueNames)){
-    valueNames <- setNames(as.list(values), values)
-  }else if(is.list(valueNames)){
-    if(!all(values %in% names(valueNames))){
+  if(lubridate::is.Date(data[[xValue]]) || lubridate::is.POSIXt(data[[xValue]])){
+    data[[xValue]] <- format(data[[xValue]], "%Y-%m-%d")
+    isDate <- TRUE
+  }else{
+    isDate <- FALSE
+  }
+
+  if(is.null(yValueNames)){
+    yValueNames <- setNames(as.list(yValues), yValues)
+  }else if(is.list(yValueNames)){
+    if(!all(yValues %in% names(yValueNames))){
       stop(
         paste0(
-          "Invalid `valueNames` list. ",
+          "Invalid `yValueNames` list. ",
           "It must be a named list giving a name for every column ",
-          "given in the `values` argument."
+          "given in the `yValues` argument."
         ),
         .call = TRUE
       )
@@ -186,9 +189,9 @@ amBarChart <- function(
   }else{
     stop(
       paste0(
-        "Invalid `valueNames` argument. ",
+        "Invalid `yValueNames` argument. ",
         "It must be a named list giving a name for every column ",
-        "given in the `values` argument."
+        "given in the `yValues` argument."
       ),
       .call = TRUE
     )
@@ -196,8 +199,8 @@ amBarChart <- function(
 
   if(!is.null(data2) &&
      (!is.data.frame(data2) ||
-      nrow(data2) != nrow(data) ||
-      !all(values %in% names(data2)))){
+      nrow(data2) != nrow(data) || # XXXX
+      !all(yValues %in% names(data2)))){
     stop("Invalid `data2` argument.", .call = TRUE)
   }
 
@@ -213,22 +216,22 @@ amBarChart <- function(
       stop(
         paste0(
           "Invalid `draggable` argument. ",
-          "It must be a named list defining `TRUE` or `FALSE` ",
-          "for every column given in the `values` argument, ",
+          "It must be a named list associating `TRUE` or `FALSE` ",
+          "for every column given in the `yValues` argument, ",
           "or just `TRUE` or `FALSE`."
         ),
         .call = TRUE
       )
     }
-    draggable <- setNames(rep(list(draggable), length(values)), values)
+    draggable <- setNames(rep(list(draggable), length(yValues)), yValues)
   }else if(is.list(draggable)){
-    if(!all(values %in% names(draggable)) ||
+    if(!all(yValues %in% names(draggable)) ||
        !all(draggable %in% c(FALSE,TRUE))){
       stop(
         paste0(
           "Invalid `draggable` list. ",
-          "It must be a named list defining `TRUE` or `FALSE` ",
-          "for every column given in the `values` argument, ",
+          "It must be a named list associating `TRUE` or `FALSE` ",
+          "for every column given in the `yValues` argument, ",
           "or just `TRUE` or `FALSE`."
         ),
         .call = TRUE
@@ -238,8 +241,8 @@ amBarChart <- function(
     stop(
       paste0(
         "Invalid `draggable` argument. ",
-        "It must be a named list defining `TRUE` or `FALSE` ",
-        "for every column given in the `values` argument, ",
+        "It must be a named list associating `TRUE` or `FALSE` ",
+        "for every column given in the `yValues` argument, ",
         "or just `TRUE` or `FALSE`."
       ),
       .call = TRUE
@@ -252,7 +255,7 @@ amBarChart <- function(
       tooltip$backgroundColor <- validateColor(tooltip$backgroundColor)
     }else if(is.null(tooltip)){
       tooltip <- list(
-        text = "[bold]{name}:\n{valueY}[/]",
+        text = "[bold]({valueX},{valueY})[/]",
         labelColor = "#ffffff",
         backgroundColor = "#101010",
         backgroundOpacity = 1,
@@ -263,47 +266,32 @@ amBarChart <- function(
     }
   }
 
-  if(!is.null(columnStyle[["stroke"]])){
-    columnStyle[["stroke"]] <- validateColor(columnStyle[["stroke"]])
-  }
-  if(is.null(columnStyle)){
-    columnStyle <- list(
-      fill = setNames(rep(list(NULL), length(values)), values),
+  if(is.null(lineStyle)){
+    lineStyle <- list(
+      color = setNames(rep(list(NULL), length(yValues)), yValues),
       stroke = NULL,
       cornerRadius = NULL
     )
-  }else if(is.character(columnStyle[["fill"]])){
-    columnStyle[["fill"]] <-
+  }else if(is.character(lineStyle[["color"]])){
+    lineStyle[["color"]] <-
       setNames(
-        rep(list(validateColor(columnStyle[["fill"]])), length(values)),
+        rep(list(validateColor(lineStyle[["color"]])), length(yValues)),
         values
       )
-  }else if(is.list(columnStyle[["fill"]])){
-    if(!all(values %in% columnStyle[["fill"]])){
+  }else if(is.list(lineStyle[["color"]])){
+    if(!all(yValues %in% lineStyle[["color"]])){
       stop(
         paste0(
-          "Invalid `fill` field of `columnStyle`. ",
-          "It must be a named list defining a color for every column ",
-          "given in the `values` argument, or just a color that will be ",
-          "applied to each column."
+          "Invalid `color` field of `lineStyle`. ",
+          "It must be a named list associating a color for every column ",
+          "given in the `yValues` argument, or just a color that will be ",
+          "applied to each line."
         ),
         .call = TRUE
       )
     }
-    columnStyle[["fill"]] <-
-      sapply(columnStyle[["fill"]], validateColor, simplify = FALSE, USE.NAMES = TRUE)
-  }
-
-  if(is.null(cellWidth)){
-    cellWidth <- 90
-  }else{
-    cellWidth <- max(50, min(cellWidth, 100))
-  }
-
-  if(is.null(columnWidth)){
-    columnWidth <- ifelse(length(values) == 1L, 100, 90)
-  }else{
-    columnWidth <- max(10, min(columnWidth, 100))
+    lineStyle[["color"]] <-
+      sapply(lineStyle[["color"]], validateColor, simplify = FALSE, USE.NAMES = TRUE)
   }
 
   if(is.list(xAxis)){
@@ -315,7 +303,7 @@ amBarChart <- function(
   if(is.null(xAxis)){
     xAxis <- list(
       title = list(
-        text = category,
+        text = xValue,
         fontSize = 20,
         color = NULL
       ),
@@ -347,9 +335,9 @@ amBarChart <- function(
   }
   if(is.null(yAxis)){
     yAxis <- list(
-      title = if(length(values) == 1L) {
+      title = if(length(yValues) == 1L) {
         list(
-          text = values,
+          text = yValues,
           fontSize = 20,
           color = NULL
         )
@@ -385,7 +373,7 @@ amBarChart <- function(
   }
 
   if(is.null(legend)){
-    legend <- length(values) > 1L
+    legend <- length(yValues) > 1L
   }
 
   if(is.character(caption)){
@@ -430,29 +418,28 @@ amBarChart <- function(
   }
 
   if(is.null(chartId)){
-    chartId <- paste0("barchart-", stringi::stri_rand_strings(1, 15))
+    chartId <- paste0("linechart-", stringi::stri_rand_strings(1, 15))
   }
 
   # describe a React component to send to the browser for rendering.
   component <- reactR::component(
-    "AmBarChart",
+    "AmLineChart",
     list(
       data = data,
       data2 = data2,
-      category = category,
-      values = as.list(values),
-      valueNames = valueNames,
-      minValue = minValue,
-      maxValue = maxValue,
+      xValue = xValue,
+      isDate = isDate,
+      yValues = as.list(yValues),
+      yValueNames = yValueNames,
+      minY = minY,
+      maxY = maxY,
       valueFormatter = valueFormatter,
       chartTitle = chartTitle,
       theme = theme,
       draggable = draggable,
       tooltip = tooltip,
-      columnStyle = columnStyle,
+      lineStyle = lineStyle,
       backgroundColor = validateColor(backgroundColor),
-      cellWidth = cellWidth,
-      columnWidth = columnWidth,
       xAxis = xAxis,
       yAxis = yAxis,
       scrollbarX = scrollbarX,
