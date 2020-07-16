@@ -922,6 +922,7 @@ class AmLineChart extends React.PureComponent {
   constructor(props) {
     super(props);
     this.style = this.style.bind(this);
+    this.toggleHover = this.toggleHover.bind(this);
   }
 
   style() {
@@ -931,6 +932,13 @@ class AmLineChart extends React.PureComponent {
       return {width: this.props.width, height: this.props.height};
     }
   }
+
+  toggleHover(series, over) {
+    series.segments.each(function(segment) {
+      segment.isHover = over;
+    });
+  }
+
 
   componentDidMount() {
 
@@ -1159,7 +1167,7 @@ class AmLineChart extends React.PureComponent {
 		YAxis.renderer.minWidth = 60;
 
     /* ~~~~\  legend  /~~~~ */
-    if (this.props.legend) {
+    if(this.props.legend) {
       chart.legend = new am4charts.Legend();
       chart.legend.useDefaultMarker = false;
       let markerTemplate = chart.legend.markers.template;
@@ -1167,6 +1175,13 @@ class AmLineChart extends React.PureComponent {
       markerTemplate.strokeWidth = 1;
       markerTemplate.strokeOpacity = 1;
 //      markerTemplate.stroke = am4core.color("#000000"); no effect
+      let toggleHover = this.toggleHover;
+      chart.legend.itemContainers.template.events.on("over", function(ev) {
+        toggleHover(ev.target.dataItem.dataContext, true);
+      });
+      chart.legend.itemContainers.template.events.on("out", function(ev) {
+        toggleHover(ev.target.dataItem.dataContext, false);
+      });
     }
 
 		/* ~~~~\  function handling the drag event  /~~~~ */
@@ -1655,7 +1670,7 @@ class AmScatterChart extends React.PureComponent {
 		YAxis.renderer.minWidth = 60;
 
     /* ~~~~\  legend  /~~~~ */
-    if (this.props.legend) {
+    if(this.props.legend) {
       chart.legend = new am4charts.Legend();
       chart.legend.useDefaultMarker = false;
       let markerTemplate = chart.legend.markers.template;
@@ -1663,6 +1678,25 @@ class AmScatterChart extends React.PureComponent {
       markerTemplate.strokeWidth = 1;
       markerTemplate.strokeOpacity = 1;
 //      markerTemplate.stroke = am4core.color("#000000"); no effect
+      chart.legend.itemContainers.template.events.on("over", function(ev) {
+      console.log(ev.target.dataItem.dataContext.bulletsContainer);
+        ev.target.dataItem.dataContext.bulletsContainer.children.each(
+          function(bullet){
+            bullet.children.each(
+              function(c){c.isHover = true;}
+            );
+          }
+        );
+      });
+      chart.legend.itemContainers.template.events.on("out", function(ev) {
+        ev.target.dataItem.dataContext.bulletsContainer.children.each(
+          function(bullet){
+            bullet.children.each(
+              function(c){c.isHover = false;}
+            );
+          }
+        );
+      });
     }
 
 		/* ~~~~\  function handling the drag event  /~~~~ */
