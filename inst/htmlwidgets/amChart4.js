@@ -119722,6 +119722,14 @@ class AmBarChart extends React.PureComponent {
         chartId = this.props.chartId,
         shinyId = this.props.shinyId;
 
+    if (window.Shiny) {
+      if (shinyId === undefined) {
+        shinyId = $(document.getElementById(chartId)).parent().attr("id");
+      }
+
+      Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+    }
+
     switch (theme) {
       case "dark":
         _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_dark__WEBPACK_IMPORTED_MODULE_4__["default"]);
@@ -120007,10 +120015,6 @@ class AmBarChart extends React.PureComponent {
           dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
 
           if (window.Shiny) {
-            if (shinyId === undefined) {
-              shinyId = $(document.getElementById(chartId)).parent().attr("id");
-            }
-
             Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
             Shiny.setInputValue(shinyId + "_change", {
               index: dataItem.index,
@@ -120178,6 +120182,14 @@ class AmHorizontalBarChart extends React.PureComponent {
         columnStyle = this.props.columnStyle,
         chartId = this.props.chartId,
         shinyId = this.props.shinyId;
+
+    if (window.Shiny) {
+      if (shinyId === undefined) {
+        shinyId = $(document.getElementById(chartId)).parent().attr("id");
+      }
+
+      Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+    }
 
     switch (theme) {
       case "dark":
@@ -120478,10 +120490,6 @@ class AmHorizontalBarChart extends React.PureComponent {
           dataCopy[dataItem.index][value] = dataItem.values.valueX.value;
 
           if (window.Shiny) {
-            if (shinyId === undefined) {
-              shinyId = $(document.getElementById(chartId)).parent().attr("id");
-            }
-
             Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
             Shiny.setInputValue(shinyId + "_change", {
               index: dataItem.index,
@@ -120652,6 +120660,21 @@ class AmLineChart extends React.PureComponent {
 
     data = HTMLWidgets.dataframeToD3(data);
     var dataCopy = data.map(row => _objectSpread({}, row));
+
+    if (window.Shiny) {
+      if (shinyId === undefined) {
+        shinyId = $(document.getElementById(chartId)).parent().attr("id");
+      }
+
+      if (isDate) {
+        Shiny.setInputValue(shinyId + ":rAmCharts4.dataframeWithDate", {
+          data: dataCopy,
+          date: xValue
+        });
+      } else {
+        Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+      }
+    }
 
     switch (theme) {
       case "dark":
@@ -121005,10 +121028,6 @@ class AmLineChart extends React.PureComponent {
           dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
 
           if (window.Shiny) {
-            if (shinyId === undefined) {
-              shinyId = $(document.getElementById(chartId)).parent().attr("id");
-            }
-
             if (isDate) {
               Shiny.setInputValue(shinyId + ":rAmCharts4.dataframeWithDate", {
                 data: dataCopy,

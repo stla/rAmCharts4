@@ -55,6 +55,15 @@ class AmBarChart extends React.PureComponent {
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
+    if(window.Shiny) {
+      if(shinyId === undefined){
+        shinyId = $(document.getElementById(chartId)).parent().attr("id");
+      }
+      Shiny.setInputValue(
+        shinyId + ":rAmCharts4.dataframe", dataCopy
+      );
+    }
+
     switch(theme) {
       case "dark":
         am4core.useTheme(am4themes_dark);
@@ -320,9 +329,6 @@ class AmBarChart extends React.PureComponent {
           event.target.isHover = false;
           dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
           if(window.Shiny) {
-            if(shinyId === undefined){
-              shinyId = $(document.getElementById(chartId)).parent().attr("id");
-            }
             Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
             Shiny.setInputValue(shinyId + "_change", {
               index: dataItem.index,
@@ -486,6 +492,15 @@ class AmHorizontalBarChart extends React.PureComponent {
       columnStyle = this.props.columnStyle,
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
+
+    if(window.Shiny) {
+      if(shinyId === undefined){
+        shinyId = $(document.getElementById(chartId)).parent().attr("id");
+      }
+      Shiny.setInputValue(
+        shinyId + ":rAmCharts4.dataframe", dataCopy
+      );
+    }
 
     switch(theme) {
       case "dark":
@@ -767,9 +782,6 @@ class AmHorizontalBarChart extends React.PureComponent {
           event.target.isHover = false;
           dataCopy[dataItem.index][value] = dataItem.values.valueX.value;
           if(window.Shiny) {
-            if(shinyId === undefined){
-              shinyId = $(document.getElementById(chartId)).parent().attr("id");
-            }
             Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
             Shiny.setInputValue(shinyId + "_change", {
               index: dataItem.index,
@@ -909,6 +921,7 @@ class AmLineChart extends React.PureComponent {
   }
 
   componentDidMount() {
+
     let theme = this.props.theme,
       xValue = this.props.xValue,
       yValues = this.props.yValues,
@@ -935,6 +948,26 @@ class AmLineChart extends React.PureComponent {
     }
     data = HTMLWidgets.dataframeToD3(data);
     let dataCopy = data.map(row => ({...row}));
+
+    if(window.Shiny) {
+      if(shinyId === undefined){
+        shinyId = $(document.getElementById(chartId)).parent().attr("id");
+      }
+      if(isDate) {
+        Shiny.setInputValue(
+          shinyId + ":rAmCharts4.dataframeWithDate",
+          {
+            data: dataCopy,
+            date: xValue
+          }
+        );
+      } else {
+        Shiny.setInputValue(
+          shinyId + ":rAmCharts4.dataframe", dataCopy
+        );
+      }
+    }
+
 
     switch(theme) {
       case "dark":
@@ -1262,9 +1295,6 @@ console.log(chart);
           event.target.isHover = false;
           dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
           if(window.Shiny) {
-            if(shinyId === undefined){
-              shinyId = $(document.getElementById(chartId)).parent().attr("id");
-            }
             if(isDate) {
               Shiny.setInputValue(
                 shinyId + ":rAmCharts4.dataframeWithDate",
