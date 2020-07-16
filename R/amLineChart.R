@@ -35,11 +35,16 @@
 #' default tooltip; the \code{text} field must be a formatted string:
 #' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}
 #' @param lineStyle settings of the lines style; \code{NULL} for default,
-#' otherwise a named list with XXXX three fields: \code{color} to set the colors
-#' of the lines, given as a single color or a named list of the form
+#' otherwise a named list with four possible fields: \code{color} to set the
+#' colors of the lines, given as a single color or a named list of the form
 #' \code{list(yvalue1 = "red", yvalue2 = "green", ...)}, \code{width} to set
 #' the width of the lines, given as a single number or a named list of the form
-#' \code{list(yvalue1 = 1, yvalue2 = 3, ...)}
+#' \code{list(yvalue1 = 1, yvalue2 = 3, ...)}, \code{tensionX} and
+#' \code{tensionY} to control the smoothing of the lines, given as single
+#' numbers between 0 and 1 or as named lists of the form
+#' \code{list(yvalue1 = 0.8, yvalue2 = 0.8, ...)}; see
+#' \url{https://www.amcharts.com/docs/v4/chart-types/xy-chart/#Smoothed_lines}
+#' for the meaning of these parameters
 #' @param backgroundColor a color for the chart background
 #' @param xAxis settings of the x-axis given as a list, or just a string
 #' for the axis title
@@ -111,7 +116,7 @@
 #'                             color = "silver"),
 #'                labels = list(color = "whitesmoke",
 #'                              fontSize = 14)),
-#'   minY = -3, maxY = 3,
+#'   yLimits = c(-3, 3),
 #'   valueFormatter = "#.#",
 #'   caption = list(text = "[font-style:italic]rAmCharts4[/]",
 #'                  color = "yellow"),
@@ -140,20 +145,57 @@
 #'   chartTitle = "Number of visits",
 #'   xAxis = "Date",
 #'   yAxis = "Visits",
-#'   minY = 0, maxY = 35,
+#'   yLimits = c(0, 35),
 #'   backgroundColor = "whitesmoke",
 #'   tooltip = "[bold][font-style:italic]{dateX}[/]\nvisits: {valueY}[/]",
 #'   valueFormatter = "#",
 #'   caption = list(text = "Year 2018"),
 #'   theme = "material")
+#'
+#'
+#' # smoothed lines ####
+#'
+#' x <- seq(-4, 4, length.out = 100)
+#' dat <- data.frame(
+#'   x = x,
+#'   Gauss = dnorm(x),
+#'   Cauchy = dcauchy(x)
+#' )
+#'
+#' amLineChart(
+#'   data = dat,
+#'   width = "700px",
+#'   xValue = "x",
+#'   yValues = c("Gauss", "Cauchy"),
+#'   yValueNames = list(
+#'     Gauss = "Standard normal distribution",
+#'     Cauchy = "Cauchy distribution"
+#'   ),
+#'   draggable = FALSE,
+#'   tooltip = FALSE,
+#'   lineStyle = list(
+#'     width = 4,
+#'     tensionX = 0.8,
+#'     tensionY = 0.8
+#'   ),
+#'   xAxis = list(title = list(text = "x",
+#'                             fontSize = 21,
+#'                             color = "navyblue"),
+#'                labels = list(color = "midnightblue",
+#'                              fontSize = 17)),
+#'   yAxis = list(title = list(text = "density",
+#'                             fontSize = 21,
+#'                             color = "navyblue"),
+#'                labels = FALSE),
+#'   theme = "dataviz")
 amLineChart <- function(
   data,
   data2 = NULL,
   xValue,
   yValues,
   yValueNames = NULL, # default
-  minY,
-  maxY,
+  xLimits = NULL,
+  yLimits = NULL,
   valueFormatter = "#.",
   chartTitle = NULL,
   theme = NULL,
@@ -218,6 +260,16 @@ amLineChart <- function(
       nrow(data2) != nrow(data) || # XXXX
       !all(yValues %in% names(data2)))){
     stop("Invalid `data2` argument.", call. = TRUE)
+  }
+
+  if(is.null(xLimits)){
+    xLimits <- range(pretty(data[[xValue]]))
+  }
+
+  if(is.null(yLimits)){
+    yLimits <- range(pretty(do.call(c, data[yValues])))
+    pad <- diff(yLimits) * 0.05
+    yLimits <- yLimits + c(-pad, pad)
   }
 
   if(is.character(chartTitle)){
@@ -333,6 +385,66 @@ amLineChart <- function(
         )
       }
     }
+    if(is.numeric(lineStyle[["tensionX"]])){
+      stopifnot(lineStyle[["tensionX"]] >= 0 && lineStyle[["tensionX"]] <= 1)
+      lineStyle[["tensionX"]] <-
+        setNames(
+          rep(list(lineStyle[["tensionX"]]), length(yValues)),
+          yValues
+        )
+    }else if(is.list(lineStyle[["tensionX"]])){
+      if(!all(yValues %in% names(lineStyle[["tensionX"]]))){
+        stop(
+          paste0(
+            "Invalid `tensionX` field of `lineStyle`. ",
+            "It must be a named list associating a number to every column ",
+            "given in the `yValues` argument, or just a number that will be ",
+            "applied to each line."
+          ),
+          call. = TRUE
+        )
+      }
+      tensions <- unlist(lineStyle[["tensionX"]])
+      if(any(tensions < 0 | tensions > 1)){
+        stop(
+          paste0(
+            "Invalid `tensionX` field of `lineStyle`. ",
+            "The value of `tensionX` must be a number between 0 and 1."
+          ),
+          call. = TRUE
+        )
+      }
+    }
+    if(is.numeric(lineStyle[["tensionY"]])){
+      stopifnot(lineStyle[["tensionY"]] >= 0 && lineStyle[["tensionY"]] <= 1)
+      lineStyle[["tensionY"]] <-
+        setNames(
+          rep(list(lineStyle[["tensionY"]]), length(yValues)),
+          yValues
+        )
+    }else if(is.list(lineStyle[["tensionY"]])){
+      if(!all(yValues %in% names(lineStyle[["tensionY"]]))){
+        stop(
+          paste0(
+            "Invalid `tensionY` field of `lineStyle`. ",
+            "It must be a named list associating a number to every column ",
+            "given in the `yValues` argument, or just a number that will be ",
+            "applied to each line."
+          ),
+          call. = TRUE
+        )
+      }
+      tensions <- unlist(lineStyle[["tensionY"]])
+      if(any(tensions < 0 | tensions > 1)){
+        stop(
+          paste0(
+            "Invalid `tensionY` field of `lineStyle`. ",
+            "The value of `tensionY` must be a number between 0 and 1."
+          ),
+          call. = TRUE
+        )
+      }
+    }
   }
 
   if(is.list(xAxis)){
@@ -372,7 +484,9 @@ amLineChart <- function(
     if(is.list(yAxis[["title"]])){
       yAxis[["title"]][["color"]] <- validateColor(yAxis[["title"]][["color"]])
     }
-    yAxis[["labels"]][["color"]] <- validateColor(yAxis[["labels"]][["color"]])
+    if(!isFALSE(yAxis[["labels"]])){
+      yAxis[["labels"]][["color"]] <- validateColor(yAxis[["labels"]][["color"]])
+    }
   }
   if(is.null(yAxis)){
     yAxis <- list(
@@ -395,7 +509,7 @@ amLineChart <- function(
     yAxis[["title"]] <- list(text = yAxis[["title"]])
   }
 
-  if(is.null(yAxis[["labels"]])){
+  if(!isFALSE(yAxis[["labels"]]) && is.null(yAxis[["labels"]])){
     yAxis[["labels"]] <- list(
       color = NULL,
       fontSize = 18,
@@ -472,8 +586,10 @@ amLineChart <- function(
       isDate = isDate,
       yValues = as.list(yValues),
       yValueNames = yValueNames,
-      minY = minY,
-      maxY = maxY,
+      minX = xLimits[1L],
+      maxX = xLimits[2L],
+      minY = yLimits[1L],
+      maxY = yLimits[2L],
       valueFormatter = valueFormatter,
       chartTitle = chartTitle,
       theme = theme,

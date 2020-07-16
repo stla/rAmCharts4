@@ -120819,6 +120819,8 @@ class AmLineChart extends React.PureComponent {
       XAxis = chart.xAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]());
     }
 
+    XAxis.min = this.props.minX;
+    XAxis.max = this.props.maxX;
     XAxis.renderer.grid.template.location = 0;
 
     if (xAxis && xAxis.title && xAxis.title.text !== "") {
@@ -120861,10 +120863,15 @@ class AmLineChart extends React.PureComponent {
       YAxis.title.fill = yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
     }
 
-    var yAxisLabels = YAxis.renderer.labels.template;
-    yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
-    yAxisLabels.rotation = yAxis.labels.rotation || 0;
-    yAxisLabels.fill = yAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000"); // we set fixed min/max and strictMinMax to true, as otherwise value axis will adjust min/max while dragging and it won't look smooth
+    if (yAxis.labels !== false) {
+      var yAxisLabels = YAxis.renderer.labels.template;
+      yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
+      yAxisLabels.rotation = yAxis.labels.rotation || 0;
+      yAxisLabels.fill = yAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+    } else {
+      YAxis.renderer.labels.template.disabled = true;
+    } // we set fixed min/max and strictMinMax to true, as otherwise value axis will adjust min/max while dragging and it won't look smooth
+
 
     YAxis.strictMinMax = true;
     YAxis.min = minY;
@@ -120911,6 +120918,8 @@ class AmLineChart extends React.PureComponent {
       series.name = yValueNames[value];
       series.sequencedInterpolation = true;
       series.defaultState.interpolationDuration = 1500;
+      series.tensionX = lineStyle.tensionX ? lineStyle.tensionX[value] : 1;
+      series.tensionY = lineStyle.tensionY ? lineStyle.tensionY[value] : 1;
       /* ~~~~\  value label  /~~~~ */
 
       /*    let valueLabel = new am4charts.LabelBullet();

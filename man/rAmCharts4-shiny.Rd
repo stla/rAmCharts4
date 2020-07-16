@@ -18,8 +18,8 @@ renderAmChart4(expr, env = parent.frame(), quoted = FALSE)
 string and have \code{"px"} appended}
 
 \item{expr}{an expression that generates a chart with
-\code{\link{amBarChart}}, \code{\link{amHorizontalBarChart}} or
-\code{\link{amLineChart}}}
+\code{\link{amBarChart}}, \code{\link{amHorizontalBarChart}},
+\code{\link{amLineChart}}, or \code{\link{amScatterChart}}}
 
 \item{env}{the environment in which to evaluate \code{expr}}
 
@@ -70,7 +70,7 @@ server <- function(input, output){
       chartTitle = list(text = "Number of visits", color = "crimson"),
       xAxis = list(title = "Date", labels = list(rotation = -45)),
       yAxis = "Visits",
-      minY = 0, maxY = 35,
+      yLimits = c(0, 35),
       backgroundColor = "whitesmoke",
       tooltip = "[bold][font-style:italic]{dateX}[/]\nvisits: {valueY}[/]",
       valueFormatter = "#",

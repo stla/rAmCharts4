@@ -10,8 +10,8 @@ amLineChart(
   xValue,
   yValues,
   yValueNames = NULL,
-  minY,
-  maxY,
+  xLimits = NULL,
+  yLimits = NULL,
   valueFormatter = "#.",
   chartTitle = NULL,
   theme = NULL,
@@ -55,10 +55,6 @@ form \code{list(yvalue1 = "ValueName1", yvalue2 = "ValueName2", ...)} where
 \code{yValues} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
 desired names to appear in the legend}
 
-\item{minY}{minimum value of the y-axis}
-
-\item{maxY}{maximum value of the y-axis}
-
 \item{valueFormatter}{a number formatter; see
 \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}}
 
@@ -80,11 +76,16 @@ default tooltip; the \code{text} field must be a formatted string:
 \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}}
 
 \item{lineStyle}{settings of the lines style; \code{NULL} for default,
-otherwise a named list with XXXX three fields: \code{color} to set the colors
-of the lines, given as a single color or a named list of the form
+otherwise a named list with four possible fields: \code{color} to set the
+colors of the lines, given as a single color or a named list of the form
 \code{list(yvalue1 = "red", yvalue2 = "green", ...)}, \code{width} to set
 the width of the lines, given as a single number or a named list of the form
-\code{list(yvalue1 = 1, yvalue2 = 3, ...)}}
+\code{list(yvalue1 = 1, yvalue2 = 3, ...)}, \code{tensionX} and
+\code{tensionY} to control the smoothing of the lines, given as single
+numbers between 0 and 1 or as named lists of the form
+\code{list(yvalue1 = 0.8, yvalue2 = 0.8, ...)}; see
+\url{https://www.amcharts.com/docs/v4/chart-types/xy-chart/#Smoothed_lines}
+for the meaning of these parameters}
 
 \item{backgroundColor}{a color for the chart background}
 
@@ -125,6 +126,10 @@ given in \code{\link{amChart4Output}}}
 
 \item{elementId}{a HTML id for the container of the chart; ignored if the
 chart is displayed in Shiny, in which case the id is given by the Shiny id}
+
+\item{minY}{minimum value of the y-axis}
+
+\item{maxY}{maximum value of the y-axis}
 }
 \description{
 Create a HTML widget displaying a line chart.
@@ -168,7 +173,7 @@ amLineChart(
                             color = "silver"),
                labels = list(color = "whitesmoke",
                              fontSize = 14)),
-  minY = -3, maxY = 3,
+  yLimits = c(-3, 3),
   valueFormatter = "#.#",
   caption = list(text = "[font-style:italic]rAmCharts4[/]",
                  color = "yellow"),
@@ -197,10 +202,47 @@ amLineChart(
   chartTitle = "Number of visits",
   xAxis = "Date",
   yAxis = "Visits",
-  minY = 0, maxY = 35,
+  yLimits = c(0, 35),
   backgroundColor = "whitesmoke",
   tooltip = "[bold][font-style:italic]{dateX}[/]\nvisits: {valueY}[/]",
   valueFormatter = "#",
   caption = list(text = "Year 2018"),
   theme = "material")
+
+
+# smoothed lines ####
+
+x <- seq(-4, 4, length.out = 100)
+dat <- data.frame(
+  x = x,
+  Gauss = dnorm(x),
+  Cauchy = dcauchy(x)
+)
+
+amLineChart(
+  data = dat,
+  width = "700px",
+  xValue = "x",
+  yValues = c("Gauss", "Cauchy"),
+  yValueNames = list(
+    Gauss = "Standard normal distribution",
+    Cauchy = "Cauchy distribution"
+  ),
+  draggable = FALSE,
+  tooltip = FALSE,
+  lineStyle = list(
+    width = 4,
+    tensionX = 0.8,
+    tensionY = 0.8
+  ),
+  xAxis = list(title = list(text = "x",
+                            fontSize = 21,
+                            color = "navyblue"),
+               labels = list(color = "midnightblue",
+                             fontSize = 17)),
+  yAxis = list(title = list(text = "density",
+                            fontSize = 21,
+                            color = "navyblue"),
+               labels = FALSE),
+  theme = "dataviz")
 }
