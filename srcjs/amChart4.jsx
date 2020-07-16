@@ -1713,25 +1713,25 @@ class AmScatterChart extends React.PureComponent {
 
       /* ~~~~\  bullet  /~~~~ */
       let bullet = series.bullets.push(new am4charts.Bullet());
-      let shape = bullet.createChild(am4core.Triangle);
+      let shapeConfig = pointsStyle[value];
+      let shape;
+      switch(shapeConfig.shape) {
+        case "triangle":
+          shape = bullet.createChild(am4core.Triangle);
+          shape.direction = shapeConfig.direction;
+          shape.width = shapeConfig.width;
+          shape.height = shapeConfig.height;
+          break;
+        case "circle":
+          shape = bullet.createChild(am4core.Circle);
+          shape.radius = shapeConfig.radius;
+          break;
+      }
       shape.horizontalCenter = "middle";
       shape.verticalCenter = "middle";
-      shape.strokeWidth =
-        pointsStyle.strokeWidth ?
-        pointsStyle.strokeWidth[value] :
-        0;
-      shape.stroke =
-        pointsStyle.strokeColor ?
-        pointsStyle.strokeColor[value] :
-        chart.colors.getIndex(index);
-      shape.fill =
-        pointsStyle.color ?
-        pointsStyle.color[value] :
-        chart.colors.getIndex(index).saturate(0.7);
-      shape.direction = "top";
-      shape.width = 12;
-      shape.height = 12;
-      console.log("shape", shape);
+      shape.strokeWidth = shapeConfig.strokeWidth;
+      shape.stroke = shapeConfig.strokeColor || chart.colors.getIndex(index);
+      shape.fill = shapeConfig.color || chart.colors.getIndex(index).saturate(0.7);
       if(tooltipStyle) {
         /* ~~~~\  tooltip  /~~~~ */
         bullet.tooltipText = tooltipStyle.text;

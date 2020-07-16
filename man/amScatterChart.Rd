@@ -81,6 +81,13 @@ dragging for each bar corresponding to a column given in \code{yValues}}
 default tooltip; the \code{text} field must be a formatted string:
 \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}}
 
+\item{pointsStyle}{settings of the points style; \code{NULL} for default,
+otherwise a named list of the form
+\code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+\code{settings1}, \code{settings2}, ... are lists created with
+\code{\link{amCircle}} or \code{\link{amTriangle}}; this can also be a
+single list of settings that will be applied to each series}
+
 \item{backgroundColor}{a color for the chart background}
 
 \item{xAxis}{settings of the x-axis given as a list, or just a string
@@ -120,13 +127,6 @@ given in \code{\link{amChart4Output}}}
 
 \item{elementId}{a HTML id for the container of the chart; ignored if the
 chart is displayed in Shiny, in which case the id is given by the Shiny id}
-
-\item{lineStyle}{settings of the lines style; \code{NULL} for default,
-otherwise a named list with XXXX three fields: \code{color} to set the colors
-of the lines, given as a single color or a named list of the form
-\code{list(yvalue1 = "red", yvalue2 = "green", ...)}, \code{width} to set
-the width of the lines, given as a single number or a named list of the form
-\code{list(yvalue1 = 1, yvalue2 = 3, ...)}}
 }
 \description{
 Create a HTML widget displaying a line chart.
@@ -138,6 +138,7 @@ color, e.g. \code{"transparent"} or \code{"fuchsia"}, an HEX code like
 like \code{"hsl(360,11,255)"}.
 }
 \examples{
+# iris data: petal widths ####
 dat <- iris
 dat$obs <- rep(1:50, 3)
 dat <- reshape2::dcast(dat, obs ~ Species, value.var = "Petal.Width")
@@ -170,6 +171,46 @@ amScatterChart(
                             color = "silver"),
                labels = list(color = "whitesmoke",
                              fontSize = 14)),
+  valueFormatter = "#.#",
+  caption = list(text = "[font-style:italic]rAmCharts4[/]",
+                 color = "yellow"),
+  gridLines = list(color = "whitesmoke",
+                   opacity = 0.4,
+                   width = 1),
+  theme = "dark")
+
+
+# iris data: petal widths vs petal lengths
+
+dat <- iris
+dat$obs <- rep(1:50, 3)
+dat <-
+  reshape2::dcast(dat, obs + Petal.Length ~ Species, value.var = "Petal.Width")
+
+amScatterChart(
+  data = dat,
+  width = "700px",
+  xValue = "Petal.Length",
+  yValues = c("setosa", "versicolor", "virginica"),
+  draggable = FALSE,
+  backgroundColor = "#30303d",
+  pointsStyle = list(
+    setosa = amCircle(color = "orange", strokeColor = "red"),
+    versicolor = amCircle(color = "cyan", strokeColor = "blue"),
+    virginica = amCircle(color = "palegreen", strokeColor = "darkgreen")
+  ),
+  tooltip = "length: {valueX}\nwidth: {valueY}",
+  chartTitle = list(text = "Iris data", color = "silver"),
+  xAxis = list(title = list(text = "Petal length",
+                            fontSize = 19,
+                            color = "gold"),
+               labels = list(color = "whitesmoke",
+                             fontSize = 17)),
+  yAxis = list(title = list(text = "Petal width",
+                            fontSize = 19,
+                            color = "gold"),
+               labels = list(color = "whitesmoke",
+                             fontSize = 17)),
   valueFormatter = "#.#",
   caption = list(text = "[font-style:italic]rAmCharts4[/]",
                  color = "yellow"),

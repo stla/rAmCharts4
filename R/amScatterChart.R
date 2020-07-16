@@ -36,12 +36,12 @@
 #' \code{text} field, or \code{FALSE} for no tooltip, or \code{NULL} for the
 #' default tooltip; the \code{text} field must be a formatted string:
 #' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}
-#' @param lineStyle settings of the lines style; \code{NULL} for default,
-#' otherwise a named list with XXXX three fields: \code{color} to set the colors
-#' of the lines, given as a single color or a named list of the form
-#' \code{list(yvalue1 = "red", yvalue2 = "green", ...)}, \code{width} to set
-#' the width of the lines, given as a single number or a named list of the form
-#' \code{list(yvalue1 = 1, yvalue2 = 3, ...)}
+#' @param pointsStyle settings of the points style; \code{NULL} for default,
+#' otherwise a named list of the form
+#' \code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+#' \code{settings1}, \code{settings2}, ... are lists created with
+#' \code{\link{amCircle}} or \code{\link{amTriangle}}; this can also be a
+#' single list of settings that will be applied to each series
 #' @param backgroundColor a color for the chart background
 #' @param xAxis settings of the x-axis given as a list, or just a string
 #' for the axis title
@@ -81,7 +81,8 @@
 #' @importFrom lubridate is.Date is.POSIXt
 #' @export
 #'
-#' @examples dat <- iris
+#' @examples # iris data: petal widths ####
+#' dat <- iris
 #' dat$obs <- rep(1:50, 3)
 #' dat <- reshape2::dcast(dat, obs ~ Species, value.var = "Petal.Width")
 #'
@@ -113,6 +114,46 @@
 #'                             color = "silver"),
 #'                labels = list(color = "whitesmoke",
 #'                              fontSize = 14)),
+#'   valueFormatter = "#.#",
+#'   caption = list(text = "[font-style:italic]rAmCharts4[/]",
+#'                  color = "yellow"),
+#'   gridLines = list(color = "whitesmoke",
+#'                    opacity = 0.4,
+#'                    width = 1),
+#'   theme = "dark")
+#'
+#'
+#' # iris data: petal widths vs petal lengths
+#'
+#' dat <- iris
+#' dat$obs <- rep(1:50, 3)
+#' dat <-
+#'   reshape2::dcast(dat, obs + Petal.Length ~ Species, value.var = "Petal.Width")
+#'
+#' amScatterChart(
+#'   data = dat,
+#'   width = "700px",
+#'   xValue = "Petal.Length",
+#'   yValues = c("setosa", "versicolor", "virginica"),
+#'   draggable = FALSE,
+#'   backgroundColor = "#30303d",
+#'   pointsStyle = list(
+#'     setosa = amCircle(color = "orange", strokeColor = "red"),
+#'     versicolor = amCircle(color = "cyan", strokeColor = "blue"),
+#'     virginica = amCircle(color = "palegreen", strokeColor = "darkgreen")
+#'   ),
+#'   tooltip = "length: {valueX}\nwidth: {valueY}",
+#'   chartTitle = list(text = "Iris data", color = "silver"),
+#'   xAxis = list(title = list(text = "Petal length",
+#'                             fontSize = 19,
+#'                             color = "gold"),
+#'                labels = list(color = "whitesmoke",
+#'                              fontSize = 17)),
+#'   yAxis = list(title = list(text = "Petal width",
+#'                             fontSize = 19,
+#'                             color = "gold"),
+#'                labels = list(color = "whitesmoke",
+#'                              fontSize = 17)),
 #'   valueFormatter = "#.#",
 #'   caption = list(text = "[font-style:italic]rAmCharts4[/]",
 #'                  color = "yellow"),
@@ -196,10 +237,16 @@ amScatterChart <- function(
 
   if(is.null(xLimits)){
     xLimits <- range(pretty(data[[xValue]]))
+    if(!isDate){
+      pad <- diff(xLimits) * 0.05
+      xLimits <- xLimits + c(-pad, pad)
+    }
   }
 
   if(is.null(yLimits)){
     yLimits <- range(pretty(do.call(c, data[yValues])))
+    pad <- diff(yLimits) * 0.05
+    yLimits <- yLimits + c(-pad, pad)
   }
 
   if(is.character(chartTitle)){
@@ -270,68 +317,80 @@ amScatterChart <- function(
     }
   }
 
+  # if(is.null(pointsStyle)){
+  #   pointsStyle <- list("_" = NULL)
+  # }else{
+  #   if(is.character(pointsStyle[["color"]])){
+  #     pointsStyle[["color"]] <-
+  #       setNames(
+  #         rep(list(validateColor(pointsStyle[["color"]])), length(yValues)),
+  #         yValues
+  #       )
+  #   }else if(is.list(pointsStyle[["color"]])){
+  #     if(!all(yValues %in% names(pointsStyle[["color"]]))){
+  #       stop(
+  #         paste0(
+  #           "Invalid `color` field of `pointsStyle`. ",
+  #           "It must be a named list associating a color for every column ",
+  #           "given in the `yValues` argument, or just a color that will be ",
+  #           "applied to every series."
+  #         ),
+  #         call. = TRUE
+  #       )
+  #     }
+  #     pointsStyle[["color"]] <-
+  #       sapply(pointsStyle[["color"]], validateColor, simplify = FALSE, USE.NAMES = TRUE)
+  #   }
+  #   if(is.numeric(pointsStyle[["strokeWidth"]])){
+  #     pointsStyle[["strokeWidth"]] <-
+  #       setNames(
+  #         rep(list(pointsStyle[["strokeWidth"]]), length(yValues)),
+  #         yValues
+  #       )
+  #   }else if(is.list(pointsStyle[["strokeWidth"]])){
+  #     if(!all(yValues %in% names(pointsStyle[["strokeWidth"]]))){
+  #       stop(
+  #         paste0(
+  #           "Invalid `strokeWidth` field of `pointsStyle`. ",
+  #           "It must be a named list associating a width for every column ",
+  #           "given in the `yValues` argument, or just a width that will be ",
+  #           "applied to every series."
+  #         ),
+  #         call. = TRUE
+  #       )
+  #     }
+  #   }
+  #   if(is.numeric(pointsStyle[["width"]])){
+  #     pointsStyle[["width"]] <-
+  #       setNames(
+  #         rep(list(pointsStyle[["width"]]), length(yValues)),
+  #         yValues
+  #       )
+  #   }else if(is.list(pointsStyle[["width"]])){
+  #     if(!all(yValues %in% names(pointsStyle[["width"]]))){
+  #       stop(
+  #         paste0(
+  #           "Invalid `width` field of `pointsStyle`. ",
+  #           "It must be a named list associating a width for every column ",
+  #           "given in the `yValues` argument, or just a width that will be ",
+  #           "applied to every series."
+  #         ),
+  #         call. = TRUE
+  #       )
+  #     }
+  #   }
+  # }
+
   if(is.null(pointsStyle)){
-    pointsStyle <- list("_" = NULL)
+    pointsStyle <- setNames(rep(list(amTriangle()), length(yValues)), yValues)
+  }else if("bullet" %in% class(pointsStyle)){
+    pointsStyle <- setNames(rep(list(pointsStyle), length(yValues)), yValues)
+  }else if(is.list(pointsStyle)){
+    if(any(!yValues %in% names(pointsStyle))){
+      stop("Invalid `pointsStyle` list.", call. = TRUE)
+    }
   }else{
-    if(is.character(pointsStyle[["color"]])){
-      pointsStyle[["color"]] <-
-        setNames(
-          rep(list(validateColor(pointsStyle[["color"]])), length(yValues)),
-          yValues
-        )
-    }else if(is.list(pointsStyle[["color"]])){
-      if(!all(yValues %in% names(pointsStyle[["color"]]))){
-        stop(
-          paste0(
-            "Invalid `color` field of `pointsStyle`. ",
-            "It must be a named list associating a color for every column ",
-            "given in the `yValues` argument, or just a color that will be ",
-            "applied to every series."
-          ),
-          call. = TRUE
-        )
-      }
-      pointsStyle[["color"]] <-
-        sapply(pointsStyle[["color"]], validateColor, simplify = FALSE, USE.NAMES = TRUE)
-    }
-    if(is.numeric(pointsStyle[["strokeWidth"]])){
-      pointsStyle[["strokeWidth"]] <-
-        setNames(
-          rep(list(pointsStyle[["strokeWidth"]]), length(yValues)),
-          yValues
-        )
-    }else if(is.list(pointsStyle[["strokeWidth"]])){
-      if(!all(yValues %in% names(pointsStyle[["strokeWidth"]]))){
-        stop(
-          paste0(
-            "Invalid `strokeWidth` field of `pointsStyle`. ",
-            "It must be a named list associating a width for every column ",
-            "given in the `yValues` argument, or just a width that will be ",
-            "applied to every series."
-          ),
-          call. = TRUE
-        )
-      }
-    }
-    if(is.numeric(pointsStyle[["width"]])){
-      pointsStyle[["width"]] <-
-        setNames(
-          rep(list(pointsStyle[["width"]]), length(yValues)),
-          yValues
-        )
-    }else if(is.list(pointsStyle[["width"]])){
-      if(!all(yValues %in% names(pointsStyle[["width"]]))){
-        stop(
-          paste0(
-            "Invalid `width` field of `pointsStyle`. ",
-            "It must be a named list associating a width for every column ",
-            "given in the `yValues` argument, or just a width that will be ",
-            "applied to every series."
-          ),
-          call. = TRUE
-        )
-      }
-    }
+    stop("Invalid `pointsStyle` argument.", call. = TRUE)
   }
 
   if(is.list(xAxis)){

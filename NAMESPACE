@@ -2,9 +2,11 @@
 
 export(amBarChart)
 export(amChart4Output)
+export(amCircle)
 export(amHorizontalBarChart)
 export(amLineChart)
 export(amScatterChart)
+export(amTriangle)
 export(renderAmChart4)
 import(htmltools)
 import(htmlwidgets)
