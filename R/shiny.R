@@ -58,7 +58,7 @@
 #'       chartTitle = list(text = "Number of visits", color = "crimson"),
 #'       xAxis = list(title = "Date", labels = list(rotation = -45)),
 #'       yAxis = "Visits",
-#'       minY = 0, maxY = 35,
+#'       yLimits = c(0, 35),
 #'       backgroundColor = "whitesmoke",
 #'       tooltip = "[bold][font-style:italic]{dateX}[/]\nvisits: {valueY}[/]",
 #'       valueFormatter = "#",

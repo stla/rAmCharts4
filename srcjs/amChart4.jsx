@@ -1022,7 +1022,6 @@ class AmLineChart extends React.PureComponent {
       this.props.backgroundColor || chart.background.fill;
     chart.background.fill = chartBackgroundColor;
 
-console.log(chart);
 		/* ~~~~\  title  /~~~~ */
 		let chartTitle = this.props.chartTitle;
 		if (chartTitle) {
@@ -1410,6 +1409,478 @@ console.log(chart);
 }
 
 
+/* COMPONENT: SCATTER CHART */
+
+class AmScatterChart extends React.PureComponent {
+
+  constructor(props) {
+    super(props);
+    this.style = this.style.bind(this);
+  }
+
+  style() {
+    if(window.Shiny && !window.FlexDashboard) {
+      return {width: "100%", height: "100%"};
+    } else {
+      return {width: this.props.width, height: this.props.height};
+    }
+  }
+
+  componentDidMount() {
+
+    let theme = this.props.theme,
+      xValue = this.props.xValue,
+      yValues = this.props.yValues,
+      data = utils.subset(this.props.data, [xValue].concat(yValues)),
+      data2 = this.props.data2 ?
+        HTMLWidgets.dataframeToD3(utils.subset(this.props.data2, yValues)) :
+        null,
+      yValueNames = this.props.yValueNames,
+      minY = this.props.minY,
+      maxY = this.props.maxY,
+      isDate = this.props.isDate,
+      xAxis = this.props.xAxis,
+      yAxis = this.props.yAxis,
+      gridLines = this.props.gridLines,
+      draggable = this.props.draggable,
+      tooltipStyle = this.props.tooltip,
+      valueFormatter = this.props.valueFormatter,
+      pointsStyle = this.props.pointsStyle,
+      chartId = this.props.chartId,
+      shinyId = this.props.shinyId;
+
+    if(isDate) {
+      data[xValue] = data[xValue].map(utils.toDate);
+    }
+    data = HTMLWidgets.dataframeToD3(data);
+    let dataCopy = data.map(row => ({...row}));
+
+    if(window.Shiny) {
+      if(shinyId === undefined){
+        shinyId = $(document.getElementById(chartId)).parent().attr("id");
+      }
+      if(isDate) {
+        Shiny.setInputValue(
+          shinyId + ":rAmCharts4.dataframeWithDate",
+          {
+            data: dataCopy,
+            date: xValue
+          }
+        );
+      } else {
+        Shiny.setInputValue(
+          shinyId + ":rAmCharts4.dataframe", dataCopy
+        );
+      }
+    }
+
+    switch(theme) {
+      case "dark":
+        am4core.useTheme(am4themes_dark);
+        break;
+      case "dataviz":
+        am4core.useTheme(am4themes_dataviz);
+        break;
+      case "frozen":
+        am4core.useTheme(am4themes_frozen);
+        break;
+      case "kelly":
+        am4core.useTheme(am4themes_kelly);
+        break;
+      case "material":
+        am4core.useTheme(am4themes_material);
+        break;
+      case "microchart":
+        am4core.useTheme(am4themes_microchart);
+        break;
+      case "moonrisekingdom":
+        am4core.useTheme(am4themes_moonrisekingdom);
+        break;
+      case "patterns":
+        am4core.useTheme(am4themes_patterns);
+        break;
+      case "spiritedaway":
+        am4core.useTheme(am4themes_spiritedaway);
+        break;
+    }
+
+    let chart = am4core.create(this.props.chartId, am4charts.XYChart);
+
+    chart.data = data;
+
+    chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
+    chart.padding(50, 40, 0, 10);
+    chart.maskBullets = false; // allow bullets to go out of plot area
+    let chartBackgroundColor =
+      this.props.backgroundColor || chart.background.fill;
+    chart.background.fill = chartBackgroundColor;
+
+		/* ~~~~\  title  /~~~~ */
+		let chartTitle = this.props.chartTitle;
+		if (chartTitle) {
+			let title = chart.plotContainer.createChild(am4core.Label);
+			title.text = chartTitle.text;
+			title.fill =
+			  chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
+			title.fontSize = chartTitle.fontSize || 22;
+			title.fontWeight = "bold";
+			title.fontFamily = "Tahoma";
+			title.y = this.props.scrollbarX ? -56 : -42;
+			title.x = -45;
+			title.horizontalCenter = "left";
+			title.zIndex = 100;
+			title.fillOpacity = 1;
+		}
+
+    /* ~~~~\  caption  /~~~~ */
+    let chartCaption = this.props.caption;
+    if (chartCaption) {
+      var caption = chart.chartContainer.createChild(am4core.Label);
+      caption.text = chartCaption.text;
+      caption.fill =
+        chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.align = chartCaption.align || "right";
+    }
+
+    /* ~~~~\  scrollbars  /~~~~ */
+    if (this.props.scrollbarX) {
+      chart.scrollbarX = new am4core.Scrollbar();
+    }
+    if (this.props.scrollbarY) {
+      chart.scrollbarY = new am4core.Scrollbar();
+    }
+
+		/* ~~~~\  button  /~~~~ */
+		let button = this.props.button;
+		if (button) {
+  		let Button = chart.chartContainer.createChild(am4core.Button);
+      Button.label.text = button.text;
+      Button.label.fill = button.color || Button.label.fill;
+      Button.background.fill = button.fill || Button.background.fill;
+      Button.dy = -Button.parent.innerHeight * (button.position || 0.8);
+      Button.padding(5, 5, 5, 5);
+      Button.align = "right";
+      Button.marginRight = 15;
+      Button.events.on("hit", function() {
+        for (let r = 0; r < data.length; ++r){
+          for (let v = 0; v < yValues.length; ++v) {
+            chart.data[r][yValues[v]] = data2[r][yValues[v]];
+          }
+        }
+        chart.invalidateRawData();
+        if(window.Shiny) {
+          if(isDate) {
+            Shiny.setInputValue(
+              shinyId + ":rAmCharts4.dataframeWithDate",
+              {
+                data: chart.data,
+                date: xValue
+              }
+            );
+            Shiny.setInputValue(shinyId + "_change", null);
+          } else {
+            Shiny.setInputValue(
+              shinyId + ":rAmCharts4.dataframe", chart.data
+            );
+            Shiny.setInputValue(shinyId + "_change", null);
+          }
+        }
+      });
+		}
+
+		/* ~~~~\  x-axis  /~~~~ */
+		let XAxis;
+		if(isDate) {
+		  XAxis = chart.xAxes.push(new am4charts.DateAxis());
+		} else {
+		  XAxis = chart.xAxes.push(new am4charts.ValueAxis());
+		}
+		XAxis.min = this.props.minX;
+		XAxis.max = this.props.maxX;
+		XAxis.renderer.grid.template.location = 0;
+		if(xAxis && xAxis.title && xAxis.title.text !== ""){
+  		XAxis.title.text = xAxis.title.text || xValue;
+  		XAxis.title.fontWeight = "bold";
+  		XAxis.title.fontSize = xAxis.title.fontSize || 20;
+  		XAxis.title.fill =
+  		  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+		}
+		var xAxisLabels = XAxis.renderer.labels.template;
+		xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
+		xAxisLabels.rotation = xAxis.labels.rotation || 0;
+		if(xAxisLabels.rotation !== 0){
+		  xAxisLabels.horizontalCenter = "right";
+		}
+		xAxisLabels.fill =
+		  xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+		if(isDate) {
+		  XAxis.dataFields.dateX = xValue;
+		} else {
+  		XAxis.dataFields.valueX = xValue;
+  	}
+		XAxis.renderer.grid.template.disabled = true;
+		XAxis.renderer.minGridDistance = 50;
+		XAxis.numberFormatter.numberFormat = valueFormatter;
+
+		/* ~~~~\  y-axis  /~~~~ */
+		let YAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    YAxis.renderer.grid.template.stroke =
+      gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
+    YAxis.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.15;
+    YAxis.renderer.grid.template.strokeWidth = gridLines.width || 1;
+		if (yAxis && yAxis.title && yAxis.title.text !== "") {
+			YAxis.title.text = yAxis.title.text;
+			YAxis.title.fontWeight = "bold";
+			YAxis.title.fontSize = yAxis.title.fontSize || 20;
+			YAxis.title.fill =
+			  yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+		}
+		let yAxisLabels = YAxis.renderer.labels.template;
+		yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
+		yAxisLabels.rotation = yAxis.labels.rotation || 0;
+		yAxisLabels.fill =
+		  yAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+		// we set fixed min/max and strictMinMax to true, as otherwise value axis will adjust min/max while dragging and it won't look smooth
+		YAxis.strictMinMax = true;
+		YAxis.min = minY;
+		YAxis.max = maxY;
+		YAxis.renderer.minWidth = 60;
+
+    /* ~~~~\  legend  /~~~~ */
+    if (this.props.legend) {
+      chart.legend = new am4charts.Legend();
+      chart.legend.useDefaultMarker = false;
+      let markerTemplate = chart.legend.markers.template;
+      markerTemplate.width = 20;
+      markerTemplate.strokeWidth = 1;
+      markerTemplate.strokeOpacity = 1;
+//      markerTemplate.stroke = am4core.color("#000000"); no effect
+    }
+
+		/* ~~~~\  function handling the drag event  /~~~~ */
+		function handleDrag(event) {
+			var dataItem = event.target.dataItem;
+			// convert coordinate to value
+			let value = YAxis.yToValue(event.target.pixelY);
+			// set new value
+			dataItem.valueY = value;
+			// make line hover
+			dataItem.segment.isHover = true;
+			// hide tooltip not to interrupt
+			dataItem.segment.hideTooltip(0);
+			// make bullet hovered (as it might hide if mouse moves away)
+			event.target.isHover = true;
+		}
+
+		yValues.forEach(function(value, index){
+
+      let series = chart.series.push(new am4charts.LineSeries());
+      series.strokeOpacity = 0;
+      if(isDate) {
+        series.dataFields.dateX = xValue;
+      } else {
+        series.dataFields.valueX = xValue;
+      }
+      series.dataFields.valueY = value;
+      series.name = yValueNames[value];
+      series.sequencedInterpolation = true;
+      series.defaultState.interpolationDuration = 1500;
+
+      /* ~~~~\  value label  /~~~~ */
+/*    let valueLabel = new am4charts.LabelBullet();
+      series.bullets.push(valueLabel);
+      valueLabel.label.text =
+        "{valueY.value.formatNumber('" + valueFormatter + "')}";
+      valueLabel.label.hideOversized = true;
+      valueLabel.label.truncate = false;
+      valueLabel.strokeOpacity = 0;
+      valueLabel.adapter.add("dy", (x, target) => {
+        if(target.dataItem.valueY > 0) {
+          return -10;
+        } else {
+          return 10;
+        }
+      });
+      */
+
+      /* ~~~~\  bullet  /~~~~ */
+      let bullet = series.bullets.push(new am4charts.Bullet());
+      let shape = bullet.createChild(am4core.Triangle);
+      shape.horizontalCenter = "middle";
+      shape.verticalCenter = "middle";
+      shape.strokeWidth =
+        pointsStyle.strokeWidth ?
+        pointsStyle.strokeWidth[value] :
+        0;
+      shape.stroke =
+        pointsStyle.strokeColor ?
+        pointsStyle.strokeColor[value] :
+        chart.colors.getIndex(index);
+      shape.fill =
+        pointsStyle.color ?
+        pointsStyle.color[value] :
+        chart.colors.getIndex(index).saturate(0.7);
+      shape.direction = "top";
+      shape.width = 12;
+      shape.height = 12;
+      console.log("shape", shape);
+      if(tooltipStyle) {
+        /* ~~~~\  tooltip  /~~~~ */
+        bullet.tooltipText = tooltipStyle.text;
+        let tooltip = new am4core.Tooltip();
+        tooltip.pointerOrientation = "vertical";
+        tooltip.dy = 0;
+        tooltip.getFillFromObject = tooltipStyle.auto;
+        //if(tooltipStyle.backgroundColor)
+          tooltip.background.fill = tooltipStyle.backgroundColor;
+        //if(tooltipStyle.backgroundOpacity)
+          tooltip.background.fillOpacity = tooltipStyle.backgroundOpacity || 1;
+        tooltip.autoTextColor = tooltipStyle.auto;
+        //if(tooltipStyle.labelColor)
+          tooltip.label.fill = tooltipStyle.labelColor;
+        tooltip.label.textAlign = "middle";
+        tooltip.scale = tooltipStyle.scale || 1;
+        tooltip.background.filters.clear(); // remove tooltip shadow
+        tooltip.background.pointerLength = 10;
+        tooltip.adapter.add("rotation", (x, target) => {
+          if(target.dataItem) {
+            if(target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip.label.adapter.add("verticalCenter", (x, target) => {
+          if(target.dataItem) {
+            if(target.dataItem.valueY >= 0) {
+              return "none";
+            } else {
+              return "bottom";
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip.label.adapter.add("rotation", (x, target) => {
+          if(target.dataItem) {
+            if(target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        bullet.tooltip = tooltip;
+        // hide label when hovered because the tooltip is shown
+        // XXX y'a pas de label
+/*      bullet.events.on("over", event => {
+          let dataItem = event.target.dataItem;
+          console.log("dataItem bullet on over", dataItem);
+          let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
+          itemLabelBullet.fillOpacity = 0;
+        });
+        // show label when mouse is out
+        bullet.events.on("out", event => {
+          let dataItem = event.target.dataItem;
+          let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
+          itemLabelBullet.fillOpacity = 1;
+        });
+        */
+      }
+      // create bullet hover state
+      let hoverState = shape.states.create("hover");
+      hoverState.properties.strokeWidth = shape.strokeWidth + 3;
+      if(draggable[value]){
+        bullet.draggable = true;
+        // resize cursor when over
+        bullet.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
+        // while dragging
+        bullet.events.on("drag", event => {
+          handleDrag(event);
+        });
+        // on dragging stop
+        bullet.events.on("dragstop", event => {
+          handleDrag(event);
+          var dataItem = event.target.dataItem;
+//          dataItem.component.isHover = false; // XXXX
+          event.target.isHover = false;
+          dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
+          if(window.Shiny) {
+            if(isDate) {
+              Shiny.setInputValue(
+                shinyId + ":rAmCharts4.dataframeWithDate",
+                {
+                  data: dataCopy,
+                  date: xValue
+                }
+              );
+              Shiny.setInputValue(shinyId + "_change:rAmCharts4.lineChange", {
+                index: dataItem.index,
+                x: dataItem.dateX,
+                variable: value,
+                y: dataItem.values.valueY.value
+              });
+            } else {
+              Shiny.setInputValue(
+                shinyId + ":rAmCharts4.dataframe", dataCopy
+              );
+              Shiny.setInputValue(shinyId + "_change", {
+                index: dataItem.index,
+                x: dataItem.values.valueX.value,
+                variable: value,
+                y: dataItem.values.valueY.value
+              });
+            }
+          }
+        });
+        // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
+        bullet.events.on("down", event => {
+          let dataItem = event.target.dataItem;
+          let itemBullet = dataItem.bullets.getKey(bullet.uid);
+          itemBullet.dragStart(event.pointer);
+        });
+        // when point position changes, adjust minX/maxX of bullets so that we could only dragg vertically
+        bullet.events.on("positionchanged", event => {
+          let dataItem = event.target.dataItem;
+          if(dataItem.bullets) {
+            let itemBullet = dataItem.bullets.getKey(bullet.uid);
+            let point = dataItem.point;
+            itemBullet.minX = point.x;
+            itemBullet.maxX = itemBullet.minX;
+            itemBullet.minY = 0;
+            itemBullet.maxY = chart.seriesContainer.pixelHeight;
+          }
+        });
+      }
+
+    });
+
+    this.chart = chart;
+
+  }
+
+  componentWillUnmount() {
+    if(this.chart) {
+      this.chart.dispose();
+    }
+  }
+
+  render() {
+    return (
+      <div
+        id = {this.props.chartId}
+        style = {this.style()}
+      ></div>
+    );
+  }
+}
+
+
 /* CREATE WIDGETS */
 
 reactWidget(
@@ -1418,7 +1889,8 @@ reactWidget(
   {
     AmBarChart: AmBarChart,
     AmHorizontalBarChart: AmHorizontalBarChart,
-    AmLineChart: AmLineChart
+    AmLineChart: AmLineChart,
+    AmScatterChart: AmScatterChart
   },
   {}
 );

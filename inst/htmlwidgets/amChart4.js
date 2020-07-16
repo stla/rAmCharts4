@@ -120733,7 +120733,6 @@ class AmLineChart extends React.PureComponent {
 
     var chartBackgroundColor = this.props.backgroundColor || chart.background.fill;
     chart.background.fill = chartBackgroundColor;
-    console.log(chart);
     /* ~~~~\  title  /~~~~ */
 
     var chartTitle = this.props.chartTitle;
@@ -121124,13 +121123,489 @@ class AmLineChart extends React.PureComponent {
   }
 
 }
+/* COMPONENT: SCATTER CHART */
+
+
+class AmScatterChart extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.style = this.style.bind(this);
+  }
+
+  style() {
+    if (window.Shiny && !window.FlexDashboard) {
+      return {
+        width: "100%",
+        height: "100%"
+      };
+    } else {
+      return {
+        width: this.props.width,
+        height: this.props.height
+      };
+    }
+  }
+
+  componentDidMount() {
+    var theme = this.props.theme,
+        xValue = this.props.xValue,
+        yValues = this.props.yValues,
+        data = _utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [xValue].concat(yValues)),
+        data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, yValues)) : null,
+        yValueNames = this.props.yValueNames,
+        minY = this.props.minY,
+        maxY = this.props.maxY,
+        isDate = this.props.isDate,
+        xAxis = this.props.xAxis,
+        yAxis = this.props.yAxis,
+        gridLines = this.props.gridLines,
+        draggable = this.props.draggable,
+        tooltipStyle = this.props.tooltip,
+        valueFormatter = this.props.valueFormatter,
+        pointsStyle = this.props.pointsStyle,
+        chartId = this.props.chartId,
+        shinyId = this.props.shinyId;
+
+    if (isDate) {
+      data[xValue] = data[xValue].map(_utils__WEBPACK_IMPORTED_MODULE_13__["toDate"]);
+    }
+
+    data = HTMLWidgets.dataframeToD3(data);
+    var dataCopy = data.map(row => _objectSpread({}, row));
+
+    if (window.Shiny) {
+      if (shinyId === undefined) {
+        shinyId = $(document.getElementById(chartId)).parent().attr("id");
+      }
+
+      if (isDate) {
+        Shiny.setInputValue(shinyId + ":rAmCharts4.dataframeWithDate", {
+          data: dataCopy,
+          date: xValue
+        });
+      } else {
+        Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+      }
+    }
+
+    switch (theme) {
+      case "dark":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_dark__WEBPACK_IMPORTED_MODULE_4__["default"]);
+        break;
+
+      case "dataviz":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_dataviz__WEBPACK_IMPORTED_MODULE_5__["default"]);
+        break;
+
+      case "frozen":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_frozen__WEBPACK_IMPORTED_MODULE_6__["default"]);
+        break;
+
+      case "kelly":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_kelly__WEBPACK_IMPORTED_MODULE_7__["default"]);
+        break;
+
+      case "material":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_material__WEBPACK_IMPORTED_MODULE_8__["default"]);
+        break;
+
+      case "microchart":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_microchart__WEBPACK_IMPORTED_MODULE_9__["default"]);
+        break;
+
+      case "moonrisekingdom":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_moonrisekingdom__WEBPACK_IMPORTED_MODULE_10__["default"]);
+        break;
+
+      case "patterns":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_patterns__WEBPACK_IMPORTED_MODULE_11__["default"]);
+        break;
+
+      case "spiritedaway":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_spiritedaway__WEBPACK_IMPORTED_MODULE_12__["default"]);
+        break;
+    }
+
+    var chart = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["create"](this.props.chartId, _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYChart"]);
+    chart.data = data;
+    chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
+
+    chart.padding(50, 40, 0, 10);
+    chart.maskBullets = false; // allow bullets to go out of plot area
+
+    var chartBackgroundColor = this.props.backgroundColor || chart.background.fill;
+    chart.background.fill = chartBackgroundColor;
+    /* ~~~~\  title  /~~~~ */
+
+    var chartTitle = this.props.chartTitle;
+
+    if (chartTitle) {
+      var title = chart.plotContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Label"]);
+      title.text = chartTitle.text;
+      title.fill = chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.fontSize || 22;
+      title.fontWeight = "bold";
+      title.fontFamily = "Tahoma";
+      title.y = this.props.scrollbarX ? -56 : -42;
+      title.x = -45;
+      title.horizontalCenter = "left";
+      title.zIndex = 100;
+      title.fillOpacity = 1;
+    }
+    /* ~~~~\  caption  /~~~~ */
+
+
+    var chartCaption = this.props.caption;
+
+    if (chartCaption) {
+      var caption = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Label"]);
+      caption.text = chartCaption.text;
+      caption.fill = chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.align = chartCaption.align || "right";
+    }
+    /* ~~~~\  scrollbars  /~~~~ */
+
+
+    if (this.props.scrollbarX) {
+      chart.scrollbarX = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Scrollbar"]();
+    }
+
+    if (this.props.scrollbarY) {
+      chart.scrollbarY = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Scrollbar"]();
+    }
+    /* ~~~~\  button  /~~~~ */
+
+
+    var button = this.props.button;
+
+    if (button) {
+      var Button = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Button"]);
+      Button.label.text = button.text;
+      Button.label.fill = button.color || Button.label.fill;
+      Button.background.fill = button.fill || Button.background.fill;
+      Button.dy = -Button.parent.innerHeight * (button.position || 0.8);
+      Button.padding(5, 5, 5, 5);
+      Button.align = "right";
+      Button.marginRight = 15;
+      Button.events.on("hit", function () {
+        for (var r = 0; r < data.length; ++r) {
+          for (var v = 0; v < yValues.length; ++v) {
+            chart.data[r][yValues[v]] = data2[r][yValues[v]];
+          }
+        }
+
+        chart.invalidateRawData();
+
+        if (window.Shiny) {
+          if (isDate) {
+            Shiny.setInputValue(shinyId + ":rAmCharts4.dataframeWithDate", {
+              data: chart.data,
+              date: xValue
+            });
+            Shiny.setInputValue(shinyId + "_change", null);
+          } else {
+            Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", chart.data);
+            Shiny.setInputValue(shinyId + "_change", null);
+          }
+        }
+      });
+    }
+    /* ~~~~\  x-axis  /~~~~ */
+
+
+    var XAxis;
+
+    if (isDate) {
+      XAxis = chart.xAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["DateAxis"]());
+    } else {
+      XAxis = chart.xAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]());
+    }
+
+    XAxis.min = this.props.minX;
+    XAxis.max = this.props.maxX;
+    XAxis.renderer.grid.template.location = 0;
+
+    if (xAxis && xAxis.title && xAxis.title.text !== "") {
+      XAxis.title.text = xAxis.title.text || xValue;
+      XAxis.title.fontWeight = "bold";
+      XAxis.title.fontSize = xAxis.title.fontSize || 20;
+      XAxis.title.fill = xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+    }
+
+    var xAxisLabels = XAxis.renderer.labels.template;
+    xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
+    xAxisLabels.rotation = xAxis.labels.rotation || 0;
+
+    if (xAxisLabels.rotation !== 0) {
+      xAxisLabels.horizontalCenter = "right";
+    }
+
+    xAxisLabels.fill = xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+
+    if (isDate) {
+      XAxis.dataFields.dateX = xValue;
+    } else {
+      XAxis.dataFields.valueX = xValue;
+    }
+
+    XAxis.renderer.grid.template.disabled = true;
+    XAxis.renderer.minGridDistance = 50;
+    XAxis.numberFormatter.numberFormat = valueFormatter;
+    /* ~~~~\  y-axis  /~~~~ */
+
+    var YAxis = chart.yAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]());
+    YAxis.renderer.grid.template.stroke = gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
+    YAxis.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.15;
+    YAxis.renderer.grid.template.strokeWidth = gridLines.width || 1;
+
+    if (yAxis && yAxis.title && yAxis.title.text !== "") {
+      YAxis.title.text = yAxis.title.text;
+      YAxis.title.fontWeight = "bold";
+      YAxis.title.fontSize = yAxis.title.fontSize || 20;
+      YAxis.title.fill = yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+    }
+
+    var yAxisLabels = YAxis.renderer.labels.template;
+    yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
+    yAxisLabels.rotation = yAxis.labels.rotation || 0;
+    yAxisLabels.fill = yAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000"); // we set fixed min/max and strictMinMax to true, as otherwise value axis will adjust min/max while dragging and it won't look smooth
+
+    YAxis.strictMinMax = true;
+    YAxis.min = minY;
+    YAxis.max = maxY;
+    YAxis.renderer.minWidth = 60;
+    /* ~~~~\  legend  /~~~~ */
+
+    if (this.props.legend) {
+      chart.legend = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Legend"]();
+      chart.legend.useDefaultMarker = false;
+      var markerTemplate = chart.legend.markers.template;
+      markerTemplate.width = 20;
+      markerTemplate.strokeWidth = 1;
+      markerTemplate.strokeOpacity = 1; //      markerTemplate.stroke = am4core.color("#000000"); no effect
+    }
+    /* ~~~~\  function handling the drag event  /~~~~ */
+
+
+    function handleDrag(event) {
+      var dataItem = event.target.dataItem; // convert coordinate to value
+
+      var value = YAxis.yToValue(event.target.pixelY); // set new value
+
+      dataItem.valueY = value; // make line hover
+
+      dataItem.segment.isHover = true; // hide tooltip not to interrupt
+
+      dataItem.segment.hideTooltip(0); // make bullet hovered (as it might hide if mouse moves away)
+
+      event.target.isHover = true;
+    }
+
+    yValues.forEach(function (value, index) {
+      var series = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LineSeries"]());
+      series.strokeOpacity = 0;
+
+      if (isDate) {
+        series.dataFields.dateX = xValue;
+      } else {
+        series.dataFields.valueX = xValue;
+      }
+
+      series.dataFields.valueY = value;
+      series.name = yValueNames[value];
+      series.sequencedInterpolation = true;
+      series.defaultState.interpolationDuration = 1500;
+      /* ~~~~\  value label  /~~~~ */
+
+      /*    let valueLabel = new am4charts.LabelBullet();
+            series.bullets.push(valueLabel);
+            valueLabel.label.text =
+              "{valueY.value.formatNumber('" + valueFormatter + "')}";
+            valueLabel.label.hideOversized = true;
+            valueLabel.label.truncate = false;
+            valueLabel.strokeOpacity = 0;
+            valueLabel.adapter.add("dy", (x, target) => {
+              if(target.dataItem.valueY > 0) {
+                return -10;
+              } else {
+                return 10;
+              }
+            });
+            */
+
+      /* ~~~~\  bullet  /~~~~ */
+
+      var bullet = series.bullets.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Bullet"]());
+      var shape = bullet.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Triangle"]);
+      shape.horizontalCenter = "middle";
+      shape.verticalCenter = "middle";
+      shape.strokeWidth = pointsStyle.strokeWidth ? pointsStyle.strokeWidth[value] : 0;
+      shape.stroke = pointsStyle.strokeColor ? pointsStyle.strokeColor[value] : chart.colors.getIndex(index);
+      shape.fill = pointsStyle.color ? pointsStyle.color[value] : chart.colors.getIndex(index).saturate(0.7);
+      shape.direction = "top";
+      shape.width = 12;
+      shape.height = 12;
+      console.log("shape", shape);
+
+      if (tooltipStyle) {
+        /* ~~~~\  tooltip  /~~~~ */
+        bullet.tooltipText = tooltipStyle.text;
+        var tooltip = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Tooltip"]();
+        tooltip.pointerOrientation = "vertical";
+        tooltip.dy = 0;
+        tooltip.getFillFromObject = tooltipStyle.auto; //if(tooltipStyle.backgroundColor)
+
+        tooltip.background.fill = tooltipStyle.backgroundColor; //if(tooltipStyle.backgroundOpacity)
+
+        tooltip.background.fillOpacity = tooltipStyle.backgroundOpacity || 1;
+        tooltip.autoTextColor = tooltipStyle.auto; //if(tooltipStyle.labelColor)
+
+        tooltip.label.fill = tooltipStyle.labelColor;
+        tooltip.label.textAlign = "middle";
+        tooltip.scale = tooltipStyle.scale || 1;
+        tooltip.background.filters.clear(); // remove tooltip shadow
+
+        tooltip.background.pointerLength = 10;
+        tooltip.adapter.add("rotation", (x, target) => {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip.label.adapter.add("verticalCenter", (x, target) => {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
+              return "none";
+            } else {
+              return "bottom";
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip.label.adapter.add("rotation", (x, target) => {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        bullet.tooltip = tooltip; // hide label when hovered because the tooltip is shown
+        // XXX y'a pas de label
+
+        /*      bullet.events.on("over", event => {
+                  let dataItem = event.target.dataItem;
+                  console.log("dataItem bullet on over", dataItem);
+                  let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
+                  itemLabelBullet.fillOpacity = 0;
+                });
+                // show label when mouse is out
+                bullet.events.on("out", event => {
+                  let dataItem = event.target.dataItem;
+                  let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
+                  itemLabelBullet.fillOpacity = 1;
+                });
+                */
+      } // create bullet hover state
+
+
+      var hoverState = shape.states.create("hover");
+      hoverState.properties.strokeWidth = shape.strokeWidth + 3;
+
+      if (draggable[value]) {
+        bullet.draggable = true; // resize cursor when over
+
+        bullet.cursorOverStyle = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["MouseCursorStyle"].verticalResize; // while dragging
+
+        bullet.events.on("drag", event => {
+          handleDrag(event);
+        }); // on dragging stop
+
+        bullet.events.on("dragstop", event => {
+          handleDrag(event);
+          var dataItem = event.target.dataItem; //          dataItem.component.isHover = false; // XXXX
+
+          event.target.isHover = false;
+          dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
+
+          if (window.Shiny) {
+            if (isDate) {
+              Shiny.setInputValue(shinyId + ":rAmCharts4.dataframeWithDate", {
+                data: dataCopy,
+                date: xValue
+              });
+              Shiny.setInputValue(shinyId + "_change:rAmCharts4.lineChange", {
+                index: dataItem.index,
+                x: dataItem.dateX,
+                variable: value,
+                y: dataItem.values.valueY.value
+              });
+            } else {
+              Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+              Shiny.setInputValue(shinyId + "_change", {
+                index: dataItem.index,
+                x: dataItem.values.valueX.value,
+                variable: value,
+                y: dataItem.values.valueY.value
+              });
+            }
+          }
+        }); // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
+
+        bullet.events.on("down", event => {
+          var dataItem = event.target.dataItem;
+          var itemBullet = dataItem.bullets.getKey(bullet.uid);
+          itemBullet.dragStart(event.pointer);
+        }); // when point position changes, adjust minX/maxX of bullets so that we could only dragg vertically
+
+        bullet.events.on("positionchanged", event => {
+          var dataItem = event.target.dataItem;
+
+          if (dataItem.bullets) {
+            var itemBullet = dataItem.bullets.getKey(bullet.uid);
+            var point = dataItem.point;
+            itemBullet.minX = point.x;
+            itemBullet.maxX = itemBullet.minX;
+            itemBullet.minY = 0;
+            itemBullet.maxY = chart.seriesContainer.pixelHeight;
+          }
+        });
+      }
+    });
+    this.chart = chart;
+  }
+
+  componentWillUnmount() {
+    if (this.chart) {
+      this.chart.dispose();
+    }
+  }
+
+  render() {
+    return /*#__PURE__*/React.createElement("div", {
+      id: this.props.chartId,
+      style: this.style()
+    });
+  }
+
+}
 /* CREATE WIDGETS */
 
 
 Object(reactR__WEBPACK_IMPORTED_MODULE_0__["reactWidget"])('amChart4', 'output', {
   AmBarChart: AmBarChart,
   AmHorizontalBarChart: AmHorizontalBarChart,
-  AmLineChart: AmLineChart
+  AmLineChart: AmLineChart,
+  AmScatterChart: AmScatterChart
 }, {});
 
 /***/ }),
