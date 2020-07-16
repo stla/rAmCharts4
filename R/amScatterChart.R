@@ -40,7 +40,8 @@
 #' otherwise a named list of the form
 #' \code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
 #' \code{settings1}, \code{settings2}, ... are lists created with
-#' \code{\link{amCircle}} or \code{\link{amTriangle}}; this can also be a
+#' \code{\link{amCircle}}, \code{\link{amTriangle}} or
+#' \code{\link{amRectangle}}; this can also be a
 #' single list of settings that will be applied to each series
 #' @param backgroundColor a color for the chart background
 #' @param xAxis settings of the x-axis given as a list, or just a string

@@ -5,11 +5,12 @@
 #' @param color bullet color
 #' @param width bullet width
 #' @param height bullet height
-#' @param radius bullet radius
+#' @param radius circle radius
 #' @param strokeColor stroke color of the bullet
 #' @param strokeWidth stroke width of the bullet
 #' @param direction triangle direction
-#' @param rotation triangle rotation
+#' @param rotation rotation angle
+#' @param cornerRadius radius of the rectangle corners
 #'
 #' @return A list of settings for the bullets.
 #' @export
@@ -54,5 +55,30 @@ amCircle <- function(
     strokeWidth = strokeWidth
   )
   class(bullet) <- bullet
+  bullet
+}
+
+#' @rdname rAmCharts4-shapes
+#' @export
+amRectangle <- function(
+  color = NULL,
+  width = 10,
+  height = 10,
+  strokeColor = NULL,
+  strokeWidth = 2,
+  rotation = 0,
+  cornerRadius = 3
+){
+  bullet <- list(
+    shape = "rectangle",
+    color = validateColor(color),
+    width = width,
+    height = height,
+    strokeColor = validateColor(strokeColor),
+    strokeWidth = strokeWidth,
+    rotation = rotation,
+    cornerRadius = cornerRadius
+  )
+  class(bullet) <- "bullet"
   bullet
 }

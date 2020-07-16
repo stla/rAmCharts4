@@ -4,6 +4,7 @@
 \alias{rAmCharts4-shapes}
 \alias{amTriangle}
 \alias{amCircle}
+\alias{amRectangle}
 \title{Bullets}
 \usage{
 amTriangle(
@@ -17,6 +18,16 @@ amTriangle(
 )
 
 amCircle(color = NULL, radius = 6, strokeColor = NULL, strokeWidth = 2)
+
+amRectangle(
+  color = NULL,
+  width = 10,
+  height = 10,
+  strokeColor = NULL,
+  strokeWidth = 2,
+  rotation = 0,
+  cornerRadius = 3
+)
 }
 \arguments{
 \item{color}{bullet color}
@@ -31,9 +42,11 @@ amCircle(color = NULL, radius = 6, strokeColor = NULL, strokeWidth = 2)
 
 \item{direction}{triangle direction}
 
-\item{rotation}{triangle rotation}
+\item{rotation}{rotation angle}
 
-\item{radius}{bullet radius}
+\item{radius}{circle radius}
+
+\item{cornerRadius}{radius of the rectangle corners}
 }
 \value{
 A list of settings for the bullets.

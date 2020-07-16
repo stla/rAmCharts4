@@ -1679,7 +1679,6 @@ class AmScatterChart extends React.PureComponent {
       markerTemplate.strokeOpacity = 1;
 //      markerTemplate.stroke = am4core.color("#000000"); no effect
       chart.legend.itemContainers.template.events.on("over", function(ev) {
-      console.log(ev.target.dataItem.dataContext.bulletsContainer);
         ev.target.dataItem.dataContext.bulletsContainer.children.each(
           function(bullet){
             bullet.children.each(
@@ -1755,10 +1754,21 @@ class AmScatterChart extends React.PureComponent {
           shape.direction = shapeConfig.direction;
           shape.width = shapeConfig.width;
           shape.height = shapeConfig.height;
+          shape.rotation = shapeConfig.rotation;
           break;
         case "circle":
           shape = bullet.createChild(am4core.Circle);
           shape.radius = shapeConfig.radius;
+          break;
+        case "rectangle":
+          shape = bullet.createChild(am4core.RoundedRectangle);
+          shape.width = shapeConfig.width;
+          shape.height = shapeConfig.height;
+          shape.rotation = shapeConfig.rotation;
+          shape.cornerRadiusBottomLeft = shapeConfig.cornerRadius;
+          shape.cornerRadiusTopLeft = shapeConfig.cornerRadius;
+          shape.cornerRadiusBottomRight = shapeConfig.cornerRadius;
+          shape.cornerRadiusTopRight = shapeConfig.cornerRadius;
           break;
       }
       shape.horizontalCenter = "middle";
