@@ -35,12 +35,14 @@ class AmBarChart extends React.PureComponent {
 
   componentDidMount() {
     let theme = this.props.theme,
-      data = HTMLWidgets.dataframeToD3(this.props.data),
-      dataCopy = HTMLWidgets.dataframeToD3(this.props.data),
-      data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(this.props.data2) : null,
-      values = this.props.values,
-      valueNames = this.props.valueNames,
       category = this.props.category,
+      values = this.props.values,
+      data = utils.subset(this.props.data, [category].concat(values)),
+      dataCopy = data.map(row => ({...row})),
+      data2 = this.props.data2 ?
+        HTMLWidgets.dataframeToD3(utils.subset(this.props.data2, values)) :
+        null,
+      valueNames = this.props.valueNames,
       cellWidth = this.props.cellWidth,
       columnWidth = this.props.columnWidth,
       xAxis = this.props.xAxis,
@@ -463,14 +465,16 @@ class AmHorizontalBarChart extends React.PureComponent {
 
   componentDidMount() {
     let theme = this.props.theme,
-      data = HTMLWidgets.dataframeToD3(this.props.data),
-      dataCopy = HTMLWidgets.dataframeToD3(this.props.data),
-      data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(this.props.data2) : null,
+      category = this.props.category,
       values = this.props.values,
+      data = utils.subset(this.props.data, [category].concat(values)),
+      dataCopy = data.map(row => ({...row})),
+      data2 = this.props.data2 ?
+        HTMLWidgets.dataframeToD3(utils.subset(this.props.data2, values)) :
+        null,
       valueNames = this.props.valueNames,
       minValue = this.props.minValue,
       maxValue = this.props.maxValue,
-      category = this.props.category,
       cellWidth = this.props.cellWidth,
       columnWidth = this.props.columnWidth,
       xAxis = this.props.xAxis,
@@ -906,12 +910,13 @@ class AmLineChart extends React.PureComponent {
 
   componentDidMount() {
     let theme = this.props.theme,
-      data = this.props.data,
-      dataCopy = HTMLWidgets.dataframeToD3(this.props.data),
-      data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(this.props.data2) : null,
-      yValues = this.props.yValues,
-      yValueNames = this.props.yValueNames,
       xValue = this.props.xValue,
+      yValues = this.props.yValues,
+      data = utils.subset(this.props.data, [xValue].concat(yValues)),
+      data2 = this.props.data2 ?
+        HTMLWidgets.dataframeToD3(utils.subset(this.props.data2, yValues)) :
+        null,
+      yValueNames = this.props.yValueNames,
       minY = this.props.minY,
       maxY = this.props.maxY,
       isDate = this.props.isDate,
@@ -925,12 +930,11 @@ class AmLineChart extends React.PureComponent {
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
-    console.log("lineStyle", lineStyle);
-
     if(isDate) {
       data[xValue] = data[xValue].map(utils.toDate);
     }
     data = HTMLWidgets.dataframeToD3(data);
+    let dataCopy = data.map(row => ({...row}));
 
     switch(theme) {
       case "dark":
@@ -1261,8 +1265,14 @@ console.log(chart);
             if(shinyId === undefined){
               shinyId = $(document.getElementById(chartId)).parent().attr("id");
             }
-            Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
             if(isDate) {
+              Shiny.setInputValue(
+                shinyId + ":rAmCharts4.dataframeWithDate",
+                {
+                  data: dataCopy,
+                  date: xValue
+                }
+              );
               Shiny.setInputValue(shinyId + "_change:rAmCharts4.lineChange", {
                 index: dataItem.index,
                 x: dataItem.dateX,
@@ -1270,6 +1280,9 @@ console.log(chart);
                 y: dataItem.values.valueY.value
               });
             } else {
+              Shiny.setInputValue(
+                shinyId + ":rAmCharts4.dataframe", dataCopy
+              );
               Shiny.setInputValue(shinyId + "_change", {
                 index: dataItem.index,
                 x: dataItem.values.valueX.value,

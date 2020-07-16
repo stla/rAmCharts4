@@ -7,6 +7,12 @@
     jsonlite::fromJSON(jsonlite::toJSON(data, auto_unbox = TRUE))
   }, force = TRUE)
 
+  shiny::registerInputHandler("rAmCharts4.dataframeWithDate", function(data, ...) {
+    dat <- jsonlite::fromJSON(jsonlite::toJSON(data[["data"]], auto_unbox = TRUE))
+    dat[[data[["date"]]]] <- as.Date(dat[[data[["date"]]]]) + 1
+    dat
+  }, force = TRUE)
+
   shiny::registerInputHandler("rAmCharts4.lineChange", function(data, ...) {
     if (is.null(data)) {
       NULL
@@ -16,7 +22,7 @@
         warning("Failed to parse date!")
         data
       } else {
-        data[["x"]] <- res
+        data[["x"]] <- res + 1
         data
       }
     }

@@ -30,3 +30,68 @@ Output and render functions for using
 the \code{rAmCharts4} widgets
 within Shiny applications and interactive Rmd documents.
 }
+\examples{
+if(interactive()) {
+library(rAmCharts4)
+library(shiny)
+library(lubridate)
+
+ui <- fluidPage(
+  br(),
+  fluidRow(
+    column(
+      width = 8,
+      amChart4Output("linechart", height = "500px")
+    ),
+    column(
+      width = 4,
+      verbatimTextOutput("chartData"),
+      verbatimTextOutput("chartChange")
+    )
+  )
+)
+
+server <- function(input, output){
+
+  set.seed(666)
+  dat <- data.frame(
+    date = ymd(180101) + months(0:11),
+    visits = rpois(12, 20),
+    x = 1:12
+  )
+
+  output[["linechart"]] <- renderAmChart4({
+    amLineChart(
+      data = dat,
+      data2 = dat,
+      xValue = "date",
+      yValues = "visits",
+      draggable = TRUE,
+      chartTitle = list(text = "Number of visits", color = "crimson"),
+      xAxis = list(title = "Date", labels = list(rotation = -45)),
+      yAxis = "Visits",
+      minY = 0, maxY = 35,
+      backgroundColor = "whitesmoke",
+      tooltip = "[bold][font-style:italic]{dateX}[/]\nvisits: {valueY}[/]",
+      valueFormatter = "#",
+      caption = list(
+        text = "[bold font-size:22]Year 2018[/]",
+        color = "fuchsia"
+      ),
+      theme = "dataviz")
+  })
+
+
+  output[["chartData"]] <- renderPrint({
+    input[["linechart"]]
+  })
+
+  output[["chartChange"]] <- renderPrint({
+    input[["linechart_change"]]
+  })
+
+}
+
+shinyApp(ui, server)
+}
+}

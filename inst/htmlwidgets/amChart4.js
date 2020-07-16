@@ -119659,6 +119659,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _amcharts_amcharts4_themes_patterns__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @amcharts/amcharts4/themes/patterns */ "./node_modules/@amcharts/amcharts4/themes/patterns.js");
 /* harmony import */ var _amcharts_amcharts4_themes_spiritedaway__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @amcharts/amcharts4/themes/spiritedaway */ "./node_modules/@amcharts/amcharts4/themes/spiritedaway.js");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./utils */ "./srcjs/utils/index.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -119698,12 +119704,12 @@ class AmBarChart extends React.PureComponent {
 
   componentDidMount() {
     var theme = this.props.theme,
-        data = HTMLWidgets.dataframeToD3(this.props.data),
-        dataCopy = HTMLWidgets.dataframeToD3(this.props.data),
-        data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(this.props.data2) : null,
-        values = this.props.values,
-        valueNames = this.props.valueNames,
         category = this.props.category,
+        values = this.props.values,
+        data = _utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [category].concat(values)),
+        dataCopy = data.map(row => _objectSpread({}, row)),
+        data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, values)) : null,
+        valueNames = this.props.valueNames,
         cellWidth = this.props.cellWidth,
         columnWidth = this.props.columnWidth,
         xAxis = this.props.xAxis,
@@ -120153,14 +120159,14 @@ class AmHorizontalBarChart extends React.PureComponent {
 
   componentDidMount() {
     var theme = this.props.theme,
-        data = HTMLWidgets.dataframeToD3(this.props.data),
-        dataCopy = HTMLWidgets.dataframeToD3(this.props.data),
-        data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(this.props.data2) : null,
+        category = this.props.category,
         values = this.props.values,
+        data = _utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [category].concat(values)),
+        dataCopy = data.map(row => _objectSpread({}, row)),
+        data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, values)) : null,
         valueNames = this.props.valueNames,
         minValue = this.props.minValue,
         maxValue = this.props.maxValue,
-        category = this.props.category,
         cellWidth = this.props.cellWidth,
         columnWidth = this.props.columnWidth,
         xAxis = this.props.xAxis,
@@ -120622,12 +120628,11 @@ class AmLineChart extends React.PureComponent {
 
   componentDidMount() {
     var theme = this.props.theme,
-        data = this.props.data,
-        dataCopy = HTMLWidgets.dataframeToD3(this.props.data),
-        data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(this.props.data2) : null,
-        yValues = this.props.yValues,
-        yValueNames = this.props.yValueNames,
         xValue = this.props.xValue,
+        yValues = this.props.yValues,
+        data = _utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [xValue].concat(yValues)),
+        data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, yValues)) : null,
+        yValueNames = this.props.yValueNames,
         minY = this.props.minY,
         maxY = this.props.maxY,
         isDate = this.props.isDate,
@@ -120640,13 +120645,13 @@ class AmLineChart extends React.PureComponent {
         lineStyle = this.props.lineStyle,
         chartId = this.props.chartId,
         shinyId = this.props.shinyId;
-    console.log("lineStyle", lineStyle);
 
     if (isDate) {
       data[xValue] = data[xValue].map(_utils__WEBPACK_IMPORTED_MODULE_13__["toDate"]);
     }
 
     data = HTMLWidgets.dataframeToD3(data);
+    var dataCopy = data.map(row => _objectSpread({}, row));
 
     switch (theme) {
       case "dark":
@@ -121004,9 +121009,11 @@ class AmLineChart extends React.PureComponent {
               shinyId = $(document.getElementById(chartId)).parent().attr("id");
             }
 
-            Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
-
             if (isDate) {
+              Shiny.setInputValue(shinyId + ":rAmCharts4.dataframeWithDate", {
+                data: dataCopy,
+                date: xValue
+              });
               Shiny.setInputValue(shinyId + "_change:rAmCharts4.lineChange", {
                 index: dataItem.index,
                 x: dataItem.dateX,
@@ -121014,6 +121021,7 @@ class AmLineChart extends React.PureComponent {
                 y: dataItem.values.valueY.value
               });
             } else {
+              Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
               Shiny.setInputValue(shinyId + "_change", {
                 index: dataItem.index,
                 x: dataItem.values.valueX.value,
@@ -121089,15 +121097,19 @@ Object(reactR__WEBPACK_IMPORTED_MODULE_0__["reactWidget"])('amChart4', 'output',
 /*!******************************!*\
   !*** ./srcjs/utils/index.js ***!
   \******************************/
-/*! exports provided: toDate */
+/*! exports provided: toDate, subset */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toDate", function() { return toDate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subset", function() { return subset; });
 var toDate = function toDate(string) {
   var ymd = string.split("-");
   return new Date(ymd[0], ymd[1] - 1, ymd[2]);
+};
+var subset = function subset(data, keys) {
+  return keys.reduce((a, b) => (a[b] = data[b], a), {});
 };
 
 /***/ }),
