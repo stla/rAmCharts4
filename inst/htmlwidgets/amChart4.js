@@ -119837,6 +119837,11 @@ class AmBarChart extends React.PureComponent {
         }
 
         chart.invalidateRawData();
+
+        if (window.Shiny) {
+          Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", chart.data);
+          Shiny.setInputValue(shinyId + "_change", null);
+        }
       });
     }
     /* ~~~~\  category axis  /~~~~ */
@@ -120298,6 +120303,11 @@ class AmHorizontalBarChart extends React.PureComponent {
         }
 
         chart.invalidateRawData();
+
+        if (window.Shiny) {
+          Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", chart.data);
+          Shiny.setInputValue(shinyId + "_change", null);
+        }
       });
     }
     /* ~~~~\  category axis  /~~~~ */
@@ -120784,6 +120794,19 @@ class AmLineChart extends React.PureComponent {
         }
 
         chart.invalidateRawData();
+
+        if (window.Shiny) {
+          if (isDate) {
+            Shiny.setInputValue(shinyId + ":rAmCharts4.dataframeWithDate", {
+              data: chart.data,
+              date: xValue
+            });
+            Shiny.setInputValue(shinyId + "_change", null);
+          } else {
+            Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", chart.data);
+            Shiny.setInputValue(shinyId + "_change", null);
+          }
+        }
       });
     }
     /* ~~~~\  x-axis  /~~~~ */

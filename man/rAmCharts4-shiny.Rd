@@ -78,6 +78,12 @@ server <- function(input, output){
         text = "[bold font-size:22]Year 2018[/]",
         color = "fuchsia"
       ),
+      button = list(
+        text = "Reset data",
+        color = "black",
+        fill = "seashell",
+        position = 0.9
+      ),
       theme = "dataviz")
   })
 
