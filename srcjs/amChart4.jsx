@@ -925,6 +925,8 @@ class AmLineChart extends React.PureComponent {
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
+    console.log("lineStyle", lineStyle);
+
     if(isDate) {
       data[xValue] = data[xValue].map(utils.toDate);
     }
@@ -971,6 +973,7 @@ class AmLineChart extends React.PureComponent {
       this.props.backgroundColor || chart.background.fill;
     chart.background.fill = chartBackgroundColor;
 
+console.log(chart);
 		/* ~~~~\  title  /~~~~ */
 		let chartTitle = this.props.chartTitle;
 		if (chartTitle) {
@@ -1150,11 +1153,14 @@ class AmLineChart extends React.PureComponent {
         let tooltip = new am4core.Tooltip();
         tooltip.pointerOrientation = "vertical";
         tooltip.dy = 0;
-        tooltip.getFillFromObject = false;
-        tooltip.background.fill = tooltipStyle.backgroundColor; //am4core.color("#101010");
-        tooltip.background.fillOpacity = tooltipStyle.backgroundOpacity;
-        tooltip.autoTextColor = false;
-        tooltip.label.fill = tooltipStyle.labelColor; //am4core.color("#FFFFFF");
+        tooltip.getFillFromObject = tooltipStyle.auto;
+        //if(tooltipStyle.backgroundColor)
+          tooltip.background.fill = tooltipStyle.backgroundColor;
+        //if(tooltipStyle.backgroundOpacity)
+          tooltip.background.fillOpacity = tooltipStyle.backgroundOpacity || 1;
+        tooltip.autoTextColor = tooltipStyle.auto;
+        //if(tooltipStyle.labelColor)
+          tooltip.label.fill = tooltipStyle.labelColor;
         tooltip.label.textAlign = "middle";
         tooltip.scale = tooltipStyle.scale || 1;
         tooltip.background.filters.clear(); // remove tooltip shadow

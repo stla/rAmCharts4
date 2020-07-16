@@ -176,4 +176,31 @@ amLineChart(
                    opacity = 0.4,
                    width = 1),
   theme = "dark")
+
+
+# line chart with date x-axis ####
+
+library(lubridate)
+
+set.seed(666)
+dat <- data.frame(
+  date = ymd(180101) + months(0:11),
+  visits = rpois(12, 20)
+)
+
+amLineChart(
+  data = dat,
+  width = "700px",
+  xValue = "date",
+  yValues = "visits",
+  draggable = TRUE,
+  chartTitle = "Number of visits",
+  xAxis = "Date",
+  yAxis = "Visits",
+  minY = 0, maxY = 35,
+  backgroundColor = "whitesmoke",
+  tooltip = "[bold][font-style:italic]{dateX}[/]\nvisits: {valueY}[/]",
+  valueFormatter = "#",
+  caption = list(text = "Year 2018"),
+  theme = "material")
 }

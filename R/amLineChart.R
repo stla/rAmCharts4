@@ -119,6 +119,33 @@
 #'                    opacity = 0.4,
 #'                    width = 1),
 #'   theme = "dark")
+#'
+#'
+#' # line chart with date x-axis ####
+#'
+#' library(lubridate)
+#'
+#' set.seed(666)
+#' dat <- data.frame(
+#'   date = ymd(180101) + months(0:11),
+#'   visits = rpois(12, 20)
+#' )
+#'
+#' amLineChart(
+#'   data = dat,
+#'   width = "700px",
+#'   xValue = "date",
+#'   yValues = "visits",
+#'   draggable = TRUE,
+#'   chartTitle = "Number of visits",
+#'   xAxis = "Date",
+#'   yAxis = "Visits",
+#'   minY = 0, maxY = 35,
+#'   backgroundColor = "whitesmoke",
+#'   tooltip = "[bold][font-style:italic]{dateX}[/]\nvisits: {valueY}[/]",
+#'   valueFormatter = "#",
+#'   caption = list(text = "Year 2018"),
+#'   theme = "material")
 amLineChart <- function(
   data,
   data2 = NULL,
@@ -242,6 +269,7 @@ amLineChart <- function(
     if(is.list(tooltip)){
       tooltip$labelColor <- validateColor(tooltip$labelColor)
       tooltip$backgroundColor <- validateColor(tooltip$backgroundColor)
+      tooltip[["auto"]] <- FALSE
     }else if(is.null(tooltip)){
       tooltip <- list(
         text =
@@ -252,16 +280,16 @@ amLineChart <- function(
         labelColor = "#ffffff",
         backgroundColor = "#101010",
         backgroundOpacity = 1,
-        scale = 1
+        scale = 1,
+        auto = FALSE
       )
     }else if(is.character(tooltip)){
-      tooltip <- list(text = tooltip)
+      tooltip <- list(text = tooltip, auto = TRUE)
     }
   }
 
   if(is.null(lineStyle)){
     lineStyle <- list(
-      color = setNames(rep(list(NULL), length(yValues)), yValues),
       width = setNames(rep(list(3), length(yValues)), yValues)
     )
   }else{

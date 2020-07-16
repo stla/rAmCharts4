@@ -120640,6 +120640,7 @@ class AmLineChart extends React.PureComponent {
         lineStyle = this.props.lineStyle,
         chartId = this.props.chartId,
         shinyId = this.props.shinyId;
+    console.log("lineStyle", lineStyle);
 
     if (isDate) {
       data[xValue] = data[xValue].map(_utils__WEBPACK_IMPORTED_MODULE_13__["toDate"]);
@@ -120694,6 +120695,7 @@ class AmLineChart extends React.PureComponent {
 
     var chartBackgroundColor = this.props.backgroundColor || chart.background.fill;
     chart.background.fill = chartBackgroundColor;
+    console.log(chart);
     /* ~~~~\  title  /~~~~ */
 
     var chartTitle = this.props.chartTitle;
@@ -120888,13 +120890,14 @@ class AmLineChart extends React.PureComponent {
         var tooltip = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Tooltip"]();
         tooltip.pointerOrientation = "vertical";
         tooltip.dy = 0;
-        tooltip.getFillFromObject = false;
-        tooltip.background.fill = tooltipStyle.backgroundColor; //am4core.color("#101010");
+        tooltip.getFillFromObject = tooltipStyle.auto; //if(tooltipStyle.backgroundColor)
 
-        tooltip.background.fillOpacity = tooltipStyle.backgroundOpacity;
-        tooltip.autoTextColor = false;
-        tooltip.label.fill = tooltipStyle.labelColor; //am4core.color("#FFFFFF");
+        tooltip.background.fill = tooltipStyle.backgroundColor; //if(tooltipStyle.backgroundOpacity)
 
+        tooltip.background.fillOpacity = tooltipStyle.backgroundOpacity || 1;
+        tooltip.autoTextColor = tooltipStyle.auto; //if(tooltipStyle.labelColor)
+
+        tooltip.label.fill = tooltipStyle.labelColor;
         tooltip.label.textAlign = "middle";
         tooltip.scale = tooltipStyle.scale || 1;
         tooltip.background.filters.clear(); // remove tooltip shadow
