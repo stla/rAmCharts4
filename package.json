@@ -1,7 +1,8 @@
 {
   "private": true,
   "dependencies": {
-    "@amcharts/amcharts4": "^4.9.30"
+    "@amcharts/amcharts4": "^4.9.30",
+    "regression": "^2.0.1"
   },
   "devDependencies": {
     "webpack": "^4.27.1",

@@ -12,6 +12,7 @@ import am4themes_moonrisekingdom from "@amcharts/amcharts4/themes/moonrisekingdo
 import am4themes_patterns from "@amcharts/amcharts4/themes/patterns";
 import am4themes_spiritedaway from "@amcharts/amcharts4/themes/spiritedaway";
 import * as utils from "./utils";
+import regression from "regression";
 
 am4core.useTheme(am4themes_animated);
 
@@ -1193,7 +1194,7 @@ class AmLineChart extends React.PureComponent {
 		/* ~~~~\  function handling the drag event  /~~~~ */
 		function handleDrag(event) {
 			var dataItem = event.target.dataItem;
-			console.log("dataItem", dataItem);
+			//console.log("dataItem", dataItem);
 			// convert coordinate to value
 			let value = YAxis.yToValue(event.target.pixelY);
 			// set new value
@@ -1346,25 +1347,32 @@ class AmLineChart extends React.PureComponent {
         bullet.events.on("dragstop", event => {
           console.log("bullet dragstop");
           handleDrag(event);
-          let dataItem = event.target.dataItem;
-//          console.log("dataItem", dataItem);
-
-			let seriesNames = chart.series.values.map(function(x){return x.name});
-			let thisSeriesName = dataItem.component.name;
-			let thisSeriesData = dataItem.component.dataProvider.data;
-			let trendSeriesName = thisSeriesName + "_trend";
-			let trendSeriesIndex = seriesNames.indexOf(trendSeriesName);
-			let trendSeries = chart.series.values[trendSeriesIndex];
-			let trendSeriesData = trendSeries.data;
-			console.log(trendSeriesName, trendSeriesData, trendSeries);
-			trendSeriesData[0] = {x: 1, y: 3};
-			trendSeries.invalidateData();
-
-
+          let dataItem = event.target.dataItem,
+    			  newvalue = YAxis.yToValue(event.target.pixelY),
+            seriesNames = chart.series.values.map(function(x){return x.name}),
+			      thisSeriesName = dataItem.component.name,
+			      thisSeriesData = dataItem.component.dataProvider.data,
+            thisSeriesDataCopy = thisSeriesData.map(row => ({...row}));
+			    thisSeriesDataCopy[dataItem.index][value] = newvalue;
+			    thisSeriesData[dataItem.index][value] = newvalue;
+			    let trendSeriesName = thisSeriesName + "_trend",
+			      trendSeriesIndex = seriesNames.indexOf(trendSeriesName),
+			      trendSeries = chart.series.values[trendSeriesIndex],
+			      trendSeriesData = trendSeries.data,
+			      regData = thisSeriesDataCopy.map(function(row){
+			        return [row[xValue], row[value]];
+			      }),
+			      fit = regression.polynomial(regData, { order: 3, precision: 15 }),
+			      regressionLine = fit.points.map(function(point){
+			        return {x: point[0], y: point[1]};
+			      });
+			    regressionLine.forEach(function(point, i){trendSeriesData[i] = point;});
+			    trendSeries.invalidateData();
 
           dataItem.component.isHover = false; // XXXX
           event.target.isHover = false;
           dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
+
           if(window.Shiny) {
             if(isDate) {
               Shiny.setInputValue(
