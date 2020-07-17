@@ -1464,9 +1464,9 @@ class AmScatterChart extends React.PureComponent {
       isDate = this.props.isDate,
       xAxis = this.props.xAxis,
       yAxis = this.props.yAxis,
+      tooltips = this.props.tooltip,
       gridLines = this.props.gridLines,
       draggable = this.props.draggable,
-      tooltipStyle = this.props.tooltip,
       valueFormatter = this.props.valueFormatter,
       pointsStyle = this.props.pointsStyle,
       chartId = this.props.chartId,
@@ -1776,24 +1776,29 @@ class AmScatterChart extends React.PureComponent {
       shape.strokeWidth = shapeConfig.strokeWidth;
       shape.stroke = shapeConfig.strokeColor || chart.colors.getIndex(index);
       shape.fill = shapeConfig.color || chart.colors.getIndex(index).saturate(0.7);
-      if(tooltipStyle) {
+      if(tooltips) {
         /* ~~~~\  tooltip  /~~~~ */
+        let tooltipStyle = tooltips[value];
         bullet.tooltipText = tooltipStyle.text;
         let tooltip = new am4core.Tooltip();
         tooltip.pointerOrientation = "vertical";
         tooltip.dy = 0;
         tooltip.getFillFromObject = tooltipStyle.auto;
-        //if(tooltipStyle.backgroundColor)
-          tooltip.background.fill = tooltipStyle.backgroundColor;
-        //if(tooltipStyle.backgroundOpacity)
-          tooltip.background.fillOpacity = tooltipStyle.backgroundOpacity || 1;
-        tooltip.autoTextColor = tooltipStyle.auto;
-        //if(tooltipStyle.labelColor)
-          tooltip.label.fill = tooltipStyle.labelColor;
-        tooltip.label.textAlign = "middle";
+        //if(!tooltipStyle.auto){
+          tooltip.background.fill = tooltipStyle.backgroundColor ||
+          chart.colors.getIndex(index).saturate(0.7);
+        //}
+        tooltip.background.fillOpacity = tooltipStyle.backgroundOpacity || 0.6;
+        tooltip.autoTextColor =
+          tooltipStyle.auto || !tooltipStyle.textColor;
+        tooltip.label.fill = tooltipStyle.textColor;
+        tooltip.label.textAlign = tooltipStyle.textAlign;
+        tooltip.background.stroke =
+          tooltipStyle.borderColor || chart.colors.getIndex(index);
+        tooltip.background.strokeWidth = tooltipStyle.borderWidth;
         tooltip.scale = tooltipStyle.scale || 1;
         tooltip.background.filters.clear(); // remove tooltip shadow
-        tooltip.background.pointerLength = 10;
+        tooltip.background.pointerLength = tooltipStyle.pointerLength;
         tooltip.adapter.add("rotation", (x, target) => {
           if(target.dataItem) {
             if(target.dataItem.valueY >= 0) {

@@ -32,10 +32,13 @@
 #' all lines, otherwise a named list of the form
 #' \code{list(yvalue1 = TRUE, yvalue2 = FALSE, ...)} to enable/disable the
 #' dragging for each bar corresponding to a column given in \code{yValues}
-#' @param tooltip tooltip settings given as a list, or just a string for the
-#' \code{text} field, or \code{FALSE} for no tooltip, or \code{NULL} for the
-#' default tooltip; the \code{text} field must be a formatted string:
-#' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}
+#' @param tooltip settings of the tooltips; \code{NULL} for default,
+#'   \code{FALSE} for no tooltip, otherwise a named list of the form
+#'   \code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+#'   \code{settings1}, \code{settings2}, ... are lists created with
+#'   \code{\link{amTooltip}}; this can also be a
+#'   single list of settings that will be applied to each series,
+#'   or a just a string for the text to display in the tooltip
 #' @param pointsStyle settings of the points style; \code{NULL} for default,
 #' otherwise a named list of the form
 #' \code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
@@ -143,7 +146,26 @@
 #'     versicolor = amCircle(color = "cyan", strokeColor = "blue"),
 #'     virginica = amCircle(color = "palegreen", strokeColor = "darkgreen")
 #'   ),
-#'   tooltip = "length: {valueX}\nwidth: {valueY}",
+#'   tooltip = list(
+#'     setosa = amTooltip(
+#'       text = "length: {valueX}\nwidth: {valueY}",
+#'       backgroundColor = "orange",
+#'       borderColor = "red",
+#'       textColor = "black"
+#'     ),
+#'     versicolor = amTooltip(
+#'       text = "length: {valueX}\nwidth: {valueY}",
+#'       backgroundColor = "cyan",
+#'       borderColor = "blue",
+#'       textColor = "black"
+#'     ),
+#'     virginica = amTooltip(
+#'       text = "length: {valueX}\nwidth: {valueY}",
+#'       backgroundColor = "palegreen",
+#'       borderColor = "darkgreen",
+#'       textColor = "black"
+#'     )
+#'   ),
 #'   chartTitle = list(text = "Iris data", color = "silver"),
 #'   xAxis = list(title = list(text = "Petal length",
 #'                             fontSize = 19,
@@ -296,25 +318,30 @@ amScatterChart <- function(
   }
 
   if(!isFALSE(tooltip)){
-    if(is.list(tooltip)){
-      tooltip$labelColor <- validateColor(tooltip$labelColor)
-      tooltip$backgroundColor <- validateColor(tooltip$backgroundColor)
-      tooltip[["auto"]] <- FALSE
-    }else if(is.null(tooltip)){
-      tooltip <- list(
-        text =
-          ifelse(isDate,
-                 "[bold][font-style:italic]{dateX}:[/] {valueY}[/]",
-                 "[bold]({valueX},{valueY})[/]"
-          ),
-        labelColor = "#ffffff",
-        backgroundColor = "#101010",
-        backgroundOpacity = 1,
-        scale = 1,
-        auto = FALSE
+    if(is.null(tooltip)){
+      text <- ifelse(isDate,
+                     "[bold][font-style:italic]{dateX}:[/] {valueY}[/]",
+                     "[bold]({valueX},{valueY})[/]"
       )
+      tooltip <-
+        setNames(
+          rep(list(amTooltip(text = text, auto = TRUE)), length(yValues)),
+          yValues
+        )
+    }else if("tooltip" %in% class(tooltip)){
+      tooltip <- setNames(rep(list(tooltip), length(yValues)), yValues)
+    }else if(is.list(tooltip)){
+      if(any(!yValues %in% names(tooltip))){
+        stop("Invalid `tooltip` list.", call. = TRUE)
+      }
     }else if(is.character(tooltip)){
-      tooltip <- list(text = tooltip, auto = TRUE)
+      tooltip <-
+        setNames(
+          rep(list(amTooltip(text = tooltip, auto = TRUE)), length(yValues)),
+          yValues
+        )
+    }else{
+      stop("Invalid `tooltip` argument.", call. = TRUE)
     }
   }
 
