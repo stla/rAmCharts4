@@ -1346,8 +1346,22 @@ class AmLineChart extends React.PureComponent {
         bullet.events.on("dragstop", event => {
           console.log("bullet dragstop");
           handleDrag(event);
-          var dataItem = event.target.dataItem;
+          let dataItem = event.target.dataItem;
 //          console.log("dataItem", dataItem);
+
+			let seriesNames = chart.series.values.map(function(x){return x.name});
+			let thisSeriesName = dataItem.component.name;
+			let thisSeriesData = dataItem.component.dataProvider.data;
+			let trendSeriesName = thisSeriesName + "_trend";
+			let trendSeriesIndex = seriesNames.indexOf(trendSeriesName);
+			let trendSeries = chart.series.values[trendSeriesIndex];
+			let trendSeriesData = trendSeries.data;
+			console.log(trendSeriesName, trendSeriesData, trendSeries);
+			trendSeriesData[0] = {x: 1, y: 3};
+			trendSeries.invalidateData();
+
+
+
           dataItem.component.isHover = false; // XXXX
           event.target.isHover = false;
           dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
@@ -1418,6 +1432,7 @@ class AmLineChart extends React.PureComponent {
       /* ~~~~\ trend line /~~~~ */
       if(trendData && trendData[value]) {
         let trend = chart.series.push(new am4charts.LineSeries());
+        trend.name = yValueNames[value] + "_trend";
         trend.hiddenInLegend = true;
         trend.data = trendData[value];
         trend.dataFields.valueX = "x";
@@ -1437,6 +1452,8 @@ class AmLineChart extends React.PureComponent {
     }); /* end of forEach */
 
     this.chart = chart;
+
+    console.log("chart", chart);
 
   }
 
