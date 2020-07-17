@@ -956,6 +956,7 @@ class AmLineChart extends React.PureComponent {
           .map(k => ({[k]: HTMLWidgets.dataframeToD3(trendData0[k])}))
         ) : null,
       trendStyles = this.props.trendStyle,
+      trendJS = this.props.trendJS,
       yValueNames = this.props.yValueNames,
       minY = this.props.minY,
       maxY = this.props.maxY,
@@ -1347,31 +1348,35 @@ class AmLineChart extends React.PureComponent {
         bullet.events.on("dragstop", event => {
           console.log("bullet dragstop");
           handleDrag(event);
-          let dataItem = event.target.dataItem,
-    			  newvalue = YAxis.yToValue(event.target.pixelY),
-            seriesNames = chart.series.values.map(function(x){return x.name}),
-			      thisSeriesName = dataItem.component.name,
-			      thisSeriesData = dataItem.component.dataProvider.data,
-            thisSeriesDataCopy = thisSeriesData.map(row => ({...row}));
-			    thisSeriesDataCopy[dataItem.index][value] = newvalue;
-			    thisSeriesData[dataItem.index][value] = newvalue;
-			    let trendSeriesName = thisSeriesName + "_trend",
-			      trendSeriesIndex = seriesNames.indexOf(trendSeriesName),
-			      trendSeries = chart.series.values[trendSeriesIndex],
-			      trendSeriesData = trendSeries.data,
-			      regData = thisSeriesDataCopy.map(function(row){
-			        return [row[xValue], row[value]];
-			      }),
-			      fit = regression.polynomial(regData, { order: 3, precision: 15 }),
-			      regressionLine = fit.points.map(function(point){
-			        return {x: point[0], y: point[1]};
-			      });
-			    regressionLine.forEach(function(point, i){trendSeriesData[i] = point;});
-			    trendSeries.invalidateData();
-
+          let dataItem = event.target.dataItem;
           dataItem.component.isHover = false; // XXXX
           event.target.isHover = false;
           dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
+
+          if(trendJS && trendJS[value]){
+    			  let newvalue = YAxis.yToValue(event.target.pixelY),
+              seriesNames = chart.series.values.map(function(x){return x.name}),
+			        thisSeriesName = dataItem.component.name,
+			        thisSeriesData = dataItem.component.dataProvider.data,
+              thisSeriesDataCopy = thisSeriesData.map(row => ({...row}));
+			      thisSeriesDataCopy[dataItem.index][value] = newvalue;
+			      thisSeriesData[dataItem.index][value] = newvalue;
+			      let trendSeriesName = thisSeriesName + "_trend",
+			        trendSeriesIndex = seriesNames.indexOf(trendSeriesName),
+			        trendSeries = chart.series.values[trendSeriesIndex],
+			        trendSeriesData = trendSeries.data,
+			        regData = thisSeriesDataCopy.map(function(row){
+			          return [row[xValue], row[value]];
+			        }),
+			        fit = regression.polynomial(
+			          regData, { order: trendJS[value], precision: 15 }
+			        ),
+			        regressionLine = fit.points.map(function(point){
+			          return {x: point[0], y: point[1]};
+			        });
+			      regressionLine.forEach(function(point, i){trendSeriesData[i] = point;});
+			      trendSeries.invalidateData();
+			    }
 
           if(window.Shiny) {
             if(isDate) {
