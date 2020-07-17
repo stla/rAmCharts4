@@ -12,7 +12,10 @@ amLineChart(
   yValueNames = NULL,
   xLimits = NULL,
   yLimits = NULL,
+  expandX = 0,
+  expandY = 5,
   valueFormatter = "#.",
+  trend = FALSE,
   chartTitle = NULL,
   theme = NULL,
   draggable = FALSE,
@@ -55,8 +58,22 @@ form \code{list(yvalue1 = "ValueName1", yvalue2 = "ValueName2", ...)} where
 \code{yValues} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
 desired names to appear in the legend}
 
-\item{valueFormatter}{a number formatter; see
+\item{xLimits}{range of the x-axis, a vector of two values specifying
+the left and the right limits of the x-axis; \code{NULL} for default values}
+
+\item{yLimits}{range of the y-axis, a vector of two values specifying
+the lower and the upper limits of the y-axis; \code{NULL} for default values}
+
+\item{expandX}{if \code{xLimits = NULL}, a percentage of the range of the
+x-axis used to expand this range}
+
+\item{expandY}{if \code{yLimits = NULL}, a percentage of the range of the
+y-axis used to expand this range}
+
+\item{valueFormatter}{a number formatter for XXXX; see
 \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}}
+
+\item{trend}{XXX}
 
 \item{chartTitle}{chart title, \code{NULL}, character, or list of settings}
 
@@ -75,17 +92,12 @@ dragging for each bar corresponding to a column given in \code{yValues}}
 default tooltip; the \code{text} field must be a formatted string:
 \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}}
 
-\item{lineStyle}{settings of the lines style; \code{NULL} for default,
-otherwise a named list with four possible fields: \code{color} to set the
-colors of the lines, given as a single color or a named list of the form
-\code{list(yvalue1 = "red", yvalue2 = "green", ...)}, \code{width} to set
-the width of the lines, given as a single number or a named list of the form
-\code{list(yvalue1 = 1, yvalue2 = 3, ...)}, \code{tensionX} and
-\code{tensionY} to control the smoothing of the lines, given as single
-numbers between 0 and 1 or as named lists of the form
-\code{list(yvalue1 = 0.8, yvalue2 = 0.8, ...)}; see
-\url{https://www.amcharts.com/docs/v4/chart-types/xy-chart/#Smoothed_lines}
-for the meaning of these parameters}
+\item{lineStyle}{settings of the lines; \code{NULL} for default,
+otherwise a named list of the form
+\code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+\code{settings1}, \code{settings2}, ... are lists created with
+\code{\link{amLine}}; this can also be a
+single list of settings that will be applied to each line}
 
 \item{backgroundColor}{a color for the chart background}
 
@@ -126,10 +138,6 @@ given in \code{\link{amChart4Output}}}
 
 \item{elementId}{a HTML id for the container of the chart; ignored if the
 chart is displayed in Shiny, in which case the id is given by the Shiny id}
-
-\item{minY}{minimum value of the y-axis}
-
-\item{maxY}{maximum value of the y-axis}
 }
 \description{
 Create a HTML widget displaying a line chart.
@@ -159,8 +167,8 @@ amLineChart(
   draggable = list(y1 = TRUE, y2 = FALSE),
   backgroundColor = "#30303d",
   lineStyle = list(
-    color = list(y1 = "yellow", y2 = "orangered"),
-    width = 4
+    y1 = amLine(color = "yellow", width = 4),
+    y2 = amLine(color = "orangered", width = 4)
   ),
   chartTitle = list(text = "Gaussian samples", color = "whitesmoke"),
   xAxis = list(title = list(text = "Observation",
@@ -230,7 +238,7 @@ amLineChart(
   ),
   draggable = FALSE,
   tooltip = FALSE,
-  lineStyle = list(
+  lineStyle = amLine(
     width = 4,
     tensionX = 0.8,
     tensionY = 0.8

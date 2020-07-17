@@ -949,6 +949,8 @@ class AmLineChart extends React.PureComponent {
       data2 = this.props.data2 ?
         HTMLWidgets.dataframeToD3(utils.subset(this.props.data2, yValues)) :
         null,
+      trendData = this.props.trendData ?
+        HTMLWidgets.dataframeToD3(this.props.trendData) : null,
       yValueNames = this.props.yValueNames,
       minY = this.props.minY,
       maxY = this.props.maxY,
@@ -959,7 +961,7 @@ class AmLineChart extends React.PureComponent {
       draggable = this.props.draggable,
       tooltipStyle = this.props.tooltip,
       valueFormatter = this.props.valueFormatter,
-      lineStyle = this.props.lineStyle,
+      lineStyles = this.props.lineStyle,
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
@@ -1202,6 +1204,8 @@ class AmLineChart extends React.PureComponent {
 
 		yValues.forEach(function(value, index){
 
+      let lineStyle = lineStyles[value];
+
       let series = chart.series.push(new am4charts.LineSeries());
       if(isDate) {
         series.dataFields.dateX = xValue;
@@ -1212,8 +1216,8 @@ class AmLineChart extends React.PureComponent {
       series.name = yValueNames[value];
       series.sequencedInterpolation = true;
       series.defaultState.interpolationDuration = 1500;
-      series.tensionX = lineStyle.tensionX ? lineStyle.tensionX[value] : 1;
-      series.tensionY = lineStyle.tensionY ? lineStyle.tensionY[value] : 1;
+      series.tensionX = lineStyle.tensionX || 1;
+      series.tensionY = lineStyle.tensionY || 1;
 
       /* ~~~~\  value label  /~~~~ */
 /*    let valueLabel = new am4charts.LabelBullet();
@@ -1311,10 +1315,8 @@ class AmLineChart extends React.PureComponent {
         });
         */
       }
-      bullet.fill =
-        lineStyle.color ?
-          lineStyle.color[value] :
-          chart.colors.getIndex(index).saturate(0.7);
+      bullet.fill = lineStyle.color ||
+        chart.colors.getIndex(index).saturate(0.7);
       bullet.stroke = // XXXX
         lineStyle.stroke || chart.colors.getIndex(index).saturate(0.7);
       bullet.strokeWidth = 3;
@@ -1398,18 +1400,30 @@ class AmLineChart extends React.PureComponent {
       console.log("series", series);
       let lineTemplate = series.segments.template;
       lineTemplate.interactionsEnabled = true;
-      series.strokeWidth = lineStyle.width ? lineStyle.width[value] : 3;
-      series.stroke =
-        lineStyle.color ?
-          lineStyle.color[value] :
-          chart.colors.getIndex(index).saturate(0.7);
+      series.strokeWidth = lineStyle.width || 3;
+      series.stroke = lineStyle.color ||
+        chart.colors.getIndex(index).saturate(0.7);
+      if(lineStyle.dash)
+        series.strokeDasharray = lineStyle.dash;
       // line hover state
       let lineHoverState = lineTemplate.states.create("hover");
       // you can change any property on hover state and it will be animated
       lineHoverState.properties.fillOpacity = 1;
       lineHoverState.properties.strokeWidth = series.strokeWidth + 2;
-//        lineStyle.width ? lineStyle.width[value] + 2 : 5;
     });
+
+    if(trendData) {
+      let trend = chart.series.push(new am4charts.LineSeries());
+      trend.hiddenInLegend = true;
+      trend.data = trendData;
+      trend.dataFields.valueX = "x";
+      trend.dataFields.valueY = "y";
+//      series.name = yValueNames[value];
+      trend.sequencedInterpolation = true;
+      trend.defaultState.interpolationDuration = 1500;
+      trend.tensionX = 0.8;
+      trend.tensionY = 0.8;
+    }
 
     this.chart = chart;
 

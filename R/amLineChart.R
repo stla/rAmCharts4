@@ -17,10 +17,17 @@
 #' \code{yvalue1}, \code{yvalue2}, ... are the column names given in
 #' \code{yValues} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
 #' desired names to appear in the legend
-#' @param minY minimum value of the y-axis
-#' @param maxY maximum value of the y-axis
-#' @param valueFormatter a number formatter; see
+#' @param xLimits range of the x-axis, a vector of two values specifying
+#' the left and the right limits of the x-axis; \code{NULL} for default values
+#' @param yLimits range of the y-axis, a vector of two values specifying
+#' the lower and the upper limits of the y-axis; \code{NULL} for default values
+#' @param expandX if \code{xLimits = NULL}, a percentage of the range of the
+#'   x-axis used to expand this range
+#' @param expandY if \code{yLimits = NULL}, a percentage of the range of the
+#'   y-axis used to expand this range
+#' @param valueFormatter a number formatter for XXXX; see
 #' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}
+#' @param trend XXX
 #' @param chartTitle chart title, \code{NULL}, character, or list of settings
 #' @param theme theme, \code{NULL} or one of \code{"dataviz"},
 #' \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
@@ -34,17 +41,12 @@
 #' \code{text} field, or \code{FALSE} for no tooltip, or \code{NULL} for the
 #' default tooltip; the \code{text} field must be a formatted string:
 #' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}
-#' @param lineStyle settings of the lines style; \code{NULL} for default,
-#' otherwise a named list with four possible fields: \code{color} to set the
-#' colors of the lines, given as a single color or a named list of the form
-#' \code{list(yvalue1 = "red", yvalue2 = "green", ...)}, \code{width} to set
-#' the width of the lines, given as a single number or a named list of the form
-#' \code{list(yvalue1 = 1, yvalue2 = 3, ...)}, \code{tensionX} and
-#' \code{tensionY} to control the smoothing of the lines, given as single
-#' numbers between 0 and 1 or as named lists of the form
-#' \code{list(yvalue1 = 0.8, yvalue2 = 0.8, ...)}; see
-#' \url{https://www.amcharts.com/docs/v4/chart-types/xy-chart/#Smoothed_lines}
-#' for the meaning of these parameters
+#' @param lineStyle settings of the lines; \code{NULL} for default,
+#'   otherwise a named list of the form
+#'   \code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+#'   \code{settings1}, \code{settings2}, ... are lists created with
+#'   \code{\link{amLine}}; this can also be a
+#'   single list of settings that will be applied to each line
 #' @param backgroundColor a color for the chart background
 #' @param xAxis settings of the x-axis given as a list, or just a string
 #' for the axis title
@@ -102,8 +104,8 @@
 #'   draggable = list(y1 = TRUE, y2 = FALSE),
 #'   backgroundColor = "#30303d",
 #'   lineStyle = list(
-#'     color = list(y1 = "yellow", y2 = "orangered"),
-#'     width = 4
+#'     y1 = amLine(color = "yellow", width = 4),
+#'     y2 = amLine(color = "orangered", width = 4)
 #'   ),
 #'   chartTitle = list(text = "Gaussian samples", color = "whitesmoke"),
 #'   xAxis = list(title = list(text = "Observation",
@@ -173,7 +175,7 @@
 #'   ),
 #'   draggable = FALSE,
 #'   tooltip = FALSE,
-#'   lineStyle = list(
+#'   lineStyle = amLine(
 #'     width = 4,
 #'     tensionX = 0.8,
 #'     tensionY = 0.8
@@ -196,7 +198,10 @@ amLineChart <- function(
   yValueNames = NULL, # default
   xLimits = NULL,
   yLimits = NULL,
+  expandX = 0,
+  expandY = 5,
   valueFormatter = "#.",
+  trend = FALSE,
   chartTitle = NULL,
   theme = NULL,
   draggable = FALSE,
@@ -264,12 +269,27 @@ amLineChart <- function(
 
   if(is.null(xLimits)){
     xLimits <- range(pretty(data[[xValue]]))
+    if(!isDate){
+      pad <- diff(xLimits) * expandX/100
+      xLimits <- xLimits + c(-pad, pad)
+    }
   }
 
   if(is.null(yLimits)){
     yLimits <- range(pretty(do.call(c, data[yValues])))
-    pad <- diff(yLimits) * 0.05
+    pad <- diff(yLimits) * expandY/100
     yLimits <- yLimits + c(-pad, pad)
+  }
+
+  if(!isDate && !isFALSE(trend)){
+    dat <- data.frame(x = data[[xValue]], y = data[[yValues[1]]])
+    fit <- lm(trend[["formula"]], data = dat)
+    trendData <- data.frame(
+      x = range(dat$x),
+      y = predict(fit, newdata = data.frame(x = range(dat$x)))
+    )
+  }else{
+    trendData <- NULL
   }
 
   if(is.character(chartTitle)){
@@ -340,111 +360,127 @@ amLineChart <- function(
     }
   }
 
+  # if(is.null(lineStyle)){
+  #   lineStyle <- list(
+  #     width = setNames(rep(list(3), length(yValues)), yValues)
+  #   )
+  # }else{
+  #   if(is.character(lineStyle[["color"]])){
+  #     lineStyle[["color"]] <-
+  #       setNames(
+  #         rep(list(validateColor(lineStyle[["color"]])), length(yValues)),
+  #         yValues
+  #       )
+  #   }else if(is.list(lineStyle[["color"]])){
+  #     if(!all(yValues %in% names(lineStyle[["color"]]))){
+  #       stop(
+  #         paste0(
+  #           "Invalid `color` field of `lineStyle`. ",
+  #           "It must be a named list associating a color for every column ",
+  #           "given in the `yValues` argument, or just a color that will be ",
+  #           "applied to each line."
+  #         ),
+  #         call. = TRUE
+  #       )
+  #     }
+  #     lineStyle[["color"]] <-
+  #       sapply(lineStyle[["color"]], validateColor, simplify = FALSE, USE.NAMES = TRUE)
+  #   }
+  #   if(is.numeric(lineStyle[["width"]])){
+  #     lineStyle[["width"]] <-
+  #       setNames(
+  #         rep(list(lineStyle[["width"]]), length(yValues)),
+  #         yValues
+  #       )
+  #   }else if(is.list(lineStyle[["width"]])){
+  #     if(!all(yValues %in% names(lineStyle[["width"]]))){
+  #       stop(
+  #         paste0(
+  #           "Invalid `width` field of `lineStyle`. ",
+  #           "It must be a named list associating a width for every column ",
+  #           "given in the `yValues` argument, or just a width that will be ",
+  #           "applied to each line."
+  #         ),
+  #         call. = TRUE
+  #       )
+  #     }
+  #   }
+  #   if(is.numeric(lineStyle[["tensionX"]])){
+  #     stopifnot(lineStyle[["tensionX"]] >= 0 && lineStyle[["tensionX"]] <= 1)
+  #     lineStyle[["tensionX"]] <-
+  #       setNames(
+  #         rep(list(lineStyle[["tensionX"]]), length(yValues)),
+  #         yValues
+  #       )
+  #   }else if(is.list(lineStyle[["tensionX"]])){
+  #     if(!all(yValues %in% names(lineStyle[["tensionX"]]))){
+  #       stop(
+  #         paste0(
+  #           "Invalid `tensionX` field of `lineStyle`. ",
+  #           "It must be a named list associating a number to every column ",
+  #           "given in the `yValues` argument, or just a number that will be ",
+  #           "applied to each line."
+  #         ),
+  #         call. = TRUE
+  #       )
+  #     }
+  #     tensions <- unlist(lineStyle[["tensionX"]])
+  #     if(any(tensions < 0 | tensions > 1)){
+  #       stop(
+  #         paste0(
+  #           "Invalid `tensionX` field of `lineStyle`. ",
+  #           "The value of `tensionX` must be a number between 0 and 1."
+  #         ),
+  #         call. = TRUE
+  #       )
+  #     }
+  #   }
+  #   if(is.numeric(lineStyle[["tensionY"]])){
+  #     stopifnot(lineStyle[["tensionY"]] >= 0 && lineStyle[["tensionY"]] <= 1)
+  #     lineStyle[["tensionY"]] <-
+  #       setNames(
+  #         rep(list(lineStyle[["tensionY"]]), length(yValues)),
+  #         yValues
+  #       )
+  #   }else if(is.list(lineStyle[["tensionY"]])){
+  #     if(!all(yValues %in% names(lineStyle[["tensionY"]]))){
+  #       stop(
+  #         paste0(
+  #           "Invalid `tensionY` field of `lineStyle`. ",
+  #           "It must be a named list associating a number to every column ",
+  #           "given in the `yValues` argument, or just a number that will be ",
+  #           "applied to each line."
+  #         ),
+  #         call. = TRUE
+  #       )
+  #     }
+  #     tensions <- unlist(lineStyle[["tensionY"]])
+  #     if(any(tensions < 0 | tensions > 1)){
+  #       stop(
+  #         paste0(
+  #           "Invalid `tensionY` field of `lineStyle`. ",
+  #           "The value of `tensionY` must be a number between 0 and 1."
+  #         ),
+  #         call. = TRUE
+  #       )
+  #     }
+  #   }
+  # }
+
   if(is.null(lineStyle)){
-    lineStyle <- list(
-      width = setNames(rep(list(3), length(yValues)), yValues)
-    )
+    lineStyle <-
+      setNames(
+        rep(list(amLine()), length(yValues)),
+        yValues
+      )
+  }else if("lineStyle" %in% class(lineStyle)){
+    lineStyle <- setNames(rep(list(lineStyle), length(yValues)), yValues)
+  }else if(is.list(lineStyle)){
+    if(any(!yValues %in% names(lineStyle))){
+      stop("Invalid `lineStyle` list.", call. = TRUE)
+    }
   }else{
-    if(is.character(lineStyle[["color"]])){
-      lineStyle[["color"]] <-
-        setNames(
-          rep(list(validateColor(lineStyle[["color"]])), length(yValues)),
-          yValues
-        )
-    }else if(is.list(lineStyle[["color"]])){
-      if(!all(yValues %in% names(lineStyle[["color"]]))){
-        stop(
-          paste0(
-            "Invalid `color` field of `lineStyle`. ",
-            "It must be a named list associating a color for every column ",
-            "given in the `yValues` argument, or just a color that will be ",
-            "applied to each line."
-          ),
-          call. = TRUE
-        )
-      }
-      lineStyle[["color"]] <-
-        sapply(lineStyle[["color"]], validateColor, simplify = FALSE, USE.NAMES = TRUE)
-    }
-    if(is.numeric(lineStyle[["width"]])){
-      lineStyle[["width"]] <-
-        setNames(
-          rep(list(lineStyle[["width"]]), length(yValues)),
-          yValues
-        )
-    }else if(is.list(lineStyle[["width"]])){
-      if(!all(yValues %in% names(lineStyle[["width"]]))){
-        stop(
-          paste0(
-            "Invalid `width` field of `lineStyle`. ",
-            "It must be a named list associating a width for every column ",
-            "given in the `yValues` argument, or just a width that will be ",
-            "applied to each line."
-          ),
-          call. = TRUE
-        )
-      }
-    }
-    if(is.numeric(lineStyle[["tensionX"]])){
-      stopifnot(lineStyle[["tensionX"]] >= 0 && lineStyle[["tensionX"]] <= 1)
-      lineStyle[["tensionX"]] <-
-        setNames(
-          rep(list(lineStyle[["tensionX"]]), length(yValues)),
-          yValues
-        )
-    }else if(is.list(lineStyle[["tensionX"]])){
-      if(!all(yValues %in% names(lineStyle[["tensionX"]]))){
-        stop(
-          paste0(
-            "Invalid `tensionX` field of `lineStyle`. ",
-            "It must be a named list associating a number to every column ",
-            "given in the `yValues` argument, or just a number that will be ",
-            "applied to each line."
-          ),
-          call. = TRUE
-        )
-      }
-      tensions <- unlist(lineStyle[["tensionX"]])
-      if(any(tensions < 0 | tensions > 1)){
-        stop(
-          paste0(
-            "Invalid `tensionX` field of `lineStyle`. ",
-            "The value of `tensionX` must be a number between 0 and 1."
-          ),
-          call. = TRUE
-        )
-      }
-    }
-    if(is.numeric(lineStyle[["tensionY"]])){
-      stopifnot(lineStyle[["tensionY"]] >= 0 && lineStyle[["tensionY"]] <= 1)
-      lineStyle[["tensionY"]] <-
-        setNames(
-          rep(list(lineStyle[["tensionY"]]), length(yValues)),
-          yValues
-        )
-    }else if(is.list(lineStyle[["tensionY"]])){
-      if(!all(yValues %in% names(lineStyle[["tensionY"]]))){
-        stop(
-          paste0(
-            "Invalid `tensionY` field of `lineStyle`. ",
-            "It must be a named list associating a number to every column ",
-            "given in the `yValues` argument, or just a number that will be ",
-            "applied to each line."
-          ),
-          call. = TRUE
-        )
-      }
-      tensions <- unlist(lineStyle[["tensionY"]])
-      if(any(tensions < 0 | tensions > 1)){
-        stop(
-          paste0(
-            "Invalid `tensionY` field of `lineStyle`. ",
-            "The value of `tensionY` must be a number between 0 and 1."
-          ),
-          call. = TRUE
-        )
-      }
-    }
+    stop("Invalid `lineStyle` argument.", call. = TRUE)
   }
 
   if(is.list(xAxis)){
@@ -582,11 +618,12 @@ amLineChart <- function(
     list(
       data = data,
       data2 = data2,
+      trendData = trendData,
       xValue = xValue,
       isDate = isDate,
       yValues = as.list(yValues),
       yValueNames = yValueNames,
-      minX = xLimits[1L],
+      minX = xLimits[1L], # l'ai-je mis dans le jsx ?
       maxX = xLimits[2L],
       minY = yLimits[1L],
       maxY = yLimits[2L],
