@@ -77,9 +77,13 @@ y-axis used to expand this range}
 \code{FALSE} for no trend line, otherwise a named list of the form
 \code{list(yvalue1 = trend1, yvalue2 = trend2, ...)} where
 \code{trend1}, \code{trend2}, ... are lists of the form
-\code{list(method = "lm", formula = y ~ x, style = linestyle)} where
+\code{list(method = "lm", formula = y ~ x, style = linestyle)} or
+\code{list(method = "loess", method.args = list(span = 0.9), style = linestyle)}
+where
 \code{method} can be \code{"lm"} or \code{"loess"}, \code{formula} is
 a formula passed to the \code{lm} function if \code{method = "lm"},
+\code{method.args} is a list of additional arguments passed on to the
+modelling function defined by \code{method},
 and \code{style} is a list of
 settings for the trend line created with \code{\link{amLine}}; the
 lefthandside of the formula must always be \code{y}, and its
@@ -180,10 +184,14 @@ amLineChart(
   yValues = c("y1", "y2"),
   yValueNames = list(y1 = "Sample 1", y2 = "Sample 2"),
   trend = list(
-    "_all" = list(
+    y1 = list(
       method = "lm",
       formula = y ~ poly(x,2),
-      style = amLine(dash = "3,2")
+      style = amLine(color = "lightyellow", dash = "3,2")
+    ),
+    y2 = list(
+      method = "loess",
+      style = amLine(color = "palevioletred", dash = "3,2")
     )
   ),
   draggable = list(y1 = TRUE, y2 = FALSE),
