@@ -76,20 +76,33 @@ y-axis used to expand this range}
 \item{trend}{option to request trend lines and to set their settings;
 \code{FALSE} for no trend line, otherwise a named list of the form
 \code{list(yvalue1 = trend1, yvalue2 = trend2, ...)} where
-\code{trend1}, \code{trend2}, ... are lists of the form
-\code{list(method = "lm", formula = y ~ x, style = linestyle)} or
-\code{list(method = "loess", method.args = list(span = 0.9), style = linestyle)}
-where
-\code{method} can be \code{"lm"} or \code{"loess"}, \code{formula} is
-a formula passed to the \code{lm} function if \code{method = "lm"},
-\code{method.args} is a list of additional arguments passed on to the
-modelling function defined by \code{method},
-and \code{style} is a list of
-settings for the trend line created with \code{\link{amLine}}; the
-lefthandside of the formula must always be \code{y}, and its
-righthandside must be a symbolic expression depending of \code{x} only,
-e.g. \code{y ~ x}, \code{y ~ x + I(x^2)}, \code{y ~ poly(x,2)}; it is
-also possible to request the same kind of trend lines for all series
+\code{trend1}, \code{trend2}, ... are lists with the following fields:
+\describe{
+  \item{\code{method}}{
+    the modelling method, can be \code{"lm"}, \code{"lm.js"}
+    or \code{"loess"}; \code{"lm.js"} performs a polynomial regression in
+    JavaScript, its advantage is that the fitted regression line is
+    updated when the points of the line are dragged
+  }
+  \item{\code{formula}}{
+    a formula passed to the \code{lm} function if \code{method = "lm"}; the
+    lefthandside of this formula must always be \code{y}, and its
+    righthandside must be a symbolic expression depending on \code{x} only,
+    e.g. \code{y ~ x}, \code{y ~ x + I(x^2)}, \code{y ~ poly(x,2)}
+  }
+  \item{\code{order}}{
+    the order of the polynomial regression when \code{method = "lm.js"}
+  }
+  \item{\code{method.args}}{
+    a list of additional arguments passed on to the modelling function
+    defined by \code{method} when \code{method = "loess"}, e.g.
+    \code{list(span = 0.3)}
+  }
+  \item{\code{style}}{
+    a list of settings for the trend line created with \code{\link{amLine}}
+  }
+}
+it is also possible to request the same kind of trend lines for all series
 given by the \code{yValues} argument, by passing a list of the
 form \code{list("_all" = trendconfig)}, e.g.
 \code{list("_all" = list(method = "lm", formula = y ~ 0+x, style = amLine()))}}

@@ -30,24 +30,36 @@
 #' @param trend option to request trend lines and to set their settings;
 #'   \code{FALSE} for no trend line, otherwise a named list of the form
 #'   \code{list(yvalue1 = trend1, yvalue2 = trend2, ...)} where
-#'   \code{trend1}, \code{trend2}, ... are lists of the form
-#'   \code{list(method = "lm", formula = y ~ x, style = linestyle)} or
-#'   \code{list(method = "loess", method.args = list(span = 0.9), style = linestyle)}
-#'   where
-#'   \code{method} can be \code{"lm"} or \code{"loess"}, \code{formula} is
-#'   a formula passed to the \code{lm} function if \code{method = "lm"},
-#'   \code{method.args} is a list of additional arguments passed on to the
-#'   modelling function defined by \code{method},
-#'   and \code{style} is a list of
-#'   settings for the trend line created with \code{\link{amLine}}; the
-#'   lefthandside of the formula must always be \code{y}, and its
-#'   righthandside must be a symbolic expression depending of \code{x} only,
-#'   e.g. \code{y ~ x}, \code{y ~ x + I(x^2)}, \code{y ~ poly(x,2)}; it is
-#'   also possible to request the same kind of trend lines for all series
+#'   \code{trend1}, \code{trend2}, ... are lists with the following fields:
+#'   \describe{
+#'     \item{\code{method}}{
+#'       the modelling method, can be \code{"lm"}, \code{"lm.js"}
+#'       or \code{"loess"}; \code{"lm.js"} performs a polynomial regression in
+#'       JavaScript, its advantage is that the fitted regression line is
+#'       updated when the points of the line are dragged
+#'     }
+#'     \item{\code{formula}}{
+#'       a formula passed to the \code{lm} function if \code{method = "lm"}; the
+#'       lefthandside of this formula must always be \code{y}, and its
+#'       righthandside must be a symbolic expression depending on \code{x} only,
+#'       e.g. \code{y ~ x}, \code{y ~ x + I(x^2)}, \code{y ~ poly(x,2)}
+#'     }
+#'     \item{\code{order}}{
+#'       the order of the polynomial regression when \code{method = "lm.js"}
+#'     }
+#'     \item{\code{method.args}}{
+#'       a list of additional arguments passed on to the modelling function
+#'       defined by \code{method} when \code{method = "loess"}, e.g.
+#'       \code{list(span = 0.3)}
+#'     }
+#'     \item{\code{style}}{
+#'       a list of settings for the trend line created with \code{\link{amLine}}
+#'     }
+#'   }
+#'   it is also possible to request the same kind of trend lines for all series
 #'   given by the \code{yValues} argument, by passing a list of the
 #'   form \code{list("_all" = trendconfig)}, e.g.
 #'   \code{list("_all" = list(method = "lm", formula = y ~ 0+x, style = amLine()))}
-#'
 #' @param chartTitle chart title, \code{NULL}, character, or list of settings
 #' @param theme theme, \code{NULL} or one of \code{"dataviz"},
 #' \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
@@ -317,26 +329,42 @@ amLineChart <- function(
       trend <- setNames(rep(list(trend[["_all"]]), length(yValues)), yValues)
     }
     trendData <- setNames(vector("list", length(trend)), names(trend))
+    trendJS <- setNames(vector("list", length(trend)), names(trend))
     trendStyle <-
       sapply(trend, "[[", "style", USE.NAMES = TRUE, simplify = FALSE)
     for(yValue in names(trend)){
+      trendJS[[yValue]] <-
+        ifelse(
+          trend[[yValue]][["method"]] == "lm.js",
+          trend[[yValue]][["order"]],
+          FALSE
+        )
       dat <- data.frame(x = data[[xValue]], y = data[[yValue]])
       if(trend[[yValue]][["method"]] == "loess"){
         method.args <- if(is.null(trend[[yValue]][["method.args"]]))
           list()
         else
           trend[[yValue]][["method.args"]]
+      }else if(trend[[yValue]][["method"]] == "lm.js"){
+        trend[[yValue]][["formula"]] <-
+          as.formula(
+            sprintf(
+              "y ~ poly(x, degree = %d, raw = TRUE)",
+              trend[[yValue]][["order"]]
+            )
+          )
       }
       fit <- switch(
         trend[[yValue]][["method"]],
         lm = lm(trend[[yValue]][["formula"]], data = dat),
+        lm.js = lm(trend[[yValue]][["formula"]], data = dat),
         loess = do.call(
           function(...){ loess(y ~ x, data = dat, ...) },
           method.args
         )
       )
       simpleRegression <-
-        trend[[yValue]][["method"]] == "lm" &&
+        trend[[yValue]][["method"]] %in% c("lm", "lm.js") &&
         identical(attr(terms(trend[[yValue]][["formula"]]), "term.labels"), "x")
       X <- na.omit(dat$x)
       x <-
@@ -344,11 +372,11 @@ amLineChart <- function(
           range(X)
       else
         seq(min(X), max(X), length.out = 100)
-      y <- predict(fit, newdata = data.frame(x = x))
-      trendData[[yValue]] <- data.frame(x = x, y = y)
+      y <- predict(fit, newdata = data.frame(x = X))
+      trendData[[yValue]] <- data.frame(x = X, y = y)
     }
   }else{
-    trendData <- trendStyle <- NULL
+    trendData <- trendStyle <- trendJS <- NULL
   }
 
   if(is.character(chartTitle)){
@@ -679,6 +707,7 @@ amLineChart <- function(
       data2 = data2,
       trendData = trendData,
       trendStyle = trendStyle,
+      trendJS = trendJS,
       xValue = xValue,
       isDate = isDate,
       yValues = as.list(yValues),
