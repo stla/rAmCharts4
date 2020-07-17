@@ -120657,6 +120657,11 @@ class AmLineChart extends React.PureComponent {
         yValues = this.props.yValues,
         data = _utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [xValue].concat(yValues)),
         data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, yValues)) : null,
+        trendData0 = this.props.trendData,
+        trendData = trendData0 ? Object.assign({}, ...Object.keys(trendData0).map(k => ({
+      [k]: HTMLWidgets.dataframeToD3(trendData0[k])
+    }))) : null,
+        trendStyles = this.props.trendStyle,
         yValueNames = this.props.yValueNames,
         minY = this.props.minY,
         maxY = this.props.maxY,
@@ -120667,7 +120672,7 @@ class AmLineChart extends React.PureComponent {
         draggable = this.props.draggable,
         tooltipStyle = this.props.tooltip,
         valueFormatter = this.props.valueFormatter,
-        lineStyle = this.props.lineStyle,
+        lineStyles = this.props.lineStyle,
         chartId = this.props.chartId,
         shinyId = this.props.shinyId;
 
@@ -120921,6 +120926,7 @@ class AmLineChart extends React.PureComponent {
     }
 
     yValues.forEach(function (value, index) {
+      var lineStyle = lineStyles[value];
       var series = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LineSeries"]());
 
       if (isDate) {
@@ -120933,8 +120939,8 @@ class AmLineChart extends React.PureComponent {
       series.name = yValueNames[value];
       series.sequencedInterpolation = true;
       series.defaultState.interpolationDuration = 1500;
-      series.tensionX = lineStyle.tensionX ? lineStyle.tensionX[value] : 1;
-      series.tensionY = lineStyle.tensionY ? lineStyle.tensionY[value] : 1;
+      series.tensionX = lineStyle.tensionX || 1;
+      series.tensionY = lineStyle.tensionY || 1;
       /* ~~~~\  value label  /~~~~ */
 
       /*    let valueLabel = new am4charts.LabelBullet();
@@ -121037,7 +121043,7 @@ class AmLineChart extends React.PureComponent {
                 */
       }
 
-      bullet.fill = lineStyle.color ? lineStyle.color[value] : chart.colors.getIndex(index).saturate(0.7);
+      bullet.fill = lineStyle.color || chart.colors.getIndex(index).saturate(0.7);
       bullet.stroke = // XXXX
       lineStyle.stroke || chart.colors.getIndex(index).saturate(0.7);
       bullet.strokeWidth = 3;
@@ -121122,14 +121128,34 @@ class AmLineChart extends React.PureComponent {
       console.log("series", series);
       var lineTemplate = series.segments.template;
       lineTemplate.interactionsEnabled = true;
-      series.strokeWidth = lineStyle.width ? lineStyle.width[value] : 3;
-      series.stroke = lineStyle.color ? lineStyle.color[value] : chart.colors.getIndex(index).saturate(0.7); // line hover state
+      series.strokeWidth = lineStyle.width || 3;
+      series.stroke = lineStyle.color || chart.colors.getIndex(index).saturate(0.7);
+      if (lineStyle.dash) series.strokeDasharray = lineStyle.dash; // line hover state
 
       var lineHoverState = lineTemplate.states.create("hover"); // you can change any property on hover state and it will be animated
 
       lineHoverState.properties.fillOpacity = 1;
-      lineHoverState.properties.strokeWidth = series.strokeWidth + 2; //        lineStyle.width ? lineStyle.width[value] + 2 : 5;
+      lineHoverState.properties.strokeWidth = series.strokeWidth + 2;
+      /* ~~~~\ trend line /~~~~ */
+
+      if (trendData && trendData[value]) {
+        var trend = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LineSeries"]());
+        trend.hiddenInLegend = true;
+        trend.data = trendData[value];
+        trend.dataFields.valueX = "x";
+        trend.dataFields.valueY = "y";
+        trend.sequencedInterpolation = true;
+        trend.defaultState.interpolationDuration = 1500;
+        var trendStyle = trendStyles[value];
+        trend.strokeWidth = trendStyle.width || 3;
+        trend.stroke = trendStyle.color || chart.colors.getIndex(index).saturate(0.7);
+        if (trendStyle.dash) trend.strokeDasharray = trendStyle.dash;
+        trend.tensionX = trendStyle.tensionX || 0.8;
+        trend.tensionY = trendStyle.tensionY || 0.8;
+      }
     });
+    /* end of forEach */
+
     this.chart = chart;
   }
 
@@ -121513,7 +121539,6 @@ class AmScatterChart extends React.PureComponent {
       if (tooltips) {
         /* ~~~~\  tooltip  /~~~~ */
         var tooltipStyle = tooltips[value];
-        console.log(tooltipStyle);
         bullet.tooltipText = tooltipStyle.text;
         var tooltip = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Tooltip"]();
         tooltip.pointerOrientation = "vertical";
@@ -121524,8 +121549,7 @@ class AmScatterChart extends React.PureComponent {
 
         tooltip.background.fillOpacity = tooltipStyle.backgroundOpacity || 0.6;
         tooltip.autoTextColor = tooltipStyle.auto || !tooltipStyle.textColor;
-        tooltip.label.fill = tooltipStyle.textColor; //tooltip.stroke = tooltipStyle.textColor;
-
+        tooltip.label.fill = tooltipStyle.textColor;
         tooltip.label.textAlign = tooltipStyle.textAlign;
         tooltip.background.stroke = tooltipStyle.borderColor || chart.colors.getIndex(index);
         tooltip.background.strokeWidth = tooltipStyle.borderWidth;

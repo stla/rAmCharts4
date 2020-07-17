@@ -27,7 +27,23 @@
 #'   y-axis used to expand this range
 #' @param valueFormatter a number formatter for XXXX; see
 #' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}
-#' @param trend XXX
+#' @param trend option to request trend lines and to set their settings;
+#'   \code{FALSE} for no trend line, otherwise a named list of the form
+#'   \code{list(yvalue1 = trend1, yvalue2 = trend2, ...)} where
+#'   \code{trend1}, \code{trend2}, ... are lists of the form
+#'   \code{list(method = "lm", formula = y ~ x, style = linestyle)} where
+#'   \code{method} can be \code{"lm"} or \code{"loess"}, \code{formula} is
+#'   a formula passed to the \code{lm} function if \code{method = "lm"},
+#'   and \code{style} is a list of
+#'   settings for the trend line created with \code{\link{amLine}}; the
+#'   lefthandside of the formula must always be \code{y}, and its
+#'   righthandside must be a symbolic expression depending of \code{x} only,
+#'   e.g. \code{y ~ x}, \code{y ~ x + I(x^2)}, \code{y ~ poly(x,2)}; it is
+#'   also possible to request the same kind of trend lines for all series
+#'   given by the \code{yValues} argument, by passing a list of the
+#'   form \code{list("_all" = trendconfig)}, e.g.
+#'   \code{list("_all" = list(method = "lm", formula = y ~ 0+x, style = amLine()))}
+#'
 #' @param chartTitle chart title, \code{NULL}, character, or list of settings
 #' @param theme theme, \code{NULL} or one of \code{"dataviz"},
 #' \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
@@ -101,6 +117,13 @@
 #'   xValue = "x",
 #'   yValues = c("y1", "y2"),
 #'   yValueNames = list(y1 = "Sample 1", y2 = "Sample 2"),
+#'   trend = list(
+#'     "_all" = list(
+#'       method = "lm",
+#'       formula = y ~ poly(x,2),
+#'       style = amLine(dash = "3,2")
+#'     )
+#'   ),
 #'   draggable = list(y1 = TRUE, y2 = FALSE),
 #'   backgroundColor = "#30303d",
 #'   lineStyle = list(
@@ -282,14 +305,32 @@ amLineChart <- function(
   }
 
   if(!isDate && !isFALSE(trend)){
-    dat <- data.frame(x = data[[xValue]], y = data[[yValues[1]]])
-    fit <- lm(trend[["formula"]], data = dat)
-    trendData <- data.frame(
-      x = range(dat$x),
-      y = predict(fit, newdata = data.frame(x = range(dat$x)))
-    )
+    if("_all" %in% names(trend)){
+      trend <- setNames(rep(list(trend[["_all"]]), length(yValues)), yValues)
+    }
+    trendData <- setNames(vector("list", length(trend)), names(trend))
+    trendStyle <-
+      sapply(trend, "[[", "style", USE.NAMES = TRUE, simplify = FALSE)
+    for(yValue in names(trend)){
+      dat <- data.frame(x = data[[xValue]], y = data[[yValue]])
+      fit <- switch(
+        trend[[yValue]][["method"]],
+        lm = lm(trend[[yValue]][["formula"]], data = dat)
+      )
+      simpleRegression <-
+        trend[[yValue]][["method"]] == "lm" &&
+        identical(attr(terms(trend[[yValue]][["formula"]]), "term.labels"), "x")
+      X <- na.omit(dat$x)
+      x <-
+        if(simpleRegression)
+          range(X)
+      else
+        seq(min(X), max(X), length.out = 100)
+      y <- predict(fit, newdata = data.frame(x = x))
+      trendData[[yValue]] <- data.frame(x = x, y = y)
+    }
   }else{
-    trendData <- NULL
+    trendData <- trendStyle <- NULL
   }
 
   if(is.character(chartTitle)){
@@ -619,6 +660,7 @@ amLineChart <- function(
       data = data,
       data2 = data2,
       trendData = trendData,
+      trendStyle = trendStyle,
       xValue = xValue,
       isDate = isDate,
       yValues = as.list(yValues),

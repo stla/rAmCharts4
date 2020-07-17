@@ -73,7 +73,22 @@ y-axis used to expand this range}
 \item{valueFormatter}{a number formatter for XXXX; see
 \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}}
 
-\item{trend}{XXX}
+\item{trend}{option to request trend lines and to set their settings;
+\code{FALSE} for no trend line, otherwise a named list of the form
+\code{list(yvalue1 = trend1, yvalue2 = trend2, ...)} where
+\code{trend1}, \code{trend2}, ... are lists of the form
+\code{list(method = "lm", formula = y ~ x, style = linestyle)} where
+\code{method} can be \code{"lm"} or \code{"loess"}, \code{formula} is
+a formula passed to the \code{lm} function if \code{method = "lm"},
+and \code{style} is a list of
+settings for the trend line created with \code{\link{amLine}}; the
+lefthandside of the formula must always be \code{y}, and its
+righthandside must be a symbolic expression depending of \code{x} only,
+e.g. \code{y ~ x}, \code{y ~ x + I(x^2)}, \code{y ~ poly(x,2)}; it is
+also possible to request the same kind of trend lines for all series
+given by the \code{yValues} argument, by passing a list of the
+form \code{list("_all" = trendconfig)}, e.g.
+\code{list("_all" = list(method = "lm", formula = y ~ 0+x, style = amLine()))}}
 
 \item{chartTitle}{chart title, \code{NULL}, character, or list of settings}
 
@@ -164,6 +179,13 @@ amLineChart(
   xValue = "x",
   yValues = c("y1", "y2"),
   yValueNames = list(y1 = "Sample 1", y2 = "Sample 2"),
+  trend = list(
+    "_all" = list(
+      method = "lm",
+      formula = y ~ poly(x,2),
+      style = amLine(dash = "3,2")
+    )
+  ),
   draggable = list(y1 = TRUE, y2 = FALSE),
   backgroundColor = "#30303d",
   lineStyle = list(

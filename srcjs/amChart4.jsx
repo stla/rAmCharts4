@@ -949,8 +949,12 @@ class AmLineChart extends React.PureComponent {
       data2 = this.props.data2 ?
         HTMLWidgets.dataframeToD3(utils.subset(this.props.data2, yValues)) :
         null,
-      trendData = this.props.trendData ?
-        HTMLWidgets.dataframeToD3(this.props.trendData) : null,
+      trendData0 = this.props.trendData,
+      trendData = trendData0 ?
+        Object.assign({}, ...Object.keys(trendData0)
+          .map(k => ({[k]: HTMLWidgets.dataframeToD3(trendData0[k])}))
+        ) : null,
+      trendStyles = this.props.trendStyle,
       yValueNames = this.props.yValueNames,
       minY = this.props.minY,
       maxY = this.props.maxY,
@@ -1410,20 +1414,27 @@ class AmLineChart extends React.PureComponent {
       // you can change any property on hover state and it will be animated
       lineHoverState.properties.fillOpacity = 1;
       lineHoverState.properties.strokeWidth = series.strokeWidth + 2;
-    });
 
-    if(trendData) {
-      let trend = chart.series.push(new am4charts.LineSeries());
-      trend.hiddenInLegend = true;
-      trend.data = trendData;
-      trend.dataFields.valueX = "x";
-      trend.dataFields.valueY = "y";
-//      series.name = yValueNames[value];
-      trend.sequencedInterpolation = true;
-      trend.defaultState.interpolationDuration = 1500;
-      trend.tensionX = 0.8;
-      trend.tensionY = 0.8;
-    }
+      /* ~~~~\ trend line /~~~~ */
+      if(trendData && trendData[value]) {
+        let trend = chart.series.push(new am4charts.LineSeries());
+        trend.hiddenInLegend = true;
+        trend.data = trendData[value];
+        trend.dataFields.valueX = "x";
+        trend.dataFields.valueY = "y";
+        trend.sequencedInterpolation = true;
+        trend.defaultState.interpolationDuration = 1500;
+        let trendStyle = trendStyles[value];
+        trend.strokeWidth = trendStyle.width || 3;
+        trend.stroke = trendStyle.color ||
+          chart.colors.getIndex(index).saturate(0.7);
+        if(trendStyle.dash)
+          trend.strokeDasharray = trendStyle.dash;
+        trend.tensionX = trendStyle.tensionX || 0.8;
+        trend.tensionY = trendStyle.tensionY || 0.8;
+      }
+
+    }); /* end of forEach */
 
     this.chart = chart;
 
