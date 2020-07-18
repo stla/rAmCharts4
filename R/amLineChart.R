@@ -490,7 +490,7 @@ amLineChart <- function(
       )
       tooltip <-
         setNames(
-          rep(list(amTooltip(text = text, auto = TRUE)), length(yValues)),
+          rep(list(amTooltip(text = text, auto = FALSE)), length(yValues)),
           yValues
         )
     }else if("tooltip" %in% class(tooltip)){
@@ -502,7 +502,7 @@ amLineChart <- function(
     }else if(is.character(tooltip)){
       tooltip <-
         setNames(
-          rep(list(amTooltip(text = tooltip, auto = TRUE)), length(yValues)),
+          rep(list(amTooltip(text = tooltip, auto = FALSE)), length(yValues)),
           yValues
         )
     }else{

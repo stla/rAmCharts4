@@ -31,7 +31,7 @@
 #' dragging for each bar corresponding to a column given in \code{values}
 #' @param tooltip tooltip settings given as a list, or just a string for the
 #' \code{text} field, or \code{FALSE} for no tooltip, or \code{NULL} for the
-#' default tooltip; the \code{text} field must be a formatted string:
+#' default tooltip; the \code{text} field must be a formatting string:
 #' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}
 #' @param columnStyle settings of the columns style; \code{NULL} for default,
 #' otherwise a named list with three fields: \code{fill} to set the colors

@@ -1047,7 +1047,7 @@ class AmLineChart extends React.PureComponent {
 
 		/* ~~~~\  title  /~~~~ */
 		let chartTitle = this.props.chartTitle;
-		if (chartTitle) {
+		if(chartTitle) {
 			let title = chart.plotContainer.createChild(am4core.Label);
 			title.text = chartTitle.text;
 			title.fill =
@@ -1380,27 +1380,10 @@ class AmLineChart extends React.PureComponent {
       }
       if(tooltips) {
         /* ~~~~\  tooltip  /~~~~ */
-        let tooltipStyle = tooltips[value];
-        bullet.tooltipText = tooltipStyle.text;
-        let tooltip = new am4core.Tooltip();
+        bullet.tooltipText = tooltips[value].text;
+        let tooltip = utils.Tooltip(am4core, chart, index, tooltips[value]);
         tooltip.pointerOrientation = "vertical";
         tooltip.dy = 0;
-        tooltip.getFillFromObject = tooltipStyle.auto;
-        //if(!tooltipStyle.auto){
-          tooltip.background.fill = tooltipStyle.backgroundColor ||
-          chart.colors.getIndex(index).saturate(0.7);
-        //}
-        tooltip.background.fillOpacity = tooltipStyle.backgroundOpacity || 0.6;
-        tooltip.autoTextColor =
-          tooltipStyle.auto || !tooltipStyle.textColor;
-        tooltip.label.fill = tooltipStyle.textColor;
-        tooltip.label.textAlign = tooltipStyle.textAlign;
-        tooltip.background.stroke =
-          tooltipStyle.borderColor || chart.colors.getIndex(index);
-        tooltip.background.strokeWidth = tooltipStyle.borderWidth;
-        tooltip.scale = tooltipStyle.scale || 1;
-        tooltip.background.filters.clear(); // remove tooltip shadow
-        tooltip.background.pointerLength = tooltipStyle.pointerLength;
         tooltip.adapter.add("rotation", (x, target) => {
           if(target.dataItem) {
             if(target.dataItem.valueY >= 0) {
@@ -1993,27 +1976,10 @@ class AmScatterChart extends React.PureComponent {
       shape.fill = shapeConfig.color || chart.colors.getIndex(index).saturate(0.7);
       if(tooltips) {
         /* ~~~~\  tooltip  /~~~~ */
-        let tooltipStyle = tooltips[value];
-        bullet.tooltipText = tooltipStyle.text;
-        let tooltip = new am4core.Tooltip();
+        bullet.tooltipText = tooltips[value].text;
+        let tooltip = utils.Tooltip(am4core, chart, index, tooltips[value]);
         tooltip.pointerOrientation = "vertical";
         tooltip.dy = 0;
-        tooltip.getFillFromObject = tooltipStyle.auto;
-        //if(!tooltipStyle.auto){
-          tooltip.background.fill = tooltipStyle.backgroundColor ||
-          chart.colors.getIndex(index).saturate(0.7);
-        //}
-        tooltip.background.fillOpacity = tooltipStyle.backgroundOpacity || 0.6;
-        tooltip.autoTextColor =
-          tooltipStyle.auto || !tooltipStyle.textColor;
-        tooltip.label.fill = tooltipStyle.textColor;
-        tooltip.label.textAlign = tooltipStyle.textAlign;
-        tooltip.background.stroke =
-          tooltipStyle.borderColor || chart.colors.getIndex(index);
-        tooltip.background.strokeWidth = tooltipStyle.borderWidth;
-        tooltip.scale = tooltipStyle.scale || 1;
-        tooltip.background.filters.clear(); // remove tooltip shadow
-        tooltip.background.pointerLength = tooltipStyle.pointerLength;
         tooltip.adapter.add("rotation", (x, target) => {
           if(target.dataItem) {
             if(target.dataItem.valueY >= 0) {
