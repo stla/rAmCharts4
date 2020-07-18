@@ -54,7 +54,7 @@ class AmBarChart extends React.PureComponent {
       draggable = this.props.draggable,
       tooltips = this.props.tooltip,
       valueFormatter = this.props.valueFormatter,
-      columnStyle = this.props.columnStyle,
+      columnStyles = this.props.columnStyle,
       bulletsStyle = this.props.bullets,
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
@@ -314,6 +314,7 @@ class AmBarChart extends React.PureComponent {
 
       /* ~~~~\  bullet  /~~~~ */
       let bullet;
+      let columnStyle = columnStyles[value];
       if(draggable[value]) {
         bullet = series.bullets.create();
         bullet.opacity = 0; // initially invisible
@@ -327,10 +328,10 @@ class AmBarChart extends React.PureComponent {
         // add sprite to bullet
         let shapeConfig = bulletsStyle[value];
         if(!shapeConfig.color){
-          shapeConfig.color = columnStyle.fill[value];
+          shapeConfig.color = columnStyle.color;
         }
         if(!shapeConfig.strokeColor){
-          shapeConfig.strokeColor = columnStyle.stroke;
+          shapeConfig.strokeColor = columnStyle.strokeColor;
         }
         let shape =
           utils.Shape(am4core, chart, index, bullet, shapeConfig);
@@ -361,12 +362,12 @@ class AmBarChart extends React.PureComponent {
       let columnTemplate = series.columns.template;
       columnTemplate.width = am4core.percent(columnWidth);
       columnTemplate.fill =
-        columnStyle.fill[value] || chart.colors.getIndex(index);
-      columnTemplate.stroke =
-        columnStyle.stroke || am4core.color(chart.colors.getIndex(index)).lighten(-0.5);
+        columnStyle.color || chart.colors.getIndex(index);
+      columnTemplate.stroke = columnStyle.strokeColor ||
+        am4core.color(columnTemplate.fill).lighten(-0.5);
       columnTemplate.strokeOpacity = 1;
       columnTemplate.column.fillOpacity = 0.8;
-      columnTemplate.column.strokeWidth = 1;
+      columnTemplate.column.strokeWidth = columnStyle.strokeWidth;
       if(tooltips) {
         columnTemplate.tooltipText = tooltips[value].text;
         columnTemplate.adapter.add("tooltipY", (x, target) => {
@@ -407,39 +408,39 @@ class AmBarChart extends React.PureComponent {
         }
       });
       // columns hover state
-      var columnHoverState = columnTemplate.column.states.create("hover");
+      let columnHoverState = columnTemplate.column.states.create("hover");
       // you can change any property on hover state and it will be animated
       columnHoverState.properties.fillOpacity = 1;
       columnHoverState.properties.strokeWidth = 3;
       if(tooltips) {
         // hide label when hovered because the tooltip is shown
         columnTemplate.events.on("over", event => {
-          var dataItem = event.target.dataItem;
-          var itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
+          let dataItem = event.target.dataItem;
+          let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
           itemLabelBullet.fillOpacity = 0;
         });
         // show label when mouse is out
         columnTemplate.events.on("out", event => {
-          var dataItem = event.target.dataItem;
-          var itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
+          let dataItem = event.target.dataItem;
+          let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
           itemLabelBullet.fillOpacity = 1;
         });
       }
       if(draggable[value]) {
         // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
         columnTemplate.events.on("down", event => {
-          var dataItem = event.target.dataItem;
-          var itemBullet = dataItem.bullets.getKey(bullet.uid);
+          let dataItem = event.target.dataItem;
+          let itemBullet = dataItem.bullets.getKey(bullet.uid);
           itemBullet.dragStart(event.pointer);
         });
         // when columns position changes, adjust minX/maxX of bullets so that we could only dragg vertically
         columnTemplate.events.on("positionchanged", event => {
-          var dataItem = event.target.dataItem;
+          let dataItem = event.target.dataItem;
           if(dataItem.bullets) {
-          console.log('dataItem.bullets', dataItem.bullets);
-          console.log('bullet.uid', bullet.uid);
-            var itemBullet = dataItem.bullets.getKey(bullet.uid);
-            var column = dataItem.column;
+            //console.log('dataItem.bullets', dataItem.bullets);
+            //console.log('bullet.uid', bullet.uid);
+            let itemBullet = dataItem.bullets.getKey(bullet.uid);
+            let column = dataItem.column;
             itemBullet.minX = column.pixelX + column.pixelWidth / 2;
             itemBullet.maxX = itemBullet.minX;
             itemBullet.minY = 0;

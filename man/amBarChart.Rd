@@ -84,12 +84,12 @@ dragging for each bar corresponding to a column given in \code{values}}
 single list of settings that will be applied to each series,
 or a just a string for the text to display in the tooltip}
 
-\item{columnStyle}{settings of the columns style; \code{NULL} for default,
-otherwise a named list with three fields: \code{fill} to set the colors
-of the columns, given as a single color or a named list of the form
-\code{list(value1 = "red", value2 = "green", ...)}, \code{stroke} to set
-the color of the borders of the columns, and \code{cornerRadius} to set
-the radius of the corners of the columns}
+\item{columnStyle}{settings of the columns; \code{NULL} for default,
+otherwise a named list of the form
+\code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+\code{settings1}, \code{settings2}, ... are lists created with
+\code{\link{amColumn}}; this can also be a
+single list of settings that will be applied to each column}
 
 \item{bullets}{settings of the bullets; \code{NULL} for default,
 otherwise a named list of the form
@@ -204,8 +204,16 @@ amBarChart(
   draggable = list(income = TRUE, expenses = FALSE),
   backgroundColor = "#30303d",
   columnStyle = list(
-    fill = list(income = "darkmagenta", expenses = "darkred"),
-    stroke = "#cccccc"
+    income = amColumn(
+      color = "darkmagenta",
+      strokeColor = "#cccccc",
+      strokeWidth = 2
+    ),
+    expenses = amColumn(
+      color = "darkred",
+      strokeColor = "#cccccc",
+      strokeWidth = 2
+    )
   ),
   chartTitle = list(text = "Income and expenses per country"),
   xAxis = list(title = list(text = "Country")),

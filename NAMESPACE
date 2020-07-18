@@ -3,6 +3,7 @@
 export(amBarChart)
 export(amChart4Output)
 export(amCircle)
+export(amColumn)
 export(amHorizontalBarChart)
 export(amLine)
 export(amLineChart)

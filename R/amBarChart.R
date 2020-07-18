@@ -36,12 +36,12 @@
 #'   \code{\link{amTooltip}}; this can also be a
 #'   single list of settings that will be applied to each series,
 #'   or a just a string for the text to display in the tooltip
-#' @param columnStyle settings of the columns style; \code{NULL} for default,
-#' otherwise a named list with three fields: \code{fill} to set the colors
-#' of the columns, given as a single color or a named list of the form
-#' \code{list(value1 = "red", value2 = "green", ...)}, \code{stroke} to set
-#' the color of the borders of the columns, and \code{cornerRadius} to set
-#' the radius of the corners of the columns
+#' @param columnStyle settings of the columns; \code{NULL} for default,
+#'   otherwise a named list of the form
+#'   \code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+#'   \code{settings1}, \code{settings2}, ... are lists created with
+#'   \code{\link{amColumn}}; this can also be a
+#'   single list of settings that will be applied to each column
 #' @param bullets settings of the bullets; \code{NULL} for default,
 #'   otherwise a named list of the form
 #'   \code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
@@ -140,8 +140,16 @@
 #'   draggable = list(income = TRUE, expenses = FALSE),
 #'   backgroundColor = "#30303d",
 #'   columnStyle = list(
-#'     fill = list(income = "darkmagenta", expenses = "darkred"),
-#'     stroke = "#cccccc"
+#'     income = amColumn(
+#'       color = "darkmagenta",
+#'       strokeColor = "#cccccc",
+#'       strokeWidth = 2
+#'     ),
+#'     expenses = amColumn(
+#'       color = "darkred",
+#'       strokeColor = "#cccccc",
+#'       strokeWidth = 2
+#'     )
 #'   ),
 #'   chartTitle = list(text = "Income and expenses per country"),
 #'   xAxis = list(title = list(text = "Country")),
@@ -312,35 +320,47 @@ amBarChart <- function(
     }
   }
 
-  if(!is.null(columnStyle[["stroke"]])){
-    columnStyle[["stroke"]] <- validateColor(columnStyle[["stroke"]])
-  }
+  # if(!is.null(columnStyle[["stroke"]])){
+  #   columnStyle[["stroke"]] <- validateColor(columnStyle[["stroke"]])
+  # }
+  # if(is.null(columnStyle)){
+  #   columnStyle <- list(
+  #     fill = setNames(rep(list(NULL), length(values)), values),
+  #     stroke = NULL,
+  #     cornerRadius = NULL
+  #   )
+  # }else if(is.character(columnStyle[["fill"]])){
+  #   columnStyle[["fill"]] <-
+  #     setNames(
+  #       rep(list(validateColor(columnStyle[["fill"]])), length(values)),
+  #       values
+  #     )
+  # }else if(is.list(columnStyle[["fill"]])){
+  #   if(!all(values %in% names(columnStyle[["fill"]]))){
+  #     stop(
+  #       paste0(
+  #         "Invalid `fill` field of `columnStyle`. ",
+  #         "It must be a named list defining a color for every column ",
+  #         "given in the `values` argument, or just a color that will be ",
+  #         "applied to each column."
+  #       ),
+  #       call. = TRUE
+  #     )
+  #   }
+  #   columnStyle[["fill"]] <-
+  #     sapply(columnStyle[["fill"]], validateColor, simplify = FALSE, USE.NAMES = TRUE)
+  # }
+
   if(is.null(columnStyle)){
-    columnStyle <- list(
-      fill = setNames(rep(list(NULL), length(values)), values),
-      stroke = NULL,
-      cornerRadius = NULL
-    )
-  }else if(is.character(columnStyle[["fill"]])){
-    columnStyle[["fill"]] <-
-      setNames(
-        rep(list(validateColor(columnStyle[["fill"]])), length(values)),
-        values
-      )
-  }else if(is.list(columnStyle[["fill"]])){
-    if(!all(values %in% names(columnStyle[["fill"]]))){
-      stop(
-        paste0(
-          "Invalid `fill` field of `columnStyle`. ",
-          "It must be a named list defining a color for every column ",
-          "given in the `values` argument, or just a color that will be ",
-          "applied to each column."
-        ),
-        call. = TRUE
-      )
+    columnStyle <- setNames(rep(list(amColumn()), length(values)), values)
+  }else if("column" %in% class(columnStyle)){
+    columnStyle <- setNames(rep(list(columnStyle), length(values)), values)
+  }else if(is.list(columnStyle)){
+    if(any(!values %in% names(columnStyle))){
+      stop("Invalid `columnStyle` list.", call. = TRUE)
     }
-    columnStyle[["fill"]] <-
-      sapply(columnStyle[["fill"]], validateColor, simplify = FALSE, USE.NAMES = TRUE)
+  }else{
+    stop("Invalid `columnStyle` argument.", call. = TRUE)
   }
 
   if(is.null(bullets)){
