@@ -38,7 +38,9 @@ class AmBarChart extends React.PureComponent {
     let theme = this.props.theme,
       category = this.props.category,
       values = this.props.values,
-      data = utils.subset(this.props.data, [category].concat(values)),
+      data = HTMLWidgets.dataframeToD3(
+        utils.subset(this.props.data, [category].concat(values))
+      ),
       dataCopy = data.map(row => ({...row})),
       data2 = this.props.data2 ?
         HTMLWidgets.dataframeToD3(utils.subset(this.props.data2, values)) :
@@ -50,7 +52,7 @@ class AmBarChart extends React.PureComponent {
       yAxis = this.props.yAxis,
       gridLines = this.props.gridLines,
       draggable = this.props.draggable,
-      tooltipStyle = this.props.tooltip,
+      tooltips = this.props.tooltip,
       valueFormatter = this.props.valueFormatter,
       columnStyle = this.props.columnStyle,
       chartId = this.props.chartId,
@@ -253,40 +255,44 @@ class AmBarChart extends React.PureComponent {
       series.defaultState.interpolationDuration = 1500;
 
       /* ~~~~\  tooltip  /~~~~ */
-      if(tooltipStyle) {
-        var tooltip = series.tooltip;
+      if(tooltips) {
+        let tooltip = utils.Tooltip(am4core, chart, index, tooltips[value]);
         tooltip.pointerOrientation = "vertical";
         tooltip.dy = 0;
-        tooltip.getFillFromObject = false;
-        tooltip.background.fill = tooltipStyle.backgroundColor; //am4core.color("#101010");
-        tooltip.background.fillOpacity = tooltipStyle.backgroundOpacity;
-        tooltip.autoTextColor = false;
-        tooltip.label.fill = tooltipStyle.labelColor; //am4core.color("#FFFFFF");
-        tooltip.label.textAlign = "middle";
-        tooltip.scale = tooltipStyle.scale || 1;
-        tooltip.background.filters.clear(); // remove tooltip shadow
-        tooltip.background.pointerLength = 10;
         tooltip.adapter.add("rotation", (x, target) => {
-          if(target.dataItem.valueY >= 0) {
-            return 0;
+          if(target.dataItem) {
+            if(target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
           } else {
-            return 180;
+            return x;
           }
         });
         tooltip.label.adapter.add("verticalCenter", (x, target) => {
-          if(target.dataItem.valueY >= 0) {
-            return "none";
+          if(target.dataItem) {
+            if(target.dataItem.valueY >= 0) {
+              return "none";
+            } else {
+              return "bottom";
+            }
           } else {
-            return "bottom";
+            return x;
           }
         });
         tooltip.label.adapter.add("rotation", (x, target) => {
-          if(target.dataItem.valueY >= 0) {
-            return 0;
+          if(target.dataItem) {
+            if(target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
           } else {
-            return 180;
+            return x;
           }
         });
+        series.tooltip = tooltip;
       }
 
       /* ~~~~\  value label  /~~~~ */
@@ -356,8 +362,8 @@ class AmBarChart extends React.PureComponent {
       columnTemplate.strokeOpacity = 1;
       columnTemplate.column.fillOpacity = 0.8;
       columnTemplate.column.strokeWidth = 1;
-      if(tooltipStyle) {
-        columnTemplate.tooltipText = tooltipStyle.text;
+      if(tooltips) {
+        columnTemplate.tooltipText = tooltips[value].text;
         columnTemplate.adapter.add("tooltipY", (x, target) => {
           if(target.dataItem.valueY > 0) {
             return 0;
@@ -400,7 +406,7 @@ class AmBarChart extends React.PureComponent {
       // you can change any property on hover state and it will be animated
       columnHoverState.properties.fillOpacity = 1;
       columnHoverState.properties.strokeWidth = 3;
-      if(tooltipStyle) {
+      if(tooltips) {
         // hide label when hovered because the tooltip is shown
         columnTemplate.events.on("over", event => {
           var dataItem = event.target.dataItem;

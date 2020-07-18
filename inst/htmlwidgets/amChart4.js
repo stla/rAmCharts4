@@ -120101,7 +120101,7 @@ class AmBarChart extends React.PureComponent {
     var theme = this.props.theme,
         category = this.props.category,
         values = this.props.values,
-        data = _utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [category].concat(values)),
+        data = HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [category].concat(values))),
         dataCopy = data.map(row => _objectSpread({}, row)),
         data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, values)) : null,
         valueNames = this.props.valueNames,
@@ -120111,7 +120111,7 @@ class AmBarChart extends React.PureComponent {
         yAxis = this.props.yAxis,
         gridLines = this.props.gridLines,
         draggable = this.props.draggable,
-        tooltipStyle = this.props.tooltip,
+        tooltips = this.props.tooltip,
         valueFormatter = this.props.valueFormatter,
         columnStyle = this.props.columnStyle,
         chartId = this.props.chartId,
@@ -120326,43 +120326,44 @@ class AmBarChart extends React.PureComponent {
       series.defaultState.interpolationDuration = 1500;
       /* ~~~~\  tooltip  /~~~~ */
 
-      if (tooltipStyle) {
-        var tooltip = series.tooltip;
+      if (tooltips) {
+        var tooltip = _utils__WEBPACK_IMPORTED_MODULE_13__["Tooltip"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, tooltips[value]);
         tooltip.pointerOrientation = "vertical";
         tooltip.dy = 0;
-        tooltip.getFillFromObject = false;
-        tooltip.background.fill = tooltipStyle.backgroundColor; //am4core.color("#101010");
-
-        tooltip.background.fillOpacity = tooltipStyle.backgroundOpacity;
-        tooltip.autoTextColor = false;
-        tooltip.label.fill = tooltipStyle.labelColor; //am4core.color("#FFFFFF");
-
-        tooltip.label.textAlign = "middle";
-        tooltip.scale = tooltipStyle.scale || 1;
-        tooltip.background.filters.clear(); // remove tooltip shadow
-
-        tooltip.background.pointerLength = 10;
         tooltip.adapter.add("rotation", (x, target) => {
-          if (target.dataItem.valueY >= 0) {
-            return 0;
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
           } else {
-            return 180;
+            return x;
           }
         });
         tooltip.label.adapter.add("verticalCenter", (x, target) => {
-          if (target.dataItem.valueY >= 0) {
-            return "none";
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
+              return "none";
+            } else {
+              return "bottom";
+            }
           } else {
-            return "bottom";
+            return x;
           }
         });
         tooltip.label.adapter.add("rotation", (x, target) => {
-          if (target.dataItem.valueY >= 0) {
-            return 0;
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
           } else {
-            return 180;
+            return x;
           }
         });
+        series.tooltip = tooltip;
       }
       /* ~~~~\  value label  /~~~~ */
 
@@ -120436,8 +120437,8 @@ class AmBarChart extends React.PureComponent {
       columnTemplate.column.fillOpacity = 0.8;
       columnTemplate.column.strokeWidth = 1;
 
-      if (tooltipStyle) {
-        columnTemplate.tooltipText = tooltipStyle.text;
+      if (tooltips) {
+        columnTemplate.tooltipText = tooltips[value].text;
         columnTemplate.adapter.add("tooltipY", (x, target) => {
           if (target.dataItem.valueY > 0) {
             return 0;
@@ -120482,7 +120483,7 @@ class AmBarChart extends React.PureComponent {
       columnHoverState.properties.fillOpacity = 1;
       columnHoverState.properties.strokeWidth = 3;
 
-      if (tooltipStyle) {
+      if (tooltips) {
         // hide label when hovered because the tooltip is shown
         columnTemplate.events.on("over", event => {
           var dataItem = event.target.dataItem;
@@ -121510,25 +121511,10 @@ class AmLineChart extends React.PureComponent {
 
       if (tooltips) {
         /* ~~~~\  tooltip  /~~~~ */
-        var tooltipStyle = tooltips[value];
-        bullet.tooltipText = tooltipStyle.text;
-        var tooltip = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Tooltip"]();
+        bullet.tooltipText = tooltips[value].text;
+        var tooltip = _utils__WEBPACK_IMPORTED_MODULE_13__["Tooltip"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, tooltips[value]);
         tooltip.pointerOrientation = "vertical";
         tooltip.dy = 0;
-        tooltip.getFillFromObject = tooltipStyle.auto; //if(!tooltipStyle.auto){
-
-        tooltip.background.fill = tooltipStyle.backgroundColor || chart.colors.getIndex(index).saturate(0.7); //}
-
-        tooltip.background.fillOpacity = tooltipStyle.backgroundOpacity || 0.6;
-        tooltip.autoTextColor = tooltipStyle.auto || !tooltipStyle.textColor;
-        tooltip.label.fill = tooltipStyle.textColor;
-        tooltip.label.textAlign = tooltipStyle.textAlign;
-        tooltip.background.stroke = tooltipStyle.borderColor || chart.colors.getIndex(index);
-        tooltip.background.strokeWidth = tooltipStyle.borderWidth;
-        tooltip.scale = tooltipStyle.scale || 1;
-        tooltip.background.filters.clear(); // remove tooltip shadow
-
-        tooltip.background.pointerLength = tooltipStyle.pointerLength;
         tooltip.adapter.add("rotation", (x, target) => {
           if (target.dataItem) {
             if (target.dataItem.valueY >= 0) {
@@ -122143,25 +122129,10 @@ class AmScatterChart extends React.PureComponent {
 
       if (tooltips) {
         /* ~~~~\  tooltip  /~~~~ */
-        var tooltipStyle = tooltips[value];
-        bullet.tooltipText = tooltipStyle.text;
-        var tooltip = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Tooltip"]();
+        bullet.tooltipText = tooltips[value].text;
+        var tooltip = _utils__WEBPACK_IMPORTED_MODULE_13__["Tooltip"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, tooltips[value]);
         tooltip.pointerOrientation = "vertical";
         tooltip.dy = 0;
-        tooltip.getFillFromObject = tooltipStyle.auto; //if(!tooltipStyle.auto){
-
-        tooltip.background.fill = tooltipStyle.backgroundColor || chart.colors.getIndex(index).saturate(0.7); //}
-
-        tooltip.background.fillOpacity = tooltipStyle.backgroundOpacity || 0.6;
-        tooltip.autoTextColor = tooltipStyle.auto || !tooltipStyle.textColor;
-        tooltip.label.fill = tooltipStyle.textColor;
-        tooltip.label.textAlign = tooltipStyle.textAlign;
-        tooltip.background.stroke = tooltipStyle.borderColor || chart.colors.getIndex(index);
-        tooltip.background.strokeWidth = tooltipStyle.borderWidth;
-        tooltip.scale = tooltipStyle.scale || 1;
-        tooltip.background.filters.clear(); // remove tooltip shadow
-
-        tooltip.background.pointerLength = tooltipStyle.pointerLength;
         tooltip.adapter.add("rotation", (x, target) => {
           if (target.dataItem) {
             if (target.dataItem.valueY >= 0) {
@@ -122304,19 +122275,49 @@ Object(reactR__WEBPACK_IMPORTED_MODULE_0__["reactWidget"])('amChart4', 'output',
 /*!******************************!*\
   !*** ./srcjs/utils/index.js ***!
   \******************************/
-/*! exports provided: toDate, subset */
+/*! exports provided: toDate, subset, isLightColor, Tooltip */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toDate", function() { return toDate; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subset", function() { return subset; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isLightColor", function() { return isLightColor; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Tooltip", function() { return Tooltip; });
 var toDate = function toDate(string) {
   var ymd = string.split("-");
   return new Date(ymd[0], ymd[1] - 1, ymd[2]);
 };
 var subset = function subset(data, keys) {
   return keys.reduce((a, b) => (a[b] = data[b], a), {});
+};
+var isLightColor = function isLightColor(color) {
+  // color is given in HEX
+  var r, g, b;
+  color = +("0x" + color.slice(1).replace(color.length < 5 && /./g, '$&$&'));
+  r = color >> 16;
+  g = color >> 8 & 255;
+  b = color & 255; // HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
+
+  var hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b)); // Using the HSP value, determine whether the color is light or dark
+
+  return hsp > 127.5;
+};
+var Tooltip = function Tooltip(am4core, chart, index, tooltipStyle) {
+  var tooltip = new am4core.Tooltip();
+  tooltip.getFillFromObject = tooltipStyle.auto;
+  tooltip.background.fill = tooltipStyle.backgroundColor || chart.colors.getIndex(index);
+  tooltip.background.fillOpacity = tooltipStyle.backgroundOpacity || 0.6;
+  tooltip.autoTextColor = tooltipStyle.auto || !tooltipStyle.textColor;
+  tooltip.label.fill = tooltipStyle.textColor || (isLightColor(am4core.color(tooltip.background.fill).hex) ? 'black' : 'white');
+  tooltip.label.textAlign = tooltipStyle.textAlign;
+  tooltip.background.stroke = tooltipStyle.borderColor || am4core.color(tooltip.background.fill).lighten(-0.5);
+  tooltip.background.strokeWidth = tooltipStyle.borderWidth;
+  tooltip.scale = tooltipStyle.scale || 1;
+  tooltip.background.filters.clear(); // remove tooltip shadow
+
+  tooltip.background.pointerLength = tooltipStyle.pointerLength;
+  return tooltip;
 };
 
 /***/ }),

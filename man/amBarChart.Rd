@@ -75,10 +75,13 @@ all bars, otherwise a named list of the form
 \code{list(value1 = TRUE, value2 = FALSE, ...)} to enable/disable the
 dragging for each bar corresponding to a column given in \code{values}}
 
-\item{tooltip}{tooltip settings given as a list, or just a string for the
-\code{text} field, or \code{FALSE} for no tooltip, or \code{NULL} for the
-default tooltip; the \code{text} field must be a formatting string:
-\url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}}
+\item{tooltip}{settings of the tooltips; \code{NULL} for default,
+\code{FALSE} for no tooltip, otherwise a named list of the form
+\code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+\code{settings1}, \code{settings2}, ... are lists created with
+\code{\link{amTooltip}}; this can also be a
+single list of settings that will be applied to each series,
+or a just a string for the text to display in the tooltip}
 
 \item{columnStyle}{settings of the columns style; \code{NULL} for default,
 otherwise a named list with three fields: \code{fill} to set the colors
@@ -158,7 +161,7 @@ amBarChart(
   width = "600px",
   category = "country", values = "visits",
   draggable = TRUE,
-  tooltip = "[font-style:italic;#ffff00]{valueY}[/]",
+  tooltip = "[bold font-style:italic #ffff00]{valueY}[/]",
   chartTitle =
     list(text = "Visits per country", fontSize = 22, color = "orangered"),
   xAxis = list(title = list(text = "Country", color = "maroon")),
@@ -184,6 +187,11 @@ amBarChart(
   category = "country",
   values = c("income", "expenses"),
   valueNames = list(income = "Income", expenses = "Expenses"),
+  tooltip = amTooltip(
+    textColor = "white",
+    backgroundColor = "#101010",
+    borderColor = "silver"
+  ),
   draggable = list(income = TRUE, expenses = FALSE),
   backgroundColor = "#30303d",
   columnStyle = list(

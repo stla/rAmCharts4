@@ -33,7 +33,7 @@ export const Tooltip = function(am4core, chart, index, tooltipStyle) {
   tooltip.background.fillOpacity = tooltipStyle.backgroundOpacity || 0.6;
   tooltip.autoTextColor = tooltipStyle.auto || !tooltipStyle.textColor;
   tooltip.label.fill = tooltipStyle.textColor ||
-    isLightColor(am4core.color(tooltip.background.fill).hex) ? 'black' : 'white';
+    (isLightColor(am4core.color(tooltip.background.fill).hex) ? 'black' : 'white');
   tooltip.label.textAlign = tooltipStyle.textAlign;
   tooltip.background.stroke = tooltipStyle.borderColor ||
     am4core.color(tooltip.background.fill).lighten(-0.5);

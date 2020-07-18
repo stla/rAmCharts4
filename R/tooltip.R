@@ -29,7 +29,7 @@ amTooltip <- function(
   auto = FALSE
 ){
   settings <- list(
-    text = text,
+    text = ifelse(missing(text), "_missing", text),
     textColor = validateColor(textColor),
     textAlign = match.arg(textAlign, c("start", "middle", "end")),
     backgroundColor = validateColor(backgroundColor),

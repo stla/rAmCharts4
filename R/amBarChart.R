@@ -29,10 +29,13 @@
 #' all bars, otherwise a named list of the form
 #' \code{list(value1 = TRUE, value2 = FALSE, ...)} to enable/disable the
 #' dragging for each bar corresponding to a column given in \code{values}
-#' @param tooltip tooltip settings given as a list, or just a string for the
-#' \code{text} field, or \code{FALSE} for no tooltip, or \code{NULL} for the
-#' default tooltip; the \code{text} field must be a formatting string:
-#' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}
+#' @param tooltip settings of the tooltips; \code{NULL} for default,
+#'   \code{FALSE} for no tooltip, otherwise a named list of the form
+#'   \code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+#'   \code{settings1}, \code{settings2}, ... are lists created with
+#'   \code{\link{amTooltip}}; this can also be a
+#'   single list of settings that will be applied to each series,
+#'   or a just a string for the text to display in the tooltip
 #' @param columnStyle settings of the columns style; \code{NULL} for default,
 #' otherwise a named list with three fields: \code{fill} to set the colors
 #' of the columns, given as a single color or a named list of the form
@@ -96,7 +99,7 @@
 #'   width = "600px",
 #'   category = "country", values = "visits",
 #'   draggable = TRUE,
-#'   tooltip = "[font-style:italic;#ffff00]{valueY}[/]",
+#'   tooltip = "[bold font-style:italic #ffff00]{valueY}[/]",
 #'   chartTitle =
 #'     list(text = "Visits per country", fontSize = 22, color = "orangered"),
 #'   xAxis = list(title = list(text = "Country", color = "maroon")),
@@ -122,6 +125,11 @@
 #'   category = "country",
 #'   values = c("income", "expenses"),
 #'   valueNames = list(income = "Income", expenses = "Expenses"),
+#'   tooltip = amTooltip(
+#'     textColor = "white",
+#'     backgroundColor = "#101010",
+#'     borderColor = "silver"
+#'   ),
 #'   draggable = list(income = TRUE, expenses = FALSE),
 #'   backgroundColor = "#30303d",
 #'   columnStyle = list(
@@ -246,20 +254,53 @@ amBarChart <- function(
     )
   }
 
+  # if(!isFALSE(tooltip)){
+  #   if(is.list(tooltip)){
+  #     tooltip$labelColor <- validateColor(tooltip$labelColor)
+  #     tooltip$backgroundColor <- validateColor(tooltip$backgroundColor)
+  #   }else if(is.null(tooltip)){
+  #     tooltip <- list(
+  #       text = "[bold]{name}:\n{valueY}[/]",
+  #       labelColor = "#ffffff",
+  #       backgroundColor = "#101010",
+  #       backgroundOpacity = 1,
+  #       scale = 1
+  #     )
+  #   }else if(is.character(tooltip)){
+  #     tooltip <- list(text = tooltip)
+  #   }
+  # }
+
   if(!isFALSE(tooltip)){
-    if(is.list(tooltip)){
-      tooltip$labelColor <- validateColor(tooltip$labelColor)
-      tooltip$backgroundColor <- validateColor(tooltip$backgroundColor)
-    }else if(is.null(tooltip)){
-      tooltip <- list(
-        text = "[bold]{name}:\n{valueY}[/]",
-        labelColor = "#ffffff",
-        backgroundColor = "#101010",
-        backgroundOpacity = 1,
-        scale = 1
-      )
+    if(is.null(tooltip)){
+      tooltip <-
+        setNames(
+          rep(list(
+            amTooltip(text = "[bold]{name}:\n{valueY}[/]", auto = FALSE)
+          ), length(values)),
+          values
+        )
+    }else if("tooltip" %in% class(tooltip)){
+      if(tooltip[["text"]] == "_missing")
+        tooltip[["text"]] <- "[bold]{name}:\n{valueY}[/]"
+      tooltip <- setNames(rep(list(tooltip), length(values)), values)
+    }else if(is.list(tooltip)){
+      if(any(!values %in% names(tooltip))){
+        stop("Invalid `tooltip` list.", call. = TRUE)
+      }
+      tooltip <- lapply(tooltip, function(settings){
+        if(settings[["text"]] == "_missing")
+          settings[["text"]] <- "[bold]{name}:\n{valueY}[/]"
+        return(settings)
+      })
     }else if(is.character(tooltip)){
-      tooltip <- list(text = tooltip)
+      tooltip <-
+        setNames(
+          rep(list(amTooltip(text = tooltip, auto = FALSE)), length(values)),
+          values
+        )
+    }else{
+      stop("Invalid `tooltip` argument.", call. = TRUE)
     }
   }
 
