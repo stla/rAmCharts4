@@ -20,6 +20,8 @@ amLineChart(
   theme = NULL,
   draggable = FALSE,
   tooltip = NULL,
+  bullets = NULL,
+  alwaysShowBullets = FALSE,
   lineStyle = NULL,
   backgroundColor = NULL,
   xAxis = NULL,
@@ -119,10 +121,24 @@ all lines, otherwise a named list of the form
 \code{list(yvalue1 = TRUE, yvalue2 = FALSE, ...)} to enable/disable the
 dragging for each bar corresponding to a column given in \code{yValues}}
 
-\item{tooltip}{tooltip settings given as a list, or just a string for the
-\code{text} field, or \code{FALSE} for no tooltip, or \code{NULL} for the
-default tooltip; the \code{text} field must be a formatted string:
-\url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}}
+\item{tooltip}{settings of the tooltips; \code{NULL} for default,
+\code{FALSE} for no tooltip, otherwise a named list of the form
+\code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+\code{settings1}, \code{settings2}, ... are lists created with
+\code{\link{amTooltip}}; this can also be a
+single list of settings that will be applied to each series,
+or a just a string for the text to display in the tooltip}
+
+\item{bullets}{settings of the bullets; \code{NULL} for default,
+otherwise a named list of the form
+\code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+\code{settings1}, \code{settings2}, ... are lists created with
+\code{\link{amCircle}}, \code{\link{amTriangle}} or
+\code{\link{amRectangle}}; this can also be a
+single list of settings that will be applied to each series}
+
+\item{alwaysShowBullets}{logical, whether the bullets should always be
+visible, or visible on hover only}
 
 \item{lineStyle}{settings of the lines; \code{NULL} for default,
 otherwise a named list of the form
@@ -198,8 +214,8 @@ amLineChart(
   yValueNames = list(y1 = "Sample 1", y2 = "Sample 2"),
   trend = list(
     y1 = list(
-      method = "lm",
-      formula = y ~ poly(x,2),
+      method = "lm.js",
+      order = 3,
       style = amLine(color = "lightyellow", dash = "3,2")
     ),
     y2 = list(
@@ -209,6 +225,17 @@ amLineChart(
   ),
   draggable = list(y1 = TRUE, y2 = FALSE),
   backgroundColor = "#30303d",
+  tooltip = amTooltip(
+    text = "[bold]({valueX},{valueY})[/]",
+    textColor = "white",
+    backgroundColor = "#101010",
+    borderColor = "whitesmoke"
+  ),
+  bullets = list(
+    y1 = amCircle(color = "yellow", strokeColor = "olive"),
+    y2 = amCircle(color = "orangered", strokeColor = "darkred")
+  ),
+  alwaysShowBullets = TRUE,
   lineStyle = list(
     y1 = amLine(color = "yellow", width = 4),
     y2 = amLine(color = "orangered", width = 4)
@@ -225,8 +252,8 @@ amLineChart(
                labels = list(color = "whitesmoke",
                              fontSize = 14)),
   yLimits = c(-3, 3),
-  valueFormatter = "#.#",
-  caption = list(text = "[font-style:italic]rAmCharts4[/]",
+  valueFormatter = "#.##",
+  caption = list(text = "[font-style:italic]try to drag the yellow line![/]",
                  color = "yellow"),
   gridLines = list(color = "whitesmoke",
                    opacity = 0.4,

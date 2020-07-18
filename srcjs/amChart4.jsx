@@ -965,7 +965,9 @@ class AmLineChart extends React.PureComponent {
       yAxis = this.props.yAxis,
       gridLines = this.props.gridLines,
       draggable = this.props.draggable,
-      tooltipStyle = this.props.tooltip,
+      tooltips = this.props.tooltip,
+      bulletsStyle = this.props.bullets,
+      alwaysShowBullets = this.props.alwaysShowBullets,
       valueFormatter = this.props.valueFormatter,
       lineStyles = this.props.lineStyle,
       chartId = this.props.chartId,
@@ -1067,16 +1069,16 @@ class AmLineChart extends React.PureComponent {
 
 
     /* ~~~~\  scrollbars  /~~~~ */
-    if (this.props.scrollbarX) {
+    if(this.props.scrollbarX) {
       chart.scrollbarX = new am4core.Scrollbar();
     }
-    if (this.props.scrollbarY) {
+    if(this.props.scrollbarY) {
       chart.scrollbarY = new am4core.Scrollbar();
     }
 
 		/* ~~~~\  button  /~~~~ */
 		let button = this.props.button;
-		if (button) {
+		if(button) {
   		let Button = chart.chartContainer.createChild(am4core.Button);
       Button.label.text = button.text;
       Button.label.fill = button.color || Button.label.fill;
@@ -1086,8 +1088,8 @@ class AmLineChart extends React.PureComponent {
       Button.align = "right";
       Button.marginRight = 15;
       Button.events.on("hit", function() {
-        for (let r = 0; r < data.length; ++r){
-          for (let v = 0; v < yValues.length; ++v) {
+        for(let r = 0; r < data.length; ++r){
+          for(let v = 0; v < yValues.length; ++v) {
             chart.data[r][yValues[v]] = data2[r][yValues[v]];
           }
         }
@@ -1243,26 +1245,64 @@ class AmLineChart extends React.PureComponent {
       */
 
       /* ~~~~\  bullet  /~~~~ */
-      let bullet = series.bullets.create(am4charts.CircleBullet);
-      console.log("bullet", bullet);
-      if(tooltipStyle) {
+      let bullet = series.bullets.push(new am4charts.Bullet());
+      let shapeConfig = bulletsStyle[value];
+      let shape;
+      switch(shapeConfig.shape) {
+        case "triangle":
+          shape = bullet.createChild(am4core.Triangle);
+          shape.direction = shapeConfig.direction;
+          shape.width = shapeConfig.width;
+          shape.height = shapeConfig.height;
+          shape.rotation = shapeConfig.rotation;
+          break;
+        case "circle":
+          shape = bullet.createChild(am4core.Circle);
+          shape.radius = shapeConfig.radius;
+          break;
+        case "rectangle":
+          shape = bullet.createChild(am4core.RoundedRectangle);
+          shape.width = shapeConfig.width;
+          shape.height = shapeConfig.height;
+          shape.rotation = shapeConfig.rotation;
+          shape.cornerRadiusBottomLeft = shapeConfig.cornerRadius;
+          shape.cornerRadiusTopLeft = shapeConfig.cornerRadius;
+          shape.cornerRadiusBottomRight = shapeConfig.cornerRadius;
+          shape.cornerRadiusTopRight = shapeConfig.cornerRadius;
+          break;
+      }
+      shape.horizontalCenter = "middle";
+      shape.verticalCenter = "middle";
+      shape.strokeWidth = shapeConfig.strokeWidth;
+      shape.stroke = shapeConfig.strokeColor || chart.colors.getIndex(index);
+      shape.fill = shapeConfig.color || chart.colors.getIndex(index).saturate(0.7);
+      if(!alwaysShowBullets){
+        shape.opacity = 0; // initially invisible
+        shape.defaultState.properties.opacity = 0;
+      }
+      if(tooltips) {
         /* ~~~~\  tooltip  /~~~~ */
+        let tooltipStyle = tooltips[value];
         bullet.tooltipText = tooltipStyle.text;
         let tooltip = new am4core.Tooltip();
         tooltip.pointerOrientation = "vertical";
         tooltip.dy = 0;
         tooltip.getFillFromObject = tooltipStyle.auto;
-        //if(tooltipStyle.backgroundColor)
-          tooltip.background.fill = tooltipStyle.backgroundColor;
-        //if(tooltipStyle.backgroundOpacity)
-          tooltip.background.fillOpacity = tooltipStyle.backgroundOpacity || 1;
-        tooltip.autoTextColor = tooltipStyle.auto;
-        //if(tooltipStyle.labelColor)
-          tooltip.label.fill = tooltipStyle.labelColor;
-        tooltip.label.textAlign = "middle";
+        //if(!tooltipStyle.auto){
+          tooltip.background.fill = tooltipStyle.backgroundColor ||
+          chart.colors.getIndex(index).saturate(0.7);
+        //}
+        tooltip.background.fillOpacity = tooltipStyle.backgroundOpacity || 0.6;
+        tooltip.autoTextColor =
+          tooltipStyle.auto || !tooltipStyle.textColor;
+        tooltip.label.fill = tooltipStyle.textColor;
+        tooltip.label.textAlign = tooltipStyle.textAlign;
+        tooltip.background.stroke =
+          tooltipStyle.borderColor || chart.colors.getIndex(index);
+        tooltip.background.strokeWidth = tooltipStyle.borderWidth;
         tooltip.scale = tooltipStyle.scale || 1;
         tooltip.background.filters.clear(); // remove tooltip shadow
-        tooltip.background.pointerLength = 10;
+        tooltip.background.pointerLength = tooltipStyle.pointerLength;
         tooltip.adapter.add("rotation", (x, target) => {
           if(target.dataItem) {
             if(target.dataItem.valueY >= 0) {
@@ -1297,14 +1337,6 @@ class AmLineChart extends React.PureComponent {
           }
         });
         bullet.tooltip = tooltip;
-/*      bullet.adapter.add("tooltipY", (x, target) => {
-          if(target.dataItem.valueY > 0) {
-            return 0;
-          } else {
-            return 0; //-YAxis.valueToPoint(maxY - target.dataItem.valueY).y;
-          }
-        });
-        */
         // hide label when hovered because the tooltip is shown
         // XXX y'a pas de label
 /*      bullet.events.on("over", event => {
@@ -1321,21 +1353,10 @@ class AmLineChart extends React.PureComponent {
         });
         */
       }
-      bullet.fill = lineStyle.color ||
-        chart.colors.getIndex(index).saturate(0.7);
-      bullet.stroke = // XXXX
-        lineStyle.stroke || chart.colors.getIndex(index).saturate(0.7);
-      bullet.strokeWidth = 3;
-      bullet.opacity = 0; // initially invisible
-      bullet.defaultState.properties.opacity = 0;
       // create bullet hover state
-      let hoverState = bullet.states.create("hover");
+      let hoverState = shape.states.create("hover");
+      hoverState.properties.strokeWidth = shape.strokeWidth + 3;
       hoverState.properties.opacity = 1; // visible when hovered
-      // add circle sprite to bullet
-/*        var circle = bullet.createChild(am4core.Circle);
-        console.log("circle", circle);
-        circle.radius = 8;
-      */
       if(draggable[value]){
         bullet.draggable = true;
         // resize cursor when over

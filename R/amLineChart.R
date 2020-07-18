@@ -69,10 +69,22 @@
 #' all lines, otherwise a named list of the form
 #' \code{list(yvalue1 = TRUE, yvalue2 = FALSE, ...)} to enable/disable the
 #' dragging for each bar corresponding to a column given in \code{yValues}
-#' @param tooltip tooltip settings given as a list, or just a string for the
-#' \code{text} field, or \code{FALSE} for no tooltip, or \code{NULL} for the
-#' default tooltip; the \code{text} field must be a formatted string:
-#' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}
+#' @param tooltip settings of the tooltips; \code{NULL} for default,
+#'   \code{FALSE} for no tooltip, otherwise a named list of the form
+#'   \code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+#'   \code{settings1}, \code{settings2}, ... are lists created with
+#'   \code{\link{amTooltip}}; this can also be a
+#'   single list of settings that will be applied to each series,
+#'   or a just a string for the text to display in the tooltip
+#' @param bullets settings of the bullets; \code{NULL} for default,
+#'   otherwise a named list of the form
+#'   \code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+#'   \code{settings1}, \code{settings2}, ... are lists created with
+#'   \code{\link{amCircle}}, \code{\link{amTriangle}} or
+#'   \code{\link{amRectangle}}; this can also be a
+#'   single list of settings that will be applied to each series
+#' @param alwaysShowBullets logical, whether the bullets should always be
+#'   visible, or visible on hover only
 #' @param lineStyle settings of the lines; \code{NULL} for default,
 #'   otherwise a named list of the form
 #'   \code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
@@ -135,8 +147,8 @@
 #'   yValueNames = list(y1 = "Sample 1", y2 = "Sample 2"),
 #'   trend = list(
 #'     y1 = list(
-#'       method = "lm",
-#'       formula = y ~ poly(x,2),
+#'       method = "lm.js",
+#'       order = 3,
 #'       style = amLine(color = "lightyellow", dash = "3,2")
 #'     ),
 #'     y2 = list(
@@ -146,6 +158,17 @@
 #'   ),
 #'   draggable = list(y1 = TRUE, y2 = FALSE),
 #'   backgroundColor = "#30303d",
+#'   tooltip = amTooltip(
+#'     text = "[bold]({valueX},{valueY})[/]",
+#'     textColor = "white",
+#'     backgroundColor = "#101010",
+#'     borderColor = "whitesmoke"
+#'   ),
+#'   bullets = list(
+#'     y1 = amCircle(color = "yellow", strokeColor = "olive"),
+#'     y2 = amCircle(color = "orangered", strokeColor = "darkred")
+#'   ),
+#'   alwaysShowBullets = TRUE,
 #'   lineStyle = list(
 #'     y1 = amLine(color = "yellow", width = 4),
 #'     y2 = amLine(color = "orangered", width = 4)
@@ -162,8 +185,8 @@
 #'                labels = list(color = "whitesmoke",
 #'                              fontSize = 14)),
 #'   yLimits = c(-3, 3),
-#'   valueFormatter = "#.#",
-#'   caption = list(text = "[font-style:italic]rAmCharts4[/]",
+#'   valueFormatter = "#.##",
+#'   caption = list(text = "[font-style:italic]try to drag the yellow line![/]",
 #'                  color = "yellow"),
 #'   gridLines = list(color = "whitesmoke",
 #'                    opacity = 0.4,
@@ -249,6 +272,8 @@ amLineChart <- function(
   theme = NULL,
   draggable = FALSE,
   tooltip = NULL, # default
+  bullets = NULL, # default
+  alwaysShowBullets = FALSE,
   lineStyle = NULL, # default
   backgroundColor = NULL,
   xAxis = NULL, # default
@@ -424,27 +449,67 @@ amLineChart <- function(
     )
   }
 
+  # if(!isFALSE(tooltip)){
+  #   if(is.list(tooltip)){
+  #     tooltip$labelColor <- validateColor(tooltip$labelColor)
+  #     tooltip$backgroundColor <- validateColor(tooltip$backgroundColor)
+  #     tooltip[["auto"]] <- FALSE
+  #   }else if(is.null(tooltip)){
+  #     tooltip <- list(
+  #       text =
+  #         ifelse(isDate,
+  #                "[bold][font-style:italic]{dateX}:[/] {valueY}[/]",
+  #                "[bold]({valueX},{valueY})[/]"
+  #         ),
+  #       labelColor = "#ffffff",
+  #       backgroundColor = "#101010",
+  #       backgroundOpacity = 1,
+  #       scale = 1,
+  #       auto = FALSE
+  #     )
+  #   }else if(is.character(tooltip)){
+  #     tooltip <- list(text = tooltip, auto = TRUE)
+  #   }
+  # }
+
   if(!isFALSE(tooltip)){
-    if(is.list(tooltip)){
-      tooltip$labelColor <- validateColor(tooltip$labelColor)
-      tooltip$backgroundColor <- validateColor(tooltip$backgroundColor)
-      tooltip[["auto"]] <- FALSE
-    }else if(is.null(tooltip)){
-      tooltip <- list(
-        text =
-          ifelse(isDate,
-                 "[bold][font-style:italic]{dateX}:[/] {valueY}[/]",
-                 "[bold]({valueX},{valueY})[/]"
-          ),
-        labelColor = "#ffffff",
-        backgroundColor = "#101010",
-        backgroundOpacity = 1,
-        scale = 1,
-        auto = FALSE
+    if(is.null(tooltip)){
+      text <- ifelse(isDate,
+                     "[bold][font-style:italic]{dateX}:[/] {valueY}[/]",
+                     "[bold]({valueX},{valueY})[/]"
       )
+      tooltip <-
+        setNames(
+          rep(list(amTooltip(text = text, auto = TRUE)), length(yValues)),
+          yValues
+        )
+    }else if("tooltip" %in% class(tooltip)){
+      tooltip <- setNames(rep(list(tooltip), length(yValues)), yValues)
+    }else if(is.list(tooltip)){
+      if(any(!yValues %in% names(tooltip))){
+        stop("Invalid `tooltip` list.", call. = TRUE)
+      }
     }else if(is.character(tooltip)){
-      tooltip <- list(text = tooltip, auto = TRUE)
+      tooltip <-
+        setNames(
+          rep(list(amTooltip(text = tooltip, auto = TRUE)), length(yValues)),
+          yValues
+        )
+    }else{
+      stop("Invalid `tooltip` argument.", call. = TRUE)
     }
+  }
+
+  if(is.null(bullets)){
+    bullets <- setNames(rep(list(amCircle()), length(yValues)), yValues)
+  }else if("bullet" %in% class(bullets)){
+    bullets <- setNames(rep(list(bullets), length(yValues)), yValues)
+  }else if(is.list(bullets)){
+    if(any(!yValues %in% names(bullets))){
+      stop("Invalid `bullets` list.", call. = TRUE)
+    }
+  }else{
+    stop("Invalid `bullets` argument.", call. = TRUE)
   }
 
   # if(is.null(lineStyle)){
@@ -721,6 +786,8 @@ amLineChart <- function(
       theme = theme,
       draggable = draggable,
       tooltip = tooltip,
+      bullets = bullets,
+      alwaysShowBullets = alwaysShowBullets,
       lineStyle = lineStyle,
       backgroundColor = validateColor(backgroundColor),
       xAxis = xAxis,
