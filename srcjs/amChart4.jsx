@@ -948,13 +948,18 @@ class AmLineChart extends React.PureComponent {
       yValues = this.props.yValues,
       data = utils.subset(this.props.data, [xValue].concat(yValues)),
       data2 = this.props.data2 ?
-        HTMLWidgets.dataframeToD3(utils.subset(this.props.data2, yValues)) :
-        null,
+        HTMLWidgets.dataframeToD3(
+          utils.subset(this.props.data2, [xValue].concat(yValues))
+        ) : null,
       trendData0 = this.props.trendData,
       trendData = trendData0 ?
         Object.assign({}, ...Object.keys(trendData0)
           .map(k => ({[k]: HTMLWidgets.dataframeToD3(trendData0[k])}))
         ) : null,
+/*      trendDataCopy = trendData ?
+        Object.assign({}, ...Object.keys(trendData)
+          .map(k => ({[k]: trendData[k].map(row => ({...row}))}))
+        ) : null,                                                 */
       trendStyles = this.props.trendStyle,
       trendJS = this.props.trendJS,
       yValueNames = this.props.yValueNames,
@@ -1111,6 +1116,34 @@ class AmLineChart extends React.PureComponent {
             Shiny.setInputValue(shinyId + "_change", null);
           }
         }
+
+        if(trendJS) {
+          let seriesNames = chart.series.values.map(function(x){return x.name});
+          yValues.forEach(function(value, index) {
+            if(trendJS[value]) {
+              let thisSeriesName = yValueNames[value],
+                trendSeriesName = thisSeriesName + "_trend",
+                trendSeriesIndex = seriesNames.indexOf(trendSeriesName),
+                trendSeries = chart.series.values[trendSeriesIndex],
+                trendSeriesData = trendSeries.data,
+                regData = data2.map(function(row){
+                  return [row[xValue], row[value]];
+                }),
+                fit = regression.polynomial(
+                  regData, { order: trendJS[value], precision: 15 }
+                ),
+                regressionLine = trendSeriesData.map(function(row){
+                  let xy = fit.predict(row.x);
+                  return {x: xy[0], y: xy[1]};
+                });
+              regressionLine.forEach(function(point, i){
+                trendSeriesData[i] = point;
+              });
+              trendSeries.invalidateData();
+            }
+          })
+        }
+
       });
 		}
 
@@ -1196,7 +1229,7 @@ class AmLineChart extends React.PureComponent {
 
 		/* ~~~~\  function handling the drag event  /~~~~ */
 		function handleDrag(event) {
-			var dataItem = event.target.dataItem;
+			let dataItem = event.target.dataItem;
 			//console.log("dataItem", dataItem);
 			// convert coordinate to value
 			let value = YAxis.yToValue(event.target.pixelY);
@@ -1209,6 +1242,71 @@ class AmLineChart extends React.PureComponent {
 			// make bullet hovered (as it might hide if mouse moves away)
 			event.target.isHover = true;
 		}
+
+		/* ~~~~\  function handling the dragstop event  /~~~~ */
+		function handleDragStop(event, value) {
+      console.log("bullet dragstop");
+      handleDrag(event);
+      let dataItem = event.target.dataItem;
+      dataItem.component.isHover = false; // XXXX
+      event.target.isHover = false;
+      dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
+
+      if(trendJS && trendJS[value]){
+    	  let newvalue = YAxis.yToValue(event.target.pixelY),
+          seriesNames = chart.series.values.map(function(x){return x.name}),
+			    thisSeriesName = dataItem.component.name,
+			    thisSeriesData = dataItem.component.dataProvider.data,
+          thisSeriesDataCopy = thisSeriesData.map(row => ({...row}));
+			  thisSeriesDataCopy[dataItem.index][value] = newvalue;
+			  thisSeriesData[dataItem.index][value] = newvalue;
+			  let trendSeriesName = thisSeriesName + "_trend",
+			    trendSeriesIndex = seriesNames.indexOf(trendSeriesName),
+			    trendSeries = chart.series.values[trendSeriesIndex],
+			    trendSeriesData = trendSeries.data,
+			    regData = thisSeriesDataCopy.map(function(row){
+			      return [row[xValue], row[value]];
+			    }),
+			    fit = regression.polynomial(
+			      regData, { order: trendJS[value], precision: 15 }
+			    ),
+			    regressionLine = trendSeriesData.map(function(row){
+			      let xy = fit.predict(row.x);
+			      return {x: xy[0], y: xy[1]};
+			    });
+			  regressionLine.forEach(function(point, i){trendSeriesData[i] = point;});
+			  trendSeries.invalidateData();
+			}
+
+      if(window.Shiny) {
+        if(isDate) {
+          Shiny.setInputValue(
+            shinyId + ":rAmCharts4.dataframeWithDate",
+            {
+              data: dataCopy,
+              date: xValue
+            }
+          );
+          Shiny.setInputValue(shinyId + "_change:rAmCharts4.lineChange", {
+            index: dataItem.index,
+            x: dataItem.dateX,
+            variable: value,
+            y: dataItem.values.valueY.value
+          });
+        } else {
+          Shiny.setInputValue(
+            shinyId + ":rAmCharts4.dataframe", dataCopy
+          );
+          Shiny.setInputValue(shinyId + "_change", {
+            index: dataItem.index,
+            x: dataItem.values.valueX.value,
+            variable: value,
+            y: dataItem.values.valueY.value
+          });
+        }
+      }
+		}
+
 
 		yValues.forEach(function(value, index){
 
@@ -1367,65 +1465,7 @@ class AmLineChart extends React.PureComponent {
         });
         // on dragging stop
         bullet.events.on("dragstop", event => {
-          console.log("bullet dragstop");
-          handleDrag(event);
-          let dataItem = event.target.dataItem;
-          dataItem.component.isHover = false; // XXXX
-          event.target.isHover = false;
-          dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
-
-          if(trendJS && trendJS[value]){
-    			  let newvalue = YAxis.yToValue(event.target.pixelY),
-              seriesNames = chart.series.values.map(function(x){return x.name}),
-			        thisSeriesName = dataItem.component.name,
-			        thisSeriesData = dataItem.component.dataProvider.data,
-              thisSeriesDataCopy = thisSeriesData.map(row => ({...row}));
-			      thisSeriesDataCopy[dataItem.index][value] = newvalue;
-			      thisSeriesData[dataItem.index][value] = newvalue;
-			      let trendSeriesName = thisSeriesName + "_trend",
-			        trendSeriesIndex = seriesNames.indexOf(trendSeriesName),
-			        trendSeries = chart.series.values[trendSeriesIndex],
-			        trendSeriesData = trendSeries.data,
-			        regData = thisSeriesDataCopy.map(function(row){
-			          return [row[xValue], row[value]];
-			        }),
-			        fit = regression.polynomial(
-			          regData, { order: trendJS[value], precision: 15 }
-			        ),
-			        regressionLine = fit.points.map(function(point){
-			          return {x: point[0], y: point[1]};
-			        });
-			      regressionLine.forEach(function(point, i){trendSeriesData[i] = point;});
-			      trendSeries.invalidateData();
-			    }
-
-          if(window.Shiny) {
-            if(isDate) {
-              Shiny.setInputValue(
-                shinyId + ":rAmCharts4.dataframeWithDate",
-                {
-                  data: dataCopy,
-                  date: xValue
-                }
-              );
-              Shiny.setInputValue(shinyId + "_change:rAmCharts4.lineChange", {
-                index: dataItem.index,
-                x: dataItem.dateX,
-                variable: value,
-                y: dataItem.values.valueY.value
-              });
-            } else {
-              Shiny.setInputValue(
-                shinyId + ":rAmCharts4.dataframe", dataCopy
-              );
-              Shiny.setInputValue(shinyId + "_change", {
-                index: dataItem.index,
-                x: dataItem.values.valueX.value,
-                variable: value,
-                y: dataItem.values.valueY.value
-              });
-            }
-          }
+          handleDragStop(event, value);
         });
         // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
         bullet.events.on("down", event => {
@@ -1465,6 +1505,7 @@ class AmLineChart extends React.PureComponent {
 
       /* ~~~~\ trend line /~~~~ */
       if(trendData && trendData[value]) {
+      console.log("trendData[value]", trendData[value]);
         let trend = chart.series.push(new am4charts.LineSeries());
         trend.name = yValueNames[value] + "_trend";
         trend.hiddenInLegend = true;

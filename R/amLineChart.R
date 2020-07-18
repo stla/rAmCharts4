@@ -331,7 +331,7 @@ amLineChart <- function(
   if(!is.null(data2) &&
      (!is.data.frame(data2) ||
       nrow(data2) != nrow(data) || # XXXX
-      !all(yValues %in% names(data2)))){
+      !all(c(xValue,yValues) %in% names(data2)))){
     stop("Invalid `data2` argument.", call. = TRUE)
   }
 
@@ -397,8 +397,8 @@ amLineChart <- function(
           range(X)
       else
         seq(min(X), max(X), length.out = 100)
-      y <- predict(fit, newdata = data.frame(x = X))
-      trendData[[yValue]] <- data.frame(x = X, y = y)
+      y <- predict(fit, newdata = data.frame(x = x))
+      trendData[[yValue]] <- data.frame(x = x, y = y)
     }
   }else{
     trendData <- trendStyle <- trendJS <- NULL
