@@ -133,13 +133,9 @@
 #'   draggable = FALSE,
 #'   backgroundColor = "#30303d",
 #'   pointsStyle = list(
-#'     color = list(
-#'       setosa = "orange", versicolor = "cyan", virginica = "palegreen"
-#'      ),
-#'     strokeColor = list(
-#'       setosa = "red", versicolor = "blue", virginica = "green"
-#'      ),
-#'     strokeWidth = 2
+#'     setosa = amCircle(color = "orange", strokeColor = "red"),
+#'     versicolor = amCircle(color = "cyan", strokeColor = "blue"),
+#'     virginica = amCircle(color = "palegreen", strokeColor = "darkgreen")
 #'   ),
 #'   tooltip = "obs: {valueX}\nvalue: {valueY}",
 #'   chartTitle = list(text = "Iris data", color = "whitesmoke"),
@@ -262,7 +258,7 @@
 #'   chartTitle = list(text = "Asymptotic regression model"),
 #'   xAxis = "x",
 #'   yAxis = "y",
-#'   valueFormatter = "#'.#'",
+#'   valueFormatter = "#.#",
 #'   theme = "kelly")
 amScatterChart <- function(
   data,

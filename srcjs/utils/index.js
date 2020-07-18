@@ -44,3 +44,38 @@ export const Tooltip = function(am4core, chart, index, tooltipStyle) {
 
   return tooltip;
 };
+
+export const Shape = function(am4core, chart, index, bullet, shapeConfig) {
+  let shape;
+  switch(shapeConfig.shape) {
+    case "triangle":
+      shape = bullet.createChild(am4core.Triangle);
+      shape.direction = shapeConfig.direction;
+      shape.width = shapeConfig.width;
+      shape.height = shapeConfig.height;
+      shape.rotation = shapeConfig.rotation;
+      break;
+    case "circle":
+      shape = bullet.createChild(am4core.Circle);
+      shape.radius = shapeConfig.radius;
+      break;
+    case "rectangle":
+      shape = bullet.createChild(am4core.RoundedRectangle);
+      shape.width = shapeConfig.width;
+      shape.height = shapeConfig.height;
+      shape.rotation = shapeConfig.rotation;
+      shape.cornerRadiusBottomLeft = shapeConfig.cornerRadius;
+      shape.cornerRadiusTopLeft = shapeConfig.cornerRadius;
+      shape.cornerRadiusBottomRight = shapeConfig.cornerRadius;
+      shape.cornerRadiusTopRight = shapeConfig.cornerRadius;
+      break;
+  }
+  shape.horizontalCenter = "middle";
+  shape.verticalCenter = "middle";
+  shape.fill = shapeConfig.color || chart.colors.getIndex(index);
+  shape.strokeWidth = shapeConfig.strokeWidth;
+  shape.stroke = shapeConfig.strokeColor ||
+    am4core.color(shape.fill).lighten(-0.5);
+
+  return shape;
+};

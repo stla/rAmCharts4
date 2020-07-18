@@ -54,7 +54,7 @@ amCircle <- function(
     strokeColor = validateColor(strokeColor),
     strokeWidth = strokeWidth
   )
-  class(bullet) <- bullet
+  class(bullet) <- "bullet"
   bullet
 }
 

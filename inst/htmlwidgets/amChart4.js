@@ -121468,40 +121468,7 @@ class AmLineChart extends React.PureComponent {
       /* ~~~~\  bullet  /~~~~ */
 
       var bullet = series.bullets.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Bullet"]());
-      var shapeConfig = bulletsStyle[value];
-      var shape;
-
-      switch (shapeConfig.shape) {
-        case "triangle":
-          shape = bullet.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Triangle"]);
-          shape.direction = shapeConfig.direction;
-          shape.width = shapeConfig.width;
-          shape.height = shapeConfig.height;
-          shape.rotation = shapeConfig.rotation;
-          break;
-
-        case "circle":
-          shape = bullet.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Circle"]);
-          shape.radius = shapeConfig.radius;
-          break;
-
-        case "rectangle":
-          shape = bullet.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["RoundedRectangle"]);
-          shape.width = shapeConfig.width;
-          shape.height = shapeConfig.height;
-          shape.rotation = shapeConfig.rotation;
-          shape.cornerRadiusBottomLeft = shapeConfig.cornerRadius;
-          shape.cornerRadiusTopLeft = shapeConfig.cornerRadius;
-          shape.cornerRadiusBottomRight = shapeConfig.cornerRadius;
-          shape.cornerRadiusTopRight = shapeConfig.cornerRadius;
-          break;
-      }
-
-      shape.horizontalCenter = "middle";
-      shape.verticalCenter = "middle";
-      shape.strokeWidth = shapeConfig.strokeWidth;
-      shape.stroke = shapeConfig.strokeColor || chart.colors.getIndex(index);
-      shape.fill = shapeConfig.color || chart.colors.getIndex(index).saturate(0.7);
+      var shape = _utils__WEBPACK_IMPORTED_MODULE_13__["Shape"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, bullet, bulletsStyle[value]);
 
       if (!alwaysShowBullets) {
         shape.opacity = 0; // initially invisible
@@ -122092,40 +122059,7 @@ class AmScatterChart extends React.PureComponent {
       /* ~~~~\  bullet  /~~~~ */
 
       var bullet = series.bullets.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Bullet"]());
-      var shapeConfig = pointsStyle[value];
-      var shape;
-
-      switch (shapeConfig.shape) {
-        case "triangle":
-          shape = bullet.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Triangle"]);
-          shape.direction = shapeConfig.direction;
-          shape.width = shapeConfig.width;
-          shape.height = shapeConfig.height;
-          shape.rotation = shapeConfig.rotation;
-          break;
-
-        case "circle":
-          shape = bullet.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Circle"]);
-          shape.radius = shapeConfig.radius;
-          break;
-
-        case "rectangle":
-          shape = bullet.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["RoundedRectangle"]);
-          shape.width = shapeConfig.width;
-          shape.height = shapeConfig.height;
-          shape.rotation = shapeConfig.rotation;
-          shape.cornerRadiusBottomLeft = shapeConfig.cornerRadius;
-          shape.cornerRadiusTopLeft = shapeConfig.cornerRadius;
-          shape.cornerRadiusBottomRight = shapeConfig.cornerRadius;
-          shape.cornerRadiusTopRight = shapeConfig.cornerRadius;
-          break;
-      }
-
-      shape.horizontalCenter = "middle";
-      shape.verticalCenter = "middle";
-      shape.strokeWidth = shapeConfig.strokeWidth;
-      shape.stroke = shapeConfig.strokeColor || chart.colors.getIndex(index);
-      shape.fill = shapeConfig.color || chart.colors.getIndex(index).saturate(0.7);
+      var shape = _utils__WEBPACK_IMPORTED_MODULE_13__["Shape"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, bullet, pointsStyle[value]);
 
       if (tooltips) {
         /* ~~~~\  tooltip  /~~~~ */
@@ -122275,7 +122209,7 @@ Object(reactR__WEBPACK_IMPORTED_MODULE_0__["reactWidget"])('amChart4', 'output',
 /*!******************************!*\
   !*** ./srcjs/utils/index.js ***!
   \******************************/
-/*! exports provided: toDate, subset, isLightColor, Tooltip */
+/*! exports provided: toDate, subset, isLightColor, Tooltip, Shape */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -122284,6 +122218,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "subset", function() { return subset; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isLightColor", function() { return isLightColor; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Tooltip", function() { return Tooltip; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Shape", function() { return Shape; });
 var toDate = function toDate(string) {
   var ymd = string.split("-");
   return new Date(ymd[0], ymd[1] - 1, ymd[2]);
@@ -122318,6 +122253,42 @@ var Tooltip = function Tooltip(am4core, chart, index, tooltipStyle) {
 
   tooltip.background.pointerLength = tooltipStyle.pointerLength;
   return tooltip;
+};
+var Shape = function Shape(am4core, chart, index, bullet, shapeConfig) {
+  var shape;
+
+  switch (shapeConfig.shape) {
+    case "triangle":
+      shape = bullet.createChild(am4core.Triangle);
+      shape.direction = shapeConfig.direction;
+      shape.width = shapeConfig.width;
+      shape.height = shapeConfig.height;
+      shape.rotation = shapeConfig.rotation;
+      break;
+
+    case "circle":
+      shape = bullet.createChild(am4core.Circle);
+      shape.radius = shapeConfig.radius;
+      break;
+
+    case "rectangle":
+      shape = bullet.createChild(am4core.RoundedRectangle);
+      shape.width = shapeConfig.width;
+      shape.height = shapeConfig.height;
+      shape.rotation = shapeConfig.rotation;
+      shape.cornerRadiusBottomLeft = shapeConfig.cornerRadius;
+      shape.cornerRadiusTopLeft = shapeConfig.cornerRadius;
+      shape.cornerRadiusBottomRight = shapeConfig.cornerRadius;
+      shape.cornerRadiusTopRight = shapeConfig.cornerRadius;
+      break;
+  }
+
+  shape.horizontalCenter = "middle";
+  shape.verticalCenter = "middle";
+  shape.fill = shapeConfig.color || chart.colors.getIndex(index);
+  shape.strokeWidth = shapeConfig.strokeWidth;
+  shape.stroke = shapeConfig.strokeColor || am4core.color(shape.fill).lighten(-0.5);
+  return shape;
 };
 
 /***/ }),

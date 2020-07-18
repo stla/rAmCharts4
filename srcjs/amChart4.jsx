@@ -1350,36 +1350,8 @@ class AmLineChart extends React.PureComponent {
 
       /* ~~~~\  bullet  /~~~~ */
       let bullet = series.bullets.push(new am4charts.Bullet());
-      let shapeConfig = bulletsStyle[value];
-      let shape;
-      switch(shapeConfig.shape) {
-        case "triangle":
-          shape = bullet.createChild(am4core.Triangle);
-          shape.direction = shapeConfig.direction;
-          shape.width = shapeConfig.width;
-          shape.height = shapeConfig.height;
-          shape.rotation = shapeConfig.rotation;
-          break;
-        case "circle":
-          shape = bullet.createChild(am4core.Circle);
-          shape.radius = shapeConfig.radius;
-          break;
-        case "rectangle":
-          shape = bullet.createChild(am4core.RoundedRectangle);
-          shape.width = shapeConfig.width;
-          shape.height = shapeConfig.height;
-          shape.rotation = shapeConfig.rotation;
-          shape.cornerRadiusBottomLeft = shapeConfig.cornerRadius;
-          shape.cornerRadiusTopLeft = shapeConfig.cornerRadius;
-          shape.cornerRadiusBottomRight = shapeConfig.cornerRadius;
-          shape.cornerRadiusTopRight = shapeConfig.cornerRadius;
-          break;
-      }
-      shape.horizontalCenter = "middle";
-      shape.verticalCenter = "middle";
-      shape.strokeWidth = shapeConfig.strokeWidth;
-      shape.stroke = shapeConfig.strokeColor || chart.colors.getIndex(index);
-      shape.fill = shapeConfig.color || chart.colors.getIndex(index).saturate(0.7);
+      let shape =
+        utils.Shape(am4core, chart, index, bullet, bulletsStyle[value]);
       if(!alwaysShowBullets){
         shape.opacity = 0; // initially invisible
         shape.defaultState.properties.opacity = 0;
@@ -1950,36 +1922,8 @@ class AmScatterChart extends React.PureComponent {
 
       /* ~~~~\  bullet  /~~~~ */
       let bullet = series.bullets.push(new am4charts.Bullet());
-      let shapeConfig = pointsStyle[value];
-      let shape;
-      switch(shapeConfig.shape) {
-        case "triangle":
-          shape = bullet.createChild(am4core.Triangle);
-          shape.direction = shapeConfig.direction;
-          shape.width = shapeConfig.width;
-          shape.height = shapeConfig.height;
-          shape.rotation = shapeConfig.rotation;
-          break;
-        case "circle":
-          shape = bullet.createChild(am4core.Circle);
-          shape.radius = shapeConfig.radius;
-          break;
-        case "rectangle":
-          shape = bullet.createChild(am4core.RoundedRectangle);
-          shape.width = shapeConfig.width;
-          shape.height = shapeConfig.height;
-          shape.rotation = shapeConfig.rotation;
-          shape.cornerRadiusBottomLeft = shapeConfig.cornerRadius;
-          shape.cornerRadiusTopLeft = shapeConfig.cornerRadius;
-          shape.cornerRadiusBottomRight = shapeConfig.cornerRadius;
-          shape.cornerRadiusTopRight = shapeConfig.cornerRadius;
-          break;
-      }
-      shape.horizontalCenter = "middle";
-      shape.verticalCenter = "middle";
-      shape.strokeWidth = shapeConfig.strokeWidth;
-      shape.stroke = shapeConfig.strokeColor || chart.colors.getIndex(index);
-      shape.fill = shapeConfig.color || chart.colors.getIndex(index).saturate(0.7);
+      let shape =
+        utils.Shape(am4core, chart, index, bullet, pointsStyle[value]);
       if(tooltips) {
         /* ~~~~\  tooltip  /~~~~ */
         bullet.tooltipText = tooltips[value].text;
