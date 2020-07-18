@@ -42,6 +42,13 @@
 #' \code{list(value1 = "red", value2 = "green", ...)}, \code{stroke} to set
 #' the color of the borders of the columns, and \code{cornerRadius} to set
 #' the radius of the corners of the columns
+#' @param bullets settings of the bullets; \code{NULL} for default,
+#'   otherwise a named list of the form
+#'   \code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+#'   \code{settings1}, \code{settings2}, ... are lists created with
+#'   \code{\link{amCircle}}, \code{\link{amTriangle}} or
+#'   \code{\link{amRectangle}}; this can also be a
+#'   single list of settings that will be applied to each series
 #' @param backgroundColor a color for the chart background
 #' @param cellWidth cell width in percent; for a simple bar chart, this is the
 #' width of the columns; for a grouped bar chart, this is the width of the
@@ -157,6 +164,7 @@ amBarChart <- function(
   draggable = FALSE,
   tooltip = NULL, # default
   columnStyle = NULL, # default
+  bullets = NULL, #default
   backgroundColor = NULL,
   cellWidth = NULL, # default
   columnWidth = NULL, # default
@@ -335,6 +343,18 @@ amBarChart <- function(
       sapply(columnStyle[["fill"]], validateColor, simplify = FALSE, USE.NAMES = TRUE)
   }
 
+  if(is.null(bullets)){
+    bullets <- setNames(rep(list(amCircle()), length(values)), values)
+  }else if("bullet" %in% class(bullets)){
+    bullets <- setNames(rep(list(bullets), length(values)), values)
+  }else if(is.list(bullets)){
+    if(any(!values %in% names(bullets))){
+      stop("Invalid `bullets` list.", call. = TRUE)
+    }
+  }else{
+    stop("Invalid `bullets` argument.", call. = TRUE)
+  }
+
   if(is.null(cellWidth)){
     cellWidth <- 90
   }else{
@@ -491,6 +511,7 @@ amBarChart <- function(
       draggable = draggable,
       tooltip = tooltip,
       columnStyle = columnStyle,
+      bullets = bullets,
       backgroundColor = validateColor(backgroundColor),
       cellWidth = cellWidth,
       columnWidth = columnWidth,

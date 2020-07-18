@@ -18,6 +18,7 @@ amBarChart(
   draggable = FALSE,
   tooltip = NULL,
   columnStyle = NULL,
+  bullets = NULL,
   backgroundColor = NULL,
   cellWidth = NULL,
   columnWidth = NULL,
@@ -89,6 +90,14 @@ of the columns, given as a single color or a named list of the form
 \code{list(value1 = "red", value2 = "green", ...)}, \code{stroke} to set
 the color of the borders of the columns, and \code{cornerRadius} to set
 the radius of the corners of the columns}
+
+\item{bullets}{settings of the bullets; \code{NULL} for default,
+otherwise a named list of the form
+\code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+\code{settings1}, \code{settings2}, ... are lists created with
+\code{\link{amCircle}}, \code{\link{amTriangle}} or
+\code{\link{amRectangle}}; this can also be a
+single list of settings that will be applied to each series}
 
 \item{backgroundColor}{a color for the chart background}
 

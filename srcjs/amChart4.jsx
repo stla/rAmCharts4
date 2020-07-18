@@ -55,6 +55,7 @@ class AmBarChart extends React.PureComponent {
       tooltips = this.props.tooltip,
       valueFormatter = this.props.valueFormatter,
       columnStyle = this.props.columnStyle,
+      bulletsStyle = this.props.bullets,
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
@@ -315,10 +316,6 @@ class AmBarChart extends React.PureComponent {
       let bullet;
       if(draggable[value]) {
         bullet = series.bullets.create();
-        bullet.fill = columnStyle.fill[value];
-        bullet.stroke =
-          columnStyle.stroke || chart.colors.getIndex(index).saturate(0.7);
-        bullet.strokeWidth = 3;
         bullet.opacity = 0; // initially invisible
         bullet.defaultState.properties.opacity = 0;
         // resize cursor when over
@@ -327,9 +324,16 @@ class AmBarChart extends React.PureComponent {
         // create bullet hover state
         var hoverState = bullet.states.create("hover");
         hoverState.properties.opacity = 1; // visible when hovered
-        // add circle sprite to bullet
-        var circle = bullet.createChild(am4core.Circle);
-        circle.radius = 8;
+        // add sprite to bullet
+        let shapeConfig = bulletsStyle[value];
+        if(!shapeConfig.color){
+          shapeConfig.color = columnStyle.fill[value];
+        }
+        if(!shapeConfig.strokeColor){
+          shapeConfig.strokeColor = columnStyle.stroke;
+        }
+        let shape =
+          utils.Shape(am4core, chart, index, bullet, shapeConfig);
         // while dragging
         bullet.events.on("drag", event => {
           handleDrag(event);
@@ -356,9 +360,10 @@ class AmBarChart extends React.PureComponent {
       /* ~~~~\  column template  /~~~~ */
       let columnTemplate = series.columns.template;
       columnTemplate.width = am4core.percent(columnWidth);
-      columnTemplate.fill = columnStyle.fill[value];
+      columnTemplate.fill =
+        columnStyle.fill[value] || chart.colors.getIndex(index);
       columnTemplate.stroke =
-        columnStyle.stroke || chart.colors.getIndex(index).saturate(0.7);
+        columnStyle.stroke || am4core.color(chart.colors.getIndex(index)).lighten(-0.5);
       columnTemplate.strokeOpacity = 1;
       columnTemplate.column.fillOpacity = 0.8;
       columnTemplate.column.strokeWidth = 1;
