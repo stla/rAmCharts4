@@ -12,7 +12,10 @@ amScatterChart(
   yValueNames = NULL,
   xLimits = NULL,
   yLimits = NULL,
+  expandX = 0,
+  expandY = 5,
   valueFormatter = "#.",
+  trend = FALSE,
   chartTitle = NULL,
   theme = NULL,
   draggable = FALSE,
@@ -63,6 +66,42 @@ the lower and the upper limits of the y-axis; \code{NULL} for default values}
 
 \item{valueFormatter}{a number formatter; see
 \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}}
+
+\item{trend}{option to request trend lines and to set their settings;
+\code{FALSE} for no trend line, otherwise a named list of the form
+\code{list(yvalue1 = trend1, yvalue2 = trend2, ...)} where
+\code{trend1}, \code{trend2}, ... are lists with the following fields:
+\describe{
+  \item{\code{method}}{
+    the modelling method, can be \code{"lm"}, \code{"lm.js"}, \code{nls},
+    \code{nlsLM}, or \code{"loess"}; \code{"lm.js"} performs a polynomial
+    regression in JavaScript, its advantage is that the fitted regression
+    line is updated when the points of the line are dragged
+  }
+  \item{\code{formula}}{
+    a formula passed on to the modelling function for methods \code{"lm"},
+    \code{"nls"} or \code{"nlsLM"}; the
+    lefthandside of this formula must always be \code{y}, and its
+    righthandside must be a symbolic expression depending on \code{x} only,
+    e.g. \code{y ~ x}, \code{y ~ x + I(x^2)}, \code{y ~ poly(x,2)}
+  }
+  \item{\code{order}}{
+    the order of the polynomial regression when \code{method = "lm.js"}
+  }
+  \item{\code{method.args}}{
+    a list of additional arguments passed on to the modelling function
+    defined by \code{method} for methods \code{"nls"}, \code{"nlsLM"} or
+    \code{"loess"}, e.g. \code{method.args = list(span = 0.3)} for
+    method \code{"loess"}
+  }
+  \item{\code{style}}{
+    a list of settings for the trend line created with \code{\link{amLine}}
+  }
+}
+it is also possible to request the same kind of trend lines for all series
+given by the \code{yValues} argument, by passing a list of the
+form \code{list("_all" = trendconfig)}, e.g.
+\code{list("_all" = list(method = "lm", formula = y ~ 0+x, style = amLine()))}}
 
 \item{chartTitle}{chart title, \code{NULL}, character, or list of settings}
 
@@ -241,4 +280,49 @@ amScatterChart(
                    opacity = 0.4,
                    width = 1),
   theme = "dark")
+
+
+# scatter chart with trend lines
+
+Asym = 5; R0 = 1; lrc = -3/4
+x <- seq(-.3, 5, len = 101)
+y0 <- Asym + (R0-Asym) * exp(-exp(lrc)* x)
+
+dat <- data.frame(
+  x = x,
+  y1 = y0 + rnorm(101, sd = 0.33),
+  y2 = y0 + rnorm(101, sd = 0.33) + 2
+)
+
+amScatterChart(
+  data = dat,
+  width = "700px",
+  xValue = "x",
+  yValues = c("y1", "y2"),
+  trend = list("_all" = list(
+    method = "nls",
+    formula = y ~ SSasymp(x, Asym, R0, lrc),
+    style = amLine()
+  )),
+  draggable = FALSE,
+  pointsStyle = list(
+    y1 = amTriangle(
+      width = 8,
+      height = 8,
+      strokeColor = "yellow",
+      strokeWidth = 1
+    ),
+    y2 = amTriangle(
+      width = 8,
+      height = 8,
+      strokeColor = "chartreuse",
+      strokeWidth = 1,
+      rotation = 180
+    )
+  ),
+  chartTitle = list(text = "Asymptotic regression model"),
+  xAxis = "x",
+  yAxis = "y",
+  valueFormatter = "#'.#'",
+  theme = "kelly")
 }

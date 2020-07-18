@@ -33,13 +33,14 @@
 #'   \code{trend1}, \code{trend2}, ... are lists with the following fields:
 #'   \describe{
 #'     \item{\code{method}}{
-#'       the modelling method, can be \code{"lm"}, \code{"lm.js"}
-#'       or \code{"loess"}; \code{"lm.js"} performs a polynomial regression in
-#'       JavaScript, its advantage is that the fitted regression line is
-#'       updated when the points of the line are dragged
+#'       the modelling method, can be \code{"lm"}, \code{"lm.js"}, \code{nls},
+#'       \code{nlsLM}, or \code{"loess"}; \code{"lm.js"} performs a polynomial
+#'       regression in JavaScript, its advantage is that the fitted regression
+#'       line is updated when the points of the line are dragged
 #'     }
 #'     \item{\code{formula}}{
-#'       a formula passed to the \code{lm} function if \code{method = "lm"}; the
+#'       a formula passed on to the modelling function for methods \code{"lm"},
+#'       \code{"nls"} or \code{"nlsLM"}; the
 #'       lefthandside of this formula must always be \code{y}, and its
 #'       righthandside must be a symbolic expression depending on \code{x} only,
 #'       e.g. \code{y ~ x}, \code{y ~ x + I(x^2)}, \code{y ~ poly(x,2)}
@@ -49,8 +50,9 @@
 #'     }
 #'     \item{\code{method.args}}{
 #'       a list of additional arguments passed on to the modelling function
-#'       defined by \code{method} when \code{method = "loess"}, e.g.
-#'       \code{list(span = 0.3)}
+#'       defined by \code{method} for methods \code{"nls"}, \code{"nlsLM"} or
+#'       \code{"loess"}, e.g. \code{method.args = list(span = 0.3)} for
+#'       method \code{"loess"}
 #'     }
 #'     \item{\code{style}}{
 #'       a list of settings for the trend line created with \code{\link{amLine}}
@@ -124,7 +126,7 @@
 #' \code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
 #' like \code{"hsl(360,11,255)"}.
 #'
-#' @import htmlwidgets
+#' @import htmlwidgets minpack.lm
 #' @importFrom shiny validateCssUnit
 #' @importFrom stringi stri_rand_strings
 #' @importFrom lubridate is.Date is.POSIXt
@@ -365,7 +367,7 @@ amLineChart <- function(
           FALSE
         )
       dat <- data.frame(x = data[[xValue]], y = data[[yValue]])
-      if(trend[[yValue]][["method"]] == "loess"){
+      if(trend[[yValue]][["method"]] %in% c("loess", "nls", "nlsLM")){
         method.args <- if(is.null(trend[[yValue]][["method.args"]]))
           list()
         else
@@ -385,6 +387,14 @@ amLineChart <- function(
         lm.js = lm(trend[[yValue]][["formula"]], data = dat),
         loess = do.call(
           function(...){ loess(y ~ x, data = dat, ...) },
+          method.args
+        ),
+        nls = do.call(
+          function(...){ nls(trend[[yValue]][["formula"]], data = dat, ...) },
+          method.args
+        ),
+        nlsLM = do.call(
+          function(...){ nlsLM(trend[[yValue]][["formula"]], data = dat, ...) },
           method.args
         )
       )

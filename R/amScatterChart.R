@@ -23,6 +23,41 @@
 #' the lower and the upper limits of the y-axis; \code{NULL} for default values
 #' @param valueFormatter a number formatter; see
 #' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}
+#' @param trend option to request trend lines and to set their settings;
+#'   \code{FALSE} for no trend line, otherwise a named list of the form
+#'   \code{list(yvalue1 = trend1, yvalue2 = trend2, ...)} where
+#'   \code{trend1}, \code{trend2}, ... are lists with the following fields:
+#'   \describe{
+#'     \item{\code{method}}{
+#'       the modelling method, can be \code{"lm"}, \code{"lm.js"}, \code{nls},
+#'       \code{nlsLM}, or \code{"loess"}; \code{"lm.js"} performs a polynomial
+#'       regression in JavaScript, its advantage is that the fitted regression
+#'       line is updated when the points of the line are dragged
+#'     }
+#'     \item{\code{formula}}{
+#'       a formula passed on to the modelling function for methods \code{"lm"},
+#'       \code{"nls"} or \code{"nlsLM"}; the
+#'       lefthandside of this formula must always be \code{y}, and its
+#'       righthandside must be a symbolic expression depending on \code{x} only,
+#'       e.g. \code{y ~ x}, \code{y ~ x + I(x^2)}, \code{y ~ poly(x,2)}
+#'     }
+#'     \item{\code{order}}{
+#'       the order of the polynomial regression when \code{method = "lm.js"}
+#'     }
+#'     \item{\code{method.args}}{
+#'       a list of additional arguments passed on to the modelling function
+#'       defined by \code{method} for methods \code{"nls"}, \code{"nlsLM"} or
+#'       \code{"loess"}, e.g. \code{method.args = list(span = 0.3)} for
+#'       method \code{"loess"}
+#'     }
+#'     \item{\code{style}}{
+#'       a list of settings for the trend line created with \code{\link{amLine}}
+#'     }
+#'   }
+#'   it is also possible to request the same kind of trend lines for all series
+#'   given by the \code{yValues} argument, by passing a list of the
+#'   form \code{list("_all" = trendconfig)}, e.g.
+#'   \code{list("_all" = list(method = "lm", formula = y ~ 0+x, style = amLine()))}
 #' @param chartTitle chart title, \code{NULL}, character, or list of settings
 #' @param theme theme, \code{NULL} or one of \code{"dataviz"},
 #' \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
@@ -184,6 +219,51 @@
 #'                    opacity = 0.4,
 #'                    width = 1),
 #'   theme = "dark")
+#'
+#'
+#' # scatter chart with trend lines
+#'
+#' Asym = 5; R0 = 1; lrc = -3/4
+#' x <- seq(-.3, 5, len = 101)
+#' y0 <- Asym + (R0-Asym) * exp(-exp(lrc)* x)
+#'
+#' dat <- data.frame(
+#'   x = x,
+#'   y1 = y0 + rnorm(101, sd = 0.33),
+#'   y2 = y0 + rnorm(101, sd = 0.33) + 2
+#' )
+#'
+#' amScatterChart(
+#'   data = dat,
+#'   width = "700px",
+#'   xValue = "x",
+#'   yValues = c("y1", "y2"),
+#'   trend = list("_all" = list(
+#'     method = "nls",
+#'     formula = y ~ SSasymp(x, Asym, R0, lrc),
+#'     style = amLine()
+#'   )),
+#'   draggable = FALSE,
+#'   pointsStyle = list(
+#'     y1 = amTriangle(
+#'       width = 8,
+#'       height = 8,
+#'       strokeColor = "yellow",
+#'       strokeWidth = 1
+#'     ),
+#'     y2 = amTriangle(
+#'       width = 8,
+#'       height = 8,
+#'       strokeColor = "chartreuse",
+#'       strokeWidth = 1,
+#'       rotation = 180
+#'     )
+#'   ),
+#'   chartTitle = list(text = "Asymptotic regression model"),
+#'   xAxis = "x",
+#'   yAxis = "y",
+#'   valueFormatter = "#'.#'",
+#'   theme = "kelly")
 amScatterChart <- function(
   data,
   data2 = NULL,
@@ -192,7 +272,10 @@ amScatterChart <- function(
   yValueNames = NULL, # default
   xLimits = NULL,
   yLimits = NULL,
+  expandX = 0,
+  expandY = 5,
   valueFormatter = "#.",
+  trend = FALSE,
   chartTitle = NULL,
   theme = NULL,
   draggable = FALSE,
@@ -254,22 +337,85 @@ amScatterChart <- function(
   if(!is.null(data2) &&
      (!is.data.frame(data2) ||
       nrow(data2) != nrow(data) || # XXXX
-      !all(yValues %in% names(data2)))){
+      !all(c(xValue,yValues) %in% names(data2)))){
     stop("Invalid `data2` argument.", call. = TRUE)
   }
 
   if(is.null(xLimits)){
     xLimits <- range(pretty(data[[xValue]]))
     if(!isDate){
-      pad <- diff(xLimits) * 0.05
+      pad <- diff(xLimits) * expandX/100
       xLimits <- xLimits + c(-pad, pad)
     }
   }
 
   if(is.null(yLimits)){
     yLimits <- range(pretty(do.call(c, data[yValues])))
-    pad <- diff(yLimits) * 0.05
+    pad <- diff(yLimits) * expandY/100
     yLimits <- yLimits + c(-pad, pad)
+  }
+
+  if(!isDate && !isFALSE(trend)){
+    if("_all" %in% names(trend)){
+      trend <- setNames(rep(list(trend[["_all"]]), length(yValues)), yValues)
+    }
+    trendData <- setNames(vector("list", length(trend)), names(trend))
+    trendJS <- setNames(vector("list", length(trend)), names(trend))
+    trendStyle <-
+      sapply(trend, "[[", "style", USE.NAMES = TRUE, simplify = FALSE)
+    for(yValue in names(trend)){
+      trendJS[[yValue]] <-
+        ifelse(
+          trend[[yValue]][["method"]] == "lm.js",
+          trend[[yValue]][["order"]],
+          FALSE
+        )
+      dat <- data.frame(x = data[[xValue]], y = data[[yValue]])
+      if(trend[[yValue]][["method"]] %in% c("loess", "nls", "nlsLM")){
+        method.args <- if(is.null(trend[[yValue]][["method.args"]]))
+          list()
+        else
+          trend[[yValue]][["method.args"]]
+      }else if(trend[[yValue]][["method"]] == "lm.js"){
+        trend[[yValue]][["formula"]] <-
+          as.formula(
+            sprintf(
+              "y ~ poly(x, degree = %d, raw = TRUE)",
+              trend[[yValue]][["order"]]
+            )
+          )
+      }
+      fit <- switch(
+        trend[[yValue]][["method"]],
+        lm = lm(trend[[yValue]][["formula"]], data = dat),
+        lm.js = lm(trend[[yValue]][["formula"]], data = dat),
+        loess = do.call(
+          function(...){ loess(y ~ x, data = dat, ...) },
+          method.args
+        ),
+        nls = do.call(
+          function(...){ nls(trend[[yValue]][["formula"]], data = dat, ...) },
+          method.args
+        ),
+        nlsLM = do.call(
+          function(...){ nlsLM(trend[[yValue]][["formula"]], data = dat, ...) },
+          method.args
+        )
+      )
+      simpleRegression <-
+        trend[[yValue]][["method"]] %in% c("lm", "lm.js") &&
+        identical(attr(terms(trend[[yValue]][["formula"]]), "term.labels"), "x")
+      X <- na.omit(dat$x)
+      x <-
+        if(simpleRegression)
+          range(X)
+      else
+        seq(min(X), max(X), length.out = 100)
+      y <- predict(fit, newdata = data.frame(x = x))
+      trendData[[yValue]] <- data.frame(x = x, y = y)
+    }
+  }else{
+    trendData <- trendStyle <- trendJS <- NULL
   }
 
   if(is.character(chartTitle)){
@@ -554,6 +700,9 @@ amScatterChart <- function(
     list(
       data = data,
       data2 = data2,
+      trendData = trendData,
+      trendStyle = trendStyle,
+      trendJS = trendJS,
       xValue = xValue,
       isDate = isDate,
       yValues = as.list(yValues),

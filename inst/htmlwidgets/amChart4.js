@@ -121051,12 +121051,17 @@ class AmLineChart extends React.PureComponent {
         xValue = this.props.xValue,
         yValues = this.props.yValues,
         data = _utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [xValue].concat(yValues)),
-        data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, yValues)) : null,
+        data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, [xValue].concat(yValues))) : null,
         trendData0 = this.props.trendData,
         trendData = trendData0 ? Object.assign({}, ...Object.keys(trendData0).map(k => ({
       [k]: HTMLWidgets.dataframeToD3(trendData0[k])
     }))) : null,
-        trendStyles = this.props.trendStyle,
+
+    /*      trendDataCopy = trendData ?
+            Object.assign({}, ...Object.keys(trendData)
+              .map(k => ({[k]: trendData[k].map(row => ({...row}))}))
+            ) : null,                                                 */
+    trendStyles = this.props.trendStyle,
         trendJS = this.props.trendJS,
         yValueNames = this.props.yValueNames,
         minY = this.props.minY,
@@ -121216,6 +121221,39 @@ class AmLineChart extends React.PureComponent {
             Shiny.setInputValue(shinyId + "_change", null);
           }
         }
+
+        if (trendJS) {
+          var seriesNames = chart.series.values.map(function (x) {
+            return x.name;
+          });
+          yValues.forEach(function (value, index) {
+            if (trendJS[value]) {
+              var thisSeriesName = yValueNames[value],
+                  trendSeriesName = thisSeriesName + "_trend",
+                  trendSeriesIndex = seriesNames.indexOf(trendSeriesName),
+                  trendSeries = chart.series.values[trendSeriesIndex],
+                  trendSeriesData = trendSeries.data,
+                  regData = data2.map(function (row) {
+                return [row[xValue], row[value]];
+              }),
+                  fit = regression__WEBPACK_IMPORTED_MODULE_14___default.a.polynomial(regData, {
+                order: trendJS[value],
+                precision: 15
+              }),
+                  regressionLine = trendSeriesData.map(function (row) {
+                var xy = fit.predict(row.x);
+                return {
+                  x: xy[0],
+                  y: xy[1]
+                };
+              });
+              regressionLine.forEach(function (point, i) {
+                trendSeriesData[i] = point;
+              });
+              trendSeries.invalidateData();
+            }
+          });
+        }
       });
     }
     /* ~~~~\  x-axis  /~~~~ */
@@ -121321,6 +121359,75 @@ class AmLineChart extends React.PureComponent {
       dataItem.segment.hideTooltip(0); // make bullet hovered (as it might hide if mouse moves away)
 
       event.target.isHover = true;
+    }
+    /* ~~~~\  function handling the dragstop event  /~~~~ */
+
+
+    function handleDragStop(event, value) {
+      console.log("bullet dragstop");
+      handleDrag(event);
+      var dataItem = event.target.dataItem;
+      dataItem.component.isHover = false; // XXXX
+
+      event.target.isHover = false;
+      dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
+
+      if (trendJS && trendJS[value]) {
+        var newvalue = YAxis.yToValue(event.target.pixelY),
+            seriesNames = chart.series.values.map(function (x) {
+          return x.name;
+        }),
+            thisSeriesName = dataItem.component.name,
+            thisSeriesData = dataItem.component.dataProvider.data,
+            thisSeriesDataCopy = thisSeriesData.map(row => _objectSpread({}, row));
+        thisSeriesDataCopy[dataItem.index][value] = newvalue;
+        thisSeriesData[dataItem.index][value] = newvalue;
+        var trendSeriesName = thisSeriesName + "_trend",
+            trendSeriesIndex = seriesNames.indexOf(trendSeriesName),
+            trendSeries = chart.series.values[trendSeriesIndex],
+            trendSeriesData = trendSeries.data,
+            regData = thisSeriesDataCopy.map(function (row) {
+          return [row[xValue], row[value]];
+        }),
+            fit = regression__WEBPACK_IMPORTED_MODULE_14___default.a.polynomial(regData, {
+          order: trendJS[value],
+          precision: 15
+        }),
+            regressionLine = trendSeriesData.map(function (row) {
+          var xy = fit.predict(row.x);
+          return {
+            x: xy[0],
+            y: xy[1]
+          };
+        });
+        regressionLine.forEach(function (point, i) {
+          trendSeriesData[i] = point;
+        });
+        trendSeries.invalidateData();
+      }
+
+      if (window.Shiny) {
+        if (isDate) {
+          Shiny.setInputValue(shinyId + ":rAmCharts4.dataframeWithDate", {
+            data: dataCopy,
+            date: xValue
+          });
+          Shiny.setInputValue(shinyId + "_change:rAmCharts4.lineChange", {
+            index: dataItem.index,
+            x: dataItem.dateX,
+            variable: value,
+            y: dataItem.values.valueY.value
+          });
+        } else {
+          Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+          Shiny.setInputValue(shinyId + "_change", {
+            index: dataItem.index,
+            x: dataItem.values.valueX.value,
+            variable: value,
+            y: dataItem.values.valueY.value
+          });
+        }
+      }
     }
 
     yValues.forEach(function (value, index) {
@@ -121488,69 +121595,7 @@ class AmLineChart extends React.PureComponent {
         }); // on dragging stop
 
         bullet.events.on("dragstop", event => {
-          console.log("bullet dragstop");
-          handleDrag(event);
-          var dataItem = event.target.dataItem;
-          dataItem.component.isHover = false; // XXXX
-
-          event.target.isHover = false;
-          dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
-
-          if (trendJS && trendJS[value]) {
-            var newvalue = YAxis.yToValue(event.target.pixelY),
-                seriesNames = chart.series.values.map(function (x) {
-              return x.name;
-            }),
-                thisSeriesName = dataItem.component.name,
-                thisSeriesData = dataItem.component.dataProvider.data,
-                thisSeriesDataCopy = thisSeriesData.map(row => _objectSpread({}, row));
-            thisSeriesDataCopy[dataItem.index][value] = newvalue;
-            thisSeriesData[dataItem.index][value] = newvalue;
-            var trendSeriesName = thisSeriesName + "_trend",
-                trendSeriesIndex = seriesNames.indexOf(trendSeriesName),
-                trendSeries = chart.series.values[trendSeriesIndex],
-                trendSeriesData = trendSeries.data,
-                regData = thisSeriesDataCopy.map(function (row) {
-              return [row[xValue], row[value]];
-            }),
-                fit = regression__WEBPACK_IMPORTED_MODULE_14___default.a.polynomial(regData, {
-              order: trendJS[value],
-              precision: 15
-            }),
-                regressionLine = fit.points.map(function (point) {
-              return {
-                x: point[0],
-                y: point[1]
-              };
-            });
-            regressionLine.forEach(function (point, i) {
-              trendSeriesData[i] = point;
-            });
-            trendSeries.invalidateData();
-          }
-
-          if (window.Shiny) {
-            if (isDate) {
-              Shiny.setInputValue(shinyId + ":rAmCharts4.dataframeWithDate", {
-                data: dataCopy,
-                date: xValue
-              });
-              Shiny.setInputValue(shinyId + "_change:rAmCharts4.lineChange", {
-                index: dataItem.index,
-                x: dataItem.dateX,
-                variable: value,
-                y: dataItem.values.valueY.value
-              });
-            } else {
-              Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
-              Shiny.setInputValue(shinyId + "_change", {
-                index: dataItem.index,
-                x: dataItem.values.valueX.value,
-                variable: value,
-                y: dataItem.values.valueY.value
-              });
-            }
-          }
+          handleDragStop(event, value);
         }); // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
 
         bullet.events.on("down", event => {
@@ -121589,6 +121634,7 @@ class AmLineChart extends React.PureComponent {
       /* ~~~~\ trend line /~~~~ */
 
       if (trendData && trendData[value]) {
+        console.log("trendData[value]", trendData[value]);
         var trend = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LineSeries"]());
         trend.name = yValueNames[value] + "_trend";
         trend.hiddenInLegend = true;
@@ -121608,7 +121654,6 @@ class AmLineChart extends React.PureComponent {
     /* end of forEach */
 
     this.chart = chart;
-    console.log("chart", chart);
   }
 
   componentWillUnmount() {
@@ -121653,7 +121698,13 @@ class AmScatterChart extends React.PureComponent {
         xValue = this.props.xValue,
         yValues = this.props.yValues,
         data = _utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [xValue].concat(yValues)),
-        data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, yValues)) : null,
+        data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, [xValue].concat(yValues))) : null,
+        trendData0 = this.props.trendData,
+        trendData = trendData0 ? Object.assign({}, ...Object.keys(trendData0).map(k => ({
+      [k]: HTMLWidgets.dataframeToD3(trendData0[k])
+    }))) : null,
+        trendStyles = this.props.trendStyle,
+        trendJS = this.props.trendJS,
         yValueNames = this.props.yValueNames,
         minY = this.props.minY,
         maxY = this.props.maxY,
@@ -121798,6 +121849,39 @@ class AmScatterChart extends React.PureComponent {
 
         chart.invalidateRawData();
 
+        if (trendJS) {
+          var seriesNames = chart.series.values.map(function (x) {
+            return x.name;
+          });
+          yValues.forEach(function (value, index) {
+            if (trendJS[value]) {
+              var thisSeriesName = yValueNames[value],
+                  trendSeriesName = thisSeriesName + "_trend",
+                  trendSeriesIndex = seriesNames.indexOf(trendSeriesName),
+                  trendSeries = chart.series.values[trendSeriesIndex],
+                  trendSeriesData = trendSeries.data,
+                  regData = data2.map(function (row) {
+                return [row[xValue], row[value]];
+              }),
+                  fit = regression__WEBPACK_IMPORTED_MODULE_14___default.a.polynomial(regData, {
+                order: trendJS[value],
+                precision: 15
+              }),
+                  regressionLine = trendSeriesData.map(function (row) {
+                var xy = fit.predict(row.x);
+                return {
+                  x: xy[0],
+                  y: xy[1]
+                };
+              });
+              regressionLine.forEach(function (point, i) {
+                trendSeriesData[i] = point;
+              });
+              trendSeries.invalidateData();
+            }
+          });
+        }
+
         if (window.Shiny) {
           if (isDate) {
             Shiny.setInputValue(shinyId + ":rAmCharts4.dataframeWithDate", {
@@ -121916,6 +122000,75 @@ class AmScatterChart extends React.PureComponent {
       dataItem.segment.hideTooltip(0); // make bullet hovered (as it might hide if mouse moves away)
 
       event.target.isHover = true;
+    }
+    /* ~~~~\  function handling the dragstop event  /~~~~ */
+
+
+    function handleDragStop(event, value) {
+      console.log("bullet dragstop");
+      handleDrag(event);
+      var dataItem = event.target.dataItem;
+      dataItem.component.isHover = false; // XXXX
+
+      event.target.isHover = false;
+      dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
+
+      if (trendJS && trendJS[value]) {
+        var newvalue = YAxis.yToValue(event.target.pixelY),
+            seriesNames = chart.series.values.map(function (x) {
+          return x.name;
+        }),
+            thisSeriesName = dataItem.component.name,
+            thisSeriesData = dataItem.component.dataProvider.data,
+            thisSeriesDataCopy = thisSeriesData.map(row => _objectSpread({}, row));
+        thisSeriesDataCopy[dataItem.index][value] = newvalue;
+        thisSeriesData[dataItem.index][value] = newvalue;
+        var trendSeriesName = thisSeriesName + "_trend",
+            trendSeriesIndex = seriesNames.indexOf(trendSeriesName),
+            trendSeries = chart.series.values[trendSeriesIndex],
+            trendSeriesData = trendSeries.data,
+            regData = thisSeriesDataCopy.map(function (row) {
+          return [row[xValue], row[value]];
+        }),
+            fit = regression__WEBPACK_IMPORTED_MODULE_14___default.a.polynomial(regData, {
+          order: trendJS[value],
+          precision: 15
+        }),
+            regressionLine = trendSeriesData.map(function (row) {
+          var xy = fit.predict(row.x);
+          return {
+            x: xy[0],
+            y: xy[1]
+          };
+        });
+        regressionLine.forEach(function (point, i) {
+          trendSeriesData[i] = point;
+        });
+        trendSeries.invalidateData();
+      }
+
+      if (window.Shiny) {
+        if (isDate) {
+          Shiny.setInputValue(shinyId + ":rAmCharts4.dataframeWithDate", {
+            data: dataCopy,
+            date: xValue
+          });
+          Shiny.setInputValue(shinyId + "_change:rAmCharts4.lineChange", {
+            index: dataItem.index,
+            x: dataItem.dateX,
+            variable: value,
+            y: dataItem.values.valueY.value
+          });
+        } else {
+          Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+          Shiny.setInputValue(shinyId + "_change", {
+            index: dataItem.index,
+            x: dataItem.values.valueX.value,
+            variable: value,
+            y: dataItem.values.valueY.value
+          });
+        }
+      }
     }
 
     yValues.forEach(function (value, index) {
@@ -122074,34 +122227,7 @@ class AmScatterChart extends React.PureComponent {
         }); // on dragging stop
 
         bullet.events.on("dragstop", event => {
-          handleDrag(event);
-          var dataItem = event.target.dataItem; //          dataItem.component.isHover = false; // XXXX
-
-          event.target.isHover = false;
-          dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
-
-          if (window.Shiny) {
-            if (isDate) {
-              Shiny.setInputValue(shinyId + ":rAmCharts4.dataframeWithDate", {
-                data: dataCopy,
-                date: xValue
-              });
-              Shiny.setInputValue(shinyId + "_change:rAmCharts4.lineChange", {
-                index: dataItem.index,
-                x: dataItem.dateX,
-                variable: value,
-                y: dataItem.values.valueY.value
-              });
-            } else {
-              Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
-              Shiny.setInputValue(shinyId + "_change", {
-                index: dataItem.index,
-                x: dataItem.values.valueX.value,
-                variable: value,
-                y: dataItem.values.valueY.value
-              });
-            }
-          }
+          handleDragStop(event, value);
         }); // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
 
         bullet.events.on("down", event => {
@@ -122123,7 +122249,28 @@ class AmScatterChart extends React.PureComponent {
           }
         });
       }
+      /* ~~~~\ trend line /~~~~ */
+
+
+      if (trendData && trendData[value]) {
+        var trend = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LineSeries"]());
+        trend.name = yValueNames[value] + "_trend";
+        trend.hiddenInLegend = true;
+        trend.data = trendData[value];
+        trend.dataFields.valueX = "x";
+        trend.dataFields.valueY = "y";
+        trend.sequencedInterpolation = true;
+        trend.defaultState.interpolationDuration = 1500;
+        var trendStyle = trendStyles[value];
+        trend.strokeWidth = trendStyle.width || 3;
+        trend.stroke = trendStyle.color || chart.colors.getIndex(index).saturate(0.7);
+        if (trendStyle.dash) trend.strokeDasharray = trendStyle.dash;
+        trend.tensionX = trendStyle.tensionX || 0.8;
+        trend.tensionY = trendStyle.tensionY || 0.8;
+      }
     });
+    /* end of forEach */
+
     this.chart = chart;
   }
 

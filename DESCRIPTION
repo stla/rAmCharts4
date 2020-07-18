@@ -18,7 +18,8 @@ Imports:
     shiny,
     jsonlite,
     stringi,
-    lubridate
+    lubridate,
+    minpack.lm
 Suggests:
     reshape2
 RoxygenNote: 7.0.2

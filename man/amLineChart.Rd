@@ -81,13 +81,14 @@ y-axis used to expand this range}
 \code{trend1}, \code{trend2}, ... are lists with the following fields:
 \describe{
   \item{\code{method}}{
-    the modelling method, can be \code{"lm"}, \code{"lm.js"}
-    or \code{"loess"}; \code{"lm.js"} performs a polynomial regression in
-    JavaScript, its advantage is that the fitted regression line is
-    updated when the points of the line are dragged
+    the modelling method, can be \code{"lm"}, \code{"lm.js"}, \code{nls},
+    \code{nlsLM}, or \code{"loess"}; \code{"lm.js"} performs a polynomial
+    regression in JavaScript, its advantage is that the fitted regression
+    line is updated when the points of the line are dragged
   }
   \item{\code{formula}}{
-    a formula passed to the \code{lm} function if \code{method = "lm"}; the
+    a formula passed on to the modelling function for methods \code{"lm"},
+    \code{"nls"} or \code{"nlsLM"}; the
     lefthandside of this formula must always be \code{y}, and its
     righthandside must be a symbolic expression depending on \code{x} only,
     e.g. \code{y ~ x}, \code{y ~ x + I(x^2)}, \code{y ~ poly(x,2)}
@@ -97,8 +98,9 @@ y-axis used to expand this range}
   }
   \item{\code{method.args}}{
     a list of additional arguments passed on to the modelling function
-    defined by \code{method} when \code{method = "loess"}, e.g.
-    \code{list(span = 0.3)}
+    defined by \code{method} for methods \code{"nls"}, \code{"nlsLM"} or
+    \code{"loess"}, e.g. \code{method.args = list(span = 0.3)} for
+    method \code{"loess"}
   }
   \item{\code{style}}{
     a list of settings for the trend line created with \code{\link{amLine}}
