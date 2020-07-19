@@ -2116,6 +2116,7 @@ class AmRangeAreaChart extends React.PureComponent {
       alwaysShowBullets = this.props.alwaysShowBullets,
       valueFormatter = this.props.valueFormatter,
       lineStyles = this.props.lineStyle,
+      areas = this.props.areas,
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
@@ -2343,22 +2344,29 @@ class AmRangeAreaChart extends React.PureComponent {
 //      let dollar = markerTemplate.createChild(am4core.Line);
 
       chart.legend.events.on("ready", function(ev) {
-        let line = new am4core.Line();
-        console.log("line",line);
-        console.log("ev",ev);
         let allSeries = chart.series.values;
-        line.stroke = allSeries[1].stroke;
-        line.valign = "bottom";
-        line.x2 = 20;
-        line.strokeWidth = 4;
-        line.strokeOpacity=1;
-        //let l = chart.legend.markers.template.createChild(am4core.Line);
-        //chart.legend.markers.values[0].children.push(line);
-        line.parent = chart.legend.markers.values[0];
-        //console.log("l", l);
+        chart.legend.markers.values.forEach(function(container, index){
+          let y2series = allSeries[2*index+1];
+          let line = new am4core.Line();
+          line.stroke = y2series.stroke;
+          line.valign = "bottom";
+          line.x2 = 40; // it is the width given below
+          line.strokeWidth = y2series.strokeWidth;
+          line.strokeOpacity = y2series.strokeOpacity;
+          //let l = chart.legend.markers.template.createChild(am4core.Line);
+          //chart.legend.markers.values[0].children.push(line);
+          line.parent = container;
+          //console.log("l", l);
+          let children = container.children.values.map(
+            function(child){ return child.className; }
+          ),
+            bullet = children.indexOf("Bullet");
+          if(bullet > -1)
+            container.children.values[bullet].dispose();
+        });
       });
 
-      markerTemplate.width = 20;
+      markerTemplate.width = 40;
       markerTemplate.strokeWidth = 1;
       markerTemplate.strokeOpacity = 1;
 //      markerTemplate.stroke = am4core.color("#000000"); no effect
@@ -2366,12 +2374,16 @@ class AmRangeAreaChart extends React.PureComponent {
       chart.legend.itemContainers.template.events.on("over", function(ev) {
         toggleHover(ev.target.dataItem.dataContext, true);
         let allSeries = chart.series.values;
-        toggleHover(allSeries[1], true);
+        for(let i=0; i < allSeries.length/2; ++i) {
+          toggleHover(allSeries[2*i+1], true);
+        }
       });
       chart.legend.itemContainers.template.events.on("out", function(ev) {
         toggleHover(ev.target.dataItem.dataContext, false);
         let allSeries = chart.series.values;
-        toggleHover(allSeries[1], false);
+        for(let i=0; i < allSeries.length/2; ++i) {
+          toggleHover(allSeries[2*i+1], false);
+        }
       });
     }
 
@@ -2429,7 +2441,7 @@ class AmRangeAreaChart extends React.PureComponent {
       }
 		}
 
-console.log(yValues); console.log(lineStyles);
+
 		yValues.forEach(function(y1y2, index){
 
       let y1 = y1y2[0], y2 = y1y2[1];
@@ -2449,15 +2461,14 @@ console.log(yValues); console.log(lineStyles);
       }
       series1.dataFields.valueY = y1;
       series2.dataFields.valueY = y2;
-      series1.name = yValueNames[y1];
+      series1.name = areas[index].name;
       series2.name = yValueNames[y2];
       series1.dataFields.openValueY = y2;
+      series2.dataFields.openValueY = y1;
       //series1.tooltipText = "yyyyy";// "y1: {openValueY} y2: {valueY}";
-      let tooltip = series1.tooltip;
-      tooltip.getFillFromObject = false;
-      console.log(tooltip);
-      series1.fill = "blue";
-      series1.fillOpacity = 0.3;
+      series1.fill = areas[index].color;
+      series1.fillOpacity = areas[index].opacity;
+      series2.fillOpacity = 0;
       series1.sequencedInterpolation = true;
       series2.sequencedInterpolation = true;
       series1.defaultState.interpolationDuration = 1000;
@@ -2471,20 +2482,27 @@ console.log(yValues); console.log(lineStyles);
       console.log(chart.cursor);
       chart.cursor.tooltipText = "uuuu";
       /* ~~~~\  bullet  /~~~~ */
-      let bullet = series1.bullets.push(new am4charts.Bullet());
-      let shape =
-        utils.Shape(am4core, chart, index, bullet, bulletsStyle[y1]);
+      let bullet1 = series1.bullets.push(new am4charts.Bullet()),
+        shape1 = utils.Shape(am4core, chart, index, bullet1, bulletsStyle[y1]);
+      let bullet2 = series2.bullets.push(new am4charts.Bullet()),
+        shape2 = utils.Shape(am4core, chart, index, bullet2, bulletsStyle[y2]);
       if(!alwaysShowBullets){
-        shape.opacity = 0; // initially invisible
-        shape.defaultState.properties.opacity = 0;
+        shape1.opacity = 0; // initially invisible
+        shape1.defaultState.properties.opacity = 0;
+        shape2.opacity = 0; // initially invisible
+        shape2.defaultState.properties.opacity = 0;
       }
       if(tooltips) {
         /* ~~~~\  tooltip  /~~~~ */
-        bullet.tooltipText = "y1: {valueY} y2: {openValueY}";// tooltips[value].text;
-        let tooltip = utils.Tooltip(am4core, chart, index, tooltips[y1]);
-        tooltip.pointerOrientation = "vertical";
-        tooltip.dy = 0;
-        tooltip.adapter.add("rotation", (x, target) => {
+        bullet1.tooltipText = `${y1}: {valueY} ${y2}: {openValueY}`;// tooltips[value].text;
+        let tooltip1 = utils.Tooltip(am4core, chart, index, tooltips[y1]);
+        bullet2.tooltipText = `${y1}: {openValueY} ${y2}: {valueY}`;// tooltips[value].text;
+        let tooltip2 = utils.Tooltip(am4core, chart, index, tooltips[y2]);
+        tooltip1.pointerOrientation = "vertical";
+        tooltip1.dy = 0;
+        tooltip2.pointerOrientation = "vertical";
+        tooltip2.dy = 0;
+        tooltip1.adapter.add("rotation", (x, target) => {
           if(target.dataItem) {
             if(target.dataItem.valueY >= 0) {
               return 0;
@@ -2495,7 +2513,7 @@ console.log(yValues); console.log(lineStyles);
             return x;
           }
         });
-        tooltip.label.adapter.add("verticalCenter", (x, target) => {
+        tooltip1.label.adapter.add("verticalCenter", (x, target) => {
           if(target.dataItem) {
             if(target.dataItem.valueY >= 0) {
               return "none";
@@ -2506,7 +2524,7 @@ console.log(yValues); console.log(lineStyles);
             return x;
           }
         });
-        tooltip.label.adapter.add("rotation", (x, target) => {
+        tooltip1.label.adapter.add("rotation", (x, target) => {
           if(target.dataItem) {
             if(target.dataItem.valueY >= 0) {
               return 0;
@@ -2517,7 +2535,41 @@ console.log(yValues); console.log(lineStyles);
             return x;
           }
         });
-        bullet.tooltip = tooltip;
+        tooltip2.adapter.add("rotation", (x, target) => {
+          if(target.dataItem) {
+            if(target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip2.label.adapter.add("verticalCenter", (x, target) => {
+          if(target.dataItem) {
+            if(target.dataItem.valueY >= 0) {
+              return "none";
+            } else {
+              return "bottom";
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip2.label.adapter.add("rotation", (x, target) => {
+          if(target.dataItem) {
+            if(target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        bullet1.tooltip = tooltip1;
+        bullet2.tooltip = tooltip2;
         // hide label when hovered because the tooltip is shown
         // XXX y'a pas de label
       /*bullet.events.on("over", event => {
@@ -2535,33 +2587,68 @@ console.log(yValues); console.log(lineStyles);
 
       }
       // create bullet hover state
-      let hoverState = shape.states.create("hover");
-      hoverState.properties.strokeWidth = shape.strokeWidth + 3;
-      hoverState.properties.opacity = 1; // visible when hovered
+      let hoverState1 = shape1.states.create("hover");
+      hoverState1.properties.strokeWidth = shape1.strokeWidth + 3;
+      hoverState1.properties.opacity = 1; // visible when hovered
+      let hoverState2 = shape2.states.create("hover");
+      hoverState2.properties.strokeWidth = shape2.strokeWidth + 3;
+      hoverState2.properties.opacity = 1; // visible when hovered
       if(draggable[y1]){
-        bullet.draggable = true;
+        bullet1.draggable = true;
         // resize cursor when over
-        bullet.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
+        bullet1.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
         // while dragging
-        bullet.events.on("drag", event => {
+        bullet1.events.on("drag", event => {
           handleDrag(event);
         });
         // on dragging stop
-        bullet.events.on("dragstop", event => {
+        bullet1.events.on("dragstop", event => {
           handleDragStop(event, y1);
         });
         // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
-        bullet.events.on("down", event => {
+        bullet1.events.on("down", event => {
           let dataItem = event.target.dataItem;
-          let itemBullet = dataItem.bullets.getKey(bullet.uid);
+          let itemBullet = dataItem.bullets.getKey(bullet1.uid);
           itemBullet.dragStart(event.pointer);
         });
         // when line position changes, adjust minX/maxX of bullets so that we could only dragg vertically
-        bullet.events.on("positionchanged", event => {
+        bullet1.events.on("positionchanged", event => {
           let dataItem = event.target.dataItem;
           //console.log("dataItem", dataItem);
           if(dataItem.bullets) {
-            let itemBullet = dataItem.bullets.getKey(bullet.uid);
+            let itemBullet = dataItem.bullets.getKey(bullet1.uid);
+            let point = dataItem.point;
+            itemBullet.minX = point.x;
+            itemBullet.maxX = itemBullet.minX;
+            itemBullet.minY = 0;
+            itemBullet.maxY = chart.seriesContainer.pixelHeight;
+          }
+        });
+      }
+      if(draggable[y2]){
+        bullet2.draggable = true;
+        // resize cursor when over
+        bullet2.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
+        // while dragging
+        bullet2.events.on("drag", event => {
+          handleDrag(event);
+        });
+        // on dragging stop
+        bullet2.events.on("dragstop", event => {
+          handleDragStop(event, y2);
+        });
+        // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
+        bullet2.events.on("down", event => {
+          let dataItem = event.target.dataItem;
+          let itemBullet = dataItem.bullets.getKey(bullet2.uid);
+          itemBullet.dragStart(event.pointer);
+        });
+        // when line position changes, adjust minX/maxX of bullets so that we could only dragg vertically
+        bullet2.events.on("positionchanged", event => {
+          let dataItem = event.target.dataItem;
+          //console.log("dataItem", dataItem);
+          if(dataItem.bullets) {
+            let itemBullet = dataItem.bullets.getKey(bullet2.uid);
             let point = dataItem.point;
             itemBullet.minX = point.x;
             itemBullet.maxX = itemBullet.minX;
@@ -2575,8 +2662,8 @@ console.log(yValues); console.log(lineStyles);
       /* ~~~~\  line template  /~~~~ */
       let lineTemplate1 = series1.segments.template,
         lineTemplate2 = series2.segments.template;
-      lineTemplate1.tooltipText = "{valueY}";
-      lineTemplate2.tooltipText = "y2: {valueY}";
+//      lineTemplate1.tooltipText = "{valueY}";
+//      lineTemplate2.tooltipText = "y2: {valueY}";
       lineTemplate1.interactionsEnabled = true;
       lineTemplate2.interactionsEnabled = true;
       series1.strokeWidth = lineStyle1.width || 3;

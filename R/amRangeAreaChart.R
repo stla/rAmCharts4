@@ -275,6 +275,7 @@ amRangeAreaChart <- function(
   bullets = NULL, # default
   alwaysShowBullets = FALSE,
   lineStyle = NULL, # default
+  areas = NULL, # default
   backgroundColor = NULL,
   xAxis = NULL, # default
   yAxis = NULL, # default
@@ -599,6 +600,7 @@ amRangeAreaChart <- function(
       bullets = bullets,
       alwaysShowBullets = alwaysShowBullets,
       lineStyle = lineStyle,
+      areas = areas,
       backgroundColor = validateColor(backgroundColor),
       xAxis = xAxis,
       yAxis = yAxis,
