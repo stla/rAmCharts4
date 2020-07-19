@@ -2269,6 +2269,7 @@ class AmRangeAreaChart extends React.PureComponent {
 		} else {
 		  XAxis = chart.xAxes.push(new am4charts.ValueAxis());
 		}
+		XAxis.strictMinMax = true;
 		XAxis.min = minX;
 		XAxis.max = maxX;
 		XAxis.renderer.grid.template.location = 0;
@@ -2494,9 +2495,9 @@ class AmRangeAreaChart extends React.PureComponent {
       }
       if(tooltips) {
         /* ~~~~\  tooltip  /~~~~ */
-        bullet1.tooltipText = `${y1}: {valueY} ${y2}: {openValueY}`;// tooltips[value].text;
+        bullet1.tooltipText = tooltips[y1].text;
         let tooltip1 = utils.Tooltip(am4core, chart, index, tooltips[y1]);
-        bullet2.tooltipText = `${y1}: {openValueY} ${y2}: {valueY}`;// tooltips[value].text;
+        bullet2.tooltipText = tooltips[y2].text;
         let tooltip2 = utils.Tooltip(am4core, chart, index, tooltips[y2]);
         tooltip1.pointerOrientation = "vertical";
         tooltip1.dy = 0;

@@ -120113,7 +120113,8 @@ class AmBarChart extends React.PureComponent {
         draggable = this.props.draggable,
         tooltips = this.props.tooltip,
         valueFormatter = this.props.valueFormatter,
-        columnStyle = this.props.columnStyle,
+        columnStyles = this.props.columnStyle,
+        bulletsStyle = this.props.bullets,
         chartId = this.props.chartId,
         shinyId = this.props.shinyId;
 
@@ -120384,12 +120385,10 @@ class AmBarChart extends React.PureComponent {
       /* ~~~~\  bullet  /~~~~ */
 
       var bullet;
+      var columnStyle = columnStyles[value];
 
       if (draggable[value]) {
         bullet = series.bullets.create();
-        bullet.fill = columnStyle.fill[value];
-        bullet.stroke = columnStyle.stroke || chart.colors.getIndex(index).saturate(0.7);
-        bullet.strokeWidth = 3;
         bullet.opacity = 0; // initially invisible
 
         bullet.defaultState.properties.opacity = 0; // resize cursor when over
@@ -120399,10 +120398,19 @@ class AmBarChart extends React.PureComponent {
 
         var hoverState = bullet.states.create("hover");
         hoverState.properties.opacity = 1; // visible when hovered
-        // add circle sprite to bullet
+        // add sprite to bullet
 
-        var circle = bullet.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Circle"]);
-        circle.radius = 8; // while dragging
+        var shapeConfig = bulletsStyle[value];
+
+        if (!shapeConfig.color) {
+          shapeConfig.color = columnStyle.color;
+        }
+
+        if (!shapeConfig.strokeColor) {
+          shapeConfig.strokeColor = columnStyle.strokeColor;
+        }
+
+        var shape = _utils__WEBPACK_IMPORTED_MODULE_13__["Shape"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, bullet, shapeConfig); // while dragging
 
         bullet.events.on("drag", event => {
           handleDrag(event);
@@ -120431,11 +120439,11 @@ class AmBarChart extends React.PureComponent {
 
       var columnTemplate = series.columns.template;
       columnTemplate.width = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](columnWidth);
-      columnTemplate.fill = columnStyle.fill[value];
-      columnTemplate.stroke = columnStyle.stroke || chart.colors.getIndex(index).saturate(0.7);
+      columnTemplate.fill = columnStyle.color || chart.colors.getIndex(index);
+      columnTemplate.stroke = columnStyle.strokeColor || _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](columnTemplate.fill).lighten(-0.5);
       columnTemplate.strokeOpacity = 1;
       columnTemplate.column.fillOpacity = 0.8;
-      columnTemplate.column.strokeWidth = 1;
+      columnTemplate.column.strokeWidth = columnStyle.strokeWidth;
 
       if (tooltips) {
         columnTemplate.tooltipText = tooltips[value].text;
@@ -120510,8 +120518,8 @@ class AmBarChart extends React.PureComponent {
           var dataItem = event.target.dataItem;
 
           if (dataItem.bullets) {
-            console.log('dataItem.bullets', dataItem.bullets);
-            console.log('bullet.uid', bullet.uid);
+            //console.log('dataItem.bullets', dataItem.bullets);
+            //console.log('bullet.uid', bullet.uid);
             var itemBullet = dataItem.bullets.getKey(bullet.uid);
             var column = dataItem.column;
             itemBullet.minX = column.pixelX + column.pixelWidth / 2;
@@ -122193,6 +122201,654 @@ class AmScatterChart extends React.PureComponent {
   }
 
 }
+/* COMPONENT: RANGE AREA CHART */
+
+
+class AmRangeAreaChart extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.style = this.style.bind(this);
+    this.toggleHover = this.toggleHover.bind(this);
+  }
+
+  style() {
+    if (window.Shiny && !window.FlexDashboard) {
+      return {
+        width: "100%",
+        height: "100%"
+      };
+    } else {
+      return {
+        width: this.props.width,
+        height: this.props.height
+      };
+    }
+  }
+
+  toggleHover(series, over) {
+    series.segments.each(function (segment) {
+      segment.isHover = over;
+    });
+  }
+
+  componentDidMount() {
+    console.log(this.props.yValues);
+    var theme = this.props.theme,
+        xValue = this.props.xValue,
+        yValues = this.props.yValues,
+        data = _utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [xValue].concat(yValues.flat())),
+        data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, [xValue].concat(yValues))) : null,
+        yValueNames = this.props.yValueNames,
+        isDate = this.props.isDate,
+        minX = isDate ? _utils__WEBPACK_IMPORTED_MODULE_13__["toDate"](this.props.minX) : this.props.minX,
+        maxX = isDate ? _utils__WEBPACK_IMPORTED_MODULE_13__["toDate"](this.props.maxX) : this.props.maxX,
+        minY = this.props.minY,
+        maxY = this.props.maxY,
+        xAxis = this.props.xAxis,
+        yAxis = this.props.yAxis,
+        gridLines = this.props.gridLines,
+        draggable = this.props.draggable,
+        tooltips = this.props.tooltip,
+        bulletsStyle = this.props.bullets,
+        alwaysShowBullets = this.props.alwaysShowBullets,
+        valueFormatter = this.props.valueFormatter,
+        lineStyles = this.props.lineStyle,
+        areas = this.props.areas,
+        chartId = this.props.chartId,
+        shinyId = this.props.shinyId;
+
+    if (isDate) {
+      data[xValue] = data[xValue].map(_utils__WEBPACK_IMPORTED_MODULE_13__["toDate"]);
+    }
+
+    data = HTMLWidgets.dataframeToD3(data);
+    var dataCopy = data.map(row => _objectSpread({}, row));
+
+    if (window.Shiny) {
+      if (shinyId === undefined) {
+        shinyId = $(document.getElementById(chartId)).parent().attr("id");
+      }
+
+      if (isDate) {
+        Shiny.setInputValue(shinyId + ":rAmCharts4.dataframeWithDate", {
+          data: dataCopy,
+          date: xValue
+        });
+      } else {
+        Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+      }
+    }
+
+    switch (theme) {
+      case "dark":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_dark__WEBPACK_IMPORTED_MODULE_4__["default"]);
+        break;
+
+      case "dataviz":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_dataviz__WEBPACK_IMPORTED_MODULE_5__["default"]);
+        break;
+
+      case "frozen":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_frozen__WEBPACK_IMPORTED_MODULE_6__["default"]);
+        break;
+
+      case "kelly":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_kelly__WEBPACK_IMPORTED_MODULE_7__["default"]);
+        break;
+
+      case "material":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_material__WEBPACK_IMPORTED_MODULE_8__["default"]);
+        break;
+
+      case "microchart":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_microchart__WEBPACK_IMPORTED_MODULE_9__["default"]);
+        break;
+
+      case "moonrisekingdom":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_moonrisekingdom__WEBPACK_IMPORTED_MODULE_10__["default"]);
+        break;
+
+      case "patterns":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_patterns__WEBPACK_IMPORTED_MODULE_11__["default"]);
+        break;
+
+      case "spiritedaway":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_spiritedaway__WEBPACK_IMPORTED_MODULE_12__["default"]);
+        break;
+    }
+
+    var chart = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["create"](this.props.chartId, _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYChart"]);
+    chart.data = data;
+    chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
+
+    chart.padding(50, 40, 0, 10);
+    chart.maskBullets = false; // allow bullets to go out of plot area
+
+    var chartBackgroundColor = this.props.backgroundColor || chart.background.fill;
+    chart.background.fill = chartBackgroundColor;
+    /* ~~~~\  title  /~~~~ */
+
+    var chartTitle = this.props.chartTitle;
+
+    if (chartTitle) {
+      var title = chart.plotContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Label"]);
+      title.text = chartTitle.text;
+      title.fill = chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.fontSize || 22;
+      title.fontWeight = "bold";
+      title.fontFamily = "Tahoma";
+      title.y = this.props.scrollbarX ? -56 : -42;
+      title.x = -45;
+      title.horizontalCenter = "left";
+      title.zIndex = 100;
+      title.fillOpacity = 1;
+    }
+    /* ~~~~\  caption  /~~~~ */
+
+
+    var chartCaption = this.props.caption;
+
+    if (chartCaption) {
+      var caption = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Label"]);
+      caption.text = chartCaption.text;
+      caption.fill = chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.align = chartCaption.align || "right";
+    }
+    /* ~~~~\  scrollbars  /~~~~ */
+
+
+    if (this.props.scrollbarX) {
+      chart.scrollbarX = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Scrollbar"]();
+    }
+
+    if (this.props.scrollbarY) {
+      chart.scrollbarY = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Scrollbar"]();
+    }
+    /* ~~~~\  button  /~~~~ */
+
+
+    var button = this.props.button;
+
+    if (button) {
+      var Button = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Button"]);
+      Button.label.text = button.text;
+      Button.label.fill = button.color || Button.label.fill;
+      Button.background.fill = button.fill || Button.background.fill;
+      Button.dy = -Button.parent.innerHeight * (button.position || 0.8);
+      Button.padding(5, 5, 5, 5);
+      Button.align = "right";
+      Button.marginRight = 15;
+      Button.events.on("hit", function () {
+        for (var r = 0; r < data.length; ++r) {
+          for (var v = 0; v < yValues.length; ++v) {
+            chart.data[r][yValues[v]] = data2[r][yValues[v]];
+          }
+        }
+
+        chart.invalidateRawData();
+
+        if (window.Shiny) {
+          if (isDate) {
+            Shiny.setInputValue(shinyId + ":rAmCharts4.dataframeWithDate", {
+              data: chart.data,
+              date: xValue
+            });
+            Shiny.setInputValue(shinyId + "_change", null);
+          } else {
+            Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", chart.data);
+            Shiny.setInputValue(shinyId + "_change", null);
+          }
+        }
+      });
+    }
+    /* ~~~~\  x-axis  /~~~~ */
+
+
+    var XAxis;
+
+    if (isDate) {
+      XAxis = chart.xAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["DateAxis"]());
+    } else {
+      XAxis = chart.xAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]());
+    }
+
+    XAxis.strictMinMax = true;
+    XAxis.min = minX;
+    XAxis.max = maxX;
+    XAxis.renderer.grid.template.location = 0;
+
+    if (xAxis && xAxis.title && xAxis.title.text !== "") {
+      XAxis.title.text = xAxis.title.text || xValue;
+      XAxis.title.fontWeight = "bold";
+      XAxis.title.fontSize = xAxis.title.fontSize || 20;
+      XAxis.title.fill = xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+    }
+
+    var xAxisLabels = XAxis.renderer.labels.template;
+    xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
+    xAxisLabels.rotation = xAxis.labels.rotation || 0;
+
+    if (xAxisLabels.rotation !== 0) {
+      xAxisLabels.horizontalCenter = "right";
+    }
+
+    xAxisLabels.fill = xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+
+    if (isDate) {
+      XAxis.dataFields.dateX = xValue;
+    } else {
+      XAxis.dataFields.valueX = xValue;
+    }
+
+    XAxis.renderer.grid.template.disabled = true;
+    XAxis.renderer.minGridDistance = 50;
+    XAxis.numberFormatter.numberFormat = valueFormatter;
+    /* ~~~~\  y-axis  /~~~~ */
+
+    var YAxis = chart.yAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]());
+    YAxis.tooltip.disabled = true;
+    YAxis.renderer.grid.template.stroke = gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
+    YAxis.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.15;
+    YAxis.renderer.grid.template.strokeWidth = gridLines.width || 1;
+
+    if (yAxis && yAxis.title && yAxis.title.text !== "") {
+      YAxis.title.text = yAxis.title.text;
+      YAxis.title.fontWeight = "bold";
+      YAxis.title.fontSize = yAxis.title.fontSize || 20;
+      YAxis.title.fill = yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+    }
+
+    if (yAxis.labels !== false) {
+      var yAxisLabels = YAxis.renderer.labels.template;
+      yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
+      yAxisLabels.rotation = yAxis.labels.rotation || 0;
+      yAxisLabels.fill = yAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+    } else {
+      YAxis.renderer.labels.template.disabled = true;
+    } // we set fixed min/max and strictMinMax to true, as otherwise value axis will adjust min/max while dragging and it won't look smooth
+
+
+    YAxis.strictMinMax = true;
+    YAxis.min = minY;
+    YAxis.max = maxY;
+    YAxis.renderer.minWidth = 60;
+    /* ~~~~\  legend  /~~~~ */
+
+    if (this.props.legend) {
+      chart.legend = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Legend"]();
+      chart.legend.useDefaultMarker = false; //      let marker = chart.legend.markers.template.children.getIndex(0);
+      //      console.log("legend marker 0", marker);
+
+      console.log("legend markers", chart.legend.markers); //let marker = chart.legend.markers.template;
+      //chart.legend.markers.values[0].children.push(am4core.Line);
+
+      var markerTemplate = chart.legend.markers.template; //      markerTemplate.disposeChildren();
+      //      let dollar = markerTemplate.createChild(am4core.Line);
+
+      chart.legend.events.on("ready", function (ev) {
+        var allSeries = chart.series.values;
+        chart.legend.markers.values.forEach(function (container, index) {
+          var y2series = allSeries[2 * index + 1];
+          var line = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Line"]();
+          line.stroke = y2series.stroke;
+          line.valign = "bottom";
+          line.x2 = 40; // it is the width given below
+
+          line.strokeWidth = y2series.strokeWidth;
+          line.strokeOpacity = y2series.strokeOpacity; //let l = chart.legend.markers.template.createChild(am4core.Line);
+          //chart.legend.markers.values[0].children.push(line);
+
+          line.parent = container; //console.log("l", l);
+
+          var children = container.children.values.map(function (child) {
+            return child.className;
+          }),
+              bullet = children.indexOf("Bullet");
+          if (bullet > -1) container.children.values[bullet].dispose();
+        });
+      });
+      markerTemplate.width = 40;
+      markerTemplate.strokeWidth = 1;
+      markerTemplate.strokeOpacity = 1; //      markerTemplate.stroke = am4core.color("#000000"); no effect
+
+      var toggleHover = this.toggleHover;
+      chart.legend.itemContainers.template.events.on("over", function (ev) {
+        toggleHover(ev.target.dataItem.dataContext, true);
+        var allSeries = chart.series.values;
+
+        for (var i = 0; i < allSeries.length / 2; ++i) {
+          toggleHover(allSeries[2 * i + 1], true);
+        }
+      });
+      chart.legend.itemContainers.template.events.on("out", function (ev) {
+        toggleHover(ev.target.dataItem.dataContext, false);
+        var allSeries = chart.series.values;
+
+        for (var i = 0; i < allSeries.length / 2; ++i) {
+          toggleHover(allSeries[2 * i + 1], false);
+        }
+      });
+    }
+    /* ~~~~\  function handling the drag event  /~~~~ */
+
+
+    function handleDrag(event) {
+      var dataItem = event.target.dataItem; //console.log("dataItem", dataItem);
+      // convert coordinate to value
+
+      var value = YAxis.yToValue(event.target.pixelY); // set new value
+
+      dataItem.valueY = value; // make line hover
+
+      dataItem.segment.isHover = true; // hide tooltip not to interrupt
+
+      dataItem.segment.hideTooltip(0); // make bullet hovered (as it might hide if mouse moves away)
+
+      event.target.isHover = true;
+    }
+    /* ~~~~\  function handling the dragstop event  /~~~~ */
+
+
+    function handleDragStop(event, value) {
+      console.log("bullet dragstop");
+      handleDrag(event);
+      var dataItem = event.target.dataItem;
+      dataItem.component.isHover = false; // XXXX
+
+      event.target.isHover = false;
+      dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
+
+      if (window.Shiny) {
+        if (isDate) {
+          Shiny.setInputValue(shinyId + ":rAmCharts4.dataframeWithDate", {
+            data: dataCopy,
+            date: xValue
+          });
+          Shiny.setInputValue(shinyId + "_change:rAmCharts4.lineChange", {
+            index: dataItem.index,
+            x: dataItem.dateX,
+            variable: value,
+            y: dataItem.values.valueY.value
+          });
+        } else {
+          Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+          Shiny.setInputValue(shinyId + "_change", {
+            index: dataItem.index,
+            x: dataItem.values.valueX.value,
+            variable: value,
+            y: dataItem.values.valueY.value
+          });
+        }
+      }
+    }
+
+    yValues.forEach(function (y1y2, index) {
+      var y1 = y1y2[0],
+          y2 = y1y2[1];
+      var lineStyle1 = lineStyles[y1];
+      var lineStyle2 = lineStyles[y2];
+      var series1 = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LineSeries"]()),
+          series2 = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LineSeries"]());
+      series2.hiddenInLegend = true;
+
+      if (isDate) {
+        series1.dataFields.dateX = xValue;
+        series2.dataFields.dateX = xValue;
+      } else {
+        series1.dataFields.valueX = xValue;
+        series2.dataFields.valueX = xValue;
+      }
+
+      series1.dataFields.valueY = y1;
+      series2.dataFields.valueY = y2;
+      series1.name = areas[index].name;
+      series2.name = yValueNames[y2];
+      series1.dataFields.openValueY = y2;
+      series2.dataFields.openValueY = y1; //series1.tooltipText = "yyyyy";// "y1: {openValueY} y2: {valueY}";
+
+      series1.fill = areas[index].color;
+      series1.fillOpacity = areas[index].opacity;
+      series2.fillOpacity = 0;
+      series1.sequencedInterpolation = true;
+      series2.sequencedInterpolation = true;
+      series1.defaultState.interpolationDuration = 1000;
+      series2.defaultState.interpolationDuration = 1500;
+      series1.tensionX = lineStyle1.tensionX || 1;
+      series1.tensionY = lineStyle1.tensionY || 1;
+      series2.tensionX = lineStyle2.tensionX || 1;
+      series2.tensionY = lineStyle2.tensionY || 1;
+      chart.cursor = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYCursor"]();
+      chart.cursor.xAxis = XAxis;
+      console.log(chart.cursor);
+      chart.cursor.tooltipText = "uuuu";
+      /* ~~~~\  bullet  /~~~~ */
+
+      var bullet1 = series1.bullets.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Bullet"]()),
+          shape1 = _utils__WEBPACK_IMPORTED_MODULE_13__["Shape"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, bullet1, bulletsStyle[y1]);
+      var bullet2 = series2.bullets.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Bullet"]()),
+          shape2 = _utils__WEBPACK_IMPORTED_MODULE_13__["Shape"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, bullet2, bulletsStyle[y2]);
+
+      if (!alwaysShowBullets) {
+        shape1.opacity = 0; // initially invisible
+
+        shape1.defaultState.properties.opacity = 0;
+        shape2.opacity = 0; // initially invisible
+
+        shape2.defaultState.properties.opacity = 0;
+      }
+
+      if (tooltips) {
+        /* ~~~~\  tooltip  /~~~~ */
+        bullet1.tooltipText = tooltips[y1].text;
+        var tooltip1 = _utils__WEBPACK_IMPORTED_MODULE_13__["Tooltip"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, tooltips[y1]);
+        bullet2.tooltipText = tooltips[y2].text;
+        var tooltip2 = _utils__WEBPACK_IMPORTED_MODULE_13__["Tooltip"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, tooltips[y2]);
+        tooltip1.pointerOrientation = "vertical";
+        tooltip1.dy = 0;
+        tooltip2.pointerOrientation = "vertical";
+        tooltip2.dy = 0;
+        tooltip1.adapter.add("rotation", (x, target) => {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip1.label.adapter.add("verticalCenter", (x, target) => {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
+              return "none";
+            } else {
+              return "bottom";
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip1.label.adapter.add("rotation", (x, target) => {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip2.adapter.add("rotation", (x, target) => {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip2.label.adapter.add("verticalCenter", (x, target) => {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
+              return "none";
+            } else {
+              return "bottom";
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip2.label.adapter.add("rotation", (x, target) => {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        bullet1.tooltip = tooltip1;
+        bullet2.tooltip = tooltip2; // hide label when hovered because the tooltip is shown
+        // XXX y'a pas de label
+
+        /*bullet.events.on("over", event => {
+            let dataItem = event.target.dataItem;
+            console.log("dataItem bullet on over", dataItem);
+            let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
+            itemLabelBullet.fillOpacity = 0;
+          });
+          // show label when mouse is out
+          bullet.events.on("out", event => {
+            let dataItem = event.target.dataItem;
+            let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
+            itemLabelBullet.fillOpacity = 1;
+          });*/
+      } // create bullet hover state
+
+
+      var hoverState1 = shape1.states.create("hover");
+      hoverState1.properties.strokeWidth = shape1.strokeWidth + 3;
+      hoverState1.properties.opacity = 1; // visible when hovered
+
+      var hoverState2 = shape2.states.create("hover");
+      hoverState2.properties.strokeWidth = shape2.strokeWidth + 3;
+      hoverState2.properties.opacity = 1; // visible when hovered
+
+      if (draggable[y1]) {
+        bullet1.draggable = true; // resize cursor when over
+
+        bullet1.cursorOverStyle = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["MouseCursorStyle"].verticalResize; // while dragging
+
+        bullet1.events.on("drag", event => {
+          handleDrag(event);
+        }); // on dragging stop
+
+        bullet1.events.on("dragstop", event => {
+          handleDragStop(event, y1);
+        }); // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
+
+        bullet1.events.on("down", event => {
+          var dataItem = event.target.dataItem;
+          var itemBullet = dataItem.bullets.getKey(bullet1.uid);
+          itemBullet.dragStart(event.pointer);
+        }); // when line position changes, adjust minX/maxX of bullets so that we could only dragg vertically
+
+        bullet1.events.on("positionchanged", event => {
+          var dataItem = event.target.dataItem; //console.log("dataItem", dataItem);
+
+          if (dataItem.bullets) {
+            var itemBullet = dataItem.bullets.getKey(bullet1.uid);
+            var point = dataItem.point;
+            itemBullet.minX = point.x;
+            itemBullet.maxX = itemBullet.minX;
+            itemBullet.minY = 0;
+            itemBullet.maxY = chart.seriesContainer.pixelHeight;
+          }
+        });
+      }
+
+      if (draggable[y2]) {
+        bullet2.draggable = true; // resize cursor when over
+
+        bullet2.cursorOverStyle = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["MouseCursorStyle"].verticalResize; // while dragging
+
+        bullet2.events.on("drag", event => {
+          handleDrag(event);
+        }); // on dragging stop
+
+        bullet2.events.on("dragstop", event => {
+          handleDragStop(event, y2);
+        }); // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
+
+        bullet2.events.on("down", event => {
+          var dataItem = event.target.dataItem;
+          var itemBullet = dataItem.bullets.getKey(bullet2.uid);
+          itemBullet.dragStart(event.pointer);
+        }); // when line position changes, adjust minX/maxX of bullets so that we could only dragg vertically
+
+        bullet2.events.on("positionchanged", event => {
+          var dataItem = event.target.dataItem; //console.log("dataItem", dataItem);
+
+          if (dataItem.bullets) {
+            var itemBullet = dataItem.bullets.getKey(bullet2.uid);
+            var point = dataItem.point;
+            itemBullet.minX = point.x;
+            itemBullet.maxX = itemBullet.minX;
+            itemBullet.minY = 0;
+            itemBullet.maxY = chart.seriesContainer.pixelHeight;
+          }
+        });
+      }
+      /* ~~~~\  line template  /~~~~ */
+
+
+      var lineTemplate1 = series1.segments.template,
+          lineTemplate2 = series2.segments.template; //      lineTemplate1.tooltipText = "{valueY}";
+      //      lineTemplate2.tooltipText = "y2: {valueY}";
+
+      lineTemplate1.interactionsEnabled = true;
+      lineTemplate2.interactionsEnabled = true;
+      series1.strokeWidth = lineStyle1.width || 3;
+      series2.strokeWidth = lineStyle2.width || 3;
+      series1.stroke = lineStyle1.color || chart.colors.getIndex(index).saturate(0.7);
+      series2.stroke = lineStyle2.color || chart.colors.getIndex(index).saturate(0.7);
+      if (lineStyle1.dash) series1.strokeDasharray = lineStyle1.dash;
+      if (lineStyle2.dash) series2.strokeDasharray = lineStyle2.dash; // line hover state
+
+      var lineHoverState1 = lineTemplate1.states.create("hover"),
+          lineHoverState2 = lineTemplate2.states.create("hover");
+      ; // you can change any property on hover state and it will be animated
+
+      lineHoverState1.properties.fillOpacity = 0.4;
+      lineHoverState1.properties.strokeWidth = series1.strokeWidth + 2;
+      lineHoverState2.properties.fillOpacity = 0.4;
+      lineHoverState2.properties.strokeWidth = series2.strokeWidth + 2;
+    });
+    /* end of forEach */
+
+    this.chart = chart;
+  }
+
+  componentWillUnmount() {
+    if (this.chart) {
+      this.chart.dispose();
+    }
+  }
+
+  render() {
+    return /*#__PURE__*/React.createElement("div", {
+      id: this.props.chartId,
+      style: this.style()
+    });
+  }
+
+}
 /* CREATE WIDGETS */
 
 
@@ -122200,7 +122856,8 @@ Object(reactR__WEBPACK_IMPORTED_MODULE_0__["reactWidget"])('amChart4', 'output',
   AmBarChart: AmBarChart,
   AmHorizontalBarChart: AmHorizontalBarChart,
   AmLineChart: AmLineChart,
-  AmScatterChart: AmScatterChart
+  AmScatterChart: AmScatterChart,
+  AmRangeAreaChart: AmRangeAreaChart
 }, {});
 
 /***/ }),

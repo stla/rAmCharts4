@@ -19,7 +19,8 @@ string and have \code{"px"} appended}
 
 \item{expr}{an expression that generates a chart with
 \code{\link{amBarChart}}, \code{\link{amHorizontalBarChart}},
-\code{\link{amLineChart}}, or \code{\link{amScatterChart}}}
+\code{\link{amLineChart}}, \code{\link{amScatterChart}}, or
+\code{\link{amRangeAreaChart}}}
 
 \item{env}{the environment in which to evaluate \code{expr}}
 
@@ -86,7 +87,6 @@ server <- function(input, output){
       ),
       theme = "dataviz")
   })
-
 
   output[["chartData"]] <- renderPrint({
     input[["linechart"]]

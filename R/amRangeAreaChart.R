@@ -93,6 +93,7 @@
 #'   \code{settings1}, \code{settings2}, ... are lists created with
 #'   \code{\link{amLine}}; this can also be a
 #'   single list of settings that will be applied to each line
+#' @param areas XXXX
 #' @param backgroundColor a color for the chart background
 #' @param xAxis settings of the x-axis given as a list, or just a string
 #' for the axis title
@@ -132,132 +133,91 @@
 #' @importFrom lubridate is.Date is.POSIXt
 #' @export
 #'
-#' @examples # a line chart with numeric x-axis ####
-#'
-#' set.seed(666)
+#' @examples set.seed(666)
+#' x <- 1:20
 #' dat <- data.frame(
-#'   x = 1:10,
-#'   y1 = rnorm(10),
-#'   y2 = rnorm(10)
+#'   x = x,
+#'   y1 = rnorm(20, sd = 1.5),
+#'   y2 = rnorm(20, 10, sd = 1.5),
+#'   z1 = rnorm(20, x+5, sd = 1.5),
+#'   z2 = rnorm(20, x+15, sd = 1.5)
 #' )
 #'
-#' amLineChart(
+#' amRangeAreaChart(
 #'   data = dat,
 #'   width = "700px",
 #'   xValue = "x",
-#'   yValues = c("y1", "y2"),
-#'   yValueNames = list(y1 = "Sample 1", y2 = "Sample 2"),
-#'   trend = list(
-#'     y1 = list(
-#'       method = "lm.js",
-#'       order = 3,
-#'       style = amLine(color = "lightyellow", dash = "3,2")
-#'     ),
-#'     y2 = list(
-#'       method = "loess",
-#'       style = amLine(color = "palevioletred", dash = "3,2")
-#'     )
-#'   ),
-#'   draggable = list(y1 = TRUE, y2 = FALSE),
+#'   yValues = rbind(c("y1", "y2"), c("z1", "z2")),
+#'   xLimits = c(1, 20),
+#'   draggable = TRUE,
 #'   backgroundColor = "#30303d",
-#'   tooltip = amTooltip(
-#'     text = "[bold]({valueX},{valueY})[/]",
-#'     textColor = "white",
-#'     backgroundColor = "#101010",
-#'     borderColor = "whitesmoke"
+#'   tooltip = list(
+#'     y1 = amTooltip(
+#'       text = "[bold]upper: {openValueY}\nlower: {valueY}[/]",
+#'       textColor = "yellow",
+#'       backgroundColor = "darkmagenta",
+#'       backgroundOpacity = 0.8,
+#'       borderColor = "rebeccapurple",
+#'       scale = 0.9
+#'     ),
+#'     y2 = amTooltip(
+#'       text = "[bold]upper: {valueY}\nlower: {openValueY}[/]",
+#'       textColor = "yellow",
+#'       backgroundColor = "darkmagenta",
+#'       backgroundOpacity = 0.8,
+#'       borderColor = "rebeccapurple",
+#'       scale = 0.9
+#'     ),
+#'     z1 = amTooltip(
+#'       text = "[bold]upper: {openValueY}\nlower: {valueY}[/]",
+#'       textColor = "white",
+#'       backgroundColor = "darkred",
+#'       backgroundOpacity = 0.8,
+#'       borderColor = "crimson",
+#'       scale = 0.9
+#'     ),
+#'     z2 = amTooltip(
+#'       text = "[bold]upper: {valueY}\nlower: {openValueY}[/]",
+#'       textColor = "white",
+#'       backgroundColor = "darkred",
+#'       backgroundOpacity = 0.8,
+#'       borderColor = "crimson",
+#'       scale = 0.9
+#'     )
 #'   ),
 #'   bullets = list(
 #'     y1 = amCircle(color = "yellow", strokeColor = "olive"),
-#'     y2 = amCircle(color = "orangered", strokeColor = "darkred")
+#'     y2 = amCircle(color = "yellow", strokeColor = "olive"),
+#'     z1 = amCircle(color = "orangered", strokeColor = "darkred"),
+#'     z2 = amCircle(color = "orangered", strokeColor = "darkred")
 #'   ),
-#'   alwaysShowBullets = TRUE,
+#'   alwaysShowBullets = FALSE,
 #'   lineStyle = list(
-#'     y1 = amLine(color = "yellow", width = 4),
-#'     y2 = amLine(color = "orangered", width = 4)
+#'     y1 = amLine(color = "yellow", width = 3, tensionX = 0.8, tensionY = 0.8),
+#'     y2 = amLine(color = "yellow", width = 3, tensionX = 0.8, tensionY = 0.8),
+#'     z1 = amLine(color = "orangered", width = 3, tensionX = 0.8, tensionY = 0.8),
+#'     z2 = amLine(color = "orangered", width = 3, tensionX = 0.8, tensionY = 0.8)
 #'   ),
-#'   chartTitle = list(text = "Gaussian samples", color = "whitesmoke"),
+#'   areas = list(
+#'     list(name = "y1-y2", color = "blue", opacity = 0.2),
+#'     list(name = "z1-z2", color = "red", opacity = 0.2)
+#'   ),
+#'   chartTitle = list(text = "Range area chart", color = "whitesmoke"),
 #'   xAxis = list(title = list(text = "Observation",
-#'                             fontSize = 21,
+#'                             fontSize = 20,
 #'                             color = "silver"),
 #'                labels = list(color = "whitesmoke",
 #'                              fontSize = 17)),
 #'   yAxis = list(title = list(text = "Value",
-#'                             fontSize = 21,
+#'                             fontSize = 20,
 #'                             color = "silver"),
 #'                labels = list(color = "whitesmoke",
-#'                              fontSize = 14)),
-#'   yLimits = c(-3, 3),
-#'   valueFormatter = "#.##",
-#'   caption = list(text = "[font-style:italic]try to drag the yellow line![/]",
-#'                  color = "yellow"),
-#'   gridLines = list(color = "whitesmoke",
+#'                              fontSize = 17)),
+#'   valueFormatter = "#.#",
+#'   gridLines = list(color = "antiquewhite",
 #'                    opacity = 0.4,
 #'                    width = 1),
 #'   theme = "dark")
-#'
-#'
-#' # line chart with date x-axis ####
-#'
-#' library(lubridate)
-#'
-#' set.seed(666)
-#' dat <- data.frame(
-#'   date = ymd(180101) + months(0:11),
-#'   visits = rpois(12, 20)
-#' )
-#'
-#' amLineChart(
-#'   data = dat,
-#'   width = "700px",
-#'   xValue = "date",
-#'   yValues = "visits",
-#'   draggable = TRUE,
-#'   chartTitle = "Number of visits",
-#'   xAxis = "Date",
-#'   yAxis = "Visits",
-#'   yLimits = c(0, 35),
-#'   backgroundColor = "whitesmoke",
-#'   tooltip = "[bold][font-style:italic]{dateX}[/]\nvisits: {valueY}[/]",
-#'   valueFormatter = "#",
-#'   caption = list(text = "Year 2018"),
-#'   theme = "material")
-#'
-#'
-#' # smoothed lines ####
-#'
-#' x <- seq(-4, 4, length.out = 100)
-#' dat <- data.frame(
-#'   x = x,
-#'   Gauss = dnorm(x),
-#'   Cauchy = dcauchy(x)
-#' )
-#'
-#' amLineChart(
-#'   data = dat,
-#'   width = "700px",
-#'   xValue = "x",
-#'   yValues = c("Gauss", "Cauchy"),
-#'   yValueNames = list(
-#'     Gauss = "Standard normal distribution",
-#'     Cauchy = "Cauchy distribution"
-#'   ),
-#'   draggable = FALSE,
-#'   tooltip = FALSE,
-#'   lineStyle = amLine(
-#'     width = 4,
-#'     tensionX = 0.8,
-#'     tensionY = 0.8
-#'   ),
-#'   xAxis = list(title = list(text = "x",
-#'                             fontSize = 21,
-#'                             color = "navyblue"),
-#'                labels = list(color = "midnightblue",
-#'                              fontSize = 17)),
-#'   yAxis = list(title = list(text = "density",
-#'                             fontSize = 21,
-#'                             color = "navyblue"),
-#'                labels = FALSE),
-#'   theme = "dataviz")
 amRangeAreaChart <- function(
   data,
   xValue,
