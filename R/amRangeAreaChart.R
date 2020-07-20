@@ -8,8 +8,9 @@
 #' \code{data}
 #' @param xValue name of the column of \code{data} to be used on the
 #' x-axis
-#' @param yValues name(s) of the column(s) of \code{data} to be used on the
-#' y-axis
+#' @param yValues a character matrix with two columns; each row corresponds to
+#'   a range area and provides the names of two columns of \code{data} to be
+#'   used as the limits of the range area
 #' @param yValueNames names of the variables on the y-axis,
 #' to appear in the legend;
 #' \code{NULL} to use \code{yValues} as names, otherwise a named list of the
@@ -93,7 +94,12 @@
 #'   \code{settings1}, \code{settings2}, ... are lists created with
 #'   \code{\link{amLine}}; this can also be a
 #'   single list of settings that will be applied to each line
-#' @param areas XXXX
+#' @param areas an unnamed list of list of settings for the range areas; the
+#'   n-th inner list of settings correspond to the n-th row of the
+#'   \code{yValues} matrix; each list of settings has three possible fields:
+#'   \code{name} for the legend label, \code{color} for the color of the range
+#'   area, and \code{opacity} for the opacity of the range area, a number
+#'   between 0 and 1
 #' @param backgroundColor a color for the chart background
 #' @param xAxis settings of the x-axis given as a list, or just a string
 #' for the axis title
@@ -112,6 +118,12 @@
 #' for the button position as a percentage (\code{0} for bottom,
 #' \code{1} for top); this button is used to replace the current data
 #' with \code{data2}
+#' @param image option to include an image below the chart; \code{NULL} or
+#'   \code{FALSE} for no image, otherwise a named list with four fields:
+#'   \code{base64}, a base64 string representing the image (you can create it
+#'   from a file with \code{base64enc::dataURI}),
+#'   \code{width} and \code{height} for the image dimensions,
+#'   \code{align} for the position, can be \code{"left"} or \code{"right"}
 #' @param width the width of the chart, e.g. \code{"600px"} or \code{"80\%"};
 #' ignored if the chart is displayed in Shiny, in which case the width is
 #' given in \code{\link{amChart4Output}}
@@ -142,6 +154,16 @@
 #'   z1 = rnorm(20, x+5, sd = 1.5),
 #'   z2 = rnorm(20, x+15, sd = 1.5)
 #' )
+#'
+#' image <- tryCatch({
+#'   b64 <- base64enc::dataURI(
+#'     file = "https://www.r-project.org/logo/Rlogo.svg",
+#'     mime = "image/svg+xml"
+#'  )
+#'  list(base64 = b64, width = 50, height = 50)
+#' }, error = function(e){
+#'   NULL
+#' })
 #'
 #' amRangeAreaChart(
 #'   data = dat,
@@ -217,6 +239,7 @@
 #'   gridLines = list(color = "antiquewhite",
 #'                    opacity = 0.4,
 #'                    width = 1),
+#'   image = image,
 #'   theme = "dark")
 amRangeAreaChart <- function(
   data,
@@ -244,6 +267,7 @@ amRangeAreaChart <- function(
   gridLines = NULL,
   legend = NULL, # default
   caption = NULL,
+  image = NULL,
   width = NULL,
   height = NULL,
   chartId = NULL,
@@ -253,9 +277,24 @@ amRangeAreaChart <- function(
   if(!xValue %in% names(data)){
     stop("Invalid `xValue` argument.", call. = TRUE)
   }
-  if(!all(yValues %in% names(data))){
+
+  if(!is.matrix(yValues)){
+    yValues <- rbind(yValues)
+  }
+  if(ncol(yValues) != 2L || !all(yValues %in% names(data))){
     stop("Invalid `yValues` argument.", call. = TRUE)
   }
+
+  if(length(names(areas))){
+    areas <- list(areas)
+  }
+  areas <- lapply(seq_along(areas), function(i){
+    settings <- areas[[i]]
+    if(!"name" %in% names(settings)){
+      settings[["name"]] <- paste0(yValues[i,], collapse = "-")
+    }
+    return(settings)
+  })
 
   if(lubridate::is.Date(data[[xValue]]) || lubridate::is.POSIXt(data[[xValue]])){
     if(is.null(xLimits))
@@ -500,6 +539,14 @@ amRangeAreaChart <- function(
     caption[["color"]] <- validateColor(caption[["color"]])
   }
 
+  if(!(is.null(image) || isFALSE(image))){
+    if(!is.list(image) ||
+       !"base64" %in% names(image) ||
+       !grepl("^data:image", image[["base64"]]))
+    {
+      stop("Invalid `image` argument.", call. = TRUE)
+    }
+  }
   # if(is.null(button)){
   #   button <- if(!is.null(data2))
   #     list(
@@ -569,6 +616,7 @@ amRangeAreaChart <- function(
       gridLines = gridLines,
       legend = legend,
       caption = caption,
+      image = image,
       width = width,
       height = height,
       chartId = chartId,

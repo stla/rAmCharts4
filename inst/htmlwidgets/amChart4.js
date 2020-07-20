@@ -122354,6 +122354,20 @@ class AmRangeAreaChart extends React.PureComponent {
       caption.fill = chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
       caption.align = chartCaption.align || "right";
     }
+    /* ~~~~\  image  /~~~~ */
+
+
+    var img = this.props.image;
+
+    if (img) {
+      var image = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Image"]);
+      image.width = img.width || 60;
+      image.height = img.height || 60;
+      image.verticalCenter = "top";
+      image.horizontalCenter = "left";
+      image.align = img.align || "right";
+      image.href = img.base64;
+    }
     /* ~~~~\  scrollbars  /~~~~ */
 
 

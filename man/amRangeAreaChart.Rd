@@ -30,6 +30,7 @@ amRangeAreaChart(
   gridLines = NULL,
   legend = NULL,
   caption = NULL,
+  image = NULL,
   width = NULL,
   height = NULL,
   chartId = NULL,
@@ -42,8 +43,9 @@ amRangeAreaChart(
 \item{xValue}{name of the column of \code{data} to be used on the
 x-axis}
 
-\item{yValues}{name(s) of the column(s) of \code{data} to be used on the
-y-axis}
+\item{yValues}{a character matrix with two columns; each row corresponds to
+a range area and provides the names of two columns of \code{data} to be
+used as the limits of the range area}
 
 \item{yValueNames}{names of the variables on the y-axis,
 to appear in the legend;
@@ -106,7 +108,12 @@ otherwise a named list of the form
 \code{\link{amLine}}; this can also be a
 single list of settings that will be applied to each line}
 
-\item{areas}{XXXX}
+\item{areas}{an unnamed list of list of settings for the range areas; the
+n-th inner list of settings correspond to the n-th row of the
+\code{yValues} matrix; each list of settings has three possible fields:
+\code{name} for the legend label, \code{color} for the color of the range
+area, and \code{opacity} for the opacity of the range area, a number
+between 0 and 1}
 
 \item{backgroundColor}{a color for the chart background}
 
@@ -125,6 +132,13 @@ for the axis title}
 \item{legend}{logical, whether to display the legend}
 
 \item{caption}{settings of the caption, or \code{NULL} for no caption}
+
+\item{image}{option to include an image below the chart; \code{NULL} or
+\code{FALSE} for no image, otherwise a named list with four fields:
+\code{base64}, a base64 string representing the image (you can create it
+from a file with \code{base64enc::dataURI}),
+\code{width} and \code{height} for the image dimensions,
+\code{align} for the position, can be \code{"left"} or \code{"right"}}
 
 \item{width}{the width of the chart, e.g. \code{"600px"} or \code{"80\%"};
 ignored if the chart is displayed in Shiny, in which case the width is
@@ -209,6 +223,16 @@ dat <- data.frame(
   z2 = rnorm(20, x+15, sd = 1.5)
 )
 
+image <- tryCatch({
+  b64 <- base64enc::dataURI(
+    file = "https://www.r-project.org/logo/Rlogo.svg",
+    mime = "image/svg+xml"
+ )
+ list(base64 = b64, width = 50, height = 50)
+}, error = function(e){
+  NULL
+})
+
 amRangeAreaChart(
   data = dat,
   width = "700px",
@@ -283,5 +307,6 @@ amRangeAreaChart(
   gridLines = list(color = "antiquewhite",
                    opacity = 0.4,
                    width = 1),
+  image = image,
   theme = "dark")
 }

@@ -128,8 +128,8 @@ class AmBarChart extends React.PureComponent {
 
     /* ~~~~\  caption  /~~~~ */
     let chartCaption = this.props.caption;
-    if (chartCaption) {
-      var caption = chart.chartContainer.createChild(am4core.Label);
+    if(chartCaption) {
+      let caption = chart.chartContainer.createChild(am4core.Label);
       caption.text = chartCaption.text;
       caption.fill =
         chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
@@ -138,7 +138,7 @@ class AmBarChart extends React.PureComponent {
 
 
     /* ~~~~\  scrollbars  /~~~~ */
-    if (this.props.scrollbarX) {
+    if(this.props.scrollbarX) {
       chart.scrollbarX = new am4core.Scrollbar();
     }
     if (this.props.scrollbarY) {
@@ -2212,6 +2212,19 @@ class AmRangeAreaChart extends React.PureComponent {
       caption.fill =
         chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
       caption.align = chartCaption.align || "right";
+    }
+
+
+    /* ~~~~\  image  /~~~~ */
+    let img = this.props.image;
+    if(img) {
+      let image = chart.chartContainer.createChild(am4core.Image);
+      image.width = img.width || 60;
+      image.height = img.height || 60;
+      image.verticalCenter = "top";
+      image.horizontalCenter = "left";
+      image.align = img.align || "right";
+      image.href = img.base64;
     }
 
 
