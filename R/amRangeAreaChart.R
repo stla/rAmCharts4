@@ -568,14 +568,14 @@ amRangeAreaChart <- function(
         text = "Reset",
         color = NULL,
         fill = NULL,
-        position = 0.8
+        position = 0.9
       )
   }else if(is.character(button)){
     button <- list(
       text = button,
       color = NULL,
       fill = NULL,
-      position = 0.8
+      position = 0.9
     )
   }else if(is.list(button)){
     button[["color"]] <- validateColor(button[["color"]])

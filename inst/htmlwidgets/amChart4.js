@@ -120115,6 +120115,7 @@ class AmBarChart extends React.PureComponent {
         valueFormatter = this.props.valueFormatter,
         columnStyles = this.props.columnStyle,
         bulletsStyle = this.props.bullets,
+        cursor = this.props.cursor,
         chartId = this.props.chartId,
         shinyId = this.props.shinyId;
 
@@ -120235,7 +120236,9 @@ class AmBarChart extends React.PureComponent {
       Button.label.text = button.text;
       Button.label.fill = button.color || Button.label.fill;
       Button.background.fill = button.fill || Button.background.fill;
-      Button.dy = -Button.parent.innerHeight * (button.position || 0.8);
+      setTimeout(function () {
+        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
+      }, 0);
       Button.padding(5, 5, 5, 5);
       Button.align = "right";
       Button.marginRight = 15;
@@ -120282,6 +120285,7 @@ class AmBarChart extends React.PureComponent {
     categoryAxis.renderer.grid.template.disabled = true;
     categoryAxis.renderer.minGridDistance = 50;
     categoryAxis.numberFormatter.numberFormat = valueFormatter;
+    categoryAxis.cursorTooltipEnabled = false;
     /* ~~~~\  value axis  /~~~~ */
 
     var valueAxis = chart.yAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]());
@@ -120305,7 +120309,22 @@ class AmBarChart extends React.PureComponent {
     valueAxis.min = this.props.minValue;
     valueAxis.max = this.props.maxValue;
     valueAxis.renderer.minWidth = 60;
+
+    if (cursor && cursor.tooltip) {
+      valueAxis.tooltip = _utils__WEBPACK_IMPORTED_MODULE_13__["Tooltip"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, 0, cursor.tooltip);
+    } else {
+      valueAxis.cursorTooltipEnabled = false;
+    }
+    /* ~~~~\ cursor /~~~~ */
+
+
+    if (cursor) {
+      chart.cursor = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYCursor"]();
+      chart.cursor.yAxis = valueAxis;
+      chart.cursor.lineX.disabled = true;
+    }
     /* ~~~~\  legend  /~~~~ */
+
 
     if (this.props.legend) {
       chart.legend = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Legend"]();
@@ -120720,7 +120739,9 @@ class AmHorizontalBarChart extends React.PureComponent {
       Button.label.text = button.text;
       Button.label.fill = button.color || Button.label.fill;
       Button.background.fill = button.fill || Button.background.fill;
-      Button.dy = -Button.parent.innerHeight * (button.position || 0.8);
+      setTimeout(function () {
+        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
+      }, 0);
       Button.padding(5, 5, 5, 5);
       Button.align = "right";
       Button.marginRight = 15;
@@ -120763,6 +120784,7 @@ class AmHorizontalBarChart extends React.PureComponent {
     categoryAxis.renderer.grid.template.disabled = true;
     categoryAxis.renderer.minGridDistance = 50;
     categoryAxis.numberFormatter.numberFormat = valueFormatter;
+    categoryAxis.cursorTooltipEnabled = false;
     /* ~~~~\  value axis  /~~~~ */
 
     var valueAxis = chart.xAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]());
@@ -120786,7 +120808,22 @@ class AmHorizontalBarChart extends React.PureComponent {
     valueAxis.min = minValue;
     valueAxis.max = maxValue;
     valueAxis.renderer.minWidth = 60;
+
+    if (cursor && cursor.tooltip) {
+      valueAxis.tooltip = _utils__WEBPACK_IMPORTED_MODULE_13__["Tooltip"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, 0, cursor.tooltip);
+    } else {
+      valueAxis.cursorTooltipEnabled = false;
+    }
+    /* ~~~~\ cursor /~~~~ */
+
+
+    if (cursor) {
+      chart.cursor = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYCursor"]();
+      chart.cursor.xAxis = valueAxis;
+      chart.cursor.lineY.disabled = true;
+    }
     /* ~~~~\  legend  /~~~~ */
+
 
     if (this.props.legend) {
       chart.legend = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Legend"]();
@@ -121103,6 +121140,7 @@ class AmLineChart extends React.PureComponent {
         alwaysShowBullets = this.props.alwaysShowBullets,
         valueFormatter = this.props.valueFormatter,
         lineStyles = this.props.lineStyle,
+        cursor = this.props.cursor,
         chartId = this.props.chartId,
         shinyId = this.props.shinyId;
 
@@ -121237,7 +121275,9 @@ class AmLineChart extends React.PureComponent {
       Button.label.text = button.text;
       Button.label.fill = button.color || Button.label.fill;
       Button.background.fill = button.fill || Button.background.fill;
-      Button.dy = -Button.parent.innerHeight * (button.position || 0.8);
+      setTimeout(function () {
+        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
+      }, 0);
       Button.padding(5, 5, 5, 5);
       Button.align = "right";
       Button.marginRight = 15;
@@ -121308,6 +121348,7 @@ class AmLineChart extends React.PureComponent {
       XAxis = chart.xAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]());
     }
 
+    XAxis.strictMinMax = true;
     XAxis.min = this.props.minX;
     XAxis.max = this.props.maxX;
     XAxis.renderer.grid.template.location = 0;
@@ -121338,7 +121379,14 @@ class AmLineChart extends React.PureComponent {
     XAxis.renderer.grid.template.disabled = true;
     XAxis.renderer.minGridDistance = 50;
     XAxis.numberFormatter.numberFormat = valueFormatter;
+
+    if (cursor && cursor.tooltip && (cursor === true || !cursor.axes || ["x", "xy"].indexOf(cursor.axes)) > -1) {
+      XAxis.tooltip = _utils__WEBPACK_IMPORTED_MODULE_13__["Tooltip"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, 0, cursor.tooltip);
+    } else {
+      XAxis.cursorTooltipEnabled = false;
+    }
     /* ~~~~\  y-axis  /~~~~ */
+
 
     var YAxis = chart.yAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]());
     YAxis.renderer.grid.template.stroke = gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
@@ -121366,7 +121414,41 @@ class AmLineChart extends React.PureComponent {
     YAxis.min = minY;
     YAxis.max = maxY;
     YAxis.renderer.minWidth = 60;
+
+    if (cursor && cursor.tooltip && (cursor === true || !cursor.axes || ["y", "xy"].indexOf(cursor.axes)) > -1) {
+      YAxis.tooltip = _utils__WEBPACK_IMPORTED_MODULE_13__["Tooltip"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, 0, cursor.tooltip);
+    } else {
+      YAxis.cursorTooltipEnabled = false;
+    }
+    /* ~~~~\ cursor /~~~~ */
+
+
+    if (cursor) {
+      chart.cursor = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYCursor"]();
+
+      switch (cursor.axes) {
+        case "x":
+          chart.cursor.xAxis = XAxis;
+          chart.cursor.lineY.disabled = true;
+          break;
+
+        case "y":
+          chart.cursor.yAxis = YAxis;
+          chart.cursor.lineX.disabled = true;
+          break;
+
+        case "xy":
+          chart.cursor.xAxis = XAxis;
+          chart.cursor.yAxis = YAxis;
+          break;
+
+        default:
+          chart.cursor.xAxis = XAxis;
+          chart.cursor.yAxis = YAxis;
+      }
+    }
     /* ~~~~\  legend  /~~~~ */
+
 
     if (this.props.legend) {
       chart.legend = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Legend"]();
@@ -121709,6 +121791,7 @@ class AmScatterChart extends React.PureComponent {
         draggable = this.props.draggable,
         valueFormatter = this.props.valueFormatter,
         pointsStyle = this.props.pointsStyle,
+        cursor = this.props.cursor,
         chartId = this.props.chartId,
         shinyId = this.props.shinyId;
 
@@ -121843,7 +121926,9 @@ class AmScatterChart extends React.PureComponent {
       Button.label.text = button.text;
       Button.label.fill = button.color || Button.label.fill;
       Button.background.fill = button.fill || Button.background.fill;
-      Button.dy = -Button.parent.innerHeight * (button.position || 0.8);
+      setTimeout(function () {
+        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
+      }, 0);
       Button.padding(5, 5, 5, 5);
       Button.align = "right";
       Button.marginRight = 15;
@@ -121914,6 +121999,7 @@ class AmScatterChart extends React.PureComponent {
       XAxis = chart.xAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]());
     }
 
+    XAxis.strictMinMax = true;
     XAxis.min = this.props.minX;
     XAxis.max = this.props.maxX;
     XAxis.renderer.grid.template.location = 0;
@@ -121944,7 +122030,14 @@ class AmScatterChart extends React.PureComponent {
     XAxis.renderer.grid.template.disabled = true;
     XAxis.renderer.minGridDistance = 50;
     XAxis.numberFormatter.numberFormat = valueFormatter;
+
+    if (cursor && cursor.tooltip && (cursor === true || !cursor.axes || ["x", "xy"].indexOf(cursor.axes)) > -1) {
+      XAxis.tooltip = _utils__WEBPACK_IMPORTED_MODULE_13__["Tooltip"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, 0, cursor.tooltip);
+    } else {
+      XAxis.cursorTooltipEnabled = false;
+    }
     /* ~~~~\  y-axis  /~~~~ */
+
 
     var YAxis = chart.yAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]());
     YAxis.renderer.grid.template.stroke = gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
@@ -121967,7 +122060,41 @@ class AmScatterChart extends React.PureComponent {
     YAxis.min = minY;
     YAxis.max = maxY;
     YAxis.renderer.minWidth = 60;
+
+    if (cursor && cursor.tooltip && (cursor === true || !cursor.axes || ["y", "xy"].indexOf(cursor.axes)) > -1) {
+      YAxis.tooltip = _utils__WEBPACK_IMPORTED_MODULE_13__["Tooltip"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, 0, cursor.tooltip);
+    } else {
+      YAxis.cursorTooltipEnabled = false;
+    }
+    /* ~~~~\ cursor /~~~~ */
+
+
+    if (cursor) {
+      chart.cursor = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYCursor"]();
+
+      switch (cursor.axes) {
+        case "x":
+          chart.cursor.xAxis = XAxis;
+          chart.cursor.lineY.disabled = true;
+          break;
+
+        case "y":
+          chart.cursor.yAxis = YAxis;
+          chart.cursor.lineX.disabled = true;
+          break;
+
+        case "xy":
+          chart.cursor.xAxis = XAxis;
+          chart.cursor.yAxis = YAxis;
+          break;
+
+        default:
+          chart.cursor.xAxis = XAxis;
+          chart.cursor.yAxis = YAxis;
+      }
+    }
     /* ~~~~\  legend  /~~~~ */
+
 
     if (this.props.legend) {
       chart.legend = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Legend"]();
@@ -122272,18 +122399,17 @@ class AmRangeAreaChart extends React.PureComponent {
   }
 
   toggleHover(series, over) {
-    series.segments.each(function (segment) {
-      segment.isHover = over;
-    });
+    var event = over ? "over" : "out";
+    series.segments.template.dispatchImmediately(event);
+    series.wasHover = over;
   }
 
   componentDidMount() {
-    console.log(this.props.yValues);
     var theme = this.props.theme,
         xValue = this.props.xValue,
         yValues = this.props.yValues,
         data = _utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [xValue].concat(yValues.flat())),
-        data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, [xValue].concat(yValues))) : null,
+        data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, yValues.flat())) : null,
         yValueNames = this.props.yValueNames,
         isDate = this.props.isDate,
         minX = isDate ? _utils__WEBPACK_IMPORTED_MODULE_13__["toDate"](this.props.minX) : this.props.minX,
@@ -122300,6 +122426,7 @@ class AmRangeAreaChart extends React.PureComponent {
         valueFormatter = this.props.valueFormatter,
         lineStyles = this.props.lineStyle,
         areas = this.props.areas,
+        cursor = this.props.cursor,
         chartId = this.props.chartId,
         shinyId = this.props.shinyId;
 
@@ -122372,6 +122499,7 @@ class AmRangeAreaChart extends React.PureComponent {
 
     var chartBackgroundColor = this.props.backgroundColor || chart.background.fill;
     chart.background.fill = chartBackgroundColor;
+    var allSeries = chart.series.values;
     /* ~~~~\  title  /~~~~ */
 
     var chartTitle = this.props.chartTitle;
@@ -122434,7 +122562,9 @@ class AmRangeAreaChart extends React.PureComponent {
       Button.label.text = button.text;
       Button.label.fill = button.color || Button.label.fill;
       Button.background.fill = button.fill || Button.background.fill;
-      Button.dy = -Button.parent.innerHeight * (button.position || 0.8);
+      setTimeout(function () {
+        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
+      }, 0);
       Button.padding(5, 5, 5, 5);
       Button.align = "right";
       Button.marginRight = 15;
@@ -122504,10 +122634,18 @@ class AmRangeAreaChart extends React.PureComponent {
     XAxis.renderer.grid.template.disabled = true;
     XAxis.renderer.minGridDistance = 50;
     XAxis.numberFormatter.numberFormat = valueFormatter;
+
+    if (cursor && cursor.tooltip && (cursor === true || !cursor.axes || ["x", "xy"].indexOf(cursor.axes)) > -1) {
+      XAxis.tooltip = _utils__WEBPACK_IMPORTED_MODULE_13__["Tooltip"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, 0, cursor.tooltip);
+    } else {
+      //      XAxis.tooltip.disabled = true;
+      XAxis.cursorTooltipEnabled = false;
+    }
     /* ~~~~\  y-axis  /~~~~ */
 
-    var YAxis = chart.yAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]());
-    YAxis.tooltip.disabled = true;
+
+    var YAxis = chart.yAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]()); //YAxis.tooltip.disabled = true;
+
     YAxis.renderer.grid.template.stroke = gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
     YAxis.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.15;
     YAxis.renderer.grid.template.strokeWidth = gridLines.width || 1;
@@ -122533,62 +122671,104 @@ class AmRangeAreaChart extends React.PureComponent {
     YAxis.min = minY;
     YAxis.max = maxY;
     YAxis.renderer.minWidth = 60;
+
+    if (cursor && cursor.tooltip && (cursor === true || !cursor.axes || ["y", "xy"].indexOf(cursor.axes)) > -1) {
+      YAxis.tooltip = _utils__WEBPACK_IMPORTED_MODULE_13__["Tooltip"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, 0, cursor.tooltip);
+    } else {
+      //      YAxis.tooltip.disabled = true;
+      YAxis.cursorTooltipEnabled = false;
+    }
+    /* ~~~~\ cursor /~~~~ */
+
+
+    if (cursor) {
+      chart.cursor = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYCursor"]();
+
+      switch (cursor.axes) {
+        case "x":
+          chart.cursor.xAxis = XAxis;
+          chart.cursor.lineY.disabled = true;
+          break;
+
+        case "y":
+          chart.cursor.yAxis = YAxis;
+          chart.cursor.lineX.disabled = true;
+          break;
+
+        case "xy":
+          chart.cursor.xAxis = XAxis;
+          chart.cursor.yAxis = YAxis;
+          break;
+
+        default:
+          chart.cursor.xAxis = XAxis;
+          chart.cursor.yAxis = YAxis;
+      }
+    }
     /* ~~~~\  legend  /~~~~ */
 
+
     if (this.props.legend) {
-      chart.legend = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Legend"]();
-      chart.legend.useDefaultMarker = false; //      let marker = chart.legend.markers.template.children.getIndex(0);
-      //      console.log("legend marker 0", marker);
-
-      console.log("legend markers", chart.legend.markers); //let marker = chart.legend.markers.template;
-      //chart.legend.markers.values[0].children.push(am4core.Line);
-
-      var markerTemplate = chart.legend.markers.template; //      markerTemplate.disposeChildren();
-      //      let dollar = markerTemplate.createChild(am4core.Line);
-
-      chart.legend.events.on("ready", function (ev) {
-        var allSeries = chart.series.values;
-        chart.legend.markers.values.forEach(function (container, index) {
-          var y2series = allSeries[2 * index + 1];
-          var line = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Line"]();
-          line.stroke = y2series.stroke;
-          line.valign = "bottom";
-          line.x2 = 40; // it is the width given below
-
-          line.strokeWidth = y2series.strokeWidth;
-          line.strokeOpacity = y2series.strokeOpacity; //let l = chart.legend.markers.template.createChild(am4core.Line);
-          //chart.legend.markers.values[0].children.push(line);
-
-          line.parent = container; //console.log("l", l);
-
+      var legend = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Legend"]();
+      legend.useDefaultMarker = false;
+      legend.events.on("dataitemsvalidated", function (ev) {
+        ev.target.markers.values.forEach(function (container, index) {
           var children = container.children.values.map(function (child) {
             return child.className;
           }),
               bullet = children.indexOf("Bullet");
           if (bullet > -1) container.children.values[bullet].dispose();
+
+          if (JSON.stringify(children) !== '["Line","Rectangle","Line"]') {
+            var y2series = allSeries[2 * index + 1];
+            var line = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Line"]();
+            line.stroke = y2series.stroke;
+            line.valign = "bottom";
+            line.x2 = 40; // it is the width given below
+
+            line.strokeWidth = y2series.strokeWidth;
+            line.strokeOpacity = y2series.strokeOpacity; //let l = chart.legend.markers.template.createChild(am4core.Line);
+            //chart.legend.markers.values[0].children.push(line);
+
+            line.parent = container; //console.log("l", l);
+          }
         });
       });
+      var markerTemplate = legend.markers.template;
       markerTemplate.width = 40;
       markerTemplate.strokeWidth = 1;
-      markerTemplate.strokeOpacity = 1; //      markerTemplate.stroke = am4core.color("#000000"); no effect
-
+      markerTemplate.strokeOpacity = 1;
       var toggleHover = this.toggleHover;
-      chart.legend.itemContainers.template.events.on("over", function (ev) {
-        toggleHover(ev.target.dataItem.dataContext, true);
-        var allSeries = chart.series.values;
+      legend.itemContainers.template.events.on("over", function (ev) {
+        var thisSeries = ev.target.dataItem.dataContext;
+        if (thisSeries.visible) toggleHover(thisSeries, true); //        let seriesNames = allSeries.map(function(x){return x.name}),
+        //          y2name = yValueNames[thisSeries.dataFields.openValueY],
+        //          y2series = allSeries[seriesNames.indexOf(y2name)];
+        //        toggleHover(y2series, true);
+      });
+      legend.itemContainers.template.events.on("out", function (ev) {
+        var thisSeries = ev.target.dataItem.dataContext;
+        if (thisSeries.visible && thisSeries.wasHover) toggleHover(thisSeries, false); //        let seriesNames = allSeries.map(function(x){return x.name}),
+        //          y2name = yValueNames[thisSeries.dataFields.openValueY],
+        //          y2series = allSeries[seriesNames.indexOf(y2name)];
+        //        toggleHover(y2series, false);
+      });
+      legend.itemContainers.template.events.on("hit", function (ev) {
+        var thisSeries = ev.target.dataItem.dataContext;
+        var seriesNames = allSeries.map(function (x) {
+          return x.name;
+        }),
+            y2name = yValueNames[thisSeries.dataFields.openValueY],
+            y2series = allSeries[seriesNames.indexOf(y2name)];
+        toggleHover(thisSeries, !y2series.visible);
 
-        for (var i = 0; i < allSeries.length / 2; ++i) {
-          toggleHover(allSeries[2 * i + 1], true);
+        if (y2series.visible) {
+          y2series.hide(500);
+        } else {
+          y2series.show(500);
         }
       });
-      chart.legend.itemContainers.template.events.on("out", function (ev) {
-        toggleHover(ev.target.dataItem.dataContext, false);
-        var allSeries = chart.series.values;
-
-        for (var i = 0; i < allSeries.length / 2; ++i) {
-          toggleHover(allSeries[2 * i + 1], false);
-        }
-      });
+      chart.legend = legend;
     }
     /* ~~~~\  function handling the drag event  /~~~~ */
 
@@ -122651,6 +122831,7 @@ class AmRangeAreaChart extends React.PureComponent {
       var series1 = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LineSeries"]()),
           series2 = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LineSeries"]());
       series2.hiddenInLegend = true;
+      console.log("series1", series1);
 
       if (isDate) {
         series1.dataFields.dateX = xValue;
@@ -122667,8 +122848,8 @@ class AmRangeAreaChart extends React.PureComponent {
       series1.dataFields.openValueY = y2;
       series2.dataFields.openValueY = y1; //series1.tooltipText = "yyyyy";// "y1: {openValueY} y2: {valueY}";
 
-      series1.fill = areas[index].color;
-      series1.fillOpacity = areas[index].opacity;
+      series1.fill = areas[index].color || chart.colors.getIndex(index);
+      series1.fillOpacity = areas[index].opacity || 0.2;
       series2.fillOpacity = 0;
       series1.sequencedInterpolation = true;
       series2.sequencedInterpolation = true;
@@ -122678,10 +122859,6 @@ class AmRangeAreaChart extends React.PureComponent {
       series1.tensionY = lineStyle1.tensionY || 1;
       series2.tensionX = lineStyle2.tensionX || 1;
       series2.tensionY = lineStyle2.tensionY || 1;
-      chart.cursor = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYCursor"]();
-      chart.cursor.xAxis = XAxis;
-      console.log(chart.cursor);
-      chart.cursor.tooltipText = "uuuu";
       /* ~~~~\  bullet  /~~~~ */
 
       var bullet1 = series1.bullets.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Bullet"]()),
@@ -122880,16 +123057,55 @@ class AmRangeAreaChart extends React.PureComponent {
       series1.stroke = lineStyle1.color || chart.colors.getIndex(index).saturate(0.7);
       series2.stroke = lineStyle2.color || chart.colors.getIndex(index).saturate(0.7);
       if (lineStyle1.dash) series1.strokeDasharray = lineStyle1.dash;
-      if (lineStyle2.dash) series2.strokeDasharray = lineStyle2.dash; // line hover state
+      if (lineStyle2.dash) series2.strokeDasharray = lineStyle2.dash;
+      /*      // line hover state
+            let lineHoverState1 = lineTemplate1.states.create("hover"),
+              lineHoverState2 = lineTemplate2.states.create("hover");
+      */
+      // you can change any property on hover state and it will be animated
 
-      var lineHoverState1 = lineTemplate1.states.create("hover"),
-          lineHoverState2 = lineTemplate2.states.create("hover");
-      ; // you can change any property on hover state and it will be animated
+      /* let pattern = new am4core.LinePattern();
+      pattern.width = 10;
+      pattern.height = 10;
+      pattern.stroke = "white";// am4core.color("red").lighten(0.5);
+      pattern.strokeWidth = 2;
+      pattern.rotation = 45;
+      pattern.backgroundFill = areas[index].color;
+      pattern.backgroundOpacity = areas[index].opacity;
+      console.log("ppatern", pattern);
+      lineHoverState1.properties.fill = pattern;
+      */
 
-      lineHoverState1.properties.fillOpacity = 0.4;
-      lineHoverState1.properties.strokeWidth = series1.strokeWidth + 2;
-      lineHoverState2.properties.fillOpacity = 0.4;
-      lineHoverState2.properties.strokeWidth = series2.strokeWidth + 2;
+      /*      lineHoverState1.properties.fill = series1.fill.lighten(0.25);
+            lineHoverState1.properties.strokeWidth = series1.strokeWidth + 2;
+            lineHoverState2.properties.strokeWidth = series2.strokeWidth + 2;
+      */
+
+      lineTemplate1.events.on("over", event => {
+        //        let seriesNames = allChartSeries.map(function(x){return x.name}),
+        //          y2series = allChartSeries[seriesNames.indexOf(yValueNames[y2])];
+        series1.strokeWidth = series1.strokeWidth + 2;
+        series1.fill = series1.fill.lighten(0.25);
+        series2.strokeWidth = series2.strokeWidth + 2;
+      });
+      lineTemplate1.events.on("out", event => {
+        series1.strokeWidth = series1.strokeWidth - 2;
+        series1.fill = areas[index].color || chart.colors.getIndex(index);
+        series2.strokeWidth = series2.strokeWidth - 2;
+      });
+      lineTemplate2.events.on("over", event => {
+        //        let seriesNames = allChartSeries.map(function(x){return x.name}),
+        //          y1series = allChartSeries[seriesNames.indexOf(areas[index].name)];
+        series1.strokeWidth = series1.strokeWidth + 2;
+        series1.fill = series1.fill.lighten(0.25); //lineHoverState1.properties.fill;
+
+        series2.strokeWidth = series2.strokeWidth + 2;
+      });
+      lineTemplate2.events.on("out", event => {
+        series1.strokeWidth = series1.strokeWidth - 2;
+        series1.fill = areas[index].color || chart.colors.getIndex(index);
+        series2.strokeWidth = series2.strokeWidth - 2;
+      });
     });
     /* end of forEach */
 

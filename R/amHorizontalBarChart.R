@@ -82,6 +82,10 @@
 #' for the button position as a percentage (\code{0} for bottom,
 #' \code{1} for top); this button is used to replace the current data
 #' with \code{data2}
+#' @param cursor option to add a cursor on the chart; \code{FALSE} for no
+#'   cursor, \code{TRUE} for a cursor with default settings for the tooltips,
+#'   otherwise a list of settings created with \code{\link{amTooltip}} to
+#'   set the style of the tooltips
 #' @param width the width of the chart, e.g. \code{"600px"} or \code{"80\%"};
 #' ignored if the chart is displayed in Shiny, in which case the width is
 #' given in \code{\link{amChart4Output}}
@@ -193,6 +197,7 @@ amHorizontalBarChart <- function(
   caption = NULL,
   image = NULL,
   button = NULL, # default
+  cursor = FALSE,
   width = NULL,
   height = NULL,
   chartId = NULL,
@@ -457,18 +462,22 @@ amHorizontalBarChart <- function(
         text = "Reset",
         color = NULL,
         fill = NULL,
-        position = 0.8
+        position = 0.9
       )
   }else if(is.character(button)){
     button <- list(
       text = button,
       color = NULL,
       fill = NULL,
-      position = 0.8
+      position = 0.9
     )
   }else if(is.list(button)){
     button[["color"]] <- validateColor(button[["color"]])
     button[["fill"]] <- validateColor(button[["fill"]])
+  }
+
+  if("tooltip" %in% class(cursor)){
+    cursor <- list(tooltip = cursor)
   }
 
   if(is.null(width)){
@@ -520,6 +529,7 @@ amHorizontalBarChart <- function(
       caption = caption,
       image = image,
       button = button,
+      cursor = cursor,
       width = width,
       height = height,
       chartId = chartId,

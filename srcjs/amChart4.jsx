@@ -56,6 +56,7 @@ class AmBarChart extends React.PureComponent {
       valueFormatter = this.props.valueFormatter,
       columnStyles = this.props.columnStyle,
       bulletsStyle = this.props.bullets,
+      cursor = this.props.cursor,
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
@@ -165,7 +166,9 @@ class AmBarChart extends React.PureComponent {
       Button.label.text = button.text;
       Button.label.fill = button.color || Button.label.fill;
       Button.background.fill = button.fill || Button.background.fill;
-      Button.dy = -Button.parent.innerHeight * (button.position || 0.8);
+      setTimeout(function() {
+        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
+      }, 0);
       Button.padding(5, 5, 5, 5);
       Button.align = "right";
       Button.marginRight = 15;
@@ -209,6 +212,7 @@ class AmBarChart extends React.PureComponent {
 		categoryAxis.renderer.grid.template.disabled = true;
 		categoryAxis.renderer.minGridDistance = 50;
 		categoryAxis.numberFormatter.numberFormat = valueFormatter;
+    categoryAxis.cursorTooltipEnabled = false;
 
 		/* ~~~~\  value axis  /~~~~ */
 		let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
@@ -216,7 +220,7 @@ class AmBarChart extends React.PureComponent {
       gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
     valueAxis.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.15;
     valueAxis.renderer.grid.template.strokeWidth = gridLines.width || 1;
-		if (yAxis && yAxis.title && yAxis.title.text !== "") {
+		if(yAxis && yAxis.title && yAxis.title.text !== "") {
 			valueAxis.title.text = yAxis.title.text;
 			valueAxis.title.fontWeight = "bold";
 			valueAxis.title.fontSize = yAxis.title.fontSize || 20;
@@ -233,6 +237,19 @@ class AmBarChart extends React.PureComponent {
 		valueAxis.min = this.props.minValue;
 		valueAxis.max = this.props.maxValue;
 		valueAxis.renderer.minWidth = 60;
+    if(cursor && cursor.tooltip) {
+      valueAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+    } else {
+      valueAxis.cursorTooltipEnabled = false;
+    }
+
+		/* ~~~~\ cursor /~~~~ */
+		if(cursor) {
+      chart.cursor = new am4charts.XYCursor();
+      chart.cursor.yAxis = valueAxis;
+      chart.cursor.lineX.disabled = true;
+    }
+
 
     /* ~~~~\  legend  /~~~~ */
     if (this.props.legend) {
@@ -632,7 +649,9 @@ class AmHorizontalBarChart extends React.PureComponent {
       Button.label.text = button.text;
       Button.label.fill = button.color || Button.label.fill;
       Button.background.fill = button.fill || Button.background.fill;
-      Button.dy = -Button.parent.innerHeight * (button.position || 0.8);
+      setTimeout(function() {
+        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
+      }, 0);
       Button.padding(5, 5, 5, 5);
       Button.align = "right";
       Button.marginRight = 15;
@@ -674,6 +693,7 @@ class AmHorizontalBarChart extends React.PureComponent {
 		categoryAxis.renderer.grid.template.disabled = true;
 		categoryAxis.renderer.minGridDistance = 50;
 		categoryAxis.numberFormatter.numberFormat = valueFormatter;
+    categoryAxis.cursorTooltipEnabled = false;
 
 		/* ~~~~\  value axis  /~~~~ */
 		let valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
@@ -681,7 +701,7 @@ class AmHorizontalBarChart extends React.PureComponent {
       gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
     valueAxis.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.15;
     valueAxis.renderer.grid.template.strokeWidth = gridLines.width || 1;
-		if (xAxis && xAxis.title && xAxis.title.text !== "") {
+		if(xAxis && xAxis.title && xAxis.title.text !== "") {
 			valueAxis.title.text = xAxis.title.text;
 			valueAxis.title.fontWeight = "bold";
 			valueAxis.title.fontSize = xAxis.title.fontSize || 20;
@@ -698,9 +718,22 @@ class AmHorizontalBarChart extends React.PureComponent {
 		valueAxis.min = minValue;
 		valueAxis.max = maxValue;
 		valueAxis.renderer.minWidth = 60;
+    if(cursor && cursor.tooltip) {
+      valueAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+    } else {
+      valueAxis.cursorTooltipEnabled = false;
+    }
+
+		/* ~~~~\ cursor /~~~~ */
+		if(cursor) {
+      chart.cursor = new am4charts.XYCursor();
+      chart.cursor.xAxis = valueAxis;
+      chart.cursor.lineY.disabled = true;
+    }
+
 
     /* ~~~~\  legend  /~~~~ */
-    if (this.props.legend) {
+    if(this.props.legend) {
       chart.legend = new am4charts.Legend();
       chart.legend.useDefaultMarker = false;
       let markerTemplate = chart.legend.markers.template;
@@ -1010,6 +1043,7 @@ class AmLineChart extends React.PureComponent {
       alwaysShowBullets = this.props.alwaysShowBullets,
       valueFormatter = this.props.valueFormatter,
       lineStyles = this.props.lineStyle,
+      cursor = this.props.cursor,
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
@@ -1136,7 +1170,9 @@ class AmLineChart extends React.PureComponent {
       Button.label.text = button.text;
       Button.label.fill = button.color || Button.label.fill;
       Button.background.fill = button.fill || Button.background.fill;
-      Button.dy = -Button.parent.innerHeight * (button.position || 0.8);
+      setTimeout(function() {
+        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
+      }, 0);
       Button.padding(5, 5, 5, 5);
       Button.align = "right";
       Button.marginRight = 15;
@@ -1202,6 +1238,7 @@ class AmLineChart extends React.PureComponent {
 		} else {
 		  XAxis = chart.xAxes.push(new am4charts.ValueAxis());
 		}
+		XAxis.strictMinMax = true;
 		XAxis.min = this.props.minX;
 		XAxis.max = this.props.maxX;
 		XAxis.renderer.grid.template.location = 0;
@@ -1228,6 +1265,13 @@ class AmLineChart extends React.PureComponent {
 		XAxis.renderer.grid.template.disabled = true;
 		XAxis.renderer.minGridDistance = 50;
 		XAxis.numberFormatter.numberFormat = valueFormatter;
+    if(cursor && cursor.tooltip &&
+      (cursor === true || !cursor.axes || ["x","xy"].indexOf(cursor.axes)) > -1)
+    {
+      XAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+    } else {
+      XAxis.cursorTooltipEnabled = false;
+    }
 
 		/* ~~~~\  y-axis  /~~~~ */
 		let YAxis = chart.yAxes.push(new am4charts.ValueAxis());
@@ -1256,6 +1300,37 @@ class AmLineChart extends React.PureComponent {
 		YAxis.min = minY;
 		YAxis.max = maxY;
 		YAxis.renderer.minWidth = 60;
+    if(cursor && cursor.tooltip &&
+      (cursor === true || !cursor.axes || ["y","xy"].indexOf(cursor.axes)) > -1)
+    {
+      YAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+    } else {
+      YAxis.cursorTooltipEnabled = false;
+    }
+
+
+		/* ~~~~\ cursor /~~~~ */
+		if(cursor) {
+      chart.cursor = new am4charts.XYCursor();
+      switch(cursor.axes) {
+        case "x":
+          chart.cursor.xAxis = XAxis;
+          chart.cursor.lineY.disabled = true;
+          break;
+        case "y":
+          chart.cursor.yAxis = YAxis;
+          chart.cursor.lineX.disabled = true;
+          break;
+        case "xy":
+          chart.cursor.xAxis = XAxis;
+          chart.cursor.yAxis = YAxis;
+          break;
+        default:
+          chart.cursor.xAxis = XAxis;
+          chart.cursor.yAxis = YAxis;
+      }
+    }
+
 
     /* ~~~~\  legend  /~~~~ */
     if(this.props.legend) {
@@ -1595,6 +1670,7 @@ class AmScatterChart extends React.PureComponent {
       draggable = this.props.draggable,
       valueFormatter = this.props.valueFormatter,
       pointsStyle = this.props.pointsStyle,
+      cursor = this.props.cursor,
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
@@ -1720,7 +1796,9 @@ class AmScatterChart extends React.PureComponent {
       Button.label.text = button.text;
       Button.label.fill = button.color || Button.label.fill;
       Button.background.fill = button.fill || Button.background.fill;
-      Button.dy = -Button.parent.innerHeight * (button.position || 0.8);
+      setTimeout(function() {
+        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
+      }, 0);
       Button.padding(5, 5, 5, 5);
       Button.align = "right";
       Button.marginRight = 15;
@@ -1786,6 +1864,7 @@ class AmScatterChart extends React.PureComponent {
 		} else {
 		  XAxis = chart.xAxes.push(new am4charts.ValueAxis());
 		}
+		XAxis.strictMinMax = true;
 		XAxis.min = this.props.minX;
 		XAxis.max = this.props.maxX;
 		XAxis.renderer.grid.template.location = 0;
@@ -1812,6 +1891,13 @@ class AmScatterChart extends React.PureComponent {
 		XAxis.renderer.grid.template.disabled = true;
 		XAxis.renderer.minGridDistance = 50;
 		XAxis.numberFormatter.numberFormat = valueFormatter;
+    if(cursor && cursor.tooltip &&
+      (cursor === true || !cursor.axes || ["x","xy"].indexOf(cursor.axes)) > -1)
+    {
+      XAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+    } else {
+      XAxis.cursorTooltipEnabled = false;
+    }
 
 		/* ~~~~\  y-axis  /~~~~ */
 		let YAxis = chart.yAxes.push(new am4charts.ValueAxis());
@@ -1836,6 +1922,36 @@ class AmScatterChart extends React.PureComponent {
 		YAxis.min = minY;
 		YAxis.max = maxY;
 		YAxis.renderer.minWidth = 60;
+    if(cursor && cursor.tooltip &&
+      (cursor === true || !cursor.axes || ["y","xy"].indexOf(cursor.axes)) > -1)
+    {
+      YAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+    } else {
+      YAxis.cursorTooltipEnabled = false;
+    }
+
+		/* ~~~~\ cursor /~~~~ */
+		if(cursor) {
+      chart.cursor = new am4charts.XYCursor();
+      switch(cursor.axes) {
+        case "x":
+          chart.cursor.xAxis = XAxis;
+          chart.cursor.lineY.disabled = true;
+          break;
+        case "y":
+          chart.cursor.yAxis = YAxis;
+          chart.cursor.lineX.disabled = true;
+          break;
+        case "xy":
+          chart.cursor.xAxis = XAxis;
+          chart.cursor.yAxis = YAxis;
+          break;
+        default:
+          chart.cursor.xAxis = XAxis;
+          chart.cursor.yAxis = YAxis;
+      }
+    }
+
 
     /* ~~~~\  legend  /~~~~ */
     if(this.props.legend) {
@@ -2296,12 +2412,14 @@ class AmRangeAreaChart extends React.PureComponent {
       Button.label.text = button.text;
       Button.label.fill = button.color || Button.label.fill;
       Button.background.fill = button.fill || Button.background.fill;
-      Button.dy = -Button.parent.innerHeight * (button.position || 0.8);
+      setTimeout(function() {
+        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
+      }, 0);
       Button.padding(5, 5, 5, 5);
       Button.align = "right";
       Button.marginRight = 15;
       Button.events.on("hit", function() {
-        for(let r = 0; r < data.length; ++r){
+        for(let r = 0; r < data.length; ++r) {
           for(let v = 0; v < yValues.length; ++v) {
             chart.data[r][yValues[v][0]] = data2[r][yValues[v][0]];
             chart.data[r][yValues[v][1]] = data2[r][yValues[v][1]];

@@ -31,6 +31,7 @@ amHorizontalBarChart(
   caption = NULL,
   image = NULL,
   button = NULL,
+  cursor = FALSE,
   width = NULL,
   height = NULL,
   chartId = NULL,
@@ -144,6 +145,11 @@ the label color, \code{fill} for the button color, and \code{position}
 for the button position as a percentage (\code{0} for bottom,
 \code{1} for top); this button is used to replace the current data
 with \code{data2}}
+
+\item{cursor}{option to add a cursor on the chart; \code{FALSE} for no
+cursor, \code{TRUE} for a cursor with default settings for the tooltips,
+otherwise a list of settings created with \code{\link{amTooltip}} to
+set the style of the tooltips}
 
 \item{width}{the width of the chart, e.g. \code{"600px"} or \code{"80\%"};
 ignored if the chart is displayed in Shiny, in which case the width is
