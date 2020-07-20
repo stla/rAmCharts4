@@ -2301,7 +2301,8 @@ class AmRangeAreaChart extends React.PureComponent {
       Button.events.on("hit", function() {
         for(let r = 0; r < data.length; ++r){
           for(let v = 0; v < yValues.length; ++v) {
-            chart.data[r][yValues[v]] = data2[r][yValues[v]];
+            chart.data[r][yValues[v][0]] = data2[r][yValues[v][0]];
+            chart.data[r][yValues[v][1]] = data2[r][yValues[v][1]];
           }
         }
         chart.invalidateRawData();

@@ -120201,6 +120201,20 @@ class AmBarChart extends React.PureComponent {
       caption.fill = chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
       caption.align = chartCaption.align || "right";
     }
+    /* ~~~~\  image  /~~~~ */
+
+
+    var img = this.props.image;
+
+    if (img) {
+      var image = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Image"]);
+      image.width = img.width || 60;
+      image.height = img.height || 60;
+      image.verticalCenter = "top";
+      image.horizontalCenter = "left";
+      image.align = img.align || "right";
+      image.href = img.base64;
+    }
     /* ~~~~\  scrollbars  /~~~~ */
 
 
@@ -120671,6 +120685,20 @@ class AmHorizontalBarChart extends React.PureComponent {
       caption.text = chartCaption.text;
       caption.fill = chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
       caption.align = chartCaption.align || "right";
+    }
+    /* ~~~~\  image  /~~~~ */
+
+
+    var img = this.props.image;
+
+    if (img) {
+      var image = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Image"]);
+      image.width = img.width || 60;
+      image.height = img.height || 60;
+      image.verticalCenter = "top";
+      image.horizontalCenter = "left";
+      image.align = img.align || "right";
+      image.href = img.base64;
     }
     /* ~~~~\  scrollbars  /~~~~ */
 
@@ -121174,6 +121202,20 @@ class AmLineChart extends React.PureComponent {
       caption.text = chartCaption.text;
       caption.fill = chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
       caption.align = chartCaption.align || "right";
+    }
+    /* ~~~~\  image  /~~~~ */
+
+
+    var img = this.props.image;
+
+    if (img) {
+      var image = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Image"]);
+      image.width = img.width || 60;
+      image.height = img.height || 60;
+      image.verticalCenter = "top";
+      image.horizontalCenter = "left";
+      image.align = img.align || "right";
+      image.href = img.base64;
     }
     /* ~~~~\  scrollbars  /~~~~ */
 
@@ -121766,6 +121808,20 @@ class AmScatterChart extends React.PureComponent {
       caption.text = chartCaption.text;
       caption.fill = chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
       caption.align = chartCaption.align || "right";
+    }
+    /* ~~~~\  image  /~~~~ */
+
+
+    var img = this.props.image;
+
+    if (img) {
+      var image = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Image"]);
+      image.width = img.width || 60;
+      image.height = img.height || 60;
+      image.verticalCenter = "top";
+      image.horizontalCenter = "left";
+      image.align = img.align || "right";
+      image.href = img.base64;
     }
     /* ~~~~\  scrollbars  /~~~~ */
 
@@ -122385,7 +122441,8 @@ class AmRangeAreaChart extends React.PureComponent {
       Button.events.on("hit", function () {
         for (var r = 0; r < data.length; ++r) {
           for (var v = 0; v < yValues.length; ++v) {
-            chart.data[r][yValues[v]] = data2[r][yValues[v]];
+            chart.data[r][yValues[v][0]] = data2[r][yValues[v][0]];
+            chart.data[r][yValues[v][1]] = data2[r][yValues[v][1]];
           }
         }
 
