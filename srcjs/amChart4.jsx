@@ -2466,18 +2466,18 @@ class AmRangeAreaChart extends React.PureComponent {
       legend.itemContainers.template.events.on("over", function(ev) {
         let thisSeries = ev.target.dataItem.dataContext;
         toggleHover(thisSeries, true);
-        let seriesNames = allSeries.map(function(x){return x.name}),
-          y2name = yValueNames[thisSeries.dataFields.openValueY],
-          y2series = allSeries[seriesNames.indexOf(y2name)];
-        toggleHover(y2series, true);
+//        let seriesNames = allSeries.map(function(x){return x.name}),
+//          y2name = yValueNames[thisSeries.dataFields.openValueY],
+//          y2series = allSeries[seriesNames.indexOf(y2name)];
+//        toggleHover(y2series, true);
       });
       legend.itemContainers.template.events.on("out", function(ev) {
         let thisSeries = ev.target.dataItem.dataContext;
         toggleHover(thisSeries, false);
-        let seriesNames = allSeries.map(function(x){return x.name}),
-          y2name = yValueNames[thisSeries.dataFields.openValueY],
-          y2series = allSeries[seriesNames.indexOf(y2name)];
-        toggleHover(y2series, false);
+//        let seriesNames = allSeries.map(function(x){return x.name}),
+//          y2name = yValueNames[thisSeries.dataFields.openValueY],
+//          y2series = allSeries[seriesNames.indexOf(y2name)];
+//        toggleHover(y2series, false);
       });
 
       chart.legend = legend;
@@ -2793,10 +2793,12 @@ lineHoverState1.properties.fill = pattern;
 //        let seriesNames = allChartSeries.map(function(x){return x.name}),
 //          y2series = allChartSeries[seriesNames.indexOf(yValueNames[y2])];
         series1.strokeWidth = series1.strokeWidth + 2;
+        series1.fill = series1.fill.lighten(0.25);
         series2.strokeWidth = series2.strokeWidth + 2;
       });
       lineTemplate1.events.on("out", event => {
         series1.strokeWidth = series1.strokeWidth - 2;
+        series1.fill = areas[index].color || chart.colors.getIndex(index);
         series2.strokeWidth = series2.strokeWidth - 2;
       });
       lineTemplate2.events.on("over", event => {
