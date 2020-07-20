@@ -91,6 +91,12 @@
 #' @param gridLines settings of the grid lines
 #' @param legend logical, whether to display the legend
 #' @param caption settings of the caption, or \code{NULL} for no caption
+#' @param image option to include an image below the chart; \code{NULL} or
+#'   \code{FALSE} for no image, otherwise a named list with four fields:
+#'   \code{base64}, a base64 string representing the image (you can create it
+#'   from a file with \code{base64enc::dataURI}),
+#'   \code{width} and \code{height} for the image dimensions,
+#'   \code{align} for the position, can be \code{"left"} or \code{"right"}
 #' @param button \code{NULL} for the default, \code{FALSE} for no button,
 #' a single character string giving the button label,
 #' or settings of the button given as
@@ -285,6 +291,7 @@ amScatterChart <- function(
   gridLines = NULL,
   legend = NULL, # default
   caption = NULL,
+  image = NULL,
   button = NULL, # default
   width = NULL,
   height = NULL,
@@ -721,6 +728,7 @@ amScatterChart <- function(
       gridLines = gridLines,
       legend = legend,
       caption = caption,
+      image = image,
       button = button,
       width = width,
       height = height,

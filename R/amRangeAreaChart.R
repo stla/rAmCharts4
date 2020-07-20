@@ -110,6 +110,12 @@
 #' @param gridLines settings of the grid lines
 #' @param legend logical, whether to display the legend
 #' @param caption settings of the caption, or \code{NULL} for no caption
+#' @param image option to include an image below the chart; \code{NULL} or
+#'   \code{FALSE} for no image, otherwise a named list with four fields:
+#'   \code{base64}, a base64 string representing the image (you can create it
+#'   from a file with \code{base64enc::dataURI}),
+#'   \code{width} and \code{height} for the image dimensions,
+#'   \code{align} for the position, can be \code{"left"} or \code{"right"}
 #' @param button \code{NULL} for the default, \code{FALSE} for no button,
 #' a single character string giving the button label,
 #' or settings of the button given as
@@ -118,12 +124,6 @@
 #' for the button position as a percentage (\code{0} for bottom,
 #' \code{1} for top); this button is used to replace the current data
 #' with \code{data2}
-#' @param image option to include an image below the chart; \code{NULL} or
-#'   \code{FALSE} for no image, otherwise a named list with four fields:
-#'   \code{base64}, a base64 string representing the image (you can create it
-#'   from a file with \code{base64enc::dataURI}),
-#'   \code{width} and \code{height} for the image dimensions,
-#'   \code{align} for the position, can be \code{"left"} or \code{"right"}
 #' @param width the width of the chart, e.g. \code{"600px"} or \code{"80\%"};
 #' ignored if the chart is displayed in Shiny, in which case the width is
 #' given in \code{\link{amChart4Output}}

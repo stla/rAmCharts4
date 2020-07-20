@@ -137,6 +137,19 @@ class AmBarChart extends React.PureComponent {
     }
 
 
+    /* ~~~~\  image  /~~~~ */
+    let img = this.props.image;
+    if(img) {
+      let image = chart.chartContainer.createChild(am4core.Image);
+      image.width = img.width || 60;
+      image.height = img.height || 60;
+      image.verticalCenter = "top";
+      image.horizontalCenter = "left";
+      image.align = img.align || "right";
+      image.href = img.base64;
+    }
+
+
     /* ~~~~\  scrollbars  /~~~~ */
     if(this.props.scrollbarX) {
       chart.scrollbarX = new am4core.Scrollbar();
@@ -589,6 +602,20 @@ class AmHorizontalBarChart extends React.PureComponent {
         chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
       caption.align = chartCaption.align || "right";
     }
+
+
+    /* ~~~~\  image  /~~~~ */
+    let img = this.props.image;
+    if(img) {
+      let image = chart.chartContainer.createChild(am4core.Image);
+      image.width = img.width || 60;
+      image.height = img.height || 60;
+      image.verticalCenter = "top";
+      image.horizontalCenter = "left";
+      image.align = img.align || "right";
+      image.href = img.base64;
+    }
+
 
     /* ~~~~\  scrollbars  /~~~~ */
     if (this.props.scrollbarX) {
@@ -1078,6 +1105,19 @@ class AmLineChart extends React.PureComponent {
       caption.fill =
         chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
       caption.align = chartCaption.align || "right";
+    }
+
+
+    /* ~~~~\  image  /~~~~ */
+    let img = this.props.image;
+    if(img) {
+      let image = chart.chartContainer.createChild(am4core.Image);
+      image.width = img.width || 60;
+      image.height = img.height || 60;
+      image.verticalCenter = "top";
+      image.horizontalCenter = "left";
+      image.align = img.align || "right";
+      image.href = img.base64;
     }
 
 
@@ -1650,6 +1690,20 @@ class AmScatterChart extends React.PureComponent {
         chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
       caption.align = chartCaption.align || "right";
     }
+
+
+    /* ~~~~\  image  /~~~~ */
+    let img = this.props.image;
+    if(img) {
+      let image = chart.chartContainer.createChild(am4core.Image);
+      image.width = img.width || 60;
+      image.height = img.height || 60;
+      image.verticalCenter = "top";
+      image.horizontalCenter = "left";
+      image.align = img.align || "right";
+      image.href = img.base64;
+    }
+
 
     /* ~~~~\  scrollbars  /~~~~ */
     if(this.props.scrollbarX) {
