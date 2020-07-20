@@ -120325,49 +120325,7 @@ class AmBarChart extends React.PureComponent {
       series.name = valueNames[value];
       series.sequencedInterpolation = true;
       series.defaultState.interpolationDuration = 1500;
-      /* ~~~~\  tooltip  /~~~~ */
-
-      if (tooltips) {
-        var tooltip = _utils__WEBPACK_IMPORTED_MODULE_13__["Tooltip"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, tooltips[value]);
-        tooltip.pointerOrientation = "vertical";
-        tooltip.dy = 0;
-        tooltip.adapter.add("rotation", (x, target) => {
-          if (target.dataItem) {
-            if (target.dataItem.valueY >= 0) {
-              return 0;
-            } else {
-              return 180;
-            }
-          } else {
-            return x;
-          }
-        });
-        tooltip.label.adapter.add("verticalCenter", (x, target) => {
-          if (target.dataItem) {
-            if (target.dataItem.valueY >= 0) {
-              return "none";
-            } else {
-              return "bottom";
-            }
-          } else {
-            return x;
-          }
-        });
-        tooltip.label.adapter.add("rotation", (x, target) => {
-          if (target.dataItem) {
-            if (target.dataItem.valueY >= 0) {
-              return 0;
-            } else {
-              return 180;
-            }
-          } else {
-            return x;
-          }
-        });
-        series.tooltip = tooltip;
-      }
       /* ~~~~\  value label  /~~~~ */
-
 
       var valueLabel = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LabelBullet"]();
       series.bullets.push(valueLabel);
@@ -120444,9 +120402,47 @@ class AmBarChart extends React.PureComponent {
       columnTemplate.strokeOpacity = 1;
       columnTemplate.column.fillOpacity = 0.8;
       columnTemplate.column.strokeWidth = columnStyle.strokeWidth;
+      /* ~~~~\  tooltip  /~~~~ */
 
       if (tooltips) {
         columnTemplate.tooltipText = tooltips[value].text;
+        var tooltip = _utils__WEBPACK_IMPORTED_MODULE_13__["Tooltip"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, tooltips[value]);
+        tooltip.pointerOrientation = "vertical";
+        tooltip.dy = 0;
+        tooltip.adapter.add("rotation", (x, target) => {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip.label.adapter.add("verticalCenter", (x, target) => {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
+              return "none";
+            } else {
+              return "bottom";
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip.label.adapter.add("rotation", (x, target) => {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        columnTemplate.tooltip = tooltip;
         columnTemplate.adapter.add("tooltipY", (x, target) => {
           if (target.dataItem.valueY > 0) {
             return 0;
@@ -120489,7 +120485,7 @@ class AmBarChart extends React.PureComponent {
       var columnHoverState = columnTemplate.column.states.create("hover"); // you can change any property on hover state and it will be animated
 
       columnHoverState.properties.fillOpacity = 1;
-      columnHoverState.properties.strokeWidth = 3;
+      columnHoverState.properties.strokeWidth = columnStyle.strokeWidth + 2;
 
       if (tooltips) {
         // hide label when hovered because the tooltip is shown
@@ -120574,7 +120570,7 @@ class AmHorizontalBarChart extends React.PureComponent {
     var theme = this.props.theme,
         category = this.props.category,
         values = this.props.values,
-        data = _utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [category].concat(values)),
+        data = HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [category].concat(values))),
         dataCopy = data.map(row => _objectSpread({}, row)),
         data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, values)) : null,
         valueNames = this.props.valueNames,
@@ -120586,9 +120582,10 @@ class AmHorizontalBarChart extends React.PureComponent {
         yAxis = this.props.yAxis,
         gridLines = this.props.gridLines,
         draggable = this.props.draggable,
-        tooltipStyle = this.props.tooltip,
+        tooltips = this.props.tooltip,
         valueFormatter = this.props.valueFormatter,
-        columnStyle = this.props.columnStyle,
+        columnStyles = this.props.columnStyle,
+        bulletsStyle = this.props.bullets,
         chartId = this.props.chartId,
         shinyId = this.props.shinyId;
 
@@ -120795,52 +120792,7 @@ class AmHorizontalBarChart extends React.PureComponent {
       series.name = valueNames[value];
       series.sequencedInterpolation = true;
       series.defaultState.interpolationDuration = 1500;
-      /* ~~~~\  tooltip  /~~~~ */
-
-      if (tooltipStyle) {
-        var tooltip = series.tooltip;
-        tooltip.pointerOrientation = "horizontal";
-        tooltip.dx = 0;
-        tooltip.getFillFromObject = false;
-        tooltip.background.fill = tooltipStyle.backgroundColor; //am4core.color("#101010");
-
-        tooltip.background.fillOpacity = tooltipStyle.backgroundOpacity;
-        tooltip.autoTextColor = false;
-        tooltip.label.fill = tooltipStyle.labelColor; //am4core.color("#FFFFFF");
-
-        tooltip.label.textAlign = "middle";
-        tooltip.scale = tooltipStyle.scale || 1;
-        tooltip.background.filters.clear(); // remove tooltip shadow
-
-        tooltip.background.pointerLength = 10;
-        tooltip.rotation = 180;
-        tooltip.label.verticalCenter = "bottom";
-        tooltip.label.rotation = 180;
-        /*      tooltip.adapter.add("rotation", (x, target) => {
-                  if(target.dataItem.valueY >= 0) {
-                    return 0;
-                  } else {
-                    return 180;
-                  }
-                });
-                tooltip.label.adapter.add("verticalCenter", (x, target) => {
-                  if(target.dataItem.valueY >= 0) {
-                    return "none";
-                  } else {
-                    return "bottom";
-                  }
-                });
-                tooltip.label.adapter.add("rotation", (x, target) => {
-                  if(target.dataItem.valueY >= 0) {
-                    return 0;
-                  } else {
-                    return 180;
-                  }
-                });
-                */
-      }
       /* ~~~~\  value label  /~~~~ */
-
 
       var valueLabel = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LabelBullet"]();
       series.bullets.push(valueLabel);
@@ -120872,12 +120824,10 @@ class AmHorizontalBarChart extends React.PureComponent {
       /* ~~~~\  bullet  /~~~~ */
 
       var bullet;
+      var columnStyle = columnStyles[value];
 
       if (draggable[value]) {
         bullet = series.bullets.create();
-        bullet.fill = columnStyle.fill[value];
-        bullet.stroke = columnStyle.stroke || chart.colors.getIndex(index).saturate(0.7);
-        bullet.strokeWidth = 3;
         bullet.opacity = 0; // initially invisible
 
         bullet.defaultState.properties.opacity = 0; // resize cursor when over
@@ -120887,10 +120837,19 @@ class AmHorizontalBarChart extends React.PureComponent {
 
         var hoverState = bullet.states.create("hover");
         hoverState.properties.opacity = 1; // visible when hovered
-        // add circle sprite to bullet
+        // add sprite to bullet
 
-        var circle = bullet.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Circle"]);
-        circle.radius = 8; // while dragging
+        var shapeConfig = bulletsStyle[value];
+
+        if (!shapeConfig.color) {
+          shapeConfig.color = columnStyle.color;
+        }
+
+        if (!shapeConfig.strokeColor) {
+          shapeConfig.strokeColor = columnStyle.strokeColor;
+        }
+
+        var shape = _utils__WEBPACK_IMPORTED_MODULE_13__["Shape"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, bullet, shapeConfig); // while dragging
 
         bullet.events.on("drag", event => {
           handleDrag(event);
@@ -120919,14 +120878,45 @@ class AmHorizontalBarChart extends React.PureComponent {
 
       var columnTemplate = series.columns.template;
       columnTemplate.width = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](columnWidth);
-      columnTemplate.fill = columnStyle.fill[value];
-      columnTemplate.stroke = columnStyle.stroke || chart.colors.getIndex(index).saturate(0.7);
+      columnTemplate.fill = columnStyle.color || chart.colors.getIndex(index);
+      columnTemplate.stroke = columnStyle.strokeColor || _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](columnTemplate.fill).lighten(-0.5);
       columnTemplate.strokeOpacity = 1;
       columnTemplate.column.fillOpacity = 0.8;
-      columnTemplate.column.strokeWidth = 1;
+      columnTemplate.column.strokeWidth = columnStyle.strokeWidth;
+      /* ~~~~\  tooltip  /~~~~ */
 
-      if (tooltipStyle) {
-        columnTemplate.tooltipText = tooltipStyle.text;
+      if (tooltips) {
+        columnTemplate.tooltipText = tooltips[value].text;
+        var tooltip = _utils__WEBPACK_IMPORTED_MODULE_13__["Tooltip"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, tooltips[value]);
+        tooltip.pointerOrientation = "horizontal";
+        tooltip.dx = 0;
+        tooltip.rotation = 180;
+        tooltip.label.verticalCenter = "bottom";
+        tooltip.label.rotation = 180;
+        /*      tooltip.adapter.add("rotation", (x, target) => {
+                  if(target.dataItem.valueY >= 0) {
+                    return 0;
+                  } else {
+                    return 180;
+                  }
+                });
+                tooltip.label.adapter.add("verticalCenter", (x, target) => {
+                  if(target.dataItem.valueY >= 0) {
+                    return "none";
+                  } else {
+                    return "bottom";
+                  }
+                });
+                tooltip.label.adapter.add("rotation", (x, target) => {
+                  if(target.dataItem.valueY >= 0) {
+                    return 0;
+                  } else {
+                    return 180;
+                  }
+                });
+                */
+
+        columnTemplate.tooltip = tooltip;
         columnTemplate.adapter.add("tooltipX", (x, target) => {
           if (target.dataItem.valueX > 0) {
             return valueAxis.valueToPoint(target.dataItem.valueX + minValue).x;
@@ -120969,9 +120959,9 @@ class AmHorizontalBarChart extends React.PureComponent {
       var columnHoverState = columnTemplate.column.states.create("hover"); // you can change any property on hover state and it will be animated
 
       columnHoverState.properties.fillOpacity = 1;
-      columnHoverState.properties.strokeWidth = 3;
+      columnHoverState.properties.strokeWidth = columnStyle.strokeWidth + 2;
 
-      if (tooltipStyle) {
+      if (tooltips) {
         // hide label when hovered because the tooltip is shown
         columnTemplate.events.on("over", event => {
           var dataItem = event.target.dataItem;

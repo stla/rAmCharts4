@@ -18,8 +18,8 @@ amTooltip(
 )
 }
 \arguments{
-\item{text}{text to display in the tooltip; this can be a formatted string:
-\url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}}
+\item{text}{text to display in the tooltip; this should be a
+\href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}{formatting string}}
 
 \item{textColor}{text color}
 

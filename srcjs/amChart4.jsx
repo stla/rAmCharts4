@@ -111,7 +111,7 @@ class AmBarChart extends React.PureComponent {
 
 		/* ~~~~\  title  /~~~~ */
 		let chartTitle = this.props.chartTitle;
-		if (chartTitle) {
+		if(chartTitle) {
 			let title = chart.plotContainer.createChild(am4core.Label);
 			title.text = chartTitle.text;
 			title.fill =
@@ -255,46 +255,6 @@ class AmBarChart extends React.PureComponent {
       series.sequencedInterpolation = true;
       series.defaultState.interpolationDuration = 1500;
 
-      /* ~~~~\  tooltip  /~~~~ */
-      if(tooltips) {
-        let tooltip = utils.Tooltip(am4core, chart, index, tooltips[value]);
-        tooltip.pointerOrientation = "vertical";
-        tooltip.dy = 0;
-        tooltip.adapter.add("rotation", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
-              return 0;
-            } else {
-              return 180;
-            }
-          } else {
-            return x;
-          }
-        });
-        tooltip.label.adapter.add("verticalCenter", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
-              return "none";
-            } else {
-              return "bottom";
-            }
-          } else {
-            return x;
-          }
-        });
-        tooltip.label.adapter.add("rotation", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
-              return 0;
-            } else {
-              return 180;
-            }
-          } else {
-            return x;
-          }
-        });
-        series.tooltip = tooltip;
-      }
 
       /* ~~~~\  value label  /~~~~ */
       var valueLabel = new am4charts.LabelBullet();
@@ -368,8 +328,46 @@ class AmBarChart extends React.PureComponent {
       columnTemplate.strokeOpacity = 1;
       columnTemplate.column.fillOpacity = 0.8;
       columnTemplate.column.strokeWidth = columnStyle.strokeWidth;
+      /* ~~~~\  tooltip  /~~~~ */
       if(tooltips) {
         columnTemplate.tooltipText = tooltips[value].text;
+        let tooltip = utils.Tooltip(am4core, chart, index, tooltips[value]);
+        tooltip.pointerOrientation = "vertical";
+        tooltip.dy = 0;
+        tooltip.adapter.add("rotation", (x, target) => {
+          if(target.dataItem) {
+            if(target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip.label.adapter.add("verticalCenter", (x, target) => {
+          if(target.dataItem) {
+            if(target.dataItem.valueY >= 0) {
+              return "none";
+            } else {
+              return "bottom";
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip.label.adapter.add("rotation", (x, target) => {
+          if(target.dataItem) {
+            if(target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        columnTemplate.tooltip = tooltip;
         columnTemplate.adapter.add("tooltipY", (x, target) => {
           if(target.dataItem.valueY > 0) {
             return 0;
@@ -378,7 +376,7 @@ class AmBarChart extends React.PureComponent {
           }
         });
       }
-      var cr = columnStyle.cornerRadius || 8;
+      let cr = columnStyle.cornerRadius || 8;
       columnTemplate.column.adapter.add("cornerRadiusTopRight", (x, target) => {
         if(target.dataItem.valueY > 0) {
           return target.isHover ? 2 * cr : cr;
@@ -411,7 +409,7 @@ class AmBarChart extends React.PureComponent {
       let columnHoverState = columnTemplate.column.states.create("hover");
       // you can change any property on hover state and it will be animated
       columnHoverState.properties.fillOpacity = 1;
-      columnHoverState.properties.strokeWidth = 3;
+      columnHoverState.properties.strokeWidth = columnStyle.strokeWidth + 2;
       if(tooltips) {
         // hide label when hovered because the tooltip is shown
         columnTemplate.events.on("over", event => {
@@ -492,7 +490,9 @@ class AmHorizontalBarChart extends React.PureComponent {
     let theme = this.props.theme,
       category = this.props.category,
       values = this.props.values,
-      data = utils.subset(this.props.data, [category].concat(values)),
+      data = HTMLWidgets.dataframeToD3(
+        utils.subset(this.props.data, [category].concat(values))
+      ),
       dataCopy = data.map(row => ({...row})),
       data2 = this.props.data2 ?
         HTMLWidgets.dataframeToD3(utils.subset(this.props.data2, values)) :
@@ -506,9 +506,10 @@ class AmHorizontalBarChart extends React.PureComponent {
       yAxis = this.props.yAxis,
       gridLines = this.props.gridLines,
       draggable = this.props.draggable,
-      tooltipStyle = this.props.tooltip,
+      tooltips = this.props.tooltip,
       valueFormatter = this.props.valueFormatter,
-      columnStyle = this.props.columnStyle,
+      columnStyles = this.props.columnStyle,
+      bulletsStyle = this.props.bullets,
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
@@ -705,20 +706,99 @@ class AmHorizontalBarChart extends React.PureComponent {
       series.sequencedInterpolation = true;
       series.defaultState.interpolationDuration = 1500;
 
+
+      /* ~~~~\  value label  /~~~~ */
+      var valueLabel = new am4charts.LabelBullet();
+      series.bullets.push(valueLabel);
+      valueLabel.label.text =
+        "{valueX.value.formatNumber('" + valueFormatter + "')}";
+      valueLabel.label.hideOversized = true;
+      valueLabel.label.truncate = false;
+      valueLabel.strokeOpacity = 0;
+			valueLabel.adapter.add("dx", (x, target) => {
+				if(target.dataItem.valueX > 0) {
+					return -10;
+				} else {
+					return 10;
+				}
+			});
+			valueLabel.label.adapter.add("horizontalCenter", (x, target) => {
+				if(target.dataItem.valueX > 0) {
+					return "left";
+				} else {
+					return "right";
+				}
+			});
+			valueLabel.label.adapter.add("dx", (x, target) => {
+				if(target.dataItem.valueX > 0) {
+					return 13;
+				} else {
+					return -13;
+				}
+			});
+
+      /* ~~~~\  bullet  /~~~~ */
+      let bullet;
+      let columnStyle = columnStyles[value];
+      if(draggable[value]) {
+        bullet = series.bullets.create();
+        bullet.opacity = 0; // initially invisible
+        bullet.defaultState.properties.opacity = 0;
+        // resize cursor when over
+        bullet.cursorOverStyle = am4core.MouseCursorStyle.horizontalResize;
+        bullet.draggable = true;
+        // create bullet hover state
+        let hoverState = bullet.states.create("hover");
+        hoverState.properties.opacity = 1; // visible when hovered
+        // add sprite to bullet
+        let shapeConfig = bulletsStyle[value];
+        if(!shapeConfig.color){
+          shapeConfig.color = columnStyle.color;
+        }
+        if(!shapeConfig.strokeColor){
+          shapeConfig.strokeColor = columnStyle.strokeColor;
+        }
+        let shape =
+          utils.Shape(am4core, chart, index, bullet, shapeConfig);
+        // while dragging
+        bullet.events.on("drag", event => {
+          handleDrag(event);
+        });
+        // on dragging stop
+        bullet.events.on("dragstop", event => {
+          handleDrag(event);
+          var dataItem = event.target.dataItem;
+          dataItem.column.isHover = false;
+          event.target.isHover = false;
+          dataCopy[dataItem.index][value] = dataItem.values.valueX.value;
+          if(window.Shiny) {
+            Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+            Shiny.setInputValue(shinyId + "_change", {
+              index: dataItem.index,
+              category: dataItem.categoryY,
+              field: value,
+              value: dataItem.values.valueX.value
+            });
+          }
+        });
+      }
+
+      /* ~~~~\  column template  /~~~~ */
+      let columnTemplate = series.columns.template;
+      columnTemplate.width = am4core.percent(columnWidth);
+      columnTemplate.fill =
+        columnStyle.color || chart.colors.getIndex(index);
+      columnTemplate.stroke = columnStyle.strokeColor ||
+        am4core.color(columnTemplate.fill).lighten(-0.5);
+      columnTemplate.strokeOpacity = 1;
+      columnTemplate.column.fillOpacity = 0.8;
+      columnTemplate.column.strokeWidth = columnStyle.strokeWidth;
       /* ~~~~\  tooltip  /~~~~ */
-      if(tooltipStyle) {
-        var tooltip = series.tooltip;
+      if(tooltips) {
+        columnTemplate.tooltipText = tooltips[value].text;
+        let tooltip = utils.Tooltip(am4core, chart, index, tooltips[value]);
   			tooltip.pointerOrientation = "horizontal";
 	  		tooltip.dx = 0;
-        tooltip.getFillFromObject = false;
-        tooltip.background.fill = tooltipStyle.backgroundColor; //am4core.color("#101010");
-        tooltip.background.fillOpacity = tooltipStyle.backgroundOpacity;
-        tooltip.autoTextColor = false;
-        tooltip.label.fill = tooltipStyle.labelColor; //am4core.color("#FFFFFF");
-        tooltip.label.textAlign = "middle";
-        tooltip.scale = tooltipStyle.scale || 1;
-        tooltip.background.filters.clear(); // remove tooltip shadow
-        tooltip.background.pointerLength = 10;
   			tooltip.rotation = 180;
   			tooltip.label.verticalCenter = "bottom";
   			tooltip.label.rotation = 180;
@@ -744,160 +824,76 @@ class AmHorizontalBarChart extends React.PureComponent {
           }
         });
         */
-      }
-
-      /* ~~~~\  value label  /~~~~ */
-      var valueLabel = new am4charts.LabelBullet();
-      series.bullets.push(valueLabel);
-      valueLabel.label.text =
-        "{valueX.value.formatNumber('" + valueFormatter + "')}";
-      valueLabel.label.hideOversized = true;
-      valueLabel.label.truncate = false;
-      valueLabel.strokeOpacity = 0;
-			valueLabel.adapter.add("dx", (x, target) => {
-				if (target.dataItem.valueX > 0) {
-					return -10;
-				} else {
-					return 10;
-				}
-			});
-			valueLabel.label.adapter.add("horizontalCenter", (x, target) => {
-				if (target.dataItem.valueX > 0) {
-					return "left";
-				} else {
-					return "right";
-				}
-			});
-			valueLabel.label.adapter.add("dx", (x, target) => {
-				if (target.dataItem.valueX > 0) {
-					return 13;
-				} else {
-					return -13;
-				}
-			});
-
-      /* ~~~~\  bullet  /~~~~ */
-      let bullet;
-      if(draggable[value]) {
-        bullet = series.bullets.create();
-        bullet.fill = columnStyle.fill[value];
-        bullet.stroke =
-          columnStyle.stroke || chart.colors.getIndex(index).saturate(0.7);
-        bullet.strokeWidth = 3;
-        bullet.opacity = 0; // initially invisible
-        bullet.defaultState.properties.opacity = 0;
-        // resize cursor when over
-        bullet.cursorOverStyle = am4core.MouseCursorStyle.horizontalResize;
-        bullet.draggable = true;
-        // create bullet hover state
-        var hoverState = bullet.states.create("hover");
-        hoverState.properties.opacity = 1; // visible when hovered
-        // add circle sprite to bullet
-        var circle = bullet.createChild(am4core.Circle);
-        circle.radius = 8;
-        // while dragging
-        bullet.events.on("drag", event => {
-          handleDrag(event);
-        });
-        // on dragging stop
-        bullet.events.on("dragstop", event => {
-          handleDrag(event);
-          var dataItem = event.target.dataItem;
-          dataItem.column.isHover = false;
-          event.target.isHover = false;
-          dataCopy[dataItem.index][value] = dataItem.values.valueX.value;
-          if(window.Shiny) {
-            Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
-            Shiny.setInputValue(shinyId + "_change", {
-              index: dataItem.index,
-              category: dataItem.categoryY,
-              field: value,
-              value: dataItem.values.valueX.value
-            });
-          }
-        });
-      }
-
-      /* ~~~~\  column template  /~~~~ */
-      var columnTemplate = series.columns.template;
-      columnTemplate.width = am4core.percent(columnWidth);
-      columnTemplate.fill = columnStyle.fill[value];
-      columnTemplate.stroke =
-        columnStyle.stroke || chart.colors.getIndex(index).saturate(0.7);
-      columnTemplate.strokeOpacity = 1;
-      columnTemplate.column.fillOpacity = 0.8;
-      columnTemplate.column.strokeWidth = 1;
-      if(tooltipStyle) {
-        columnTemplate.tooltipText = tooltipStyle.text;
+        columnTemplate.tooltip = tooltip;
 	  		columnTemplate.adapter.add("tooltipX", (x, target) => {
-		  		if (target.dataItem.valueX > 0) {
+		  		if(target.dataItem.valueX > 0) {
 			  		return valueAxis.valueToPoint(target.dataItem.valueX + minValue).x;
 				  } else {
 					  return 0;
 				  }
 			  });
       }
-      var cr = columnStyle.cornerRadius || 8;
+      let cr = columnStyle.cornerRadius || 8;
 			columnTemplate.column.adapter.add("cornerRadiusTopRight", (x, target) => {
-				if (target.dataItem.valueX > 0) {
+				if(target.dataItem.valueX > 0) {
 					return target.isHover ? 2 * cr : cr;
 				} else {
 					return 0;
 				}
 			});
 			columnTemplate.column.adapter.add("cornerRadiusBottomRight", (x, target) => {
-				if (target.dataItem.valueX > 0) {
+				if(target.dataItem.valueX > 0) {
 					return target.isHover ? 2 * cr : cr;
 				} else {
 					return 0;
 				}
 			});
 			columnTemplate.column.adapter.add("cornerRadiusTopLeft", (x, target) => {
-				if (target.dataItem.valueX > 0) {
+				if(target.dataItem.valueX > 0) {
 					return 0;
 				} else {
 					return target.isHover ? 2 * cr : cr;
 				}
 			});
 			columnTemplate.column.adapter.add("cornerRadiusBottomLeft", (x, target) => {
-				if (target.dataItem.valueX > 0) {
+				if(target.dataItem.valueX > 0) {
 					return 0;
 				} else {
 					return target.isHover ? 2 * cr : cr;
 				}
 			});
       // columns hover state
-      var columnHoverState = columnTemplate.column.states.create("hover");
+      let columnHoverState = columnTemplate.column.states.create("hover");
       // you can change any property on hover state and it will be animated
       columnHoverState.properties.fillOpacity = 1;
-      columnHoverState.properties.strokeWidth = 3;
-      if(tooltipStyle) {
+      columnHoverState.properties.strokeWidth = columnStyle.strokeWidth + 2;
+      if(tooltips) {
         // hide label when hovered because the tooltip is shown
         columnTemplate.events.on("over", event => {
-          var dataItem = event.target.dataItem;
-          var itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
+          let dataItem = event.target.dataItem;
+          let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
           itemLabelBullet.fillOpacity = 0;
         });
         // show label when mouse is out
         columnTemplate.events.on("out", event => {
-          var dataItem = event.target.dataItem;
-          var itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
+          let dataItem = event.target.dataItem;
+          let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
           itemLabelBullet.fillOpacity = 1;
         });
       }
       if(draggable[value]) {
         // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
         columnTemplate.events.on("down", event => {
-          var dataItem = event.target.dataItem;
-          var itemBullet = dataItem.bullets.getKey(bullet.uid);
+          let dataItem = event.target.dataItem;
+          let itemBullet = dataItem.bullets.getKey(bullet.uid);
           itemBullet.dragStart(event.pointer);
         });
         // when columns position changes, adjust minX/maxX of bullets so that we could only dragg horizontally
   			columnTemplate.events.on("positionchanged", event => {
-	  			var dataItem = event.target.dataItem;
+	  			let dataItem = event.target.dataItem;
 			  	if(dataItem.bullets !== undefined){
-  			  	var itemBullet = dataItem.bullets.getKey(bullet.uid);
-	  			  var column = dataItem.column;
+  			  	let itemBullet = dataItem.bullets.getKey(bullet.uid);
+	  			  let column = dataItem.column;
   		  		itemBullet.minY = column.pixelY + column.pixelHeight / 2;
 	  		  	itemBullet.maxY = itemBullet.minY;
   				  itemBullet.minX = 0;

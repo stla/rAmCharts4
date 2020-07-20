@@ -16,8 +16,10 @@
 #' \code{value1}, \code{value2}, ... are the column names given in
 #' \code{values} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
 #' desired names to appear in the legend
-#' @param minValue minimum value of the y-axis
-#' @param maxValue maximum value of the y-axis
+#' @param yLimits range of the y-axis, a vector of two values specifying
+#' the lower and the upper limits of the y-axis; \code{NULL} for default values
+#' @param expandY if \code{yLimits = NULL}, a percentage of the range of the
+#'   y-axis used to expand this range
 #' @param valueFormatter a number formatter; see
 #' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}
 #' @param chartTitle chart title, \code{NULL}, character, or list of settings
@@ -31,20 +33,20 @@
 #' dragging for each bar corresponding to a column given in \code{values}
 #' @param tooltip settings of the tooltips; \code{NULL} for default,
 #'   \code{FALSE} for no tooltip, otherwise a named list of the form
-#'   \code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+#'   \code{list(value1 = settings1, value2 = settings2, ...)} where
 #'   \code{settings1}, \code{settings2}, ... are lists created with
 #'   \code{\link{amTooltip}}; this can also be a
 #'   single list of settings that will be applied to each series,
 #'   or a just a string for the text to display in the tooltip
 #' @param columnStyle settings of the columns; \code{NULL} for default,
 #'   otherwise a named list of the form
-#'   \code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+#'   \code{list(value1 = settings1, value2 = settings2, ...)} where
 #'   \code{settings1}, \code{settings2}, ... are lists created with
 #'   \code{\link{amColumn}}; this can also be a
 #'   single list of settings that will be applied to each column
 #' @param bullets settings of the bullets; \code{NULL} for default,
 #'   otherwise a named list of the form
-#'   \code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+#'   \code{list(value1 = settings1, value2 = settings2, ...)} where
 #'   \code{settings1}, \code{settings2}, ... are lists created with
 #'   \code{\link{amCircle}}, \code{\link{amTriangle}} or
 #'   \code{\link{amRectangle}}; this can also be a
@@ -111,7 +113,7 @@
 #'     list(text = "Visits per country", fontSize = 22, color = "orangered"),
 #'   xAxis = list(title = list(text = "Country", color = "maroon")),
 #'   yAxis = list(title = list(text = "Visits", color = "maroon")),
-#'   minValue = 0, maxValue = 4000,
+#'   yLimits = c(0, 4000),
 #'   valueFormatter = "#.",
 #'   caption = list(text = "Year 2018", color = "red"),
 #'   theme = "material")
@@ -154,7 +156,7 @@
 #'   chartTitle = list(text = "Income and expenses per country"),
 #'   xAxis = list(title = list(text = "Country")),
 #'   yAxis = list(title = list(text = "Income and expenses")),
-#'   minValue = 0, maxValue = 41,
+#'   yLimits = c(0, 41),
 #'   valueFormatter = "#.#",
 #'   caption = list(text = "Year 2018"),
 #'   theme = "dark")
@@ -164,8 +166,8 @@ amBarChart <- function(
   category,
   values,
   valueNames = NULL, # default
-  minValue,
-  maxValue,
+  yLimits = NULL,
+  expandY = 5,
   valueFormatter = "#.",
   chartTitle = NULL,
   theme = NULL,
@@ -223,6 +225,12 @@ amBarChart <- function(
       nrow(data2) != nrow(data) ||
       !all(values %in% names(data2)))){
     stop("Invalid `data2` argument.", call. = TRUE)
+  }
+
+  if(is.null(yLimits)){
+    yLimits <- range(pretty(do.call(c, data[values])))
+    pad <- diff(yLimits) * expandY/100
+    yLimits <- yLimits + c(-pad, pad)
   }
 
   if(is.character(chartTitle)){
@@ -523,8 +531,8 @@ amBarChart <- function(
       category = category,
       values = as.list(values),
       valueNames = valueNames,
-      minValue = minValue,
-      maxValue = maxValue,
+      minValue = yLimits[1L],
+      maxValue = yLimits[2L],
       valueFormatter = valueFormatter,
       chartTitle = chartTitle,
       theme = theme,

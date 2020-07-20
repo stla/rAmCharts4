@@ -10,14 +10,15 @@ amHorizontalBarChart(
   category,
   values,
   valueNames = NULL,
-  minValue,
-  maxValue,
+  xLimits = NULL,
+  expandX = 5,
   valueFormatter = "#.",
   chartTitle = NULL,
   theme = NULL,
   draggable = FALSE,
   tooltip = NULL,
   columnStyle = NULL,
+  bullets = NULL,
   backgroundColor = NULL,
   cellWidth = NULL,
   columnWidth = NULL,
@@ -56,9 +57,11 @@ form \code{list(value1 = "ValueName1", value2 = "ValueName2", ...)} where
 \code{values} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
 desired names to appear in the legend}
 
-\item{minValue}{minimum value of the y-axis}
+\item{xLimits}{range of the x-axis, a vector of two values specifying
+the left and the right limits of the x-axis; \code{NULL} for default values}
 
-\item{maxValue}{maximum value of the y-axis}
+\item{expandX}{if \code{xLimits = NULL}, a percentage of the range of the
+x-axis used to expand this range}
 
 \item{valueFormatter}{a number formatter; see
 \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}}
@@ -75,17 +78,28 @@ all bars, otherwise a named list of the form
 \code{list(value1 = TRUE, value2 = FALSE, ...)} to enable/disable the
 dragging for each bar corresponding to a column given in \code{values}}
 
-\item{tooltip}{tooltip settings given as a list, or just a string for the
-\code{text} field, or \code{FALSE} for no tooltip, or \code{NULL} for the
-default tooltip; the \code{text} field must be a formatted string:
-\url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}}
+\item{tooltip}{settings of the tooltips; \code{NULL} for default,
+\code{FALSE} for no tooltip, otherwise a named list of the form
+\code{list(value1 = settings1, value2 = settings2, ...)} where
+\code{settings1}, \code{settings2}, ... are lists created with
+\code{\link{amTooltip}}; this can also be a
+single list of settings that will be applied to each series,
+or a just a string for the text to display in the tooltip}
 
-\item{columnStyle}{settings of the columns style; \code{NULL} for default,
-otherwise a named list with three fields: \code{fill} to set the colors
-of the columns, given as a single color or a named list of the form
-\code{list(value1 = "red", value2 = "green", ...)}, \code{stroke} to set
-the color of the borders of the columns, and \code{cornerRadius} to set
-the radius of the corners of the columns}
+\item{columnStyle}{settings of the columns; \code{NULL} for default,
+otherwise a named list of the form
+\code{list(value1 = settings1, value2 = settings2, ...)} where
+\code{settings1}, \code{settings2}, ... are lists created with
+\code{\link{amColumn}}; this can also be a
+single list of settings that will be applied to each column}
+
+\item{bullets}{settings of the bullets; \code{NULL} for default,
+otherwise a named list of the form
+\code{list(value1 = settings1, value2 = settings2, ...)} where
+\code{settings1}, \code{settings2}, ... are lists created with
+\code{\link{amCircle}}, \code{\link{amTriangle}} or
+\code{\link{amRectangle}}; this can also be a
+single list of settings that will be applied to each series}
 
 \item{backgroundColor}{a color for the chart background}
 
@@ -158,12 +172,12 @@ amHorizontalBarChart(
   width = "600px", height = "550px",
   category = "country", values = "visits",
   draggable = TRUE,
-  tooltip = "[font-style:italic;#ffff00]{valueX}[/]",
+  tooltip = "[font-style:italic #ffff00]{valueX}[/]",
   chartTitle =
     list(text = "Visits per country", fontSize = 22, color = "orangered"),
   xAxis = list(title = list(text = "Country", color = "maroon")),
   yAxis = list(title = list(text = "Visits", color = "maroon")),
-  minValue = 0, maxValue = 4000,
+  xLimits = c(0, 4000),
   valueFormatter = "#.",
   caption = list(text = "Year 2018", color = "red"),
   theme = "moonrisekingdom")
@@ -184,16 +198,29 @@ amHorizontalBarChart(
   category = "country",
   values = c("income", "expenses"),
   valueNames = list(income = "Income", expenses = "Expenses"),
+  tooltip = amTooltip(
+    textColor = "white",
+    backgroundColor = "#101010",
+    borderColor = "silver"
+  ),
   draggable = list(income = TRUE, expenses = FALSE),
   backgroundColor = "#30303d",
   columnStyle = list(
-    fill = list(income = "darkmagenta", expenses = "darkred"),
-    stroke = "#cccccc"
+    income = amColumn(
+      color = "darkmagenta",
+      strokeColor = "#cccccc",
+      strokeWidth = 2
+    ),
+    expenses = amColumn(
+      color = "darkred",
+      strokeColor = "#cccccc",
+      strokeWidth = 2
+    )
   ),
   chartTitle = list(text = "Income and expenses per country"),
   xAxis = list(title = list(text = "Country")),
   yAxis = list(title = list(text = "Income and expenses")),
-  minValue = 0, maxValue = 41,
+  xLimits = c(0, 41),
   valueFormatter = "#.#",
   caption = list(text = "Year 2018"),
   theme = "dark")

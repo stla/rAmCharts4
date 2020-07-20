@@ -10,8 +10,8 @@ amBarChart(
   category,
   values,
   valueNames = NULL,
-  minValue,
-  maxValue,
+  yLimits = NULL,
+  expandY = 5,
   valueFormatter = "#.",
   chartTitle = NULL,
   theme = NULL,
@@ -57,9 +57,11 @@ form \code{list(value1 = "ValueName1", value2 = "ValueName2", ...)} where
 \code{values} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
 desired names to appear in the legend}
 
-\item{minValue}{minimum value of the y-axis}
+\item{yLimits}{range of the y-axis, a vector of two values specifying
+the lower and the upper limits of the y-axis; \code{NULL} for default values}
 
-\item{maxValue}{maximum value of the y-axis}
+\item{expandY}{if \code{yLimits = NULL}, a percentage of the range of the
+y-axis used to expand this range}
 
 \item{valueFormatter}{a number formatter; see
 \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}}
@@ -78,7 +80,7 @@ dragging for each bar corresponding to a column given in \code{values}}
 
 \item{tooltip}{settings of the tooltips; \code{NULL} for default,
 \code{FALSE} for no tooltip, otherwise a named list of the form
-\code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+\code{list(value1 = settings1, value2 = settings2, ...)} where
 \code{settings1}, \code{settings2}, ... are lists created with
 \code{\link{amTooltip}}; this can also be a
 single list of settings that will be applied to each series,
@@ -86,14 +88,14 @@ or a just a string for the text to display in the tooltip}
 
 \item{columnStyle}{settings of the columns; \code{NULL} for default,
 otherwise a named list of the form
-\code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+\code{list(value1 = settings1, value2 = settings2, ...)} where
 \code{settings1}, \code{settings2}, ... are lists created with
 \code{\link{amColumn}}; this can also be a
 single list of settings that will be applied to each column}
 
 \item{bullets}{settings of the bullets; \code{NULL} for default,
 otherwise a named list of the form
-\code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+\code{list(value1 = settings1, value2 = settings2, ...)} where
 \code{settings1}, \code{settings2}, ... are lists created with
 \code{\link{amCircle}}, \code{\link{amTriangle}} or
 \code{\link{amRectangle}}; this can also be a
@@ -175,7 +177,7 @@ amBarChart(
     list(text = "Visits per country", fontSize = 22, color = "orangered"),
   xAxis = list(title = list(text = "Country", color = "maroon")),
   yAxis = list(title = list(text = "Visits", color = "maroon")),
-  minValue = 0, maxValue = 4000,
+  yLimits = c(0, 4000),
   valueFormatter = "#.",
   caption = list(text = "Year 2018", color = "red"),
   theme = "material")
@@ -218,7 +220,7 @@ amBarChart(
   chartTitle = list(text = "Income and expenses per country"),
   xAxis = list(title = list(text = "Country")),
   yAxis = list(title = list(text = "Income and expenses")),
-  minValue = 0, maxValue = 41,
+  yLimits = c(0, 41),
   valueFormatter = "#.#",
   caption = list(text = "Year 2018"),
   theme = "dark")

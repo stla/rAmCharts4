@@ -1,8 +1,8 @@
 #' Tooltip
 #' @description Create list of settings for a tooltip.
 #'
-#' @param text text to display in the tooltip; this can be a formatted string:
-#' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}
+#' @param text text to display in the tooltip; this should be a
+#'   \href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-strings/}{formatting string}
 #' @param textColor text color
 #' @param textAlign alignement of the text, can be \code{"start"},
 #'   \code{"middle"}, or \code{"end"}
