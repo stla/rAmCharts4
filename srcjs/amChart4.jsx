@@ -2135,6 +2135,7 @@ class AmRangeAreaChart extends React.PureComponent {
   toggleHover(series, over) {
     let event = over ? "over" : "out";
     series.segments.template.dispatchImmediately(event);
+    series.wasHover = over;
   }
 
 
@@ -2437,6 +2438,13 @@ class AmRangeAreaChart extends React.PureComponent {
       legend.useDefaultMarker = false;
       legend.events.on("dataitemsvalidated", function(ev) {
         ev.target.markers.values.forEach(function(container, index) {
+          let children = container.children.values.map(
+            function(child){ return child.className; }
+          ),
+            bullet = children.indexOf("Bullet");
+          if(bullet > -1)
+            container.children.values[bullet].dispose();
+          if(JSON.stringify(children) !== '["Line","Rectangle","Line"]'){
           let y2series = allSeries[2*index+1];
           let line = new am4core.Line();
           line.stroke = y2series.stroke;
@@ -2448,12 +2456,7 @@ class AmRangeAreaChart extends React.PureComponent {
           //chart.legend.markers.values[0].children.push(line);
           line.parent = container;
           //console.log("l", l);
-          let children = container.children.values.map(
-            function(child){ return child.className; }
-          ),
-            bullet = children.indexOf("Bullet");
-          if(bullet > -1)
-            container.children.values[bullet].dispose();
+          }
         });
       });
 
@@ -2465,7 +2468,8 @@ class AmRangeAreaChart extends React.PureComponent {
       let toggleHover = this.toggleHover;
       legend.itemContainers.template.events.on("over", function(ev) {
         let thisSeries = ev.target.dataItem.dataContext;
-        toggleHover(thisSeries, true);
+        if(thisSeries.visible)
+          toggleHover(thisSeries, true);
 //        let seriesNames = allSeries.map(function(x){return x.name}),
 //          y2name = yValueNames[thisSeries.dataFields.openValueY],
 //          y2series = allSeries[seriesNames.indexOf(y2name)];
@@ -2473,11 +2477,24 @@ class AmRangeAreaChart extends React.PureComponent {
       });
       legend.itemContainers.template.events.on("out", function(ev) {
         let thisSeries = ev.target.dataItem.dataContext;
-        toggleHover(thisSeries, false);
+        if(thisSeries.visible && thisSeries.wasHover)
+          toggleHover(thisSeries, false);
 //        let seriesNames = allSeries.map(function(x){return x.name}),
 //          y2name = yValueNames[thisSeries.dataFields.openValueY],
 //          y2series = allSeries[seriesNames.indexOf(y2name)];
 //        toggleHover(y2series, false);
+      });
+      legend.itemContainers.template.events.on("hit", function(ev) {
+        let thisSeries = ev.target.dataItem.dataContext;
+        let seriesNames = allSeries.map(function(x){return x.name}),
+          y2name = yValueNames[thisSeries.dataFields.openValueY],
+          y2series = allSeries[seriesNames.indexOf(y2name)];
+        toggleHover(thisSeries, !y2series.visible);
+        if(y2series.visible) {
+          y2series.hide(500);
+        } else {
+          y2series.show(500);
+        }
       });
 
       chart.legend = legend;
