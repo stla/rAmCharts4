@@ -2133,9 +2133,8 @@ class AmRangeAreaChart extends React.PureComponent {
   }
 
   toggleHover(series, over) {
-    series.segments.each(function(segment) {
-      segment.isHover = over;
-    });
+    let event = over ? "over" : "out";
+    series.segments.template.dispatchImmediately(event);
   }
 
 
@@ -2235,6 +2234,9 @@ class AmRangeAreaChart extends React.PureComponent {
     let chartBackgroundColor =
       this.props.backgroundColor || chart.background.fill;
     chart.background.fill = chartBackgroundColor;
+
+    let allSeries = chart.series.values;
+
 
 		/* ~~~~\  title  /~~~~ */
 		let chartTitle = this.props.chartTitle;
@@ -2434,8 +2436,7 @@ class AmRangeAreaChart extends React.PureComponent {
       let legend = new am4charts.Legend();
       legend.useDefaultMarker = false;
       legend.events.on("dataitemsvalidated", function(ev) {
-        let allSeries = chart.series.values;
-        ev.target.markers.values.forEach(function(container, index){
+        ev.target.markers.values.forEach(function(container, index) {
           let y2series = allSeries[2*index+1];
           let line = new am4core.Line();
           line.stroke = y2series.stroke;
@@ -2465,19 +2466,17 @@ class AmRangeAreaChart extends React.PureComponent {
       legend.itemContainers.template.events.on("over", function(ev) {
         let thisSeries = ev.target.dataItem.dataContext;
         toggleHover(thisSeries, true);
-        let allSeries = chart.series.values,
-          seriesNames = allSeries.map(function(x){return x.name}),
-          y2 = thisSeries.dataFields.openValueY,
-          y2series = allSeries[seriesNames.indexOf(y2)];
+        let seriesNames = allSeries.map(function(x){return x.name}),
+          y2name = yValueNames[thisSeries.dataFields.openValueY],
+          y2series = allSeries[seriesNames.indexOf(y2name)];
         toggleHover(y2series, true);
       });
       legend.itemContainers.template.events.on("out", function(ev) {
         let thisSeries = ev.target.dataItem.dataContext;
         toggleHover(thisSeries, false);
-        let allSeries = chart.series.values,
-          seriesNames = allSeries.map(function(x){return x.name}),
-          y2 = thisSeries.dataFields.openValueY,
-          y2series = allSeries[seriesNames.indexOf(y2)];
+        let seriesNames = allSeries.map(function(x){return x.name}),
+          y2name = yValueNames[thisSeries.dataFields.openValueY],
+          y2series = allSeries[seriesNames.indexOf(y2name)];
         toggleHover(y2series, false);
       });
 
@@ -2549,6 +2548,7 @@ class AmRangeAreaChart extends React.PureComponent {
       let series1 = chart.series.push(new am4charts.LineSeries()),
         series2 = chart.series.push(new am4charts.LineSeries());
         series2.hiddenInLegend = true;
+console.log("series1", series1);
       if(isDate) {
         series1.dataFields.dateX = xValue;
         series2.dataFields.dateX = xValue;
@@ -2563,8 +2563,8 @@ class AmRangeAreaChart extends React.PureComponent {
       series1.dataFields.openValueY = y2;
       series2.dataFields.openValueY = y1;
       //series1.tooltipText = "yyyyy";// "y1: {openValueY} y2: {valueY}";
-      series1.fill = areas[index].color;
-      series1.fillOpacity = areas[index].opacity;
+      series1.fill = areas[index].color || chart.colors.getIndex(index);
+      series1.fillOpacity = areas[index].opacity || 0.2;
       series2.fillOpacity = 0;
       series1.sequencedInterpolation = true;
       series2.sequencedInterpolation = true;
@@ -2769,14 +2769,48 @@ class AmRangeAreaChart extends React.PureComponent {
         series1.strokeDasharray = lineStyle1.dash;
       if(lineStyle2.dash)
         series2.strokeDasharray = lineStyle2.dash;
-      // line hover state
+/*      // line hover state
       let lineHoverState1 = lineTemplate1.states.create("hover"),
-        lineHoverState2 = lineTemplate2.states.create("hover");;
+        lineHoverState2 = lineTemplate2.states.create("hover");
+*/
       // you can change any property on hover state and it will be animated
-      lineHoverState1.properties.fillOpacity = 0.4;
+/* let pattern = new am4core.LinePattern();
+pattern.width = 10;
+pattern.height = 10;
+pattern.stroke = "white";// am4core.color("red").lighten(0.5);
+pattern.strokeWidth = 2;
+pattern.rotation = 45;
+pattern.backgroundFill = areas[index].color;
+pattern.backgroundOpacity = areas[index].opacity;
+console.log("ppatern", pattern);
+lineHoverState1.properties.fill = pattern;
+*/
+/*      lineHoverState1.properties.fill = series1.fill.lighten(0.25);
       lineHoverState1.properties.strokeWidth = series1.strokeWidth + 2;
-      lineHoverState2.properties.fillOpacity = 0.4;
       lineHoverState2.properties.strokeWidth = series2.strokeWidth + 2;
+*/
+      lineTemplate1.events.on("over", event => {
+//        let seriesNames = allChartSeries.map(function(x){return x.name}),
+//          y2series = allChartSeries[seriesNames.indexOf(yValueNames[y2])];
+        series1.strokeWidth = series1.strokeWidth + 2;
+        series2.strokeWidth = series2.strokeWidth + 2;
+      });
+      lineTemplate1.events.on("out", event => {
+        series1.strokeWidth = series1.strokeWidth - 2;
+        series2.strokeWidth = series2.strokeWidth - 2;
+      });
+      lineTemplate2.events.on("over", event => {
+//        let seriesNames = allChartSeries.map(function(x){return x.name}),
+//          y1series = allChartSeries[seriesNames.indexOf(areas[index].name)];
+        series1.strokeWidth = series1.strokeWidth + 2;
+        series1.fill = series1.fill.lighten(0.25); //lineHoverState1.properties.fill;
+        series2.strokeWidth = series2.strokeWidth + 2;
+      });
+      lineTemplate2.events.on("out", event => {
+        series1.strokeWidth = series1.strokeWidth - 2;
+        series1.fill = areas[index].color || chart.colors.getIndex(index);
+        series2.strokeWidth = series2.strokeWidth - 2;
+      });
 
     }); /* end of forEach */
 
