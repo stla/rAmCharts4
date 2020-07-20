@@ -243,6 +243,7 @@
 #'   theme = "dark")
 amRangeAreaChart <- function(
   data,
+  data2 = NULL,
   xValue,
   yValues,
   yValueNames = NULL, # default
@@ -268,6 +269,7 @@ amRangeAreaChart <- function(
   legend = NULL, # default
   caption = NULL,
   image = NULL,
+  button = NULL,
   width = NULL,
   height = NULL,
   chartId = NULL,
@@ -341,12 +343,12 @@ amRangeAreaChart <- function(
     )
   }
 
-  # if(!is.null(data2) &&
-  #    (!is.data.frame(data2) ||
-  #     nrow(data2) != nrow(data) || # XXXX
-  #     !all(c(xValue,yValues) %in% names(data2)))){
-  #   stop("Invalid `data2` argument.", call. = TRUE)
-  # }
+  if(!is.null(data2) &&
+     (!is.data.frame(data2) ||
+      nrow(data2) != nrow(data) || # XXXX
+      !all(c(yValues) %in% names(data2)))){
+    stop("Invalid `data2` argument.", call. = TRUE)
+  }
 
   if(is.character(chartTitle)){
     chartTitle <- list(text = chartTitle, fontSize = 22, color = NULL)
@@ -530,7 +532,7 @@ amRangeAreaChart <- function(
   }
 
   if(is.null(legend)){
-    legend <- length(yValues) > 1L
+    legend <- nrow(yValues) > 1L
   }
 
   if(is.character(caption)){
@@ -547,25 +549,26 @@ amRangeAreaChart <- function(
       stop("Invalid `image` argument.", call. = TRUE)
     }
   }
-  # if(is.null(button)){
-  #   button <- if(!is.null(data2))
-  #     list(
-  #       text = "Reset",
-  #       color = NULL,
-  #       fill = NULL,
-  #       position = 0.8
-  #     )
-  # }else if(is.character(button)){
-  #   button <- list(
-  #     text = button,
-  #     color = NULL,
-  #     fill = NULL,
-  #     position = 0.8
-  #   )
-  # }else if(is.list(button)){
-  #   button[["color"]] <- validateColor(button[["color"]])
-  #   button[["fill"]] <- validateColor(button[["fill"]])
-  # }
+
+  if(is.null(button)){
+    button <- if(!is.null(data2))
+      list(
+        text = "Reset",
+        color = NULL,
+        fill = NULL,
+        position = 0.8
+      )
+  }else if(is.character(button)){
+    button <- list(
+      text = button,
+      color = NULL,
+      fill = NULL,
+      position = 0.8
+    )
+  }else if(is.list(button)){
+    button[["color"]] <- validateColor(button[["color"]])
+    button[["fill"]] <- validateColor(button[["fill"]])
+  }
 
   if(is.null(width)){
     width <- "100%"
@@ -591,6 +594,7 @@ amRangeAreaChart <- function(
     "AmRangeAreaChart",
     list(
       data = data,
+      data2 = data2,
       xValue = xValue,
       isDate = isDate,
       yValues = apply(yValues, 1L, as.list),
@@ -616,6 +620,7 @@ amRangeAreaChart <- function(
       gridLines = gridLines,
       legend = legend,
       caption = caption,
+      button = button,
       image = image,
       width = width,
       height = height,

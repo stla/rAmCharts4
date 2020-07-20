@@ -6,6 +6,7 @@
 \usage{
 amRangeAreaChart(
   data,
+  data2 = NULL,
   xValue,
   yValues,
   yValueNames = NULL,
@@ -31,6 +32,7 @@ amRangeAreaChart(
   legend = NULL,
   caption = NULL,
   image = NULL,
+  button = NULL,
   width = NULL,
   height = NULL,
   chartId = NULL,
@@ -39,6 +41,11 @@ amRangeAreaChart(
 }
 \arguments{
 \item{data}{a dataframe}
+
+\item{data2}{\code{NULL} or a dataframe used to update the data with the
+button; its column names must include the column names of \code{data}
+given in \code{values} and it must have the same number of rows as
+\code{data}}
 
 \item{xValue}{name of the column of \code{data} to be used on the
 x-axis}
@@ -140,6 +147,15 @@ from a file with \code{base64enc::dataURI}),
 \code{width} and \code{height} for the image dimensions,
 \code{align} for the position, can be \code{"left"} or \code{"right"}}
 
+\item{button}{\code{NULL} for the default, \code{FALSE} for no button,
+a single character string giving the button label,
+or settings of the button given as
+a list with these fields: \code{text} for the button label, \code{color} for
+the label color, \code{fill} for the button color, and \code{position}
+for the button position as a percentage (\code{0} for bottom,
+\code{1} for top); this button is used to replace the current data
+with \code{data2}}
+
 \item{width}{the width of the chart, e.g. \code{"600px"} or \code{"80\%"};
 ignored if the chart is displayed in Shiny, in which case the width is
 given in \code{\link{amChart4Output}}}
@@ -152,11 +168,6 @@ given in \code{\link{amChart4Output}}}
 
 \item{elementId}{a HTML id for the container of the chart; ignored if the
 chart is displayed in Shiny, in which case the id is given by the Shiny id}
-
-\item{data2}{\code{NULL} or a dataframe used to update the data with the
-button; its column names must include the column names of \code{data}
-given in \code{values} and it must have the same number of rows as
-\code{data}}
 
 \item{trend}{option to request trend lines and to set their settings;
 \code{FALSE} for no trend line, otherwise a named list of the form
@@ -193,15 +204,6 @@ it is also possible to request the same kind of trend lines for all series
 given by the \code{yValues} argument, by passing a list of the
 form \code{list("_all" = trendconfig)}, e.g.
 \code{list("_all" = list(method = "lm", formula = y ~ 0+x, style = amLine()))}}
-
-\item{button}{\code{NULL} for the default, \code{FALSE} for no button,
-a single character string giving the button label,
-or settings of the button given as
-a list with these fields: \code{text} for the button label, \code{color} for
-the label color, \code{fill} for the button color, and \code{position}
-for the button position as a percentage (\code{0} for bottom,
-\code{1} for top); this button is used to replace the current data
-with \code{data2}}
 }
 \description{
 Create a HTML widget displaying a line chart.

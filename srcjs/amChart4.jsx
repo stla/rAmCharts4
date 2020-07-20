@@ -2141,15 +2141,13 @@ class AmRangeAreaChart extends React.PureComponent {
 
   componentDidMount() {
 
-    console.log(this.props.yValues);
-
     let theme = this.props.theme,
       xValue = this.props.xValue,
       yValues = this.props.yValues,
       data = utils.subset(this.props.data, [xValue].concat(yValues.flat())),
       data2 = this.props.data2 ?
         HTMLWidgets.dataframeToD3(
-          utils.subset(this.props.data2, [xValue].concat(yValues))
+          utils.subset(this.props.data2, yValues.flat())
         ) : null,
       yValueNames = this.props.yValueNames,
       isDate = this.props.isDate,
@@ -2390,27 +2388,14 @@ class AmRangeAreaChart extends React.PureComponent {
 		YAxis.max = maxY;
 		YAxis.renderer.minWidth = 60;
 
+
     /* ~~~~\  legend  /~~~~ */
     if(this.props.legend) {
-      chart.legend = new am4charts.Legend();
-      chart.legend.useDefaultMarker = false;
-
-//      let marker = chart.legend.markers.template.children.getIndex(0);
-//      console.log("legend marker 0", marker);
-      console.log("legend markers", chart.legend.markers);
-
-//let marker = chart.legend.markers.template;
-//chart.legend.markers.values[0].children.push(am4core.Line);
-
-
-      let markerTemplate = chart.legend.markers.template;
-
-//      markerTemplate.disposeChildren();
-//      let dollar = markerTemplate.createChild(am4core.Line);
-
-      chart.legend.events.on("ready", function(ev) {
+      let legend = new am4charts.Legend();
+      legend.useDefaultMarker = false;
+      legend.events.on("dataitemsvalidated", function(ev) {
         let allSeries = chart.series.values;
-        chart.legend.markers.values.forEach(function(container, index){
+        ev.target.markers.values.forEach(function(container, index){
           let y2series = allSeries[2*index+1];
           let line = new am4core.Line();
           line.stroke = y2series.stroke;
@@ -2431,25 +2416,32 @@ class AmRangeAreaChart extends React.PureComponent {
         });
       });
 
+      let markerTemplate = legend.markers.template;
       markerTemplate.width = 40;
       markerTemplate.strokeWidth = 1;
       markerTemplate.strokeOpacity = 1;
-//      markerTemplate.stroke = am4core.color("#000000"); no effect
+
       let toggleHover = this.toggleHover;
-      chart.legend.itemContainers.template.events.on("over", function(ev) {
-        toggleHover(ev.target.dataItem.dataContext, true);
-        let allSeries = chart.series.values;
-        for(let i=0; i < allSeries.length/2; ++i) {
-          toggleHover(allSeries[2*i+1], true);
-        }
+      legend.itemContainers.template.events.on("over", function(ev) {
+        let thisSeries = ev.target.dataItem.dataContext;
+        toggleHover(thisSeries, true);
+        let allSeries = chart.series.values,
+          seriesNames = allSeries.map(function(x){return x.name}),
+          y2 = thisSeries.dataFields.openValueY,
+          y2series = allSeries[seriesNames.indexOf(y2)];
+        toggleHover(y2series, true);
       });
-      chart.legend.itemContainers.template.events.on("out", function(ev) {
-        toggleHover(ev.target.dataItem.dataContext, false);
-        let allSeries = chart.series.values;
-        for(let i=0; i < allSeries.length/2; ++i) {
-          toggleHover(allSeries[2*i+1], false);
-        }
+      legend.itemContainers.template.events.on("out", function(ev) {
+        let thisSeries = ev.target.dataItem.dataContext;
+        toggleHover(thisSeries, false);
+        let allSeries = chart.series.values,
+          seriesNames = allSeries.map(function(x){return x.name}),
+          y2 = thisSeries.dataFields.openValueY,
+          y2series = allSeries[seriesNames.indexOf(y2)];
+        toggleHover(y2series, false);
       });
+
+      chart.legend = legend;
     }
 
 		/* ~~~~\  function handling the drag event  /~~~~ */
