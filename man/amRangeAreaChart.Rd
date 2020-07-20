@@ -33,6 +33,7 @@ amRangeAreaChart(
   caption = NULL,
   image = NULL,
   button = NULL,
+  cursor = FALSE,
   width = NULL,
   height = NULL,
   chartId = NULL,
@@ -155,6 +156,15 @@ the label color, \code{fill} for the button color, and \code{position}
 for the button position as a percentage (\code{0} for bottom,
 \code{1} for top); this button is used to replace the current data
 with \code{data2}}
+
+\item{cursor}{option to add a cursor on the chart; \code{FALSE} for no
+cursor, \code{TRUE} for a cursor for both axes with default settings
+for the axes tooltips,
+otherwise a named list with two possible fields: a field
+\code{axes} to specify on which axes the cursor is requested, can be
+\code{"x"}, \code{"y"}, or \code{"xy"},
+and a field \code{tooltip} to set the style of the axes tooltips, this
+must be a list of settings created with \code{\link{amTooltip}}}
 
 \item{width}{the width of the chart, e.g. \code{"600px"} or \code{"80\%"};
 ignored if the chart is displayed in Shiny, in which case the width is
@@ -294,6 +304,9 @@ amRangeAreaChart(
     list(name = "y1-y2", color = "blue", opacity = 0.2),
     list(name = "z1-z2", color = "red", opacity = 0.2)
   ),
+  cursor = list(tooltip = amTooltip(
+    backgroundColor = "silver"
+  )),
   chartTitle = list(text = "Range area chart", color = "whitesmoke"),
   xAxis = list(title = list(text = "Observation",
                             fontSize = 20,

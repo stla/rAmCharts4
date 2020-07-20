@@ -2165,6 +2165,7 @@ class AmRangeAreaChart extends React.PureComponent {
       valueFormatter = this.props.valueFormatter,
       lineStyles = this.props.lineStyle,
       areas = this.props.areas,
+      cursor = this.props.cursor,
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
@@ -2358,10 +2359,18 @@ class AmRangeAreaChart extends React.PureComponent {
 		XAxis.renderer.grid.template.disabled = true;
 		XAxis.renderer.minGridDistance = 50;
 		XAxis.numberFormatter.numberFormat = valueFormatter;
+    if(cursor && cursor.tooltip &&
+      (cursor === true || !cursor.axes || ["x","xy"].indexOf(cursor.axes)) > -1)
+    {
+      XAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+    } else {
+//      XAxis.tooltip.disabled = true;
+      XAxis.cursorTooltipEnabled = false;
+    }
 
 		/* ~~~~\  y-axis  /~~~~ */
 		let YAxis = chart.yAxes.push(new am4charts.ValueAxis());
-		YAxis.tooltip.disabled = true;
+		//YAxis.tooltip.disabled = true;
     YAxis.renderer.grid.template.stroke =
       gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
     YAxis.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.15;
@@ -2387,6 +2396,37 @@ class AmRangeAreaChart extends React.PureComponent {
 		YAxis.min = minY;
 		YAxis.max = maxY;
 		YAxis.renderer.minWidth = 60;
+    if(cursor && cursor.tooltip &&
+      (cursor === true || !cursor.axes || ["y","xy"].indexOf(cursor.axes)) > -1)
+    {
+      YAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+    } else {
+//      YAxis.tooltip.disabled = true;
+      YAxis.cursorTooltipEnabled = false;
+    }
+
+
+		/* ~~~~\ cursor /~~~~ */
+		if(cursor) {
+      chart.cursor = new am4charts.XYCursor();
+      switch(cursor.axes) {
+        case "x":
+          chart.cursor.xAxis = XAxis;
+          chart.cursor.lineY.disabled = true;
+          break;
+        case "y":
+          chart.cursor.yAxis = YAxis;
+          chart.cursor.lineX.disabled = true;
+          break;
+        case "xy":
+          chart.cursor.xAxis = XAxis;
+          chart.cursor.yAxis = YAxis;
+          break;
+        default:
+          chart.cursor.xAxis = XAxis;
+          chart.cursor.yAxis = YAxis;
+      }
+    }
 
 
     /* ~~~~\  legend  /~~~~ */
@@ -2534,10 +2574,6 @@ class AmRangeAreaChart extends React.PureComponent {
       series1.tensionY = lineStyle1.tensionY || 1;
       series2.tensionX = lineStyle2.tensionX || 1;
       series2.tensionY = lineStyle2.tensionY || 1;
-      chart.cursor = new am4charts.XYCursor();
-      chart.cursor.xAxis = XAxis;
-      console.log(chart.cursor);
-      chart.cursor.tooltipText = "uuuu";
       /* ~~~~\  bullet  /~~~~ */
       let bullet1 = series1.bullets.push(new am4charts.Bullet()),
         shape1 = utils.Shape(am4core, chart, index, bullet1, bulletsStyle[y1]);
