@@ -315,11 +315,25 @@ amScatterChart <- function(
     stop("Invalid `yValues` argument.", call. = TRUE)
   }
 
-  if(lubridate::is.Date(data[[xValue]]) || lubridate::is.POSIXt(data[[xValue]])){
-    data[[xValue]] <- format(data[[xValue]], "%Y-%m-%d")
+  data_x <- data[[xValue]]
+  if(lubridate::is.Date(data_x) || lubridate::is.POSIXt(data_x)){
+    if(is.null(xLimits))
+      xLimits <- format(range(pretty(data_x)), "%Y-%m-%d")
+    data[[xValue]] <- format(data_x, "%Y-%m-%d")
     isDate <- TRUE
   }else{
     isDate <- FALSE
+  }
+
+  if(is.null(xLimits)){
+    xLimits <- range(pretty(data[[xValue]]))
+    pad <- diff(xLimits) * expandX/100
+    xLimits <- xLimits + c(-pad, pad)
+  }
+  if(is.null(yLimits)){
+    yLimits <- range(pretty(do.call(c, data[yValues])))
+    pad <- diff(yLimits) * expandY/100
+    yLimits <- yLimits + c(-pad, pad)
   }
 
   if(is.null(yValueNames)){
@@ -353,21 +367,7 @@ amScatterChart <- function(
     stop("Invalid `data2` argument.", call. = TRUE)
   }
 
-  if(is.null(xLimits)){
-    xLimits <- range(pretty(data[[xValue]]))
-    if(!isDate){
-      pad <- diff(xLimits) * expandX/100
-      xLimits <- xLimits + c(-pad, pad)
-    }
-  }
-
-  if(is.null(yLimits)){
-    yLimits <- range(pretty(do.call(c, data[yValues])))
-    pad <- diff(yLimits) * expandY/100
-    yLimits <- yLimits + c(-pad, pad)
-  }
-
-  if(!isDate && !isFALSE(trend)){
+  if(!isFALSE(trend)){
     if("_all" %in% names(trend)){
       trend <- setNames(rep(list(trend[["_all"]]), length(yValues)), yValues)
     }
@@ -376,13 +376,31 @@ amScatterChart <- function(
     trendStyle <-
       sapply(trend, "[[", "style", USE.NAMES = TRUE, simplify = FALSE)
     for(yValue in names(trend)){
+      if(isDate){
+        if(trend[[yValue]][["method"]] != "lm"){
+          stop(
+            sprintf(
+              paste0(
+                "Error in trend calculation for \"%s\":  ",
+                "method \"%s\" does not handle dates."
+              ),
+              yValue, trend[[yValue]][["method"]]
+            ),
+            call. = TRUE
+          )
+        }else{
+        }
+      }
       trendJS[[yValue]] <-
         ifelse(
           trend[[yValue]][["method"]] == "lm.js",
           trend[[yValue]][["order"]],
           FALSE
         )
-      dat <- data.frame(x = data[[xValue]], y = data[[yValue]])
+      dat <- data.frame(
+        x = data_x, #if(isDate) as.integer(data[[xValue]]) else data[[xValue]],
+        y = data[[yValue]]
+      )
       if(trend[[yValue]][["method"]] %in% c("loess", "nls", "nlsLM")){
         method.args <- if(is.null(trend[[yValue]][["method.args"]]))
           list()
@@ -395,6 +413,21 @@ amScatterChart <- function(
               "y ~ poly(x, degree = %d, raw = TRUE)",
               trend[[yValue]][["order"]]
             )
+          )
+      }
+      if(trend[[yValue]][["method"]] != "loess"){
+        . <-
+          tryCatch(
+            model.frame(trend[[yValue]][["formula"]], data = dat),
+            error = function(e){
+              stop(
+                sprintf(
+                  "%s (in trend calculation for \"%s\").",
+                  e$message, yValue
+                ),
+                call. = TRUE
+              )
+            }
           )
       }
       fit <- switch(
@@ -422,9 +455,12 @@ amScatterChart <- function(
         if(simpleRegression)
           range(X)
       else
-        seq(min(X), max(X), length.out = 100)
+        unique(seq(min(X), max(X), length.out = 100)) # unique in case of dates
       y <- predict(fit, newdata = data.frame(x = x))
-      trendData[[yValue]] <- data.frame(x = x, y = y)
+      trendData[[yValue]] <- data.frame(
+        x = if(isDate) format(x, "%Y-%m-%d") else x,
+        y = y
+      )
     }
   }else{
     trendData <- trendStyle <- trendJS <- NULL

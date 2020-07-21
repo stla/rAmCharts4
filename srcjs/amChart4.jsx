@@ -1653,10 +1653,6 @@ class AmScatterChart extends React.PureComponent {
           utils.subset(this.props.data2, [xValue].concat(yValues))
         ) : null,
       trendData0 = this.props.trendData,
-      trendData = trendData0 ?
-        Object.assign({}, ...Object.keys(trendData0)
-          .map(k => ({[k]: HTMLWidgets.dataframeToD3(trendData0[k])}))
-        ) : null,
       trendStyles = this.props.trendStyle,
       trendJS = this.props.trendJS,
       yValueNames = this.props.yValueNames,
@@ -1676,9 +1672,18 @@ class AmScatterChart extends React.PureComponent {
 
     if(isDate) {
       data[xValue] = data[xValue].map(utils.toDate);
+      if(trendData0) {
+        for(let key in trendData0) {
+          trendData0[key].x = trendData0[key].x.map(utils.toDate);
+        }
+      }
     }
     data = HTMLWidgets.dataframeToD3(data);
     let dataCopy = data.map(row => ({...row}));
+    let trendData = trendData0 ?
+      Object.assign({}, ...Object.keys(trendData0)
+        .map(k => ({[k]: HTMLWidgets.dataframeToD3(trendData0[k])}))
+      ) : null;
 
     if(window.Shiny) {
       if(shinyId === undefined){
@@ -2193,7 +2198,11 @@ class AmScatterChart extends React.PureComponent {
         trend.name = yValueNames[value] + "_trend";
         trend.hiddenInLegend = true;
         trend.data = trendData[value];
-        trend.dataFields.valueX = "x";
+        if(isDate){
+          trend.dataFields.dateX = "x";
+        } else {
+          trend.dataFields.valueX = "x";
+        }
         trend.dataFields.valueY = "y";
         trend.sequencedInterpolation = true;
         trend.defaultState.interpolationDuration = 1500;
