@@ -17,7 +17,14 @@ amTriangle(
   rotation = 0
 )
 
-amCircle(color = NULL, radius = 6, strokeColor = NULL, strokeWidth = 2)
+amCircle(
+  color = NULL,
+  opacity = 1,
+  radius = 6,
+  strokeColor = NULL,
+  strokeOpacity = 1,
+  strokeWidth = 2
+)
 
 amRectangle(
   color = NULL,
@@ -44,7 +51,11 @@ amRectangle(
 
 \item{rotation}{rotation angle}
 
+\item{opacity}{bullet opacity, a number between 0 and 1}
+
 \item{radius}{circle radius}
+
+\item{strokeOpacity}{stroke opacity of the bullet, a number between 0 and 1}
 
 \item{cornerRadius}{radius of the rectangle corners}
 }

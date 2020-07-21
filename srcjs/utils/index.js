@@ -73,9 +73,11 @@ export const Shape = function(am4core, chart, index, bullet, shapeConfig) {
   shape.horizontalCenter = "middle";
   shape.verticalCenter = "middle";
   shape.fill = shapeConfig.color || chart.colors.getIndex(index);
+  shape.fillOpacity = shapeConfig.opacity || 1;
   shape.strokeWidth = shapeConfig.strokeWidth;
   shape.stroke = shapeConfig.strokeColor ||
     am4core.color(shape.fill).lighten(-0.5);
+  shape.strokeOpacity = shapeConfig.strokeOpacity || 1;
 
   return shape;
 };

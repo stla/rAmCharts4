@@ -3,10 +3,12 @@
 #' their shape and their style.
 #'
 #' @param color bullet color
+#' @param opacity bullet opacity, a number between 0 and 1
 #' @param width bullet width
 #' @param height bullet height
 #' @param radius circle radius
 #' @param strokeColor stroke color of the bullet
+#' @param strokeOpacity stroke opacity of the bullet, a number between 0 and 1
 #' @param strokeWidth stroke width of the bullet
 #' @param direction triangle direction
 #' @param rotation rotation angle
@@ -43,15 +45,19 @@ amTriangle <- function(
 #' @export
 amCircle <- function(
   color = NULL,
+  opacity = 1,
   radius = 6,
   strokeColor = NULL,
+  strokeOpacity = 1,
   strokeWidth = 2
 ){
   bullet <- list(
     shape = "circle",
     color = validateColor(color),
+    opacity = opacity,
     radius = radius,
     strokeColor = validateColor(strokeColor),
+    strokeOpacity = strokeOpacity,
     strokeWidth = strokeWidth
   )
   class(bullet) <- "bullet"

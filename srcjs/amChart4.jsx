@@ -2081,7 +2081,9 @@ class AmScatterChart extends React.PureComponent {
 		yValues.forEach(function(value, index){
 
       let series = chart.series.push(new am4charts.LineSeries());
+      series.bulletsContainer.parent = chart.seriesContainer;
       series.strokeOpacity = 0;
+      series.zIndex = -1;
       if(isDate) {
         series.dataFields.dateX = xValue;
       } else {
@@ -2113,6 +2115,7 @@ class AmScatterChart extends React.PureComponent {
       let bullet = series.bullets.push(new am4charts.Bullet());
       let shape =
         utils.Shape(am4core, chart, index, bullet, pointsStyle[value]);
+      shape.zIndex = -1;
       if(tooltips) {
         /* ~~~~\  tooltip  /~~~~ */
         bullet.tooltipText = tooltips[value].text;
@@ -2207,6 +2210,8 @@ class AmScatterChart extends React.PureComponent {
       /* ~~~~\ trend line /~~~~ */
       if(trendData && trendData[value]) {
         let trend = chart.series.push(new am4charts.LineSeries());
+        console.log("trend", trend);
+        trend.zIndex = 10000;
         trend.name = yValueNames[value] + "_trend";
         trend.hiddenInLegend = true;
         trend.data = trendData[value];

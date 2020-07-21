@@ -415,9 +415,10 @@ amScatterChart <- function(
           trend[[yValue]][["order"]],
           FALSE
         )
+      data_y <- data[[yValue]]
       dat <- data.frame(
-        x = data_x, #if(isDate) as.integer(data[[xValue]]) else data[[xValue]],
-        y = data[[yValue]]
+        x = data_x[!is.na(data_y)],
+        y = na.omit(data_y)
       )
       if(trend[[yValue]][["method"]] %in% c("loess", "nls", "nlsLM")){
         method.args <- if(is.null(trend[[yValue]][["method.args"]]))
