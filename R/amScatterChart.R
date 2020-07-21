@@ -41,6 +41,15 @@
 #'       righthandside must be a symbolic expression depending on \code{x} only,
 #'       e.g. \code{y ~ x}, \code{y ~ x + I(x^2)}, \code{y ~ poly(x,2)}
 #'     }
+#'     \item{\code{interval}}{
+#'       effective for method \code{"lm"} only; a list with five possible fields:
+#'       \code{type} can be \code{"confidence"} or \code{"prediction"},
+#'       \code{level} is the confidence or prediction level (number between 0
+#'       and 1), \code{color} is the color of the shaded area, \code{opacity}
+#'       is the opacity of the shaded area (number between 0 and 1),
+#'       \code{tensionX} and \code{tensionY} to control the smoothing
+#'       (see \code{\link{amLine}})
+#'     }
 #'     \item{\code{order}}{
 #'       the order of the polynomial regression when \code{method = "lm.js"}
 #'     }
@@ -319,6 +328,8 @@ amScatterChart <- function(
   if(lubridate::is.Date(data_x) || lubridate::is.POSIXt(data_x)){
     if(is.null(xLimits))
       xLimits <- format(range(pretty(data_x)), "%Y-%m-%d")
+    else
+      xLimits <- format(xLimits, "%Y-%m-%d")
     data[[xValue]] <- format(data_x, "%Y-%m-%d")
     isDate <- TRUE
   }else{
@@ -330,11 +341,7 @@ amScatterChart <- function(
     pad <- diff(xLimits) * expandX/100
     xLimits <- xLimits + c(-pad, pad)
   }
-  if(is.null(yLimits)){
-    yLimits <- range(pretty(do.call(c, data[yValues])))
-    pad <- diff(yLimits) * expandY/100
-    yLimits <- yLimits + c(-pad, pad)
-  }
+  allY <- do.call(c, data[yValues])
 
   if(is.null(yValueNames)){
     yValueNames <- setNames(as.list(yValues), yValues)
@@ -375,6 +382,17 @@ amScatterChart <- function(
     trendJS <- setNames(vector("list", length(trend)), names(trend))
     trendStyle <-
       sapply(trend, "[[", "style", USE.NAMES = TRUE, simplify = FALSE)
+    trendIntervals <-
+      sapply(trend, "[[", "interval", USE.NAMES = TRUE, simplify = FALSE)
+    ribbonStyle <- sapply(sapply(
+      trendIntervals,
+      function(y)
+        Filter(Negate(is.null), y[c("color","opacity","tensionX","tensionY")]),
+      USE.NAMES = TRUE, simplify = FALSE
+    ), function(y){
+      y$color <- rAmCharts4:::validateColor(y$color)
+      return(y)
+    }, USE.NAMES = TRUE, simplify = FALSE)
     for(yValue in names(trend)){
       if(isDate){
         if(trend[[yValue]][["method"]] != "lm"){
@@ -456,14 +474,41 @@ amScatterChart <- function(
           range(X)
       else
         unique(seq(min(X), max(X), length.out = 100)) # unique in case of dates
-      y <- predict(fit, newdata = data.frame(x = x))
-      trendData[[yValue]] <- data.frame(
-        x = if(isDate) format(x, "%Y-%m-%d") else x,
-        y = y
-      )
+      if(trend[[yValue]][["method"]] == "lm" &&
+         "interval" %in% names(trend[[yValue]])){
+        interval <- trend[[yValue]][["interval"]]
+        if(simpleRegression)
+          x <- unique(seq(min(X), max(X), length.out = 100))
+        #print(x)
+        predictions <- predict(
+          fit,
+          newdata = data.frame(x = x),
+          interval = interval[["type"]] %||% "confidence",
+          level = interval[["level"]] %||% 0.95
+        )
+        trendData[[yValue]] <- data.frame(
+          x = if(isDate) format(x, "%Y-%m-%d") else x,
+          y = predictions[,"fit"],
+          lwr = predictions[,"lwr"],
+          upr = predictions[,"upr"]
+        )
+        allY <- c(allY, predictions[, c("lwr","upr")])
+      }else{
+        y <- predict(fit, newdata = data.frame(x = x))
+        trendData[[yValue]] <- data.frame(
+          x = if(isDate) format(x, "%Y-%m-%d") else x,
+          y = y
+        )
+      }
     }
   }else{
-    trendData <- trendStyle <- trendJS <- NULL
+    trendData <- trendStyle <- trendJS <- ribbonStyle <- NULL
+  }
+
+  if(is.null(yLimits)){
+    yLimits <- range(pretty(allY))
+    pad <- diff(yLimits) * expandY/100
+    yLimits <- yLimits + c(-pad, pad)
   }
 
   if(is.character(chartTitle)){
@@ -751,6 +796,7 @@ amScatterChart <- function(
       trendData = trendData,
       trendStyle = trendStyle,
       trendJS = trendJS,
+      ribbonStyle = ribbonStyle,
       xValue = xValue,
       isDate = isDate,
       yValues = as.list(yValues),

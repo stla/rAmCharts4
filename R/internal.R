@@ -23,3 +23,7 @@ validateColor <- function(color){
   RGB <- col2rgb(color)[,1]
   rgb(RGB["red"], RGB["green"], RGB["blue"], maxColorValue = 255)
 }
+
+`%||%` <- function(x, y){
+  if(is.null(x)) y else x
+}

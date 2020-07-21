@@ -1031,9 +1031,11 @@ class AmLineChart extends React.PureComponent {
       trendStyles = this.props.trendStyle,
       trendJS = this.props.trendJS,
       yValueNames = this.props.yValueNames,
+      isDate = this.props.isDate,
+      minX = isDate ? utils.toDate(this.props.minX).getTime() : this.props.minX,
+      maxX = isDate ? utils.toDate(this.props.maxX).getTime() : this.props.maxX,
       minY = this.props.minY,
       maxY = this.props.maxY,
-      isDate = this.props.isDate,
       xAxis = this.props.xAxis,
       yAxis = this.props.yAxis,
       gridLines = this.props.gridLines,
@@ -1239,8 +1241,8 @@ class AmLineChart extends React.PureComponent {
 		  XAxis = chart.xAxes.push(new am4charts.ValueAxis());
 		}
 		XAxis.strictMinMax = true;
-		XAxis.min = this.props.minX;
-		XAxis.max = this.props.maxX;
+		XAxis.min = minX;
+		XAxis.max = maxX;
 		XAxis.renderer.grid.template.location = 0;
 		if(xAxis && xAxis.title && xAxis.title.text !== ""){
   		XAxis.title.text = xAxis.title.text || xValue;
@@ -1655,10 +1657,13 @@ class AmScatterChart extends React.PureComponent {
       trendData0 = this.props.trendData,
       trendStyles = this.props.trendStyle,
       trendJS = this.props.trendJS,
+      ribbonStyles = this.props.ribbonStyle,
       yValueNames = this.props.yValueNames,
+      isDate = this.props.isDate,
+      minX = isDate ? utils.toDate(this.props.minX).getTime() : this.props.minX,
+      maxX = isDate ? utils.toDate(this.props.maxX).getTime() : this.props.maxX,
       minY = this.props.minY,
       maxY = this.props.maxY,
-      isDate = this.props.isDate,
       xAxis = this.props.xAxis,
       yAxis = this.props.yAxis,
       tooltips = this.props.tooltip,
@@ -1669,6 +1674,7 @@ class AmScatterChart extends React.PureComponent {
       cursor = this.props.cursor,
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
+
 
     if(isDate) {
       data[xValue] = data[xValue].map(utils.toDate);
@@ -1870,8 +1876,8 @@ class AmScatterChart extends React.PureComponent {
 		  XAxis = chart.xAxes.push(new am4charts.ValueAxis());
 		}
 		XAxis.strictMinMax = true;
-		XAxis.min = this.props.minX;
-		XAxis.max = this.props.maxX;
+		XAxis.min = minX;
+		XAxis.max = maxX;
 		XAxis.renderer.grid.template.location = 0;
 		if(xAxis && xAxis.title && xAxis.title.text !== ""){
   		XAxis.title.text = xAxis.title.text || xValue;
@@ -2214,6 +2220,27 @@ class AmScatterChart extends React.PureComponent {
           trend.strokeDasharray = trendStyle.dash;
         trend.tensionX = trendStyle.tensionX || 0.8;
         trend.tensionY = trendStyle.tensionY || 0.8;
+        /* ~~~~\ ribbon /~~~~ */
+        if(trendData[value][0].hasOwnProperty("lwr")) {
+          let ribbon = chart.series.push(new am4charts.LineSeries());
+          ribbon.hiddenInLegend = true;
+          ribbon.data = trendData[value];
+          if(isDate){
+            ribbon.dataFields.dateX = "x";
+          } else {
+            ribbon.dataFields.valueX = "x";
+          }
+          ribbon.dataFields.valueY = "lwr";
+          ribbon.dataFields.openValueY = "upr";
+          ribbon.sequencedInterpolation = true;
+          ribbon.defaultState.interpolationDuration = 1500;
+          let ribbonStyle = ribbonStyles[value];
+          ribbon.fill = ribbonStyle.color || trend.stroke.lighten(0.4);
+          ribbon.fillOpacity = ribbonStyle.opacity || 0.3;
+          ribbon.strokeWidth = 0;
+          ribbon.tensionX = ribbonStyle.tensionX || 0.8;
+          ribbon.tensionY = ribbonStyle.tensionY || 0.8;
+        }
       }
 
     }); /* end of forEach */
@@ -2276,8 +2303,8 @@ class AmRangeAreaChart extends React.PureComponent {
         ) : null,
       yValueNames = this.props.yValueNames,
       isDate = this.props.isDate,
-      minX = isDate ? utils.toDate(this.props.minX) : this.props.minX,
-      maxX = isDate ? utils.toDate(this.props.maxX) : this.props.maxX,
+      minX = isDate ? utils.toDate(this.props.minX).getTime() : this.props.minX,
+      maxX = isDate ? utils.toDate(this.props.maxX).getTime() : this.props.maxX,
       minY = this.props.minY,
       maxY = this.props.maxY,
       xAxis = this.props.xAxis,
