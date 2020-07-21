@@ -122548,10 +122548,15 @@ class AmRangeAreaChart extends React.PureComponent {
     var allSeries = chart.series.values;
     /* ~~~~\  title  /~~~~ */
 
-    var chartTitle = this.props.chartTitle;
+    var chartTitle = this.props.chartTitle; //let container;
 
     if (chartTitle) {
-      var title = chart.plotContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Label"]);
+      var title = chart.plotContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Label"]); //container = chart.plotContainer.createChild(am4core.Container);
+      //container.y = this.props.scrollbarX ? -56 : -42;
+      //container.x = -45;
+      //container.horizontalCenter = "left";
+      //let title = container.createChild(am4core.Label);
+
       title.text = chartTitle.text;
       title.fill = chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
       title.fontSize = chartTitle.fontSize || 22;
@@ -122580,13 +122585,46 @@ class AmRangeAreaChart extends React.PureComponent {
     var img = this.props.image;
 
     if (img) {
-      var image = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Image"]);
+      //let image = chart.chartContainer.createChild(am4core.Image);
+      //let image = container.createChild(am4core.Image);
+      var image = chart.topParent.children.getIndex(1).createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Image"]); // same as: chart.logo.parent.createChild(am4core.Image);
+
+      image.layout = "absolute";
       image.width = img.width || 60;
       image.height = img.height || 60;
-      image.verticalCenter = "top";
-      image.horizontalCenter = "left";
-      image.align = img.align || "right";
-      image.href = img.base64;
+      img.position = img.position || "bottomleft";
+
+      switch (img.position) {
+        case "bottomleft":
+          chart.logo.dispose();
+          image.x = 0;
+          image.y = chart.pixelHeight - image.height;
+          break;
+
+        case "bottomright":
+          image.x = chart.pixelWidth - image.width;
+          image.y = chart.pixelHeight - image.height;
+          break;
+
+        case "topleft":
+          image.x = 0;
+          image.y = 0;
+          break;
+
+        case "topright":
+          image.x = chart.pixelWidth - image.width;
+          image.y = 0;
+          break;
+      }
+
+      image.dx = img.hjust || 0;
+      image.dy = img.vjust || 0; //      image.verticalCenter = "top";
+      //      image.horizontalCenter = "left";
+      //      image.align = img.align || "right";
+
+      image.href = img.base64; //      image.dx = image.width;
+
+      console.log("image", image);
     }
     /* ~~~~\  scrollbars  /~~~~ */
 
@@ -122647,6 +122685,12 @@ class AmRangeAreaChart extends React.PureComponent {
       XAxis = chart.xAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["DateAxis"]());
     } else {
       XAxis = chart.xAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]());
+    }
+
+    console.log("XAxis", XAxis);
+
+    if (xAxis) {
+      XAxis.paddingBottom = xAxis.vjust || 0;
     }
 
     XAxis.strictMinMax = true;

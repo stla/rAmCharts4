@@ -9,9 +9,11 @@
 \usage{
 amTriangle(
   color = NULL,
+  opacity = 1,
   width = 10,
   height = 10,
   strokeColor = NULL,
+  strokeOpacity = 1,
   strokeWidth = 2,
   direction = "top",
   rotation = 0
@@ -28,9 +30,11 @@ amCircle(
 
 amRectangle(
   color = NULL,
+  opacity = 1,
   width = 10,
   height = 10,
   strokeColor = NULL,
+  strokeOpacity = 1,
   strokeWidth = 2,
   rotation = 0,
   cornerRadius = 3
@@ -39,11 +43,15 @@ amRectangle(
 \arguments{
 \item{color}{bullet color}
 
+\item{opacity}{bullet opacity, a number between 0 and 1}
+
 \item{width}{bullet width}
 
 \item{height}{bullet height}
 
 \item{strokeColor}{stroke color of the bullet}
+
+\item{strokeOpacity}{stroke opacity of the bullet, a number between 0 and 1}
 
 \item{strokeWidth}{stroke width of the bullet}
 
@@ -51,11 +59,7 @@ amRectangle(
 
 \item{rotation}{rotation angle}
 
-\item{opacity}{bullet opacity, a number between 0 and 1}
-
 \item{radius}{circle radius}
-
-\item{strokeOpacity}{stroke opacity of the bullet, a number between 0 and 1}
 
 \item{cornerRadius}{radius of the rectangle corners}
 }

@@ -20,9 +20,11 @@
 #' @name rAmCharts4-shapes
 amTriangle <- function(
   color = NULL,
+  opacity = 1,
   width = 10,
   height = 10,
   strokeColor = NULL,
+  strokeOpacity = 1,
   strokeWidth = 2,
   direction = "top",
   rotation = 0
@@ -30,9 +32,11 @@ amTriangle <- function(
   bullet <- list(
     shape = "triangle",
     color = validateColor(color),
+    opacity = opacity,
     width = width,
     height = height,
     strokeColor = validateColor(strokeColor),
+    strokeOpacity = strokeOpacity,
     strokeWidth = strokeWidth,
     direction = match.arg(direction, c("top", "bottom", "left", "right")),
     rotation = rotation
@@ -68,9 +72,11 @@ amCircle <- function(
 #' @export
 amRectangle <- function(
   color = NULL,
+  opacity = 1,
   width = 10,
   height = 10,
   strokeColor = NULL,
+  strokeOpacity = 1,
   strokeWidth = 2,
   rotation = 0,
   cornerRadius = 3
@@ -78,9 +84,11 @@ amRectangle <- function(
   bullet <- list(
     shape = "rectangle",
     color = validateColor(color),
+    opacity = opacity,
     width = width,
     height = height,
     strokeColor = validateColor(strokeColor),
+    strokeOpacity = strokeOpacity,
     strokeWidth = strokeWidth,
     rotation = rotation,
     cornerRadius = cornerRadius

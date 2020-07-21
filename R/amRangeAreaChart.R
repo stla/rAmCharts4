@@ -28,14 +28,14 @@
 #'   y-axis used to expand this range
 #' @param valueFormatter a number formatter for XXXX; see
 #' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}
-#' @param trend option to request trend lines and to set their settings;
+#' @param trend XXXX ???? option to request trend lines and to set their settings;
 #'   \code{FALSE} for no trend line, otherwise a named list of the form
 #'   \code{list(yvalue1 = trend1, yvalue2 = trend2, ...)} where
 #'   \code{trend1}, \code{trend2}, ... are lists with the following fields:
 #'   \describe{
 #'     \item{\code{method}}{
-#'       the modelling method, can be \code{"lm"}, \code{"lm.js"}, \code{nls},
-#'       \code{nlsLM}, or \code{"loess"}; \code{"lm.js"} performs a polynomial
+#'       the modelling method, can be \code{"lm"}, \code{"lm.js"}, \code{"nls"},
+#'       \code{"nlsLM"}, or \code{"loess"}; \code{"lm.js"} performs a polynomial
 #'       regression in JavaScript, its advantage is that the fitted regression
 #'       line is updated when the points of the line are dragged
 #'     }
@@ -102,7 +102,7 @@
 #'   between 0 and 1
 #' @param backgroundColor a color for the chart background
 #' @param xAxis settings of the x-axis given as a list, or just a string
-#' for the axis title
+#' for the axis title XXXX
 #' @param yAxis settings of the y-axis given as a list, or just a string
 #' for the axis title
 #' @param scrollbarX logical, whether to add a scrollbar for the category axis
@@ -110,12 +110,15 @@
 #' @param gridLines settings of the grid lines
 #' @param legend logical, whether to display the legend
 #' @param caption settings of the caption, or \code{NULL} for no caption
-#' @param image option to include an image below the chart; \code{NULL} or
-#'   \code{FALSE} for no image, otherwise a named list with four fields:
-#'   \code{base64}, a base64 string representing the image (you can create it
-#'   from a file with \code{base64enc::dataURI}),
-#'   \code{width} and \code{height} for the image dimensions,
-#'   \code{align} for the position, can be \code{"left"} or \code{"right"}
+#' @param image option to include an image in the chart; \code{NULL} or
+#'   \code{FALSE} for no image, otherwise a named list with six possible fields:
+#'   the fiels \code{base64} (required) is a base64 string representing the
+#'   image (you can create it from a file with \code{base64enc::dataURI}),
+#'   the fields \code{width} and \code{height} define the image dimensions,
+#'   the field \code{position} can be \code{"topleft"}, \code{"topright"},
+#'   \code{"bottomleft"} or \code{"bottomright"}, the field \code{hjust}
+#'   defines the horizontal adjustment, and the field \code{vjust} defines
+#'   the vertical adjustment
 #' @param button \code{NULL} for the default, \code{FALSE} for no button,
 #' a single character string giving the button label,
 #' or settings of the button given as
@@ -168,7 +171,7 @@
 #'     file = "https://www.r-project.org/logo/Rlogo.svg",
 #'     mime = "image/svg+xml"
 #'  )
-#'  list(base64 = b64, width = 50, height = 50)
+#'  list(base64 = b64, width = 40, height = 40, position = "bottomleft", hjust = 2)
 #' }, error = function(e){
 #'   NULL
 #' })
@@ -240,7 +243,8 @@
 #'                             fontSize = 20,
 #'                             color = "silver"),
 #'                labels = list(color = "whitesmoke",
-#'                              fontSize = 17)),
+#'                              fontSize = 17),
+#'                vjust = 5),
 #'   yAxis = list(title = list(text = "Value",
 #'                             fontSize = 20,
 #'                             color = "silver"),
