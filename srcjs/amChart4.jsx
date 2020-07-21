@@ -1022,16 +1022,9 @@ class AmLineChart extends React.PureComponent {
           utils.subset(this.props.data2, [xValue].concat(yValues))
         ) : null,
       trendData0 = this.props.trendData,
-      trendData = trendData0 ?
-        Object.assign({}, ...Object.keys(trendData0)
-          .map(k => ({[k]: HTMLWidgets.dataframeToD3(trendData0[k])}))
-        ) : null,
-/*      trendDataCopy = trendData ?
-        Object.assign({}, ...Object.keys(trendData)
-          .map(k => ({[k]: trendData[k].map(row => ({...row}))}))
-        ) : null,                                                 */
       trendStyles = this.props.trendStyle,
       trendJS = this.props.trendJS,
+      ribbonStyles = this.props.ribbonStyle,
       yValueNames = this.props.yValueNames,
       isDate = this.props.isDate,
       minX = isDate ? utils.toDate(this.props.minX).getTime() : this.props.minX,
@@ -1053,9 +1046,18 @@ class AmLineChart extends React.PureComponent {
 
     if(isDate) {
       data[xValue] = data[xValue].map(utils.toDate);
+      if(trendData0) {
+        for(let key in trendData0) {
+          trendData0[key].x = trendData0[key].x.map(utils.toDate);
+        }
+      }
     }
     data = HTMLWidgets.dataframeToD3(data);
     let dataCopy = data.map(row => ({...row}));
+    let trendData = trendData0 ?
+      Object.assign({}, ...Object.keys(trendData0)
+        .map(k => ({[k]: HTMLWidgets.dataframeToD3(trendData0[k])}))
+      ) : null;
 
     if(window.Shiny) {
       if(shinyId === undefined){
@@ -1242,21 +1244,24 @@ class AmLineChart extends React.PureComponent {
 		} else {
 		  XAxis = chart.xAxes.push(new am4charts.ValueAxis());
 		}
+		if(xAxis) {
+      XAxis.paddingBottom = xAxis.vjust || 0;
+		}
 		XAxis.strictMinMax = true;
 		XAxis.min = minX;
 		XAxis.max = maxX;
 		XAxis.renderer.grid.template.location = 0;
-		if(xAxis && xAxis.title && xAxis.title.text !== ""){
+		if(xAxis && xAxis.title && xAxis.title.text !== "") {
   		XAxis.title.text = xAxis.title.text || xValue;
   		XAxis.title.fontWeight = "bold";
   		XAxis.title.fontSize = xAxis.title.fontSize || 20;
   		XAxis.title.fill =
   		  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
 		}
-		var xAxisLabels = XAxis.renderer.labels.template;
+		let xAxisLabels = XAxis.renderer.labels.template;
 		xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
 		xAxisLabels.rotation = xAxis.labels.rotation || 0;
-		if(xAxisLabels.rotation !== 0){
+		if(xAxisLabels.rotation !== 0) {
 		  xAxisLabels.horizontalCenter = "right";
 		}
 		xAxisLabels.fill =
@@ -1589,12 +1594,16 @@ class AmLineChart extends React.PureComponent {
 
       /* ~~~~\ trend line /~~~~ */
       if(trendData && trendData[value]) {
-      console.log("trendData[value]", trendData[value]);
         let trend = chart.series.push(new am4charts.LineSeries());
+        trend.zIndex = 10000;
         trend.name = yValueNames[value] + "_trend";
         trend.hiddenInLegend = true;
         trend.data = trendData[value];
-        trend.dataFields.valueX = "x";
+        if(isDate){
+          trend.dataFields.dateX = "x";
+        } else {
+          trend.dataFields.valueX = "x";
+        }
         trend.dataFields.valueY = "y";
         trend.sequencedInterpolation = true;
         trend.defaultState.interpolationDuration = 1500;
@@ -1606,6 +1615,27 @@ class AmLineChart extends React.PureComponent {
           trend.strokeDasharray = trendStyle.dash;
         trend.tensionX = trendStyle.tensionX || 0.8;
         trend.tensionY = trendStyle.tensionY || 0.8;
+        /* ~~~~\ ribbon /~~~~ */
+        if(trendData[value][0].hasOwnProperty("lwr")) {
+          let ribbon = chart.series.push(new am4charts.LineSeries());
+          ribbon.hiddenInLegend = true;
+          ribbon.data = trendData[value];
+          if(isDate){
+            ribbon.dataFields.dateX = "x";
+          } else {
+            ribbon.dataFields.valueX = "x";
+          }
+          ribbon.dataFields.valueY = "lwr";
+          ribbon.dataFields.openValueY = "upr";
+          ribbon.sequencedInterpolation = true;
+          ribbon.defaultState.interpolationDuration = 1500;
+          let ribbonStyle = ribbonStyles[value];
+          ribbon.fill = ribbonStyle.color || trend.stroke.lighten(0.4);
+          ribbon.fillOpacity = ribbonStyle.opacity || 0.3;
+          ribbon.strokeWidth = 0;
+          ribbon.tensionX = ribbonStyle.tensionX || 0.8;
+          ribbon.tensionY = ribbonStyle.tensionY || 0.8;
+        }
       }
 
     }); /* end of forEach */
@@ -2533,7 +2563,6 @@ class AmRangeAreaChart extends React.PureComponent {
 		} else {
 		  XAxis = chart.xAxes.push(new am4charts.ValueAxis());
 		}
-		console.log("XAxis", XAxis);
 		if(xAxis) {
       XAxis.paddingBottom = xAxis.vjust || 0;
 		}

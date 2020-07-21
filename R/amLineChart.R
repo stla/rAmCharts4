@@ -33,8 +33,8 @@
 #'   \code{trend1}, \code{trend2}, ... are lists with the following fields:
 #'   \describe{
 #'     \item{\code{method}}{
-#'       the modelling method, can be \code{"lm"}, \code{"lm.js"}, \code{nls},
-#'       \code{nlsLM}, or \code{"loess"}; \code{"lm.js"} performs a polynomial
+#'       the modelling method, can be \code{"lm"}, \code{"lm.js"}, \code{"nls"},
+#'       \code{"nlsLM"}, or \code{"loess"}; \code{"lm.js"} performs a polynomial
 #'       regression in JavaScript, its advantage is that the fitted regression
 #'       line is updated when the points of the line are dragged
 #'     }
@@ -44,6 +44,15 @@
 #'       lefthandside of this formula must always be \code{y}, and its
 #'       righthandside must be a symbolic expression depending on \code{x} only,
 #'       e.g. \code{y ~ x}, \code{y ~ x + I(x^2)}, \code{y ~ poly(x,2)}
+#'     }
+#'     \item{\code{interval}}{
+#'       effective for method \code{"lm"} only; a list with five possible fields:
+#'       \code{type} can be \code{"confidence"} or \code{"prediction"},
+#'       \code{level} is the confidence or prediction level (number between 0
+#'       and 1), \code{color} is the color of the shaded area, \code{opacity}
+#'       is the opacity of the shaded area (number between 0 and 1),
+#'       \code{tensionX} and \code{tensionY} to control the smoothing
+#'       (see \code{\link{amLine}})
 #'     }
 #'     \item{\code{order}}{
 #'       the order of the polynomial regression when \code{method = "lm.js"}
@@ -315,12 +324,24 @@ amLineChart <- function(
     stop("Invalid `yValues` argument.", call. = TRUE)
   }
 
-  if(lubridate::is.Date(data[[xValue]]) || lubridate::is.POSIXt(data[[xValue]])){
-    data[[xValue]] <- format(data[[xValue]], "%Y-%m-%d")
+  data_x <- data[[xValue]]
+  if(lubridate::is.Date(data_x) || lubridate::is.POSIXt(data_x)){
+    if(is.null(xLimits))
+      xLimits <- format(range(pretty(data_x)), "%Y-%m-%d")
+    else
+      xLimits <- format(xLimits, "%Y-%m-%d")
+    data[[xValue]] <- format(data_x, "%Y-%m-%d")
     isDate <- TRUE
   }else{
     isDate <- FALSE
   }
+
+  if(is.null(xLimits)){
+    xLimits <- range(pretty(data[[xValue]]))
+    pad <- diff(xLimits) * expandX/100
+    xLimits <- xLimits + c(-pad, pad)
+  }
+  allY <- do.call(c, data[yValues])
 
   if(is.null(yValueNames)){
     yValueNames <- setNames(as.list(yValues), yValues)
@@ -353,21 +374,7 @@ amLineChart <- function(
     stop("Invalid `data2` argument.", call. = TRUE)
   }
 
-  if(is.null(xLimits)){
-    xLimits <- range(pretty(data[[xValue]]))
-    if(!isDate){
-      pad <- diff(xLimits) * expandX/100
-      xLimits <- xLimits + c(-pad, pad)
-    }
-  }
-
-  if(is.null(yLimits)){
-    yLimits <- range(pretty(do.call(c, data[yValues])))
-    pad <- diff(yLimits) * expandY/100
-    yLimits <- yLimits + c(-pad, pad)
-  }
-
-  if(!isDate && !isFALSE(trend)){
+  if(!isFALSE(trend)){
     if("_all" %in% names(trend)){
       trend <- setNames(rep(list(trend[["_all"]]), length(yValues)), yValues)
     }
@@ -375,14 +382,44 @@ amLineChart <- function(
     trendJS <- setNames(vector("list", length(trend)), names(trend))
     trendStyle <-
       sapply(trend, "[[", "style", USE.NAMES = TRUE, simplify = FALSE)
+    trendIntervals <-
+      sapply(trend, "[[", "interval", USE.NAMES = TRUE, simplify = FALSE)
+    ribbonStyle <- sapply(sapply(
+      trendIntervals,
+      function(y)
+        Filter(Negate(is.null), y[c("color","opacity","tensionX","tensionY")]),
+      USE.NAMES = TRUE, simplify = FALSE
+    ), function(y){
+      y$color <- rAmCharts4:::validateColor(y$color)
+      return(y)
+    }, USE.NAMES = TRUE, simplify = FALSE)
     for(yValue in names(trend)){
+      if(isDate){
+        if(trend[[yValue]][["method"]] != "lm"){
+          stop(
+            sprintf(
+              paste0(
+                "Error in trend calculation for \"%s\":  ",
+                "method \"%s\" does not handle dates."
+              ),
+              yValue, trend[[yValue]][["method"]]
+            ),
+            call. = TRUE
+          )
+        }else{
+        }
+      }
       trendJS[[yValue]] <-
         ifelse(
           trend[[yValue]][["method"]] == "lm.js",
           trend[[yValue]][["order"]],
           FALSE
         )
-      dat <- data.frame(x = data[[xValue]], y = data[[yValue]])
+      data_y <- data[[yValue]]
+      dat <- data.frame(
+        x = data_x[!is.na(data_y)],
+        y = na.omit(data_y)
+      )
       if(trend[[yValue]][["method"]] %in% c("loess", "nls", "nlsLM")){
         method.args <- if(is.null(trend[[yValue]][["method.args"]]))
           list()
@@ -395,6 +432,21 @@ amLineChart <- function(
               "y ~ poly(x, degree = %d, raw = TRUE)",
               trend[[yValue]][["order"]]
             )
+          )
+      }
+      if(trend[[yValue]][["method"]] != "loess"){
+        . <-
+          tryCatch(
+            model.frame(trend[[yValue]][["formula"]], data = dat),
+            error = function(e){
+              stop(
+                sprintf(
+                  "%s (in trend calculation for \"%s\").",
+                  e$message, yValue
+                ),
+                call. = TRUE
+              )
+            }
           )
       }
       fit <- switch(
@@ -422,12 +474,42 @@ amLineChart <- function(
         if(simpleRegression)
           range(X)
       else
-        seq(min(X), max(X), length.out = 100)
-      y <- predict(fit, newdata = data.frame(x = x))
-      trendData[[yValue]] <- data.frame(x = x, y = y)
+        unique(seq(min(X), max(X), length.out = 100)) # unique in case of dates
+      if(trend[[yValue]][["method"]] == "lm" &&
+         "interval" %in% names(trend[[yValue]])){
+        interval <- trend[[yValue]][["interval"]]
+        if(simpleRegression)
+          x <- unique(seq(min(X), max(X), length.out = 100))
+        #print(x)
+        predictions <- predict(
+          fit,
+          newdata = data.frame(x = x),
+          interval = interval[["type"]] %||% "confidence",
+          level = interval[["level"]] %||% 0.95
+        )
+        trendData[[yValue]] <- data.frame(
+          x = if(isDate) format(x, "%Y-%m-%d") else x,
+          y = predictions[,"fit"],
+          lwr = predictions[,"lwr"],
+          upr = predictions[,"upr"]
+        )
+        allY <- c(allY, predictions[, c("lwr","upr")])
+      }else{
+        y <- predict(fit, newdata = data.frame(x = x))
+        trendData[[yValue]] <- data.frame(
+          x = if(isDate) format(x, "%Y-%m-%d") else x,
+          y = y
+        )
+      }
     }
   }else{
-    trendData <- trendStyle <- trendJS <- NULL
+    trendData <- trendStyle <- trendJS <- ribbonStyle <- NULL
+  }
+
+  if(is.null(yLimits)){
+    yLimits <- range(pretty(allY))
+    pad <- diff(yLimits) * expandY/100
+    yLimits <- yLimits + c(-pad, pad)
   }
 
   if(is.character(chartTitle)){
@@ -808,6 +890,7 @@ amLineChart <- function(
       trendData = trendData,
       trendStyle = trendStyle,
       trendJS = trendJS,
+      ribbonStyle = ribbonStyle,
       xValue = xValue,
       isDate = isDate,
       yValues = as.list(yValues),

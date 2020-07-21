@@ -83,8 +83,8 @@ y-axis used to expand this range}
 \code{trend1}, \code{trend2}, ... are lists with the following fields:
 \describe{
   \item{\code{method}}{
-    the modelling method, can be \code{"lm"}, \code{"lm.js"}, \code{nls},
-    \code{nlsLM}, or \code{"loess"}; \code{"lm.js"} performs a polynomial
+    the modelling method, can be \code{"lm"}, \code{"lm.js"}, \code{"nls"},
+    \code{"nlsLM"}, or \code{"loess"}; \code{"lm.js"} performs a polynomial
     regression in JavaScript, its advantage is that the fitted regression
     line is updated when the points of the line are dragged
   }
@@ -94,6 +94,15 @@ y-axis used to expand this range}
     lefthandside of this formula must always be \code{y}, and its
     righthandside must be a symbolic expression depending on \code{x} only,
     e.g. \code{y ~ x}, \code{y ~ x + I(x^2)}, \code{y ~ poly(x,2)}
+  }
+  \item{\code{interval}}{
+    effective for method \code{"lm"} only; a list with five possible fields:
+    \code{type} can be \code{"confidence"} or \code{"prediction"},
+    \code{level} is the confidence or prediction level (number between 0
+    and 1), \code{color} is the color of the shaded area, \code{opacity}
+    is the opacity of the shaded area (number between 0 and 1),
+    \code{tensionX} and \code{tensionY} to control the smoothing
+    (see \code{\link{amLine}})
   }
   \item{\code{order}}{
     the order of the polynomial regression when \code{method = "lm.js"}

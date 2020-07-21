@@ -66,7 +66,7 @@ the left and the right limits of the x-axis; \code{NULL} for default values}
 \item{yLimits}{range of the y-axis, a vector of two values specifying
 the lower and the upper limits of the y-axis; \code{NULL} for default values}
 
-\item{valueFormatter}{a number formatter; see
+\item{valueFormatter}{a number formatter; see XXXX
 \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}}
 
 \item{trend}{option to request trend lines and to set their settings;
@@ -75,8 +75,8 @@ the lower and the upper limits of the y-axis; \code{NULL} for default values}
 \code{trend1}, \code{trend2}, ... are lists with the following fields:
 \describe{
   \item{\code{method}}{
-    the modelling method, can be \code{"lm"}, \code{"lm.js"}, \code{nls},
-    \code{nlsLM}, or \code{"loess"}; \code{"lm.js"} performs a polynomial
+    the modelling method, can be \code{"lm"}, \code{"lm.js"}, \code{"nls"},
+    \code{"nlsLM"}, or \code{"loess"}; \code{"lm.js"} performs a polynomial
     regression in JavaScript, its advantage is that the fitted regression
     line is updated when the points of the line are dragged
   }

@@ -181,42 +181,6 @@ given in \code{\link{amChart4Output}}}
 
 \item{elementId}{a HTML id for the container of the chart; ignored if the
 chart is displayed in Shiny, in which case the id is given by the Shiny id}
-
-\item{trend}{XXXX ???? option to request trend lines and to set their settings;
-\code{FALSE} for no trend line, otherwise a named list of the form
-\code{list(yvalue1 = trend1, yvalue2 = trend2, ...)} where
-\code{trend1}, \code{trend2}, ... are lists with the following fields:
-\describe{
-  \item{\code{method}}{
-    the modelling method, can be \code{"lm"}, \code{"lm.js"}, \code{"nls"},
-    \code{"nlsLM"}, or \code{"loess"}; \code{"lm.js"} performs a polynomial
-    regression in JavaScript, its advantage is that the fitted regression
-    line is updated when the points of the line are dragged
-  }
-  \item{\code{formula}}{
-    a formula passed on to the modelling function for methods \code{"lm"},
-    \code{"nls"} or \code{"nlsLM"}; the
-    lefthandside of this formula must always be \code{y}, and its
-    righthandside must be a symbolic expression depending on \code{x} only,
-    e.g. \code{y ~ x}, \code{y ~ x + I(x^2)}, \code{y ~ poly(x,2)}
-  }
-  \item{\code{order}}{
-    the order of the polynomial regression when \code{method = "lm.js"}
-  }
-  \item{\code{method.args}}{
-    a list of additional arguments passed on to the modelling function
-    defined by \code{method} for methods \code{"nls"}, \code{"nlsLM"} or
-    \code{"loess"}, e.g. \code{method.args = list(span = 0.3)} for
-    method \code{"loess"}
-  }
-  \item{\code{style}}{
-    a list of settings for the trend line created with \code{\link{amLine}}
-  }
-}
-it is also possible to request the same kind of trend lines for all series
-given by the \code{yValues} argument, by passing a list of the
-form \code{list("_all" = trendconfig)}, e.g.
-\code{list("_all" = list(method = "lm", formula = y ~ 0+x, style = amLine()))}}
 }
 \description{
 Create a HTML widget displaying a line chart.
