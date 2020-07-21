@@ -237,8 +237,9 @@ class AmBarChart extends React.PureComponent {
 		valueAxis.min = this.props.minValue;
 		valueAxis.max = this.props.maxValue;
 		valueAxis.renderer.minWidth = 60;
-    if(cursor && cursor.tooltip) {
-      valueAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+    if(cursor) {
+      if(cursor.tooltip)
+        valueAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
     } else {
       valueAxis.cursorTooltipEnabled = false;
     }
@@ -718,8 +719,9 @@ class AmHorizontalBarChart extends React.PureComponent {
 		valueAxis.min = minValue;
 		valueAxis.max = maxValue;
 		valueAxis.renderer.minWidth = 60;
-    if(cursor && cursor.tooltip) {
-      valueAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+    if(cursor) {
+      if(cursor.tooltip)
+        valueAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
     } else {
       valueAxis.cursorTooltipEnabled = false;
     }
@@ -1267,10 +1269,11 @@ class AmLineChart extends React.PureComponent {
 		XAxis.renderer.grid.template.disabled = true;
 		XAxis.renderer.minGridDistance = 50;
 		XAxis.numberFormatter.numberFormat = valueFormatter;
-    if(cursor && cursor.tooltip &&
+    if(cursor &&
       (cursor === true || !cursor.axes || ["x","xy"].indexOf(cursor.axes)) > -1)
     {
-      XAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+      if(cursor.tooltip)
+        XAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
     } else {
       XAxis.cursorTooltipEnabled = false;
     }
@@ -1302,10 +1305,11 @@ class AmLineChart extends React.PureComponent {
 		YAxis.min = minY;
 		YAxis.max = maxY;
 		YAxis.renderer.minWidth = 60;
-    if(cursor && cursor.tooltip &&
+    if(cursor &&
       (cursor === true || !cursor.axes || ["y","xy"].indexOf(cursor.axes)) > -1)
     {
-      YAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+      if(cursor.tooltip)
+        YAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
     } else {
       YAxis.cursorTooltipEnabled = false;
     }
@@ -1902,10 +1906,11 @@ class AmScatterChart extends React.PureComponent {
 		XAxis.renderer.grid.template.disabled = true;
 		XAxis.renderer.minGridDistance = 50;
 		XAxis.numberFormatter.numberFormat = valueFormatter;
-    if(cursor && cursor.tooltip &&
+    if(cursor &&
       (cursor === true || !cursor.axes || ["x","xy"].indexOf(cursor.axes)) > -1)
     {
-      XAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+      if(cursor.tooltip)
+        XAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
     } else {
       XAxis.cursorTooltipEnabled = false;
     }
@@ -1933,10 +1938,11 @@ class AmScatterChart extends React.PureComponent {
 		YAxis.min = minY;
 		YAxis.max = maxY;
 		YAxis.renderer.minWidth = 60;
-    if(cursor && cursor.tooltip &&
+    if(cursor &&
       (cursor === true || !cursor.axes || ["y","xy"].indexOf(cursor.axes)) > -1)
     {
-      YAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+      if(cursor.tooltip)
+        YAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
     } else {
       YAxis.cursorTooltipEnabled = false;
     }
@@ -2516,10 +2522,11 @@ class AmRangeAreaChart extends React.PureComponent {
 		XAxis.renderer.grid.template.disabled = true;
 		XAxis.renderer.minGridDistance = 50;
 		XAxis.numberFormatter.numberFormat = valueFormatter;
-    if(cursor && cursor.tooltip &&
+    if(cursor &&
       (cursor === true || !cursor.axes || ["x","xy"].indexOf(cursor.axes)) > -1)
     {
-      XAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+      if(cursor.tooltip)
+        XAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
     } else {
 //      XAxis.tooltip.disabled = true;
       XAxis.cursorTooltipEnabled = false;
@@ -2553,10 +2560,11 @@ class AmRangeAreaChart extends React.PureComponent {
 		YAxis.min = minY;
 		YAxis.max = maxY;
 		YAxis.renderer.minWidth = 60;
-    if(cursor && cursor.tooltip &&
+    if(cursor &&
       (cursor === true || !cursor.axes || ["y","xy"].indexOf(cursor.axes)) > -1)
     {
-      YAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+      if(cursor.tooltip)
+        YAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
     } else {
 //      YAxis.tooltip.disabled = true;
       YAxis.cursorTooltipEnabled = false;
