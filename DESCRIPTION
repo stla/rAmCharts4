@@ -21,7 +21,8 @@ Imports:
     lubridate,
     minpack.lm,
     tools,
-    base64enc
+    base64enc,
+    xml2
 Suggests:
     reshape2
 RoxygenNote: 7.0.2

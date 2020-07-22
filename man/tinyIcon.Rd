@@ -6,7 +6,7 @@
 \alias{shinyAppTinyIcons}
 \title{Icons}
 \usage{
-tinyIcon(icon)
+tinyIcon(icon, backgroundColor = NULL)
 
 tinyIcons()
 
@@ -16,6 +16,9 @@ shinyAppTinyIcons()
 \item{icon}{name of an icon; \code{tinyIcons()} returns the list of
 available icons, and \code{shinyAppTinyIcons()} runs a Shiny app which
 displays the available icons}
+
+\item{backgroundColor}{background color of the icon
+(possibly \code{"transparent"})}
 }
 \value{
 A base64 string that can be used in the \code{href} argument of

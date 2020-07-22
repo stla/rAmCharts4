@@ -120652,6 +120652,7 @@ class AmHorizontalBarChart extends React.PureComponent {
         valueFormatter = this.props.valueFormatter,
         columnStyles = this.props.columnStyle,
         bulletsStyle = this.props.bullets,
+        alwaysShowBullets = this.props.alwaysShowBullets,
         chartId = this.props.chartId,
         shinyId = this.props.shinyId;
 
@@ -120949,18 +120950,15 @@ class AmHorizontalBarChart extends React.PureComponent {
       var bullet;
       var columnStyle = columnStyles[value];
 
-      if (draggable[value]) {
+      if (alwaysShowBullets || draggable[value]) {
         bullet = series.bullets.create();
-        bullet.opacity = 0; // initially invisible
 
-        bullet.defaultState.properties.opacity = 0; // resize cursor when over
+        if (!alwaysShowBullets) {
+          bullet.opacity = 0; // initially invisible
 
-        bullet.cursorOverStyle = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["MouseCursorStyle"].horizontalResize;
-        bullet.draggable = true; // create bullet hover state
+          bullet.defaultState.properties.opacity = 0;
+        } // add sprite to bullet
 
-        var hoverState = bullet.states.create("hover");
-        hoverState.properties.opacity = 1; // visible when hovered
-        // add sprite to bullet
 
         var shapeConfig = bulletsStyle[value];
 
@@ -120972,7 +120970,17 @@ class AmHorizontalBarChart extends React.PureComponent {
           shapeConfig.strokeColor = columnStyle.strokeColor;
         }
 
-        var shape = _utils__WEBPACK_IMPORTED_MODULE_13__["Shape"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, bullet, shapeConfig); // while dragging
+        var shape = _utils__WEBPACK_IMPORTED_MODULE_13__["Shape"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, bullet, shapeConfig);
+      }
+
+      if (draggable[value]) {
+        // resize cursor when over
+        bullet.cursorOverStyle = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["MouseCursorStyle"].horizontalResize;
+        bullet.draggable = true; // create bullet hover state
+
+        var hoverState = bullet.states.create("hover");
+        hoverState.properties.opacity = 1; // visible when hovered
+        // while dragging
 
         bullet.events.on("drag", event => {
           handleDrag(event);

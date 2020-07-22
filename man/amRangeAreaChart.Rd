@@ -2,7 +2,7 @@
 % Please edit documentation in R/amRangeAreaChart.R
 \name{amRangeAreaChart}
 \alias{amRangeAreaChart}
-\title{Create a HTML widget displaying a line chart}
+\title{HTML widget displaying a range area chart}
 \usage{
 amRangeAreaChart(
   data,
@@ -182,7 +182,7 @@ given in \code{\link{amChart4Output}}}
 chart is displayed in Shiny, in which case the id is given by the Shiny id}
 }
 \description{
-Create a HTML widget displaying a line chart.
+Create a HTML widget displaying a range area chart.
 }
 \note{
 A color can be given by the name of a R color, the name of a CSS
@@ -200,19 +200,6 @@ dat <- data.frame(
   z1 = rnorm(20, x+5, sd = 1.5),
   z2 = rnorm(20, x+15, sd = 1.5)
 )
-
-image <- tryCatch({
-  b64 <- base64enc::dataURI(
-    file = "https://www.r-project.org/logo/Rlogo.svg",
-    mime = "image/svg+xml"
- )
- list(
-   image = amImage(href = b64, width = 40, height = 40),
-   position = "bottomleft", hjust = 2
- )
-}, error = function(e){
-  NULL
-})
 
 amRangeAreaChart(
   data = dat,
@@ -292,6 +279,12 @@ amRangeAreaChart(
   gridLines = list(color = "antiquewhite",
                    opacity = 0.4,
                    width = 1),
-  image = image,
+  image = list(
+    image = amImage(
+      href = tinyIcon("react", backgroundColor = "transparent"),
+      width = 40, height = 40
+    ),
+    position = "bottomleft", hjust = 2, vjust = -2
+  ),
   theme = "dark")
 }

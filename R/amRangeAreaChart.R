@@ -1,5 +1,5 @@
-#' Create a HTML widget displaying a line chart
-#' @description Create a HTML widget displaying a line chart.
+#' HTML widget displaying a range area chart
+#' @description Create a HTML widget displaying a range area chart.
 #'
 #' @param data a dataframe
 #' @param data2 \code{NULL} or a dataframe used to update the data with the
@@ -130,19 +130,6 @@
 #'   z2 = rnorm(20, x+15, sd = 1.5)
 #' )
 #'
-#' image <- tryCatch({
-#'   b64 <- base64enc::dataURI(
-#'     file = "https://www.r-project.org/logo/Rlogo.svg",
-#'     mime = "image/svg+xml"
-#'  )
-#'  list(
-#'    image = amImage(href = b64, width = 40, height = 40),
-#'    position = "bottomleft", hjust = 2
-#'  )
-#' }, error = function(e){
-#'   NULL
-#' })
-#'
 #' amRangeAreaChart(
 #'   data = dat,
 #'   width = "700px",
@@ -221,7 +208,13 @@
 #'   gridLines = list(color = "antiquewhite",
 #'                    opacity = 0.4,
 #'                    width = 1),
-#'   image = image,
+#'   image = list(
+#'     image = amImage(
+#'       href = tinyIcon("react", backgroundColor = "transparent"),
+#'       width = 40, height = 40
+#'     ),
+#'     position = "bottomleft", hjust = 2, vjust = -2
+#'   ),
 #'   theme = "dark")
 amRangeAreaChart <- function(
   data,
