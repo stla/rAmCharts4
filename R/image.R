@@ -5,7 +5,11 @@ NULL
 #' @description Create a list of settings for an image.
 #'
 #' @param href a link to an image file or a base64 string representing an
-#'   image (you can create such a string with \code{base64enc::dataURI})
+#'   image; you can get such a string with \code{\link{tinyIcon}}, or
+#'   you can create it from a file with \code{base64enc::dataURI}; this option
+#'   can also be a string of the form \code{"inData:DATAFIELD"} where
+#'   \code{DATAFIELD} is the name of a column of the data - this is useful to
+#'   have different images in the bullets
 #' @param width,height dimensions of the image
 #' @param opacity opacity of the image, a number between 0 and 1
 #'
@@ -21,7 +25,8 @@ amImage <- function(
     grepl("(\\.svg|\\.gif|\\.png|\\.bmp|\\.gif|\\.jpe?g|\\.tiff?)$", href,
           ignore.case = TRUE)
   isBASE64 <- grepl("^data:image", href)
-  if(!(isURL || isBASE64)){
+  inData <- grepl("^inData", href)
+  if(!(isURL || isBASE64 || inData)){
     stop("Invalid `href` value.", call. = TRUE)
   }
   image <- list(

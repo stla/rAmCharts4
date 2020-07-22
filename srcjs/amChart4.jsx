@@ -39,9 +39,11 @@ class AmBarChart extends React.PureComponent {
       category = this.props.category,
       values = this.props.values,
       data = HTMLWidgets.dataframeToD3(
+        this.props.data
+      ),
+      dataCopy = HTMLWidgets.dataframeToD3(
         utils.subset(this.props.data, [category].concat(values))
       ),
-      dataCopy = data.map(row => ({...row})),
       data2 = this.props.data2 ?
         HTMLWidgets.dataframeToD3(utils.subset(this.props.data2, values)) :
         null,
@@ -350,7 +352,7 @@ class AmBarChart extends React.PureComponent {
         bullet.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
         bullet.draggable = true;
         // create bullet hover state
-        var hoverState = bullet.states.create("hover");
+        let hoverState = bullet.states.create("hover");
         hoverState.properties.opacity = 1; // visible when hovered
         // while dragging
         bullet.events.on("drag", event => {
@@ -359,7 +361,7 @@ class AmBarChart extends React.PureComponent {
         // on dragging stop
         bullet.events.on("dragstop", event => {
           handleDrag(event);
-          var dataItem = event.target.dataItem;
+          let dataItem = event.target.dataItem;
           dataItem.column.isHover = false;
           event.target.isHover = false;
           dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
@@ -548,9 +550,11 @@ class AmHorizontalBarChart extends React.PureComponent {
       category = this.props.category,
       values = this.props.values,
       data = HTMLWidgets.dataframeToD3(
+        this.props.data
+      ),
+      dataCopy = HTMLWidgets.dataframeToD3(
         utils.subset(this.props.data, [category].concat(values))
       ),
-      dataCopy = data.map(row => ({...row})),
       data2 = this.props.data2 ?
         HTMLWidgets.dataframeToD3(utils.subset(this.props.data2, values)) :
         null,

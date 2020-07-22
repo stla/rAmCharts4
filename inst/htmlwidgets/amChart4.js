@@ -120101,8 +120101,8 @@ class AmBarChart extends React.PureComponent {
     var theme = this.props.theme,
         category = this.props.category,
         values = this.props.values,
-        data = HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [category].concat(values))),
-        dataCopy = data.map(row => _objectSpread({}, row)),
+        data = HTMLWidgets.dataframeToD3(this.props.data),
+        dataCopy = HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [category].concat(values))),
         data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, values)) : null,
         valueNames = this.props.valueNames,
         cellWidth = this.props.cellWidth,
@@ -120636,8 +120636,8 @@ class AmHorizontalBarChart extends React.PureComponent {
     var theme = this.props.theme,
         category = this.props.category,
         values = this.props.values,
-        data = HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [category].concat(values))),
-        dataCopy = data.map(row => _objectSpread({}, row)),
+        data = HTMLWidgets.dataframeToD3(this.props.data),
+        dataCopy = HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [category].concat(values))),
         data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, values)) : null,
         valueNames = this.props.valueNames,
         minValue = this.props.minValue,
@@ -123465,7 +123465,7 @@ var Shape = function Shape(am4core, chart, index, bullet, shapeConfig) {
   shape.fill = shapeConfig.color || chart.colors.getIndex(index);
   shape.fillOpacity = shapeConfig.opacity || 1;
   shape.strokeWidth = shapeConfig.strokeWidth;
-  shape.stroke = shapeConfig.strokeColor || am4core.color(shape.fill).lighten(-0.5);
+  shape.stroke = shapeConfig.strokeColor || chart.colors.getIndex(index).lighten(-0.5);
   shape.strokeOpacity = shapeConfig.strokeOpacity || 1;
 
   if (shapeConfig.image) {
@@ -123474,7 +123474,13 @@ var Shape = function Shape(am4core, chart, index, bullet, shapeConfig) {
     image.height = shapeConfig.image.height;
     image.horizontalCenter = "middle";
     image.verticalCenter = "middle";
-    image.href = shapeConfig.image.href;
+
+    if (shapeConfig.image.href.match(/^inData:/)) {
+      var href = shapeConfig.image.href.split(":")[1];
+      image.propertyFields.href = href;
+    } else {
+      image.href = shapeConfig.image.href;
+    }
   }
 
   return shape;

@@ -203,6 +203,48 @@ amBarChart(
   caption = list(text = "Year 2018", color = "red"),
   theme = "material")
 
+
+# bar chart with individual images in the bullets ####
+
+dat <- data.frame(
+  language = c("python", "julia", "java"),
+  users = c(10000, 2000, 5000),
+  href = c(
+    tinyIcon("python", "transparent"),
+    tinyIcon("julia", "transparent"),
+    tinyIcon("java", "transparent")
+  )
+)
+
+amBarChart(
+  data = dat,
+  width = "700px",
+  category = "language",
+  values = "users",
+  tooltip = amTooltip(
+    textColor = "white",
+    backgroundColor = "#101010",
+    borderColor = "silver"
+  ),
+  draggable = FALSE,
+  backgroundColor = "seashell",
+  bullets = amCircle(
+    radius = 30,
+    color = "white",
+    strokeWidth = 4,
+    image = amImage(
+      href = "inData:href",
+      width = 50, height = 50
+    )
+  ),
+  alwaysShowBullets = TRUE,
+  xAxis = list(title = list(text = "Programming language")),
+  yAxis = list(title = list(text = "# users")),
+  yLimits = c(0, 12000),
+  valueFormatter = "#",
+  theme = "material")
+
+
 # a grouped bar chart ####
 
 set.seed(666)

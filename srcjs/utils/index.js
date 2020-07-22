@@ -76,7 +76,7 @@ export const Shape = function(am4core, chart, index, bullet, shapeConfig) {
   shape.fillOpacity = shapeConfig.opacity || 1;
   shape.strokeWidth = shapeConfig.strokeWidth;
   shape.stroke = shapeConfig.strokeColor ||
-    am4core.color(shape.fill).lighten(-0.5);
+    chart.colors.getIndex(index).lighten(-0.5);
   shape.strokeOpacity = shapeConfig.strokeOpacity || 1;
   if(shapeConfig.image) {
     let image = bullet.createChild(am4core.Image);
@@ -84,7 +84,12 @@ export const Shape = function(am4core, chart, index, bullet, shapeConfig) {
     image.height = shapeConfig.image.height;
     image.horizontalCenter = "middle";
     image.verticalCenter = "middle";
-    image.href = shapeConfig.image.href;
+    if(shapeConfig.image.href.match(/^inData:/)) {
+      let href = shapeConfig.image.href.split(":")[1];
+      image.propertyFields.href = href;
+    } else {
+      image.href = shapeConfig.image.href;
+    }
   }
 
   return shape;

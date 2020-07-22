@@ -8,7 +8,11 @@ amImage(href, width, height, opacity = 1)
 }
 \arguments{
 \item{href}{a link to an image file or a base64 string representing an
-image (you can create such a string with \code{base64enc::dataURI})}
+image; you can get such a string with \code{\link{tinyIcon}}, or
+you can create it from a file with \code{base64enc::dataURI}; this option
+can also be a string of the form \code{"inData:DATAFIELD"} where
+\code{DATAFIELD} is the name of a column of the data - this is useful to
+have different images in the bullets}
 
 \item{width, height}{dimensions of the image}
 
