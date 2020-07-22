@@ -131,9 +131,9 @@ for the axis title XXXX}
 \item{yAxis}{settings of the y-axis given as a list, or just a string
 for the axis title}
 
-\item{scrollbarX}{logical, whether to add a scrollbar for the category axis}
+\item{scrollbarX}{logical, whether to add a scrollbar for the x-axis}
 
-\item{scrollbarY}{logical, whether to add a scrollbar for the value axis}
+\item{scrollbarY}{logical, whether to add a scrollbar for the y-axis}
 
 \item{gridLines}{settings of the grid lines}
 
@@ -142,10 +142,9 @@ for the axis title}
 \item{caption}{settings of the caption, or \code{NULL} for no caption}
 
 \item{image}{option to include an image in the chart; \code{NULL} or
-\code{FALSE} for no image, otherwise a named list with six possible fields:
-the field \code{base64} (required) is a base64 string representing the
-image (you can create it from a file with \code{base64enc::dataURI}),
-the fields \code{width} and \code{height} define the image dimensions,
+\code{FALSE} for no image, otherwise a named list with four possible
+fields: the field \code{image} (required) is a list created with
+\code{\link{amImage}},
 the field \code{position} can be \code{"topleft"}, \code{"topright"},
 \code{"bottomleft"} or \code{"bottomright"}, the field \code{hjust}
 defines the horizontal adjustment, and the field \code{vjust} defines
@@ -207,7 +206,10 @@ image <- tryCatch({
     file = "https://www.r-project.org/logo/Rlogo.svg",
     mime = "image/svg+xml"
  )
- list(base64 = b64, width = 40, height = 40, position = "bottomleft", hjust = 2)
+ list(
+   image = amImage(href = b64, width = 40, height = 40),
+   position = "bottomleft", hjust = 2
+ )
 }, error = function(e){
   NULL
 })

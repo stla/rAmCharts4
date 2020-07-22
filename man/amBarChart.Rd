@@ -19,6 +19,7 @@ amBarChart(
   tooltip = NULL,
   columnStyle = NULL,
   bullets = NULL,
+  alwaysShowBullets = FALSE,
   backgroundColor = NULL,
   cellWidth = NULL,
   columnWidth = NULL,
@@ -102,6 +103,9 @@ otherwise a named list of the form
 \code{\link{amCircle}}, \code{\link{amTriangle}} or
 \code{\link{amRectangle}}; this can also be a
 single list of settings that will be applied to each series}
+
+\item{alwaysShowBullets}{logical, whether to always show the bullets;
+if \code{FALSE}, the bullets are shown only on hovering a column}
 
 \item{backgroundColor}{a color for the chart background}
 

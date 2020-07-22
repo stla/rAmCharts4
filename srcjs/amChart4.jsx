@@ -56,6 +56,7 @@ class AmBarChart extends React.PureComponent {
       valueFormatter = this.props.valueFormatter,
       columnStyles = this.props.columnStyle,
       bulletsStyle = this.props.bullets,
+      alwaysShowBullets = this.props.alwaysShowBullets,
       cursor = this.props.cursor,
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
@@ -327,16 +328,12 @@ class AmBarChart extends React.PureComponent {
       /* ~~~~\  bullet  /~~~~ */
       let bullet;
       let columnStyle = columnStyles[value];
-      if(draggable[value]) {
+      if(alwaysShowBullets || draggable[value]) {
         bullet = series.bullets.create();
-        bullet.opacity = 0; // initially invisible
-        bullet.defaultState.properties.opacity = 0;
-        // resize cursor when over
-        bullet.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
-        bullet.draggable = true;
-        // create bullet hover state
-        var hoverState = bullet.states.create("hover");
-        hoverState.properties.opacity = 1; // visible when hovered
+        if(!alwaysShowBullets) {
+          bullet.opacity = 0; // initially invisible
+          bullet.defaultState.properties.opacity = 0;
+        }
         // add sprite to bullet
         let shapeConfig = bulletsStyle[value];
         if(!shapeConfig.color){
@@ -347,6 +344,14 @@ class AmBarChart extends React.PureComponent {
         }
         let shape =
           utils.Shape(am4core, chart, index, bullet, shapeConfig);
+      }
+      if(draggable[value]) {
+        // resize cursor when over
+        bullet.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
+        bullet.draggable = true;
+        // create bullet hover state
+        var hoverState = bullet.states.create("hover");
+        hoverState.properties.opacity = 1; // visible when hovered
         // while dragging
         bullet.events.on("drag", event => {
           handleDrag(event);
@@ -2551,14 +2556,18 @@ class AmRangeAreaChart extends React.PureComponent {
 
 
     /* ~~~~\  image  /~~~~ */
-    let img = this.props.image;
-    if(img) {
+    if(this.props.image) {
       //let image = chart.chartContainer.createChild(am4core.Image);
       //let image = container.createChild(am4core.Image);
+      let img = this.props.image.image;
+      img.position = this.props.image.position;
+      img.hjust = this.props.image.hjust;
+      img.vjust = this.props.image.vjust;
       let image = chart.topParent.children.getIndex(1).createChild(am4core.Image); // same as: chart.logo.parent.createChild(am4core.Image);
       image.layout = "absolute";
       image.width = img.width || 60;
       image.height = img.height || 60;
+      image.fillOpacity = img.opacity || 1;
       img.position = img.position || "bottomleft";
       switch(img.position) {
         case "bottomleft":
@@ -2584,7 +2593,7 @@ class AmRangeAreaChart extends React.PureComponent {
 //      image.verticalCenter = "top";
 //      image.horizontalCenter = "left";
 //      image.align = img.align || "right";
-      image.href = img.base64;
+      image.href = img.href;
 //      image.dx = image.width;
       console.log("image", image);
     }

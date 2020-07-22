@@ -6,6 +6,8 @@
 #' @param opacity bullet opacity, a number between 0 and 1
 #' @param width bullet width
 #' @param height bullet height
+#' @param image option to include an image in the bullet, a list created
+#'   with \code{\link{amImage}}
 #' @param radius circle radius
 #' @param strokeColor stroke color of the bullet
 #' @param strokeOpacity stroke opacity of the bullet, a number between 0 and 1
@@ -27,8 +29,12 @@ amTriangle <- function(
   strokeOpacity = 1,
   strokeWidth = 2,
   direction = "top",
-  rotation = 0
+  rotation = 0,
+  image = NULL
 ){
+  if(!is.null(image) && !"image" %in% class(image)){
+    stop("Invalid `image` argument.", call. = TRUE)
+  }
   bullet <- list(
     shape = "triangle",
     color = validateColor(color),
@@ -39,7 +45,8 @@ amTriangle <- function(
     strokeOpacity = strokeOpacity,
     strokeWidth = strokeWidth,
     direction = match.arg(direction, c("top", "bottom", "left", "right")),
-    rotation = rotation
+    rotation = rotation,
+    image = image
   )
   class(bullet) <- "bullet"
   bullet
@@ -53,8 +60,12 @@ amCircle <- function(
   radius = 6,
   strokeColor = NULL,
   strokeOpacity = 1,
-  strokeWidth = 2
+  strokeWidth = 2,
+  image = NULL
 ){
+  if(!is.null(image) && !"image" %in% class(image)){
+    stop("Invalid `image` argument.", call. = TRUE)
+  }
   bullet <- list(
     shape = "circle",
     color = validateColor(color),
@@ -62,7 +73,8 @@ amCircle <- function(
     radius = radius,
     strokeColor = validateColor(strokeColor),
     strokeOpacity = strokeOpacity,
-    strokeWidth = strokeWidth
+    strokeWidth = strokeWidth,
+    image = image
   )
   class(bullet) <- "bullet"
   bullet
@@ -79,8 +91,12 @@ amRectangle <- function(
   strokeOpacity = 1,
   strokeWidth = 2,
   rotation = 0,
-  cornerRadius = 3
+  cornerRadius = 3,
+  image = NULL
 ){
+  if(!is.null(image) && !"image" %in% class(image)){
+    stop("Invalid `image` argument.", call. = TRUE)
+  }
   bullet <- list(
     shape = "rectangle",
     color = validateColor(color),
@@ -91,7 +107,8 @@ amRectangle <- function(
     strokeOpacity = strokeOpacity,
     strokeWidth = strokeWidth,
     rotation = rotation,
-    cornerRadius = cornerRadius
+    cornerRadius = cornerRadius,
+    image = image
   )
   class(bullet) <- "bullet"
   bullet

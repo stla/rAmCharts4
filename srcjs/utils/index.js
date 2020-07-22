@@ -78,6 +78,14 @@ export const Shape = function(am4core, chart, index, bullet, shapeConfig) {
   shape.stroke = shapeConfig.strokeColor ||
     am4core.color(shape.fill).lighten(-0.5);
   shape.strokeOpacity = shapeConfig.strokeOpacity || 1;
+  if(shapeConfig.image) {
+    let image = bullet.createChild(am4core.Image);
+    image.width = shapeConfig.image.width;
+    image.height = shapeConfig.image.height;
+    image.horizontalCenter = "middle";
+    image.verticalCenter = "middle";
+    image.href = shapeConfig.image.href;
+  }
 
   return shape;
 };

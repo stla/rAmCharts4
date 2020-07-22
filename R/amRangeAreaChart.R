@@ -70,16 +70,15 @@
 #' for the axis title XXXX
 #' @param yAxis settings of the y-axis given as a list, or just a string
 #' for the axis title
-#' @param scrollbarX logical, whether to add a scrollbar for the category axis
-#' @param scrollbarY logical, whether to add a scrollbar for the value axis
+#' @param scrollbarX logical, whether to add a scrollbar for the x-axis
+#' @param scrollbarY logical, whether to add a scrollbar for the y-axis
 #' @param gridLines settings of the grid lines
 #' @param legend logical, whether to display the legend
 #' @param caption settings of the caption, or \code{NULL} for no caption
 #' @param image option to include an image in the chart; \code{NULL} or
-#'   \code{FALSE} for no image, otherwise a named list with six possible fields:
-#'   the field \code{base64} (required) is a base64 string representing the
-#'   image (you can create it from a file with \code{base64enc::dataURI}),
-#'   the fields \code{width} and \code{height} define the image dimensions,
+#'   \code{FALSE} for no image, otherwise a named list with four possible
+#'   fields: the field \code{image} (required) is a list created with
+#'   \code{\link{amImage}},
 #'   the field \code{position} can be \code{"topleft"}, \code{"topright"},
 #'   \code{"bottomleft"} or \code{"bottomright"}, the field \code{hjust}
 #'   defines the horizontal adjustment, and the field \code{vjust} defines
@@ -136,7 +135,10 @@
 #'     file = "https://www.r-project.org/logo/Rlogo.svg",
 #'     mime = "image/svg+xml"
 #'  )
-#'  list(base64 = b64, width = 40, height = 40, position = "bottomleft", hjust = 2)
+#'  list(
+#'    image = amImage(href = b64, width = 40, height = 40),
+#'    position = "bottomleft", hjust = 2
+#'  )
 #' }, error = function(e){
 #'   NULL
 #' })
@@ -523,11 +525,16 @@ amRangeAreaChart <- function(
   }
 
   if(!(is.null(image) || isFALSE(image))){
-    if(!is.list(image) ||
-       !"base64" %in% names(image) ||
-       !grepl("^data:image", image[["base64"]]))
-    {
-      stop("Invalid `image` argument.", call. = TRUE)
+    if(!is.list(image)){
+      if(!"image" %in% class(image)){
+        stop("Invalid `image` argument.", call. = TRUE)
+      }else{
+        image <- list(image = image)
+      }
+    }else{
+      if(!"image" %in% names(image) || !"image" %in% class(image[["image"]])){
+        stop("Invalid `image` argument.", call. = TRUE)
+      }
     }
   }
 

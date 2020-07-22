@@ -16,7 +16,8 @@ amTriangle(
   strokeOpacity = 1,
   strokeWidth = 2,
   direction = "top",
-  rotation = 0
+  rotation = 0,
+  image = NULL
 )
 
 amCircle(
@@ -25,7 +26,8 @@ amCircle(
   radius = 6,
   strokeColor = NULL,
   strokeOpacity = 1,
-  strokeWidth = 2
+  strokeWidth = 2,
+  image = NULL
 )
 
 amRectangle(
@@ -37,7 +39,8 @@ amRectangle(
   strokeOpacity = 1,
   strokeWidth = 2,
   rotation = 0,
-  cornerRadius = 3
+  cornerRadius = 3,
+  image = NULL
 )
 }
 \arguments{
@@ -58,6 +61,9 @@ amRectangle(
 \item{direction}{triangle direction}
 
 \item{rotation}{rotation angle}
+
+\item{image}{option to include an image in the bullet, a list created
+with \code{\link{amImage}}}
 
 \item{radius}{circle radius}
 

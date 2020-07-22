@@ -120115,6 +120115,7 @@ class AmBarChart extends React.PureComponent {
         valueFormatter = this.props.valueFormatter,
         columnStyles = this.props.columnStyle,
         bulletsStyle = this.props.bullets,
+        alwaysShowBullets = this.props.alwaysShowBullets,
         cursor = this.props.cursor,
         chartId = this.props.chartId,
         shinyId = this.props.shinyId;
@@ -120208,12 +120209,37 @@ class AmBarChart extends React.PureComponent {
     var img = this.props.image;
 
     if (img) {
-      var image = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Image"]);
+      var image = chart.topParent.children.getIndex(1).createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Image"]);
+      image.layout = "absolute";
       image.width = img.width || 60;
       image.height = img.height || 60;
-      image.verticalCenter = "top";
-      image.horizontalCenter = "left";
-      image.align = img.align || "right";
+      img.position = img.position || "bottomleft";
+
+      switch (img.position) {
+        case "bottomleft":
+          chart.logo.dispose();
+          image.x = 0;
+          image.y = chart.pixelHeight - image.height;
+          break;
+
+        case "bottomright":
+          image.x = chart.pixelWidth - image.width;
+          image.y = chart.pixelHeight - image.height;
+          break;
+
+        case "topleft":
+          image.x = 0;
+          image.y = 0;
+          break;
+
+        case "topright":
+          image.x = chart.pixelWidth - image.width;
+          image.y = 0;
+          break;
+      }
+
+      image.dx = img.hjust || 0;
+      image.dy = img.vjust || 0;
       image.href = img.base64;
     }
     /* ~~~~\  scrollbars  /~~~~ */
@@ -120378,18 +120404,15 @@ class AmBarChart extends React.PureComponent {
       var bullet;
       var columnStyle = columnStyles[value];
 
-      if (draggable[value]) {
+      if (alwaysShowBullets || draggable[value]) {
         bullet = series.bullets.create();
-        bullet.opacity = 0; // initially invisible
 
-        bullet.defaultState.properties.opacity = 0; // resize cursor when over
+        if (!alwaysShowBullets) {
+          bullet.opacity = 0; // initially invisible
 
-        bullet.cursorOverStyle = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["MouseCursorStyle"].verticalResize;
-        bullet.draggable = true; // create bullet hover state
+          bullet.defaultState.properties.opacity = 0;
+        } // add sprite to bullet
 
-        var hoverState = bullet.states.create("hover");
-        hoverState.properties.opacity = 1; // visible when hovered
-        // add sprite to bullet
 
         var shapeConfig = bulletsStyle[value];
 
@@ -120401,7 +120424,17 @@ class AmBarChart extends React.PureComponent {
           shapeConfig.strokeColor = columnStyle.strokeColor;
         }
 
-        var shape = _utils__WEBPACK_IMPORTED_MODULE_13__["Shape"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, bullet, shapeConfig); // while dragging
+        var shape = _utils__WEBPACK_IMPORTED_MODULE_13__["Shape"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, bullet, shapeConfig);
+      }
+
+      if (draggable[value]) {
+        // resize cursor when over
+        bullet.cursorOverStyle = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["MouseCursorStyle"].verticalResize;
+        bullet.draggable = true; // create bullet hover state
+
+        var hoverState = bullet.states.create("hover");
+        hoverState.properties.opacity = 1; // visible when hovered
+        // while dragging
 
         bullet.events.on("drag", event => {
           handleDrag(event);
@@ -120711,12 +120744,37 @@ class AmHorizontalBarChart extends React.PureComponent {
     var img = this.props.image;
 
     if (img) {
-      var image = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Image"]);
+      var image = chart.topParent.children.getIndex(1).createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Image"]);
+      image.layout = "absolute";
       image.width = img.width || 60;
       image.height = img.height || 60;
-      image.verticalCenter = "top";
-      image.horizontalCenter = "left";
-      image.align = img.align || "right";
+      img.position = img.position || "bottomleft";
+
+      switch (img.position) {
+        case "bottomleft":
+          chart.logo.dispose();
+          image.x = 0;
+          image.y = chart.pixelHeight - image.height;
+          break;
+
+        case "bottomright":
+          image.x = chart.pixelWidth - image.width;
+          image.y = chart.pixelHeight - image.height;
+          break;
+
+        case "topleft":
+          image.x = 0;
+          image.y = 0;
+          break;
+
+        case "topright":
+          image.x = chart.pixelWidth - image.width;
+          image.y = 0;
+          break;
+      }
+
+      image.dx = img.hjust || 0;
+      image.dy = img.vjust || 0;
       image.href = img.base64;
     }
     /* ~~~~\  scrollbars  /~~~~ */
@@ -121251,12 +121309,37 @@ class AmLineChart extends React.PureComponent {
     var img = this.props.image;
 
     if (img) {
-      var image = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Image"]);
+      var image = chart.topParent.children.getIndex(1).createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Image"]);
+      image.layout = "absolute";
       image.width = img.width || 60;
       image.height = img.height || 60;
-      image.verticalCenter = "top";
-      image.horizontalCenter = "left";
-      image.align = img.align || "right";
+      img.position = img.position || "bottomleft";
+
+      switch (img.position) {
+        case "bottomleft":
+          chart.logo.dispose();
+          image.x = 0;
+          image.y = chart.pixelHeight - image.height;
+          break;
+
+        case "bottomright":
+          image.x = chart.pixelWidth - image.width;
+          image.y = chart.pixelHeight - image.height;
+          break;
+
+        case "topleft":
+          image.x = 0;
+          image.y = 0;
+          break;
+
+        case "topright":
+          image.x = chart.pixelWidth - image.width;
+          image.y = 0;
+          break;
+      }
+
+      image.dx = img.hjust || 0;
+      image.dy = img.vjust || 0;
       image.href = img.base64;
     }
     /* ~~~~\  scrollbars  /~~~~ */
@@ -121945,12 +122028,37 @@ class AmScatterChart extends React.PureComponent {
     var img = this.props.image;
 
     if (img) {
-      var image = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Image"]);
+      var image = chart.topParent.children.getIndex(1).createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Image"]);
+      image.layout = "absolute";
       image.width = img.width || 60;
       image.height = img.height || 60;
-      image.verticalCenter = "top";
-      image.horizontalCenter = "left";
-      image.align = img.align || "right";
+      img.position = img.position || "bottomleft";
+
+      switch (img.position) {
+        case "bottomleft":
+          chart.logo.dispose();
+          image.x = 0;
+          image.y = chart.pixelHeight - image.height;
+          break;
+
+        case "bottomright":
+          image.x = chart.pixelWidth - image.width;
+          image.y = chart.pixelHeight - image.height;
+          break;
+
+        case "topleft":
+          image.x = 0;
+          image.y = 0;
+          break;
+
+        case "topright":
+          image.x = chart.pixelWidth - image.width;
+          image.y = 0;
+          break;
+      }
+
+      image.dx = img.hjust || 0;
+      image.dy = img.vjust || 0;
       image.href = img.base64;
     }
     /* ~~~~\  scrollbars  /~~~~ */
@@ -122618,16 +122726,19 @@ class AmRangeAreaChart extends React.PureComponent {
     /* ~~~~\  image  /~~~~ */
 
 
-    var img = this.props.image;
-
-    if (img) {
+    if (this.props.image) {
       //let image = chart.chartContainer.createChild(am4core.Image);
       //let image = container.createChild(am4core.Image);
+      var img = this.props.image.image;
+      img.position = this.props.image.position;
+      img.hjust = this.props.image.hjust;
+      img.vjust = this.props.image.vjust;
       var image = chart.topParent.children.getIndex(1).createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Image"]); // same as: chart.logo.parent.createChild(am4core.Image);
 
       image.layout = "absolute";
       image.width = img.width || 60;
       image.height = img.height || 60;
+      image.fillOpacity = img.opacity || 1;
       img.position = img.position || "bottomleft";
 
       switch (img.position) {
@@ -122658,7 +122769,7 @@ class AmRangeAreaChart extends React.PureComponent {
       //      image.horizontalCenter = "left";
       //      image.align = img.align || "right";
 
-      image.href = img.base64; //      image.dx = image.width;
+      image.href = img.href; //      image.dx = image.width;
 
       console.log("image", image);
     }
@@ -123348,6 +123459,16 @@ var Shape = function Shape(am4core, chart, index, bullet, shapeConfig) {
   shape.strokeWidth = shapeConfig.strokeWidth;
   shape.stroke = shapeConfig.strokeColor || am4core.color(shape.fill).lighten(-0.5);
   shape.strokeOpacity = shapeConfig.strokeOpacity || 1;
+
+  if (shapeConfig.image) {
+    var image = bullet.createChild(am4core.Image);
+    image.width = shapeConfig.image.width;
+    image.height = shapeConfig.image.height;
+    image.horizontalCenter = "middle";
+    image.verticalCenter = "middle";
+    image.href = shapeConfig.image.href;
+  }
+
   return shape;
 };
 

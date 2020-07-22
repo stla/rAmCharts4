@@ -51,6 +51,8 @@
 #'   \code{\link{amCircle}}, \code{\link{amTriangle}} or
 #'   \code{\link{amRectangle}}; this can also be a
 #'   single list of settings that will be applied to each series
+#' @param alwaysShowBullets logical, whether to always show the bullets;
+#'   if \code{FALSE}, the bullets are shown only on hovering a column
 #' @param backgroundColor a color for the chart background
 #' @param cellWidth cell width in percent; for a simple bar chart, this is the
 #' width of the columns; for a grouped bar chart, this is the width of the
@@ -188,6 +190,7 @@ amBarChart <- function(
   tooltip = NULL, # default
   columnStyle = NULL, # default
   bullets = NULL, #default
+  alwaysShowBullets = FALSE,
   backgroundColor = NULL,
   cellWidth = NULL, # default
   columnWidth = NULL, # default
@@ -568,6 +571,7 @@ amBarChart <- function(
       tooltip = tooltip,
       columnStyle = columnStyle,
       bullets = bullets,
+      alwaysShowBullets = alwaysShowBullets,
       backgroundColor = validateColor(backgroundColor),
       cellWidth = cellWidth,
       columnWidth = columnWidth,

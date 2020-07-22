@@ -19,7 +19,8 @@ Imports:
     jsonlite,
     stringi,
     lubridate,
-    minpack.lm
+    minpack.lm,
+    tools
 Suggests:
     reshape2,
     base64enc
