@@ -141,12 +141,33 @@ class AmBarChart extends React.PureComponent {
     /* ~~~~\  image  /~~~~ */
     let img = this.props.image;
     if(img) {
-      let image = chart.chartContainer.createChild(am4core.Image);
+      let image =
+        chart.topParent.children.getIndex(1).createChild(am4core.Image);
+      image.layout = "absolute";
       image.width = img.width || 60;
       image.height = img.height || 60;
-      image.verticalCenter = "top";
-      image.horizontalCenter = "left";
-      image.align = img.align || "right";
+      img.position = img.position || "bottomleft";
+      switch(img.position) {
+        case "bottomleft":
+          chart.logo.dispose();
+          image.x = 0;
+          image.y = chart.pixelHeight - image.height;
+          break;
+        case "bottomright":
+          image.x = chart.pixelWidth - image.width;
+          image.y = chart.pixelHeight - image.height;
+          break;
+        case "topleft":
+          image.x = 0;
+          image.y = 0;
+          break;
+        case "topright":
+          image.x = chart.pixelWidth - image.width;
+          image.y = 0;
+          break;
+      }
+      image.dx = img.hjust || 0;
+      image.dy = img.vjust || 0;
       image.href = img.base64;
     }
 
@@ -625,12 +646,33 @@ class AmHorizontalBarChart extends React.PureComponent {
     /* ~~~~\  image  /~~~~ */
     let img = this.props.image;
     if(img) {
-      let image = chart.chartContainer.createChild(am4core.Image);
+      let image =
+        chart.topParent.children.getIndex(1).createChild(am4core.Image);
+      image.layout = "absolute";
       image.width = img.width || 60;
       image.height = img.height || 60;
-      image.verticalCenter = "top";
-      image.horizontalCenter = "left";
-      image.align = img.align || "right";
+      img.position = img.position || "bottomleft";
+      switch(img.position) {
+        case "bottomleft":
+          chart.logo.dispose();
+          image.x = 0;
+          image.y = chart.pixelHeight - image.height;
+          break;
+        case "bottomright":
+          image.x = chart.pixelWidth - image.width;
+          image.y = chart.pixelHeight - image.height;
+          break;
+        case "topleft":
+          image.x = 0;
+          image.y = 0;
+          break;
+        case "topright":
+          image.x = chart.pixelWidth - image.width;
+          image.y = 0;
+          break;
+      }
+      image.dx = img.hjust || 0;
+      image.dy = img.vjust || 0;
       image.href = img.base64;
     }
 
@@ -1151,12 +1193,33 @@ class AmLineChart extends React.PureComponent {
     /* ~~~~\  image  /~~~~ */
     let img = this.props.image;
     if(img) {
-      let image = chart.chartContainer.createChild(am4core.Image);
+      let image =
+        chart.topParent.children.getIndex(1).createChild(am4core.Image);
+      image.layout = "absolute";
       image.width = img.width || 60;
       image.height = img.height || 60;
-      image.verticalCenter = "top";
-      image.horizontalCenter = "left";
-      image.align = img.align || "right";
+      img.position = img.position || "bottomleft";
+      switch(img.position) {
+        case "bottomleft":
+          chart.logo.dispose();
+          image.x = 0;
+          image.y = chart.pixelHeight - image.height;
+          break;
+        case "bottomright":
+          image.x = chart.pixelWidth - image.width;
+          image.y = chart.pixelHeight - image.height;
+          break;
+        case "topleft":
+          image.x = 0;
+          image.y = 0;
+          break;
+        case "topright":
+          image.x = chart.pixelWidth - image.width;
+          image.y = 0;
+          break;
+      }
+      image.dx = img.hjust || 0;
+      image.dy = img.vjust || 0;
       image.href = img.base64;
     }
 
@@ -1816,12 +1879,33 @@ class AmScatterChart extends React.PureComponent {
     /* ~~~~\  image  /~~~~ */
     let img = this.props.image;
     if(img) {
-      let image = chart.chartContainer.createChild(am4core.Image);
+      let image =
+        chart.topParent.children.getIndex(1).createChild(am4core.Image);
+      image.layout = "absolute";
       image.width = img.width || 60;
       image.height = img.height || 60;
-      image.verticalCenter = "top";
-      image.horizontalCenter = "left";
-      image.align = img.align || "right";
+      img.position = img.position || "bottomleft";
+      switch(img.position) {
+        case "bottomleft":
+          chart.logo.dispose();
+          image.x = 0;
+          image.y = chart.pixelHeight - image.height;
+          break;
+        case "bottomright":
+          image.x = chart.pixelWidth - image.width;
+          image.y = chart.pixelHeight - image.height;
+          break;
+        case "topleft":
+          image.x = 0;
+          image.y = 0;
+          break;
+        case "topright":
+          image.x = chart.pixelWidth - image.width;
+          image.y = 0;
+          break;
+      }
+      image.dx = img.hjust || 0;
+      image.dy = img.vjust || 0;
       image.href = img.base64;
     }
 

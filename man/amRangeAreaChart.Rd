@@ -143,7 +143,7 @@ for the axis title}
 
 \item{image}{option to include an image in the chart; \code{NULL} or
 \code{FALSE} for no image, otherwise a named list with six possible fields:
-the fiels \code{base64} (required) is a base64 string representing the
+the field \code{base64} (required) is a base64 string representing the
 image (you can create it from a file with \code{base64enc::dataURI}),
 the fields \code{width} and \code{height} define the image dimensions,
 the field \code{position} can be \code{"topleft"}, \code{"topright"},
