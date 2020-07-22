@@ -20,8 +20,8 @@ Imports:
     stringi,
     lubridate,
     minpack.lm,
-    tools
-Suggests:
-    reshape2,
+    tools,
     base64enc
+Suggests:
+    reshape2
 RoxygenNote: 7.0.2
