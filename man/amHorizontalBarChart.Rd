@@ -114,15 +114,15 @@ for a simple bar chart and use \code{cellWidth} to control the width of the
 columns; for a grouped bar chart, this controls the spacing between the
 columns within a cluster of columns; \code{NULL} for the default value}
 
-\item{xAxis}{settings of the category axis given as a list, or just a string
+\item{xAxis}{settings of the value axis given as a list, or just a string
 for the axis title}
 
-\item{yAxis}{settings of the value axis given as a list, or just a string
+\item{yAxis}{settings of the category axis given as a list, or just a string
 for the axis title}
 
-\item{scrollbarX}{logical, whether to add a scrollbar for the category axis}
+\item{scrollbarX}{logical, whether to add a scrollbar for the value axis}
 
-\item{scrollbarY}{logical, whether to add a scrollbar for the value axis}
+\item{scrollbarY}{logical, whether to add a scrollbar for the category axis}
 
 \item{gridLines}{settings of the grid lines}
 
@@ -166,6 +166,9 @@ given in \code{\link{amChart4Output}}}
 
 \item{elementId}{a HTML id for the container of the chart; ignored if the
 chart is displayed in Shiny, in which case the id is given by the Shiny id}
+
+\item{alwaysShowBullets}{logical, whether to always show the bullets;
+if \code{FALSE}, the bullets are shown only on hovering a column}
 }
 \description{
 Create a HTML widget displaying a horizontal bar chart.

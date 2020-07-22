@@ -336,10 +336,10 @@ class AmBarChart extends React.PureComponent {
         }
         // add sprite to bullet
         let shapeConfig = bulletsStyle[value];
-        if(!shapeConfig.color){
+        if(!shapeConfig.color) {
           shapeConfig.color = columnStyle.color;
         }
-        if(!shapeConfig.strokeColor){
+        if(!shapeConfig.strokeColor) {
           shapeConfig.strokeColor = columnStyle.strokeColor;
         }
         let shape =
@@ -567,6 +567,7 @@ class AmHorizontalBarChart extends React.PureComponent {
       valueFormatter = this.props.valueFormatter,
       columnStyles = this.props.columnStyle,
       bulletsStyle = this.props.bullets,
+      alwaysShowBullets = this.props.alwaysShowBullets,
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
@@ -849,26 +850,30 @@ class AmHorizontalBarChart extends React.PureComponent {
       /* ~~~~\  bullet  /~~~~ */
       let bullet;
       let columnStyle = columnStyles[value];
-      if(draggable[value]) {
+      if(alwaysShowBullets || draggable[value]) {
         bullet = series.bullets.create();
-        bullet.opacity = 0; // initially invisible
-        bullet.defaultState.properties.opacity = 0;
+        if(!alwaysShowBullets) {
+          bullet.opacity = 0; // initially invisible
+          bullet.defaultState.properties.opacity = 0;
+        }
+        // add sprite to bullet
+        let shapeConfig = bulletsStyle[value];
+        if(!shapeConfig.color) {
+          shapeConfig.color = columnStyle.color;
+        }
+        if(!shapeConfig.strokeColor) {
+          shapeConfig.strokeColor = columnStyle.strokeColor;
+        }
+        let shape =
+          utils.Shape(am4core, chart, index, bullet, shapeConfig);
+      }
+      if(draggable[value]) {
         // resize cursor when over
         bullet.cursorOverStyle = am4core.MouseCursorStyle.horizontalResize;
         bullet.draggable = true;
         // create bullet hover state
         let hoverState = bullet.states.create("hover");
         hoverState.properties.opacity = 1; // visible when hovered
-        // add sprite to bullet
-        let shapeConfig = bulletsStyle[value];
-        if(!shapeConfig.color){
-          shapeConfig.color = columnStyle.color;
-        }
-        if(!shapeConfig.strokeColor){
-          shapeConfig.strokeColor = columnStyle.strokeColor;
-        }
-        let shape =
-          utils.Shape(am4core, chart, index, bullet, shapeConfig);
         // while dragging
         bullet.events.on("drag", event => {
           handleDrag(event);

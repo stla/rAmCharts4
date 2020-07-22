@@ -51,6 +51,8 @@
 #'   \code{\link{amCircle}}, \code{\link{amTriangle}} or
 #'   \code{\link{amRectangle}}; this can also be a
 #'   single list of settings that will be applied to each series
+#' @param alwaysShowBullets logical, whether to always show the bullets;
+#'   if \code{FALSE}, the bullets are shown only on hovering a column
 #' @param backgroundColor a color for the chart background
 #' @param cellWidth cell width in percent; for a simple bar chart, this is the
 #' width of the columns; for a grouped bar chart, this is the width of the
@@ -59,12 +61,12 @@
 #' for a simple bar chart and use \code{cellWidth} to control the width of the
 #' columns; for a grouped bar chart, this controls the spacing between the
 #' columns within a cluster of columns; \code{NULL} for the default value
-#' @param xAxis settings of the category axis given as a list, or just a string
+#' @param xAxis settings of the value axis given as a list, or just a string
 #' for the axis title
-#' @param yAxis settings of the value axis given as a list, or just a string
+#' @param yAxis settings of the category axis given as a list, or just a string
 #' for the axis title
-#' @param scrollbarX logical, whether to add a scrollbar for the category axis
-#' @param scrollbarY logical, whether to add a scrollbar for the value axis
+#' @param scrollbarX logical, whether to add a scrollbar for the value axis
+#' @param scrollbarY logical, whether to add a scrollbar for the category axis
 #' @param gridLines settings of the grid lines
 #' @param legend logical, whether to display the legend
 #' @param caption settings of the caption, or \code{NULL} for no caption
@@ -520,6 +522,7 @@ amHorizontalBarChart <- function(
       tooltip = tooltip,
       columnStyle = columnStyle,
       bullets = bullets,
+      alwaysShowBullets = alwaysShowBullets,
       backgroundColor = validateColor(backgroundColor),
       cellWidth = cellWidth,
       columnWidth = columnWidth,
