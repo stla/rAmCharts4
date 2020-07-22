@@ -11,11 +11,12 @@
 #' @param values name(s) of the column(s) of \code{data} to be used on the
 #' value axis
 #' @param valueNames names of the values variables, to appear in the legend;
-#' \code{NULL} to use \code{values} as names, otherwise a named list of the
-#' form \code{list(value1 = "ValueName1", value2 = "ValueName2", ...)} where
-#' \code{value1}, \code{value2}, ... are the column names given in
-#' \code{values} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
-#' desired names to appear in the legend
+#'   \code{NULL} to use \code{values} as names, otherwise a named list of the
+#'   form \code{list(value1 = "ValueName1", value2 = "ValueName2", ...)} where
+#'   \code{value1}, \code{value2}, ... are the column names given in
+#'   \code{values} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
+#'   desired names to appear in the legend
+#' @param showValues logical, whether to display the values on the chart
 #' @param yLimits range of the y-axis, a vector of two values specifying
 #' the lower and the upper limits of the y-axis; \code{NULL} for default values
 #' @param expandY if \code{yLimits = NULL}, a percentage of the range of the
@@ -151,6 +152,7 @@
 #'   width = "700px",
 #'   category = "language",
 #'   values = "users",
+#'   showValues = FALSE,
 #'   tooltip = amTooltip(
 #'     textColor = "white",
 #'     backgroundColor = "#101010",
@@ -223,6 +225,7 @@ amBarChart <- function(
   category,
   values,
   valueNames = NULL, # default
+  showValues = TRUE,
   yLimits = NULL,
   expandY = 5,
   valueFormatter = "#.",
@@ -604,6 +607,7 @@ amBarChart <- function(
       category = category,
       values = as.list(values),
       valueNames = valueNames,
+      showValues = showValues,
       minValue = yLimits[1L],
       maxValue = yLimits[2L],
       valueFormatter = valueFormatter,

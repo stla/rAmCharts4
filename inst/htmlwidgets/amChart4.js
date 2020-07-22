@@ -120105,6 +120105,7 @@ class AmBarChart extends React.PureComponent {
         dataCopy = HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [category].concat(values))),
         data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, values)) : null,
         valueNames = this.props.valueNames,
+        showValues = this.props.showValues,
         cellWidth = this.props.cellWidth,
         columnWidth = this.props.columnWidth,
         xAxis = this.props.xAxis,
@@ -120386,20 +120387,25 @@ class AmBarChart extends React.PureComponent {
       series.defaultState.interpolationDuration = 1500;
       /* ~~~~\  value label  /~~~~ */
 
-      var valueLabel = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LabelBullet"]();
-      series.bullets.push(valueLabel);
-      valueLabel.label.text = "{valueY.value.formatNumber('" + valueFormatter + "')}";
-      valueLabel.label.hideOversized = true;
-      valueLabel.label.truncate = false;
-      valueLabel.strokeOpacity = 0;
-      valueLabel.adapter.add("dy", (x, target) => {
-        if (target.dataItem.valueY > 0) {
-          return -10;
-        } else {
-          return 10;
-        }
-      });
+      var valueLabel;
+
+      if (showValues) {
+        valueLabel = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LabelBullet"]();
+        series.bullets.push(valueLabel);
+        valueLabel.label.text = "{valueY.value.formatNumber('" + valueFormatter + "')}";
+        valueLabel.label.hideOversized = true;
+        valueLabel.label.truncate = false;
+        valueLabel.strokeOpacity = 0;
+        valueLabel.adapter.add("dy", (x, target) => {
+          if (target.dataItem.valueY > 0) {
+            return -10;
+          } else {
+            return 10;
+          }
+        });
+      }
       /* ~~~~\  bullet  /~~~~ */
+
 
       var bullet;
       var columnStyle = columnStyles[value];
@@ -120553,7 +120559,7 @@ class AmBarChart extends React.PureComponent {
       columnHoverState.properties.fillOpacity = 1;
       columnHoverState.properties.strokeWidth = columnStyle.strokeWidth + 2;
 
-      if (tooltips) {
+      if (tooltips && showValues) {
         // hide label when hovered because the tooltip is shown
         columnTemplate.events.on("over", event => {
           var dataItem = event.target.dataItem;

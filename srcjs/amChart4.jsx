@@ -48,6 +48,7 @@ class AmBarChart extends React.PureComponent {
         HTMLWidgets.dataframeToD3(utils.subset(this.props.data2, values)) :
         null,
       valueNames = this.props.valueNames,
+      showValues = this.props.showValues,
       cellWidth = this.props.cellWidth,
       columnWidth = this.props.columnWidth,
       xAxis = this.props.xAxis,
@@ -268,6 +269,7 @@ class AmBarChart extends React.PureComponent {
       valueAxis.cursorTooltipEnabled = false;
     }
 
+
 		/* ~~~~\ cursor /~~~~ */
 		if(cursor) {
       chart.cursor = new am4charts.XYCursor();
@@ -303,7 +305,8 @@ class AmBarChart extends React.PureComponent {
 		}
 
 		values.forEach(function(value, index){
-      var series = chart.series.push(new am4charts.ColumnSeries());
+
+      let series = chart.series.push(new am4charts.ColumnSeries());
       series.dataFields.categoryX = category;
       series.dataFields.valueY = value;
       series.name = valueNames[value];
@@ -312,20 +315,24 @@ class AmBarChart extends React.PureComponent {
 
 
       /* ~~~~\  value label  /~~~~ */
-      var valueLabel = new am4charts.LabelBullet();
-      series.bullets.push(valueLabel);
-      valueLabel.label.text =
-        "{valueY.value.formatNumber('" + valueFormatter + "')}";
-      valueLabel.label.hideOversized = true;
-      valueLabel.label.truncate = false;
-      valueLabel.strokeOpacity = 0;
-      valueLabel.adapter.add("dy", (x, target) => {
-        if(target.dataItem.valueY > 0) {
-          return -10;
-        } else {
-          return 10;
-        }
-      });
+      let valueLabel;
+      if(showValues) {
+        valueLabel = new am4charts.LabelBullet();
+        series.bullets.push(valueLabel);
+        valueLabel.label.text =
+          "{valueY.value.formatNumber('" + valueFormatter + "')}";
+        valueLabel.label.hideOversized = true;
+        valueLabel.label.truncate = false;
+        valueLabel.strokeOpacity = 0;
+        valueLabel.adapter.add("dy", (x, target) => {
+          if(target.dataItem.valueY > 0) {
+            return -10;
+          } else {
+            return 10;
+          }
+        });
+      }
+
 
       /* ~~~~\  bullet  /~~~~ */
       let bullet;
@@ -469,7 +476,7 @@ class AmBarChart extends React.PureComponent {
       // you can change any property on hover state and it will be animated
       columnHoverState.properties.fillOpacity = 1;
       columnHoverState.properties.strokeWidth = columnStyle.strokeWidth + 2;
-      if(tooltips) {
+      if(tooltips && showValues) {
         // hide label when hovered because the tooltip is shown
         columnTemplate.events.on("over", event => {
           let dataItem = event.target.dataItem;

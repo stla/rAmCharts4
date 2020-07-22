@@ -10,6 +10,7 @@ amBarChart(
   category,
   values,
   valueNames = NULL,
+  showValues = TRUE,
   yLimits = NULL,
   expandY = 5,
   valueFormatter = "#.",
@@ -59,6 +60,8 @@ form \code{list(value1 = "ValueName1", value2 = "ValueName2", ...)} where
 \code{value1}, \code{value2}, ... are the column names given in
 \code{values} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
 desired names to appear in the legend}
+
+\item{showValues}{logical, whether to display the values on the chart}
 
 \item{yLimits}{range of the y-axis, a vector of two values specifying
 the lower and the upper limits of the y-axis; \code{NULL} for default values}
@@ -221,6 +224,7 @@ amBarChart(
   width = "700px",
   category = "language",
   values = "users",
+  showValues = FALSE,
   tooltip = amTooltip(
     textColor = "white",
     backgroundColor = "#101010",
