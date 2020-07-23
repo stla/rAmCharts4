@@ -139,8 +139,8 @@
 #'   with \code{\link{amAxisLabels}},
 #'   and a field \code{adjust}, a number defining the horizontal adjustment of
 #'   the axis (in pixels)
-#' @param scrollbarX logical, whether to add a scrollbar for the category axis
-#' @param scrollbarY logical, whether to add a scrollbar for the value axis
+#' @param scrollbarX logical, whether to add a scrollbar for the x-axis
+#' @param scrollbarY logical, whether to add a scrollbar for the y-axis
 #' @param gridLines settings of the grid lines
 #' @param legend logical, whether to display the legend
 #' @param caption settings of the caption, or \code{NULL} for no caption
@@ -893,7 +893,8 @@ amLineChart <- function(
         formatter = Yformatter
       )
     )
-  }else if(is.character(yAxis[["title"]])){
+  }
+  if(is.character(yAxis[["title"]])){
     yAxis[["title"]] <- list(
       text = yAxis[["title"]],
       fontSize = 20,

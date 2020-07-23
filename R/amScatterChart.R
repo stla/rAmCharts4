@@ -1,5 +1,5 @@
-#' Create a HTML widget displaying a line chart
-#' @description Create a HTML widget displaying a line chart.
+#' HTML widget displaying a scatter chart
+#' @description Create a HTML widget displaying a scatter chart.
 #'
 #' @param data a dataframe
 #' @param data2 \code{NULL} or a dataframe used to update the data with the
@@ -21,8 +21,30 @@
 #' the left and the right limits of the x-axis; \code{NULL} for default values
 #' @param yLimits range of the y-axis, a vector of two values specifying
 #' the lower and the upper limits of the y-axis; \code{NULL} for default values
-#' @param valueFormatter a number formatter; see XXXX
-#' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}
+#' @param Xformatter a
+#'   \href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}{number formatting string}
+#'   if \code{xValue} is set to a numeric column of \code{data};
+#'   it is used to format the values displayed in the cursor tooltips if
+#'   \code{cursor = TRUE}, the labels of the x-axis unless you specify
+#'   your own formatter in the \code{labels} field of the list passed on to
+#'   the \code{xAxis} option, and the values displayed in the tooltips unless
+#'   you specify your own tooltip text;
+#'   if \code{xValue} is set to a date column of \code{data}, this option should
+#'   be set to a
+#'   \href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-date-time/}{date formatting string},
+#'   and it has an effect only on the values displayed in the tooltips (unless
+#'   you specify your own tooltip text); formatting the dates on the x-axis is
+#'   done via the \code{labels} field of the list passed on to the \code{xAxis}
+#'   option
+#' @param Yformatter a
+#'   \href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}{number formatting string};
+#'   it is used to format the values displayed in the cursor tooltips if
+#'   \code{cursor = TRUE}, the labels of the y-axis unless you specify
+#'   your own formatter in the \code{labels} field of the list passed on to
+#'   the \code{yAxis} option, and the values displayed in the tooltips unless
+#'   you specify your own tooltip text (see the first example of
+#'   \code{\link{amBarChart}} for the way to set
+#'   a number formatter in the tooltip text)
 #' @param trend option to request trend lines and to set their settings;
 #'   \code{FALSE} for no trend line, otherwise a named list of the form
 #'   \code{list(yvalue1 = trend1, yvalue2 = trend2, ...)} where
@@ -105,8 +127,8 @@
 #'   with \code{\link{amAxisLabels}},
 #'   and a field \code{adjust}, a number defining the horizontal adjustment of
 #'   the axis (in pixels)
-#' @param scrollbarX logical, whether to add a scrollbar for the category axis
-#' @param scrollbarY logical, whether to add a scrollbar for the value axis
+#' @param scrollbarX logical, whether to add a scrollbar for the x-axis
+#' @param scrollbarY logical, whether to add a scrollbar for the y-axis
 #' @param gridLines settings of the grid lines
 #' @param legend logical, whether to display the legend
 #' @param caption settings of the caption, or \code{NULL} for no caption
@@ -178,14 +200,15 @@
 #'   xAxis = list(title = list(text = "Observation",
 #'                             fontSize = 21,
 #'                             color = "silver"),
-#'                labels = list(color = "whitesmoke",
-#'                              fontSize = 17)),
+#'                labels = amAxisLabels(color = "whitesmoke",
+#'                                      fontSize = 17)),
 #'   yAxis = list(title = list(text = "Petal width",
 #'                             fontSize = 21,
 #'                             color = "silver"),
-#'                labels = list(color = "whitesmoke",
-#'                              fontSize = 14)),
-#'   valueFormatter = "#.#",
+#'                labels = amAxisLabels(color = "whitesmoke",
+#'                                      fontSize = 14)),
+#'   Xformatter = "#",
+#'   Yformatter = "#.0",
 #'   caption = list(text = "[font-style:italic]rAmCharts4[/]",
 #'                  color = "yellow"),
 #'   gridLines = list(color = "whitesmoke",
@@ -237,14 +260,15 @@
 #'   xAxis = list(title = list(text = "Petal length",
 #'                             fontSize = 19,
 #'                             color = "gold"),
-#'                labels = list(color = "whitesmoke",
-#'                              fontSize = 17)),
+#'                labels = amAxisLabels(color = "whitesmoke",
+#'                                      fontSize = 17)),
 #'   yAxis = list(title = list(text = "Petal width",
 #'                             fontSize = 19,
 #'                             color = "gold"),
-#'                labels = list(color = "whitesmoke",
-#'                              fontSize = 17)),
-#'   valueFormatter = "#.#",
+#'                labels = amAxisLabels(color = "whitesmoke",
+#'                                      fontSize = 17)),
+#'   Xformatter = "#.0",
+#'   Yformatter = "#.0",
 #'   caption = list(text = "[font-style:italic]rAmCharts4[/]",
 #'                  color = "yellow"),
 #'   gridLines = list(color = "whitesmoke",
@@ -294,7 +318,8 @@
 #'   chartTitle = list(text = "Asymptotic regression model"),
 #'   xAxis = "x",
 #'   yAxis = "y",
-#'   valueFormatter = "#.#",
+#'   Xformatter = "#.###",
+#'   Yformatter = "#.",
 #'   theme = "kelly")
 amScatterChart <- function(
   data,
@@ -306,7 +331,8 @@ amScatterChart <- function(
   yLimits = NULL,
   expandX = 0,
   expandY = 5,
-  valueFormatter = "#.",
+  Xformatter = ifelse(isDate, "yyyy-MM-dd", "#."),
+  Yformatter = "#.",
   trend = FALSE,
   chartTitle = NULL,
   theme = NULL,
@@ -571,14 +597,21 @@ amScatterChart <- function(
   }
 
   if(!isFALSE(tooltip)){
-    if(is.null(tooltip)){
-      text <- ifelse(isDate,
-                     "[bold][font-style:italic]{dateX}:[/] {valueY}[/]",
-                     "[bold]({valueX},{valueY})[/]"
+    tooltipText <- sprintf(ifelse(
+      isDate,
+      paste0(
+        "[bold][font-style:italic]{dateX.value.formatDate('%s')}:[/] ",
+        "{valueY.value.formatNumber('%s')}[/]"
+      ),
+      paste0(
+        "[bold]({valueX.value.formatNumber('%s')}, ",
+        "{valueY.value.formatNumber('%s')})[/]"
       )
+    ), Xformatter, Yformatter)
+    if(is.null(tooltip)){
       tooltip <-
         setNames(
-          rep(list(amTooltip(text = text, auto = FALSE)), length(yValues)),
+          rep(list(amTooltip(text = tooltipText, auto = FALSE)), length(yValues)),
           yValues
         )
     }else if("tooltip" %in% class(tooltip)){
@@ -678,32 +711,60 @@ amScatterChart <- function(
     if(is.list(xAxis[["title"]])){
       xAxis[["title"]][["color"]] <- validateColor(xAxis[["title"]][["color"]])
     }
-    xAxis[["labels"]][["color"]] <- validateColor(xAxis[["labels"]][["color"]])
-  }
-  if(is.null(xAxis)){
+  }else if(is.null(xAxis)){
     xAxis <- list(
       title = list(
         text = xValue,
         fontSize = 20,
         color = NULL
       ),
-      labels = list(
+      labels = amAxisLabels(
         color = NULL,
         fontSize = 18,
-        rotation = 0
+        rotation = 0,
+        formatter = if(isDate){
+          amDateAxisFormatter()
+        }else{
+          Xformatter
+        }
       )
     )
   }else if(is.character(xAxis)){
-    xAxis <- list(title = list(text = xAxis))
-  }else if(is.character(xAxis[["title"]])){
-    xAxis[["title"]] <- list(text = xAxis[["title"]])
+    xAxis <- list(
+      title = list(
+        text = xAxis,
+        fontSize = 20,
+        color = NULL
+      ),
+      labels = amAxisLabels(
+        color = NULL,
+        fontSize = 18,
+        rotation = 0,
+        formatter = if(isDate){
+          amDateAxisFormatter()
+        }else{
+          Xformatter
+        }
+      )
+    )
   }
-
+  if(is.character(xAxis[["title"]])){
+    xAxis[["title"]] <- list(
+      text = xAxis[["title"]],
+      fontSize = 20,
+      color = NULL
+    )
+  }
   if(is.null(xAxis[["labels"]])){
-    xAxis[["labels"]] <- list(
+    xAxis[["labels"]] <- amAxisLabels(
       color = NULL,
       fontSize = 18,
-      rotation = 0
+      rotation = 0,
+      formatter = if(isDate){
+        amDateAxisFormatter()
+      }else{
+        Xformatter
+      }
     )
   }
 
@@ -711,9 +772,7 @@ amScatterChart <- function(
     if(is.list(yAxis[["title"]])){
       yAxis[["title"]][["color"]] <- validateColor(yAxis[["title"]][["color"]])
     }
-    yAxis[["labels"]][["color"]] <- validateColor(yAxis[["labels"]][["color"]])
-  }
-  if(is.null(yAxis)){
+  }else if(is.null(yAxis)){
     yAxis <- list(
       title = if(length(yValues) == 1L) {
         list(
@@ -722,23 +781,41 @@ amScatterChart <- function(
           color = NULL
         )
       },
-      labels = list(
+      labels = amAxisLabels(
         color = NULL,
         fontSize = 18,
-        rotation = 0
+        rotation = 0,
+        formatter = Yformatter
       )
     )
   }else if(is.character(yAxis)){
-    yAxis <- list(title = list(text = yAxis))
-  }else if(is.character(yAxis[["title"]])){
-    yAxis[["title"]] <- list(text = yAxis[["title"]])
+    yAxis <- list(
+      title = list(
+        text = yAxis,
+        fontSize = 20,
+        color = NULL
+      ),
+      labels = amAxisLabels(
+        color = NULL,
+        fontSize = 18,
+        rotation = 0,
+        formatter = Yformatter
+      )
+    )
   }
-
-  if(is.null(yAxis[["labels"]])){
-    yAxis[["labels"]] <- list(
+  if(is.character(yAxis[["title"]])){
+    yAxis[["title"]] <- list(
+      text = yAxis[["title"]],
+      fontSize = 20,
+      color = NULL
+    )
+  }
+  if(!isFALSE(yAxis[["labels"]]) && is.null(yAxis[["labels"]])){
+    yAxis[["labels"]] <- amAxisLabels(
       color = NULL,
       fontSize = 18,
-      rotation = 0
+      rotation = 0,
+      formatter = Yformatter
     )
   }
 
@@ -819,7 +896,6 @@ amScatterChart <- function(
       maxX = xLimits[2L],
       minY = yLimits[1L],
       maxY = yLimits[2L],
-      valueFormatter = valueFormatter,
       chartTitle = chartTitle,
       theme = theme,
       draggable = draggable,

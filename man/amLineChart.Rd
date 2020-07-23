@@ -202,9 +202,9 @@ with \code{\link{amAxisLabels}},
 and a field \code{adjust}, a number defining the horizontal adjustment of
 the axis (in pixels)}
 
-\item{scrollbarX}{logical, whether to add a scrollbar for the category axis}
+\item{scrollbarX}{logical, whether to add a scrollbar for the x-axis}
 
-\item{scrollbarY}{logical, whether to add a scrollbar for the value axis}
+\item{scrollbarY}{logical, whether to add a scrollbar for the y-axis}
 
 \item{gridLines}{settings of the grid lines}
 

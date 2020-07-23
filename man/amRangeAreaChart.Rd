@@ -14,7 +14,8 @@ amRangeAreaChart(
   yLimits = NULL,
   expandX = 0,
   expandY = 5,
-  valueFormatter = "#.",
+  Xformatter = ifelse(isDate, "yyyy-MM-dd", "#."),
+  Yformatter = "#.",
   chartTitle = NULL,
   theme = NULL,
   draggable = FALSE,
@@ -75,8 +76,31 @@ x-axis used to expand this range}
 \item{expandY}{if \code{yLimits = NULL}, a percentage of the range of the
 y-axis used to expand this range}
 
-\item{valueFormatter}{a number formatter for XXXX; see
-\url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}}
+\item{Xformatter}{a
+\href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}{number formatting string}
+if \code{xValue} is set to a numeric column of \code{data};
+it is used to format the values displayed in the cursor tooltips if
+\code{cursor = TRUE}, the labels of the x-axis unless you specify
+your own formatter in the \code{labels} field of the list passed on to
+the \code{xAxis} option, and the values displayed in the tooltips unless
+you specify your own tooltip text;
+if \code{xValue} is set to a date column of \code{data}, this option should
+be set to a
+\href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-date-time/}{date formatting string},
+and it has an effect only on the values displayed in the tooltips (unless
+you specify your own tooltip text); formatting the dates on the x-axis is
+done via the \code{labels} field of the list passed on to the \code{xAxis}
+option}
+
+\item{Yformatter}{a
+\href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}{number formatting string};
+it is used to format the values displayed in the cursor tooltips if
+\code{cursor = TRUE}, the labels of the y-axis unless you specify
+your own formatter in the \code{labels} field of the list passed on to
+the \code{yAxis} option, and the values displayed in the tooltips unless
+you specify your own tooltip text (see the first example of
+\code{\link{amBarChart}} for the way to set
+a number formatter in the tooltip text)}
 
 \item{chartTitle}{chart title, \code{NULL}, character, or list of settings}
 
@@ -277,15 +301,16 @@ amRangeAreaChart(
   xAxis = list(title = list(text = "Observation",
                             fontSize = 20,
                             color = "silver"),
-               labels = list(color = "whitesmoke",
-                             fontSize = 17),
+               labels = amAxisLabels(color = "whitesmoke",
+                                     fontSize = 17),
                adjust = 5),
   yAxis = list(title = list(text = "Value",
                             fontSize = 20,
                             color = "silver"),
-               labels = list(color = "whitesmoke",
-                             fontSize = 17)),
-  valueFormatter = "#.#",
+               labels = amAxisLabels(color = "whitesmoke",
+                                     fontSize = 17)),
+  Xformatter = "#",
+  Yformatter = "#.00",
   gridLines = list(color = "antiquewhite",
                    opacity = 0.4,
                    width = 1),

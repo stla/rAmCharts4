@@ -2,7 +2,7 @@
 % Please edit documentation in R/amScatterChart.R
 \name{amScatterChart}
 \alias{amScatterChart}
-\title{Create a HTML widget displaying a line chart}
+\title{HTML widget displaying a scatter chart}
 \usage{
 amScatterChart(
   data,
@@ -14,7 +14,8 @@ amScatterChart(
   yLimits = NULL,
   expandX = 0,
   expandY = 5,
-  valueFormatter = "#.",
+  Xformatter = ifelse(isDate, "yyyy-MM-dd", "#."),
+  Yformatter = "#.",
   trend = FALSE,
   chartTitle = NULL,
   theme = NULL,
@@ -66,8 +67,31 @@ the left and the right limits of the x-axis; \code{NULL} for default values}
 \item{yLimits}{range of the y-axis, a vector of two values specifying
 the lower and the upper limits of the y-axis; \code{NULL} for default values}
 
-\item{valueFormatter}{a number formatter; see XXXX
-\url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}}
+\item{Xformatter}{a
+\href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}{number formatting string}
+if \code{xValue} is set to a numeric column of \code{data};
+it is used to format the values displayed in the cursor tooltips if
+\code{cursor = TRUE}, the labels of the x-axis unless you specify
+your own formatter in the \code{labels} field of the list passed on to
+the \code{xAxis} option, and the values displayed in the tooltips unless
+you specify your own tooltip text;
+if \code{xValue} is set to a date column of \code{data}, this option should
+be set to a
+\href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-date-time/}{date formatting string},
+and it has an effect only on the values displayed in the tooltips (unless
+you specify your own tooltip text); formatting the dates on the x-axis is
+done via the \code{labels} field of the list passed on to the \code{xAxis}
+option}
+
+\item{Yformatter}{a
+\href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}{number formatting string};
+it is used to format the values displayed in the cursor tooltips if
+\code{cursor = TRUE}, the labels of the y-axis unless you specify
+your own formatter in the \code{labels} field of the list passed on to
+the \code{yAxis} option, and the values displayed in the tooltips unless
+you specify your own tooltip text (see the first example of
+\code{\link{amBarChart}} for the way to set
+a number formatter in the tooltip text)}
 
 \item{trend}{option to request trend lines and to set their settings;
 \code{FALSE} for no trend line, otherwise a named list of the form
@@ -160,9 +184,9 @@ with \code{\link{amAxisLabels}},
 and a field \code{adjust}, a number defining the horizontal adjustment of
 the axis (in pixels)}
 
-\item{scrollbarX}{logical, whether to add a scrollbar for the category axis}
+\item{scrollbarX}{logical, whether to add a scrollbar for the x-axis}
 
-\item{scrollbarY}{logical, whether to add a scrollbar for the value axis}
+\item{scrollbarY}{logical, whether to add a scrollbar for the y-axis}
 
 \item{gridLines}{settings of the grid lines}
 
@@ -212,7 +236,7 @@ given in \code{\link{amChart4Output}}}
 chart is displayed in Shiny, in which case the id is given by the Shiny id}
 }
 \description{
-Create a HTML widget displaying a line chart.
+Create a HTML widget displaying a scatter chart.
 }
 \note{
 A color can be given by the name of a R color, the name of a CSS
@@ -243,14 +267,15 @@ amScatterChart(
   xAxis = list(title = list(text = "Observation",
                             fontSize = 21,
                             color = "silver"),
-               labels = list(color = "whitesmoke",
-                             fontSize = 17)),
+               labels = amAxisLabels(color = "whitesmoke",
+                                     fontSize = 17)),
   yAxis = list(title = list(text = "Petal width",
                             fontSize = 21,
                             color = "silver"),
-               labels = list(color = "whitesmoke",
-                             fontSize = 14)),
-  valueFormatter = "#.#",
+               labels = amAxisLabels(color = "whitesmoke",
+                                     fontSize = 14)),
+  Xformatter = "#",
+  Yformatter = "#.0",
   caption = list(text = "[font-style:italic]rAmCharts4[/]",
                  color = "yellow"),
   gridLines = list(color = "whitesmoke",
@@ -302,14 +327,15 @@ amScatterChart(
   xAxis = list(title = list(text = "Petal length",
                             fontSize = 19,
                             color = "gold"),
-               labels = list(color = "whitesmoke",
-                             fontSize = 17)),
+               labels = amAxisLabels(color = "whitesmoke",
+                                     fontSize = 17)),
   yAxis = list(title = list(text = "Petal width",
                             fontSize = 19,
                             color = "gold"),
-               labels = list(color = "whitesmoke",
-                             fontSize = 17)),
-  valueFormatter = "#.#",
+               labels = amAxisLabels(color = "whitesmoke",
+                                     fontSize = 17)),
+  Xformatter = "#.0",
+  Yformatter = "#.0",
   caption = list(text = "[font-style:italic]rAmCharts4[/]",
                  color = "yellow"),
   gridLines = list(color = "whitesmoke",
@@ -359,6 +385,7 @@ amScatterChart(
   chartTitle = list(text = "Asymptotic regression model"),
   xAxis = "x",
   yAxis = "y",
-  valueFormatter = "#.#",
+  Xformatter = "#.###",
+  Yformatter = "#.",
   theme = "kelly")
 }

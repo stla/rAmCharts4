@@ -1840,7 +1840,6 @@ class AmScatterChart extends React.PureComponent {
       tooltips = this.props.tooltip,
       gridLines = this.props.gridLines,
       draggable = this.props.draggable,
-      valueFormatter = this.props.valueFormatter,
       pointsStyle = this.props.pointsStyle,
       cursor = this.props.cursor,
       chartId = this.props.chartId,
@@ -2083,12 +2082,23 @@ class AmScatterChart extends React.PureComponent {
 		}
 		let xAxisLabels = XAxis.renderer.labels.template;
     if(xAxis.labels.formatter) {
+      let formatter = xAxis.labels.formatter;
       if(isDate) {
-        XAxis.dateFormatter = new am4core.DateFormatter();
-        XAxis.dateFormatter.dateFormat = xAxis.labels.formatter;
+        XAxis.dateFormats.setKey("day", formatter.day[0]); 
+        if(formatter.day[1]) {
+          XAxis.periodChangeDateFormats.setKey("day", formatter.day[1]);
+        }
+        XAxis.dateFormats.setKey("week", formatter.week[0]); 
+        if(formatter.week[1]) {
+          XAxis.periodChangeDateFormats.setKey("week", formatter.week[1]);
+        }
+        XAxis.dateFormats.setKey("month", formatter.month[0]); 
+        if(formatter.month[1]) {
+          XAxis.periodChangeDateFormats.setKey("month", formatter.month[1]);
+        }
       } else {
         XAxis.numberFormatter = new am4core.NumberFormatter();
-        XAxis.numberFormatter.numberFormat = xAxis.labels.formatter;
+        XAxis.numberFormatter.numberFormat = formatter;
         XAxis.adjustLabelPrecision = false;
       }
     }
@@ -2533,7 +2543,6 @@ class AmRangeAreaChart extends React.PureComponent {
       tooltips = this.props.tooltip,
       bulletsStyle = this.props.bullets,
       alwaysShowBullets = this.props.alwaysShowBullets,
-      valueFormatter = this.props.valueFormatter,
       lineStyles = this.props.lineStyle,
       areas = this.props.areas,
       cursor = this.props.cursor,
@@ -2761,12 +2770,23 @@ class AmRangeAreaChart extends React.PureComponent {
 		}
 		let xAxisLabels = XAxis.renderer.labels.template;
     if(xAxis.labels.formatter) {
+      let formatter = xAxis.labels.formatter;
       if(isDate) {
-        XAxis.dateFormatter = new am4core.DateFormatter();
-        XAxis.dateFormatter.dateFormat = xAxis.labels.formatter;
+        XAxis.dateFormats.setKey("day", formatter.day[0]); 
+        if(formatter.day[1]) {
+          XAxis.periodChangeDateFormats.setKey("day", formatter.day[1]);
+        }
+        XAxis.dateFormats.setKey("week", formatter.week[0]); 
+        if(formatter.week[1]) {
+          XAxis.periodChangeDateFormats.setKey("week", formatter.week[1]);
+        }
+        XAxis.dateFormats.setKey("month", formatter.month[0]); 
+        if(formatter.month[1]) {
+          XAxis.periodChangeDateFormats.setKey("month", formatter.month[1]);
+        }
       } else {
         XAxis.numberFormatter = new am4core.NumberFormatter();
-        XAxis.numberFormatter.numberFormat = xAxis.labels.formatter;
+        XAxis.numberFormatter.numberFormat = formatter;
         XAxis.adjustLabelPrecision = false;
       }
     }

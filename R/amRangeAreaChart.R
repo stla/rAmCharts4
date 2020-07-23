@@ -26,8 +26,30 @@
 #'   x-axis used to expand this range
 #' @param expandY if \code{yLimits = NULL}, a percentage of the range of the
 #'   y-axis used to expand this range
-#' @param valueFormatter a number formatter for XXXX; see
-#' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}
+#' @param Xformatter a
+#'   \href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}{number formatting string}
+#'   if \code{xValue} is set to a numeric column of \code{data};
+#'   it is used to format the values displayed in the cursor tooltips if
+#'   \code{cursor = TRUE}, the labels of the x-axis unless you specify
+#'   your own formatter in the \code{labels} field of the list passed on to
+#'   the \code{xAxis} option, and the values displayed in the tooltips unless
+#'   you specify your own tooltip text;
+#'   if \code{xValue} is set to a date column of \code{data}, this option should
+#'   be set to a
+#'   \href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-date-time/}{date formatting string},
+#'   and it has an effect only on the values displayed in the tooltips (unless
+#'   you specify your own tooltip text); formatting the dates on the x-axis is
+#'   done via the \code{labels} field of the list passed on to the \code{xAxis}
+#'   option
+#' @param Yformatter a
+#'   \href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}{number formatting string};
+#'   it is used to format the values displayed in the cursor tooltips if
+#'   \code{cursor = TRUE}, the labels of the y-axis unless you specify
+#'   your own formatter in the \code{labels} field of the list passed on to
+#'   the \code{yAxis} option, and the values displayed in the tooltips unless
+#'   you specify your own tooltip text (see the first example of
+#'   \code{\link{amBarChart}} for the way to set
+#'   a number formatter in the tooltip text)
 #' @param chartTitle chart title, \code{NULL}, character, or list of settings
 #' @param theme theme, \code{NULL} or one of \code{"dataviz"},
 #' \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
@@ -206,15 +228,16 @@
 #'   xAxis = list(title = list(text = "Observation",
 #'                             fontSize = 20,
 #'                             color = "silver"),
-#'                labels = list(color = "whitesmoke",
-#'                              fontSize = 17),
+#'                labels = amAxisLabels(color = "whitesmoke",
+#'                                      fontSize = 17),
 #'                adjust = 5),
 #'   yAxis = list(title = list(text = "Value",
 #'                             fontSize = 20,
 #'                             color = "silver"),
-#'                labels = list(color = "whitesmoke",
-#'                              fontSize = 17)),
-#'   valueFormatter = "#.#",
+#'                labels = amAxisLabels(color = "whitesmoke",
+#'                                      fontSize = 17)),
+#'   Xformatter = "#",
+#'   Yformatter = "#.00",
 #'   gridLines = list(color = "antiquewhite",
 #'                    opacity = 0.4,
 #'                    width = 1),
@@ -236,7 +259,8 @@ amRangeAreaChart <- function(
   yLimits = NULL,
   expandX = 0,
   expandY = 5,
-  valueFormatter = "#.",
+  Xformatter = ifelse(isDate, "yyyy-MM-dd", "#."),
+  Yformatter = "#.",
   chartTitle = NULL,
   theme = NULL,
   draggable = FALSE,
@@ -284,10 +308,13 @@ amRangeAreaChart <- function(
     return(settings)
   })
 
-  if(lubridate::is.Date(data[[xValue]]) || lubridate::is.POSIXt(data[[xValue]])){
+  data_x <- data[[xValue]]
+  if(lubridate::is.Date(data_x) || lubridate::is.POSIXt(data_x)){
     if(is.null(xLimits))
-      xLimits <- format(range(pretty(data[[xValue]])), "%Y-%m-%d")
-    data[[xValue]] <- format(data[[xValue]], "%Y-%m-%d")
+      xLimits <- format(range(pretty(data_x)), "%Y-%m-%d")
+    else
+      xLimits <- format(xLimits, "%Y-%m-%d")
+    data[[xValue]] <- format(data_x, "%Y-%m-%d")
     isDate <- TRUE
   }else{
     isDate <- FALSE
@@ -382,14 +409,21 @@ amRangeAreaChart <- function(
   }
 
   if(!isFALSE(tooltip)){
-    if(is.null(tooltip)){
-      text <- ifelse(isDate,
-                     "[bold][font-style:italic]{dateX}:[/] {valueY}[/]",
-                     "[bold]({valueX},{valueY})[/]"
+    tooltipText <- sprintf(ifelse(
+      isDate,
+      paste0(
+        "[bold][font-style:italic]{dateX.value.formatDate('%s')}:[/] ",
+        "{valueY.value.formatNumber('%s')}[/]"
+      ),
+      paste0(
+        "[bold]({valueX.value.formatNumber('%s')}, ",
+        "{valueY.value.formatNumber('%s')})[/]"
       )
+    ), Xformatter, Yformatter)
+    if(is.null(tooltip)){
       tooltip <-
         setNames(
-          rep(list(amTooltip(text = text, auto = FALSE)), length(yValues)),
+          rep(list(amTooltip(text = tooltipText, auto = FALSE)), length(yValues)),
           yValues
         )
     }else if("tooltip" %in% class(tooltip)){
@@ -441,32 +475,60 @@ amRangeAreaChart <- function(
     if(is.list(xAxis[["title"]])){
       xAxis[["title"]][["color"]] <- validateColor(xAxis[["title"]][["color"]])
     }
-    xAxis[["labels"]][["color"]] <- validateColor(xAxis[["labels"]][["color"]])
-  }
-  if(is.null(xAxis)){
+  }else if(is.null(xAxis)){
     xAxis <- list(
       title = list(
         text = xValue,
         fontSize = 20,
         color = NULL
       ),
-      labels = list(
+      labels = amAxisLabels(
         color = NULL,
         fontSize = 18,
-        rotation = 0
+        rotation = 0,
+        formatter = if(isDate){
+          amDateAxisFormatter()
+        }else{
+          Xformatter
+        }
       )
     )
   }else if(is.character(xAxis)){
-    xAxis <- list(title = list(text = xAxis))
-  }else if(is.character(xAxis[["title"]])){
-    xAxis[["title"]] <- list(text = xAxis[["title"]])
+    xAxis <- list(
+      title = list(
+        text = xAxis,
+        fontSize = 20,
+        color = NULL
+      ),
+      labels = amAxisLabels(
+        color = NULL,
+        fontSize = 18,
+        rotation = 0,
+        formatter = if(isDate){
+          amDateAxisFormatter()
+        }else{
+          Xformatter
+        }
+      )
+    )
   }
-
+  if(is.character(xAxis[["title"]])){
+    xAxis[["title"]] <- list(
+      text = xAxis[["title"]],
+      fontSize = 20,
+      color = NULL
+    )
+  }
   if(is.null(xAxis[["labels"]])){
-    xAxis[["labels"]] <- list(
+    xAxis[["labels"]] <- amAxisLabels(
       color = NULL,
       fontSize = 18,
-      rotation = 0
+      rotation = 0,
+      formatter = if(isDate){
+        amDateAxisFormatter()
+      }else{
+        Xformatter
+      }
     )
   }
 
@@ -474,11 +536,7 @@ amRangeAreaChart <- function(
     if(is.list(yAxis[["title"]])){
       yAxis[["title"]][["color"]] <- validateColor(yAxis[["title"]][["color"]])
     }
-    if(!isFALSE(yAxis[["labels"]])){
-      yAxis[["labels"]][["color"]] <- validateColor(yAxis[["labels"]][["color"]])
-    }
-  }
-  if(is.null(yAxis)){
+  }else if(is.null(yAxis)){
     yAxis <- list(
       title = if(length(yValues) == 1L) {
         list(
@@ -487,23 +545,41 @@ amRangeAreaChart <- function(
           color = NULL
         )
       },
-      labels = list(
+      labels = amAxisLabels(
         color = NULL,
         fontSize = 18,
-        rotation = 0
+        rotation = 0,
+        formatter = Yformatter
       )
     )
   }else if(is.character(yAxis)){
-    yAxis <- list(title = list(text = yAxis))
-  }else if(is.character(yAxis[["title"]])){
-    yAxis[["title"]] <- list(text = yAxis[["title"]])
+    yAxis <- list(
+      title = list(
+        text = yAxis,
+        fontSize = 20,
+        color = NULL
+      ),
+      labels = amAxisLabels(
+        color = NULL,
+        fontSize = 18,
+        rotation = 0,
+        formatter = Yformatter
+      )
+    )
   }
-
+  if(is.character(yAxis[["title"]])){
+    yAxis[["title"]] <- list(
+      text = yAxis[["title"]],
+      fontSize = 20,
+      color = NULL
+    )
+  }
   if(!isFALSE(yAxis[["labels"]]) && is.null(yAxis[["labels"]])){
-    yAxis[["labels"]] <- list(
+    yAxis[["labels"]] <- amAxisLabels(
       color = NULL,
       fontSize = 18,
-      rotation = 0
+      rotation = 0,
+      formatter = Yformatter
     )
   }
 
@@ -590,11 +666,10 @@ amRangeAreaChart <- function(
       isDate = isDate,
       yValues = apply(yValues, 1L, as.list),
       yValueNames = yValueNames,
-      minX = xLimits[1L], # l'ai-je mis dans le jsx ?
+      minX = xLimits[1L],
       maxX = xLimits[2L],
       minY = yLimits[1L],
       maxY = yLimits[2L],
-      valueFormatter = valueFormatter,
       chartTitle = chartTitle,
       theme = theme,
       draggable = draggable,
