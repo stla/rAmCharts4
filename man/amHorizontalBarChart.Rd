@@ -20,6 +20,7 @@ amHorizontalBarChart(
   tooltip = NULL,
   columnStyle = NULL,
   bullets = NULL,
+  alwaysShowBullets = FALSE,
   backgroundColor = NULL,
   cellWidth = NULL,
   columnWidth = NULL,
@@ -106,6 +107,9 @@ otherwise a named list of the form
 \code{\link{amRectangle}}; this can also be a
 single list of settings that will be applied to each series}
 
+\item{alwaysShowBullets}{logical, whether to always show the bullets;
+if \code{FALSE}, the bullets are shown only on hovering a column}
+
 \item{backgroundColor}{a color for the chart background}
 
 \item{cellWidth}{cell width in percent; for a simple bar chart, this is the
@@ -118,10 +122,20 @@ columns; for a grouped bar chart, this controls the spacing between the
 columns within a cluster of columns; \code{NULL} for the default value}
 
 \item{xAxis}{settings of the value axis given as a list, or just a string
-for the axis title}
+for the axis title; the list of settings has three possible fields:
+a field \code{title}, a list of settings for the axis title,
+a field \code{labels}, a list of settings for the axis labels created
+with \code{\link{amAxisLabels}},
+and a field \code{adjust}, a number defining the vertical adjustment of
+the axis (in pixels)}
 
 \item{yAxis}{settings of the category axis given as a list, or just a string
-for the axis title}
+for the axis title; the list of settings has three possible fields:
+a field \code{title}, a list of settings for the axis title,
+a field \code{labels}, a list of settings for the axis labels created
+with \code{\link{amAxisLabels}},
+and a field \code{adjust}, a number defining the horizontal adjustment of
+the axis (in pixels)}
 
 \item{scrollbarX}{logical, whether to add a scrollbar for the value axis}
 
@@ -169,9 +183,6 @@ given in \code{\link{amChart4Output}}}
 
 \item{elementId}{a HTML id for the container of the chart; ignored if the
 chart is displayed in Shiny, in which case the id is given by the Shiny id}
-
-\item{alwaysShowBullets}{logical, whether to always show the bullets;
-if \code{FALSE}, the bullets are shown only on hovering a column}
 }
 \description{
 Create a HTML widget displaying a horizontal bar chart.
@@ -198,12 +209,15 @@ amHorizontalBarChart(
   tooltip = "[font-style:italic #ffff00]{valueX}[/]",
   chartTitle =
     list(text = "Visits per country", fontSize = 22, color = "orangered"),
-  xAxis = list(title = list(text = "Country", color = "maroon")),
+  xAxis = list(
+    title = list(text = "Country", color = "maroon")
+  ),
   yAxis = list(title = list(text = "Visits", color = "maroon")),
   xLimits = c(0, 4000),
-  valueFormatter = "#.",
+  valueFormatter = "#,###",
   caption = list(text = "Year 2018", color = "red"),
   theme = "moonrisekingdom")
+
 
 # a grouped horizontal bar chart ####
 

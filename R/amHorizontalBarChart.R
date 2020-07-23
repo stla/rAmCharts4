@@ -63,9 +63,19 @@
 #' columns; for a grouped bar chart, this controls the spacing between the
 #' columns within a cluster of columns; \code{NULL} for the default value
 #' @param xAxis settings of the value axis given as a list, or just a string
-#' for the axis title
+#'   for the axis title; the list of settings has three possible fields:
+#'   a field \code{title}, a list of settings for the axis title,
+#'   a field \code{labels}, a list of settings for the axis labels created
+#'   with \code{\link{amAxisLabels}},
+#'   and a field \code{adjust}, a number defining the vertical adjustment of
+#'   the axis (in pixels)
 #' @param yAxis settings of the category axis given as a list, or just a string
-#' for the axis title
+#'   for the axis title; the list of settings has three possible fields:
+#'   a field \code{title}, a list of settings for the axis title,
+#'   a field \code{labels}, a list of settings for the axis labels created
+#'   with \code{\link{amAxisLabels}},
+#'   and a field \code{adjust}, a number defining the horizontal adjustment of
+#'   the axis (in pixels)
 #' @param scrollbarX logical, whether to add a scrollbar for the value axis
 #' @param scrollbarY logical, whether to add a scrollbar for the category axis
 #' @param gridLines settings of the grid lines
@@ -127,12 +137,15 @@
 #'   tooltip = "[font-style:italic #ffff00]{valueX}[/]",
 #'   chartTitle =
 #'     list(text = "Visits per country", fontSize = 22, color = "orangered"),
-#'   xAxis = list(title = list(text = "Country", color = "maroon")),
+#'   xAxis = list(
+#'     title = list(text = "Country", color = "maroon")
+#'   ),
 #'   yAxis = list(title = list(text = "Visits", color = "maroon")),
 #'   xLimits = c(0, 4000),
-#'   valueFormatter = "#.",
+#'   valueFormatter = "#,###",
 #'   caption = list(text = "Year 2018", color = "red"),
 #'   theme = "moonrisekingdom")
+#'
 #'
 #' # a grouped horizontal bar chart ####
 #'
@@ -192,6 +205,7 @@ amHorizontalBarChart <- function(
   tooltip = NULL, # default
   columnStyle = NULL, # default
   bullets = NULL,
+  alwaysShowBullets = FALSE,
   backgroundColor = NULL,
   cellWidth = NULL, # default
   columnWidth = NULL, # default
@@ -370,9 +384,7 @@ amHorizontalBarChart <- function(
     if(is.list(xAxis[["title"]])){
       xAxis[["title"]][["color"]] <- validateColor(xAxis[["title"]][["color"]])
     }
-    xAxis[["labels"]][["color"]] <- validateColor(xAxis[["labels"]][["color"]])
-  }
-  if(is.null(xAxis)){
+  }else if(is.null(xAxis)){
     xAxis <- list(
       title = if(length(values) == 1L) {
         list(
@@ -381,23 +393,41 @@ amHorizontalBarChart <- function(
           color = NULL
         )
       },
-      labels = list(
+      labels = amAxisLabels(
         color = NULL,
         fontSize = 18,
-        rotation = 0
+        rotation = 0,
+        formatter = valueFormatter
       )
     )
   }else if(is.character(xAxis)){
-    xAxis <- list(title = list(text = xAxis))
+    xAxis <- list(
+      title = list(
+        text = xAxis,
+        fontSize = 20,
+        color = NULL
+      ),
+      labels = amAxisLabels(
+        color = NULL,
+        fontSize = 18,
+        rotation = 0,
+        formatter = valueFormatter
+      )
+    )
   }else if(is.character(xAxis[["title"]])){
-    xAxis[["title"]] <- list(text = xAxis[["title"]])
+    xAxis[["title"]] <- list(
+      text = xAxis[["title"]],
+      fontSize = 20,
+      color = NULL
+    )
   }
 
   if(is.null(xAxis[["labels"]])){
-    xAxis[["labels"]] <- list(
+    xAxis[["labels"]] <- amAxisLabels(
       color = NULL,
       fontSize = 18,
-      rotation = 0
+      rotation = 0,
+      formatter = valueFormatter
     )
   }
 
@@ -405,32 +435,48 @@ amHorizontalBarChart <- function(
     if(is.list(yAxis[["title"]])){
       yAxis[["title"]][["color"]] <- validateColor(yAxis[["title"]][["color"]])
     }
-    yAxis[["labels"]][["color"]] <- validateColor(yAxis[["labels"]][["color"]])
-  }
-  if(is.null(yAxis)){
+  }else if(is.null(yAxis)){
     yAxis <- list(
       title = list(
         text = category,
         fontSize = 20,
         color = NULL
       ),
-      labels = list(
+      labels = amAxisLabels(
         color = NULL,
         fontSize = 18,
-        rotation = 0
+        rotation = 0,
+        formatter = valueFormatter
       )
     )
   }else if(is.character(yAxis)){
-    yAxis <- list(title = list(text = yAxis))
+    yAxis <- list(
+      title = list(
+        text = yAxis,
+        fontSize = 20,
+        color = NULL
+      ),
+      labels = amAxisLabels(
+        color = NULL,
+        fontSize = 18,
+        rotation = 0,
+        formatter = valueFormatter
+      )
+    )
   }else if(is.character(yAxis[["title"]])){
-    yAxis[["title"]] <- list(text = yAxis[["title"]])
+    yAxis[["title"]] <- list(
+      text = yAxis[["title"]],
+      fontSize = 20,
+      color = NULL
+    )
   }
 
   if(is.null(yAxis[["labels"]])){
-    yAxis[["labels"]] <- list(
+    yAxis[["labels"]] <- amAxisLabels(
       color = NULL,
       fontSize = 18,
-      rotation = 0
+      rotation = 0,
+      formatter = valueFormatter
     )
   }
 

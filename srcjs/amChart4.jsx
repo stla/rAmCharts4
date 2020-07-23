@@ -573,6 +573,7 @@ class AmHorizontalBarChart extends React.PureComponent {
       columnWidth = this.props.columnWidth,
       xAxis = this.props.xAxis,
       yAxis = this.props.yAxis,
+      cursor = this.props.cursor,
       gridLines = this.props.gridLines,
       draggable = this.props.draggable,
       tooltips = this.props.tooltip,
@@ -735,6 +736,7 @@ class AmHorizontalBarChart extends React.PureComponent {
 
 		/* ~~~~\  category axis  /~~~~ */
 		let categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+    categoryAxis.paddingRight = yAxis.adjust || 0;
 		categoryAxis.renderer.inversed = true;
 		categoryAxis.renderer.grid.template.location = 0;
 		categoryAxis.renderer.cellStartLocation = 1 - cellWidth/100;
@@ -754,11 +756,12 @@ class AmHorizontalBarChart extends React.PureComponent {
 		categoryAxis.dataFields.category = category;
 		categoryAxis.renderer.grid.template.disabled = true;
 		categoryAxis.renderer.minGridDistance = 50;
-		categoryAxis.numberFormatter.numberFormat = valueFormatter;
+//		categoryAxis.numberFormatter.numberFormat = valueFormatter;
     categoryAxis.cursorTooltipEnabled = false;
 
 		/* ~~~~\  value axis  /~~~~ */
 		let valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
+    valueAxis.paddingBottom = xAxis.adjust || 0;
     valueAxis.renderer.grid.template.stroke =
       gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
     valueAxis.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.15;
@@ -770,6 +773,11 @@ class AmHorizontalBarChart extends React.PureComponent {
 			valueAxis.title.fill =
 			  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
 		}
+		if(xAxis.labels.formatter) {
+      valueAxis.numberFormatter = new am4core.NumberFormatter();
+      valueAxis.numberFormatter.numberFormat = xAxis.labels.formatter;
+      valueAxis.adjustLabelPrecision = false;
+    }
 		let xAxisLabels = valueAxis.renderer.labels.template;
 		xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
 		xAxisLabels.rotation = xAxis.labels.rotation || 0;
