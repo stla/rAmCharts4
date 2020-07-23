@@ -566,6 +566,7 @@ class AmHorizontalBarChart extends React.PureComponent {
         HTMLWidgets.dataframeToD3(utils.subset(this.props.data2, values)) :
         null,
       valueNames = this.props.valueNames,
+      showValues = this.props.showValues,
       minValue = this.props.minValue,
       maxValue = this.props.maxValue,
       cellWidth = this.props.cellWidth,
@@ -649,10 +650,11 @@ class AmHorizontalBarChart extends React.PureComponent {
 			title.fillOpacity = 1;
 		}
 
+
     /* ~~~~\  caption  /~~~~ */
     let chartCaption = this.props.caption;
-    if (chartCaption) {
-      var caption = chart.chartContainer.createChild(am4core.Label);
+    if(chartCaption) {
+      let caption = chart.chartContainer.createChild(am4core.Label);
       caption.text = chartCaption.text;
       caption.fill =
         chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
@@ -785,6 +787,7 @@ class AmHorizontalBarChart extends React.PureComponent {
       valueAxis.cursorTooltipEnabled = false;
     }
 
+
 		/* ~~~~\ cursor /~~~~ */
 		if(cursor) {
       chart.cursor = new am4charts.XYCursor();
@@ -804,6 +807,7 @@ class AmHorizontalBarChart extends React.PureComponent {
 //      markerTemplate.stroke = am4core.color("#000000"); no effect
     }
 
+
 		/* ~~~~\  function handling the drag event  /~~~~ */
 		function handleDrag(event) {
 			var dataItem = event.target.dataItem;
@@ -819,8 +823,10 @@ class AmHorizontalBarChart extends React.PureComponent {
 			event.target.isHover = true;
 		}
 
+
 		values.forEach(function(value, index){
-      var series = chart.series.push(new am4charts.ColumnSeries());
+
+      let series = chart.series.push(new am4charts.ColumnSeries());
       series.dataFields.categoryY = category;
       series.dataFields.valueX = value;
       series.name = valueNames[value];
@@ -829,34 +835,38 @@ class AmHorizontalBarChart extends React.PureComponent {
 
 
       /* ~~~~\  value label  /~~~~ */
-      var valueLabel = new am4charts.LabelBullet();
-      series.bullets.push(valueLabel);
-      valueLabel.label.text =
-        "{valueX.value.formatNumber('" + valueFormatter + "')}";
-      valueLabel.label.hideOversized = true;
-      valueLabel.label.truncate = false;
-      valueLabel.strokeOpacity = 0;
-			valueLabel.adapter.add("dx", (x, target) => {
-				if(target.dataItem.valueX > 0) {
-					return -10;
-				} else {
-					return 10;
-				}
-			});
-			valueLabel.label.adapter.add("horizontalCenter", (x, target) => {
-				if(target.dataItem.valueX > 0) {
-					return "left";
-				} else {
-					return "right";
-				}
-			});
-			valueLabel.label.adapter.add("dx", (x, target) => {
-				if(target.dataItem.valueX > 0) {
-					return 13;
-				} else {
-					return -13;
-				}
-			});
+      let valueLabel;
+      if(showValues) {
+        valueLabel = new am4charts.LabelBullet();
+        series.bullets.push(valueLabel);
+        valueLabel.label.text =
+          "{valueX.value.formatNumber('" + valueFormatter + "')}";
+        valueLabel.label.hideOversized = true;
+        valueLabel.label.truncate = false;
+        valueLabel.strokeOpacity = 0;
+  			valueLabel.adapter.add("dx", (x, target) => {
+  				if(target.dataItem.valueX > 0) {
+  					return -10;
+  				} else {
+  					return 10;
+        	}
+			  });
+			  valueLabel.label.adapter.add("horizontalCenter", (x, target) => {
+				  if(target.dataItem.valueX > 0) {
+					  return "left";
+				  } else {
+					  return "right";
+				  }
+			  });
+			  valueLabel.label.adapter.add("dx", (x, target) => {
+				  if(target.dataItem.valueX > 0) {
+					  return 13;
+				  } else {
+					  return -13;
+				  }
+			  });
+      }
+
 
       /* ~~~~\  bullet  /~~~~ */
       let bullet;
@@ -892,7 +902,7 @@ class AmHorizontalBarChart extends React.PureComponent {
         // on dragging stop
         bullet.events.on("dragstop", event => {
           handleDrag(event);
-          var dataItem = event.target.dataItem;
+          let dataItem = event.target.dataItem;
           dataItem.column.isHover = false;
           event.target.isHover = false;
           dataCopy[dataItem.index][value] = dataItem.values.valueX.value;
@@ -992,7 +1002,7 @@ class AmHorizontalBarChart extends React.PureComponent {
       // you can change any property on hover state and it will be animated
       columnHoverState.properties.fillOpacity = 1;
       columnHoverState.properties.strokeWidth = columnStyle.strokeWidth + 2;
-      if(tooltips) {
+      if(tooltips && showValues) {
         // hide label when hovered because the tooltip is shown
         columnTemplate.events.on("over", event => {
           let dataItem = event.target.dataItem;
@@ -1016,7 +1026,7 @@ class AmHorizontalBarChart extends React.PureComponent {
         // when columns position changes, adjust minX/maxX of bullets so that we could only dragg horizontally
   			columnTemplate.events.on("positionchanged", event => {
 	  			let dataItem = event.target.dataItem;
-			  	if(dataItem.bullets !== undefined){
+			  	if(dataItem.bullets !== undefined) {
   			  	let itemBullet = dataItem.bullets.getKey(bullet.uid);
 	  			  let column = dataItem.column;
   		  		itemBullet.minY = column.pixelY + column.pixelHeight / 2;
@@ -1033,7 +1043,7 @@ class AmHorizontalBarChart extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    if (this.chart) {
+    if(this.chart) {
       this.chart.dispose();
     }
   }

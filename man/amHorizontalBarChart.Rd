@@ -2,7 +2,7 @@
 % Please edit documentation in R/amHorizontalBarChart.R
 \name{amHorizontalBarChart}
 \alias{amHorizontalBarChart}
-\title{Create a HTML widget displaying a horizontal bar chart}
+\title{HTML widget displaying a horizontal bar chart}
 \usage{
 amHorizontalBarChart(
   data,
@@ -10,6 +10,7 @@ amHorizontalBarChart(
   category,
   values,
   valueNames = NULL,
+  showValues = TRUE,
   xLimits = NULL,
   expandX = 5,
   valueFormatter = "#.",
@@ -58,6 +59,8 @@ form \code{list(value1 = "ValueName1", value2 = "ValueName2", ...)} where
 \code{value1}, \code{value2}, ... are the column names given in
 \code{values} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
 desired names to appear in the legend}
+
+\item{showValues}{logical, whether to display the values on the chart}
 
 \item{xLimits}{range of the x-axis, a vector of two values specifying
 the left and the right limits of the x-axis; \code{NULL} for default values}

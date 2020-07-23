@@ -1,4 +1,4 @@
-#' Create a HTML widget displaying a horizontal bar chart
+#' HTML widget displaying a horizontal bar chart
 #' @description Create a HTML widget displaying a horizontal bar chart.
 #'
 #' @param data a dataframe
@@ -16,6 +16,7 @@
 #' \code{value1}, \code{value2}, ... are the column names given in
 #' \code{values} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
 #' desired names to appear in the legend
+#' @param showValues logical, whether to display the values on the chart
 #' @param xLimits range of the x-axis, a vector of two values specifying
 #' the left and the right limits of the x-axis; \code{NULL} for default values
 #' @param expandX if \code{xLimits = NULL}, a percentage of the range of the
@@ -181,6 +182,7 @@ amHorizontalBarChart <- function(
   category,
   values,
   valueNames = NULL, # default
+  showValues = TRUE,
   xLimits = NULL,
   expandX = 5,
   valueFormatter = "#.",
@@ -513,6 +515,7 @@ amHorizontalBarChart <- function(
       category = category,
       values = as.list(values),
       valueNames = valueNames,
+      showValues = showValues,
       minValue = xLimits[1L],
       maxValue = xLimits[2L],
       valueFormatter = valueFormatter,
