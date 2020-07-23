@@ -21,7 +21,7 @@
 #' the left and the right limits of the x-axis; \code{NULL} for default values
 #' @param expandX if \code{xLimits = NULL}, a percentage of the range of the
 #'   x-axis used to expand this range
-#' @param valueFormatter a number formatter; see
+#' @param valueFormatter a number formatter; see XXX
 #' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}
 #' @param chartTitle chart title, \code{NULL}, character, or list of settings
 #' @param theme theme, \code{NULL} or one of \code{"dataviz"},
@@ -445,8 +445,7 @@ amHorizontalBarChart <- function(
       labels = amAxisLabels(
         color = NULL,
         fontSize = 18,
-        rotation = 0,
-        formatter = valueFormatter
+        rotation = 0
       )
     )
   }else if(is.character(yAxis)){
@@ -459,8 +458,7 @@ amHorizontalBarChart <- function(
       labels = amAxisLabels(
         color = NULL,
         fontSize = 18,
-        rotation = 0,
-        formatter = valueFormatter
+        rotation = 0
       )
     )
   }else if(is.character(yAxis[["title"]])){
@@ -475,8 +473,7 @@ amHorizontalBarChart <- function(
     yAxis[["labels"]] <- amAxisLabels(
       color = NULL,
       fontSize = 18,
-      rotation = 0,
-      formatter = valueFormatter
+      rotation = 0
     )
   }
 

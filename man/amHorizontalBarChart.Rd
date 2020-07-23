@@ -69,7 +69,7 @@ the left and the right limits of the x-axis; \code{NULL} for default values}
 \item{expandX}{if \code{xLimits = NULL}, a percentage of the range of the
 x-axis used to expand this range}
 
-\item{valueFormatter}{a number formatter; see
+\item{valueFormatter}{a number formatter; see XXX
 \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}}
 
 \item{chartTitle}{chart title, \code{NULL}, character, or list of settings}

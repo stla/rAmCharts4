@@ -215,20 +215,21 @@ class AmBarChart extends React.PureComponent {
 
 		/* ~~~~\  category axis  /~~~~ */
 		let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+		categoryAxis.paddingRight = xAxis.adjust || 0;
 		categoryAxis.renderer.grid.template.location = 0;
 		categoryAxis.renderer.cellStartLocation = 1 - cellWidth/100;
 		categoryAxis.renderer.cellEndLocation = cellWidth/100;
-		if(xAxis && xAxis.title && xAxis.title.text !== ""){
+		if(xAxis && xAxis.title && xAxis.title.text !== "") {
   		categoryAxis.title.text = xAxis.title.text || category;
   		categoryAxis.title.fontWeight = "bold";
   		categoryAxis.title.fontSize = xAxis.title.fontSize || 20;
   		categoryAxis.title.fill =
   		  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
 		}
-		var xAxisLabels = categoryAxis.renderer.labels.template;
+		let xAxisLabels = categoryAxis.renderer.labels.template;
 		xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
 		xAxisLabels.rotation = xAxis.labels.rotation || 0;
-		if(xAxisLabels.rotation !== 0){
+		if(xAxisLabels.rotation !== 0) {
 		  xAxisLabels.horizontalCenter = "right";
 		}
 		xAxisLabels.fill =
@@ -236,11 +237,11 @@ class AmBarChart extends React.PureComponent {
 		categoryAxis.dataFields.category = category;
 		categoryAxis.renderer.grid.template.disabled = true;
 		categoryAxis.renderer.minGridDistance = 50;
-		categoryAxis.numberFormatter.numberFormat = valueFormatter;
     categoryAxis.cursorTooltipEnabled = false;
 
 		/* ~~~~\  value axis  /~~~~ */
 		let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+		valueAxis.paddingRight = yAxis.adjust || 0;
     valueAxis.renderer.grid.template.stroke =
       gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
     valueAxis.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.15;
@@ -253,6 +254,11 @@ class AmBarChart extends React.PureComponent {
 			  yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
 		}
 		let yAxisLabels = valueAxis.renderer.labels.template;
+		if(yAxis.labels.formatter) {
+      valueAxis.numberFormatter = new am4core.NumberFormatter();
+      valueAxis.numberFormatter.numberFormat = yAxis.labels.formatter;
+      valueAxis.adjustLabelPrecision = false;
+    }
 		yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
 		yAxisLabels.rotation = yAxis.labels.rotation || 0;
 		yAxisLabels.fill =

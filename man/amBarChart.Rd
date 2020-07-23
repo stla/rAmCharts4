@@ -69,7 +69,7 @@ the lower and the upper limits of the y-axis; \code{NULL} for default values}
 \item{expandY}{if \code{yLimits = NULL}, a percentage of the range of the
 y-axis used to expand this range}
 
-\item{valueFormatter}{a number formatter; see
+\item{valueFormatter}{a number formatter; see XXXX
 \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}}
 
 \item{chartTitle}{chart title, \code{NULL}, character, or list of settings}
@@ -122,10 +122,20 @@ columns; for a grouped bar chart, this controls the spacing between the
 columns within a cluster of columns; \code{NULL} for the default value}
 
 \item{xAxis}{settings of the category axis given as a list, or just a string
-for the axis title}
+for the axis title; the list of settings has three possible fields:
+a field \code{title}, a list of settings for the axis title,
+a field \code{labels}, a list of settings for the axis labels created
+with \code{\link{amAxisLabels}},
+and a field \code{adjust}, a number defining the vertical adjustment of
+the axis (in pixels)}
 
 \item{yAxis}{settings of the value axis given as a list, or just a string
-for the axis title}
+for the axis title; the list of settings has three possible fields:
+a field \code{title}, a list of settings for the axis title,
+a field \code{labels}, a list of settings for the axis labels created
+with \code{\link{amAxisLabels}},
+and a field \code{adjust}, a number defining the horizontal adjustment of
+the axis (in pixels)}
 
 \item{scrollbarX}{logical, whether to add a scrollbar for the category axis}
 
