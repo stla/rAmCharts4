@@ -2,7 +2,7 @@
 % Please edit documentation in R/amLineChart.R
 \name{amLineChart}
 \alias{amLineChart}
-\title{Create a HTML widget displaying a line chart}
+\title{HTML widget displaying a line chart}
 \usage{
 amLineChart(
   data,
@@ -14,7 +14,8 @@ amLineChart(
   yLimits = NULL,
   expandX = 0,
   expandY = 5,
-  valueFormatter = "#.",
+  Xformatter = ifelse(isDate, "yyyy-MM-dd", "#."),
+  Yformatter = "#.",
   trend = FALSE,
   chartTitle = NULL,
   theme = NULL,
@@ -74,8 +75,31 @@ x-axis used to expand this range}
 \item{expandY}{if \code{yLimits = NULL}, a percentage of the range of the
 y-axis used to expand this range}
 
-\item{valueFormatter}{a number formatter for XXXX; see
-\url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}}
+\item{Xformatter}{a
+\href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}{number formatting string}
+if \code{xValue} is set to a numeric column of \code{data};
+it is used to format the values displayed in the cursor tooltips if
+\code{cursor = TRUE}, the labels of the x-axis unless you specify
+your own formatter in the \code{labels} field of the list passed on to
+the \code{xAxis} option, and the values displayed in the tooltips unless
+you specify your own tooltip text;
+if \code{xValue} is set to a date column of \code{data}, this option should
+be set to a
+\href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-date-time/}{date formatting string},
+and it has an effect only on the values displayed in the tooltips (unless
+you specify your own tooltip text); formatting the dates on the x-axis is
+done via the \code{labels} field of the list passed on to the \code{xAxis}
+option}
+
+\item{Yformatter}{a
+\href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}{number formatting string};
+it is used to format the values displayed in the cursor tooltips if
+\code{cursor = TRUE}, the labels of the y-axis unless you specify
+your own formatter in the \code{labels} field of the list passed on to
+the \code{yAxis} option, and the values displayed in the tooltips unless
+you specify your own tooltip text (see the first example of
+\code{\link{amBarChart}} for the way to set
+a number formatter in the tooltip text)}
 
 \item{trend}{option to request trend lines and to set their settings;
 \code{FALSE} for no trend line, otherwise a named list of the form
@@ -163,10 +187,20 @@ single list of settings that will be applied to each line}
 \item{backgroundColor}{a color for the chart background}
 
 \item{xAxis}{settings of the x-axis given as a list, or just a string
-for the axis title}
+for the axis title; the list of settings has three possible fields:
+a field \code{title}, a list of settings for the axis title,
+a field \code{labels}, a list of settings for the axis labels created
+with \code{\link{amAxisLabels}},
+and a field \code{adjust}, a number defining the vertical adjustment of
+the axis (in pixels)}
 
 \item{yAxis}{settings of the y-axis given as a list, or just a string
-for the axis title}
+for the axis title; the list of settings has three possible fields:
+a field \code{title}, a list of settings for the axis title,
+a field \code{labels}, a list of settings for the axis labels created
+with \code{\link{amAxisLabels}},
+and a field \code{adjust}, a number defining the horizontal adjustment of
+the axis (in pixels)}
 
 \item{scrollbarX}{logical, whether to add a scrollbar for the category axis}
 
@@ -276,15 +310,15 @@ amLineChart(
   xAxis = list(title = list(text = "Observation",
                             fontSize = 21,
                             color = "silver"),
-               labels = list(color = "whitesmoke",
-                             fontSize = 17)),
+               labels = amAxisLabels(color = "whitesmoke",
+                                     fontSize = 17)),
   yAxis = list(title = list(text = "Value",
                             fontSize = 21,
                             color = "silver"),
-               labels = list(color = "whitesmoke",
-                             fontSize = 14)),
+               labels = amAxisLabels(color = "whitesmoke",
+                                     fontSize = 14)),
   yLimits = c(-3, 3),
-  valueFormatter = "#.##",
+  Yformatter = "#.00",
   caption = list(text = "[font-style:italic]try to drag the yellow line![/]",
                  color = "yellow"),
   gridLines = list(color = "whitesmoke",
@@ -299,23 +333,34 @@ library(lubridate)
 
 set.seed(666)
 dat <- data.frame(
-  date = ymd(180101) + months(0:11),
-  visits = rpois(12, 20)
+  date = ymd(180101) + days(0:60),
+  visits = rpois(61, 20)
 )
 
 amLineChart(
   data = dat,
-  width = "700px",
+  width = "750px",
   xValue = "date",
   yValues = "visits",
   draggable = TRUE,
   chartTitle = "Number of visits",
-  xAxis = "Date",
+  xAxis = list(
+    title = "Date",
+    labels = amAxisLabels(
+      formatter = amDateAxisFormatter(
+        day = c("dt", "[bold]MMM[/] dt"),
+        week = c("dt", "[bold]MMM[/] dt")
+      )
+    )
+  ),
   yAxis = "Visits",
+  xLimits = range(dat$date),
   yLimits = c(0, 35),
   backgroundColor = "whitesmoke",
-  tooltip = "[bold][font-style:italic]{dateX}[/]\nvisits: {valueY}[/]",
-  valueFormatter = "#",
+  tooltip = paste0(
+    "[bold][font-style:italic]{dateX.value.formatDate('yyyy/MM/dd')}[/]",
+    "\nvisits: {valueY}[/]"
+  ),
   caption = list(text = "Year 2018"),
   theme = "material")
 
@@ -348,8 +393,9 @@ amLineChart(
   xAxis = list(title = list(text = "x",
                             fontSize = 21,
                             color = "navyblue"),
-               labels = list(color = "midnightblue",
-                             fontSize = 17)),
+               labels = amAxisLabels(
+                 color = "midnightblue",
+                 fontSize = 17)),
   yAxis = list(title = list(text = "density",
                             fontSize = 21,
                             color = "navyblue"),

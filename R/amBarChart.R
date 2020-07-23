@@ -528,7 +528,6 @@ amBarChart <- function(
       color = NULL
     )
   }
-
   if(is.null(xAxis[["labels"]])){
     xAxis[["labels"]] <- amAxisLabels(
       color = NULL,

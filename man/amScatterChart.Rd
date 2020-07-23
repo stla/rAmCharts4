@@ -145,10 +145,20 @@ single list of settings that will be applied to each series}
 \item{backgroundColor}{a color for the chart background}
 
 \item{xAxis}{settings of the x-axis given as a list, or just a string
-for the axis title}
+for the axis title; the list of settings has three possible fields:
+a field \code{title}, a list of settings for the axis title,
+a field \code{labels}, a list of settings for the axis labels created
+with \code{\link{amAxisLabels}},
+and a field \code{adjust}, a number defining the vertical adjustment of
+the axis (in pixels)}
 
 \item{yAxis}{settings of the y-axis given as a list, or just a string
-for the axis title}
+for the axis title; the list of settings has three possible fields:
+a field \code{title}, a list of settings for the axis title,
+a field \code{labels}, a list of settings for the axis labels created
+with \code{\link{amAxisLabels}},
+and a field \code{adjust}, a number defining the horizontal adjustment of
+the axis (in pixels)}
 
 \item{scrollbarX}{logical, whether to add a scrollbar for the category axis}
 

@@ -13,10 +13,11 @@ amAxisLabels(color = NULL, fontSize = 18, rotation = 0, formatter = NULL)
 
 \item{rotation}{rotation angle}
 
-\item{formatter}{a formatting string for the labels; see
-\href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}{Formatting Numbers}
-and
-\href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-date-time/}{Formatting Date and Time}}
+\item{formatter}{this option defines the format of the axis labels;
+this should be a
+\href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}{number formatting string}
+for a numeric axis, and a list created with
+\code{\link{amDateAxisFormatter}} for a date axis}
 }
 \value{
 A list of settings for the labels of an axis.

@@ -1,3 +1,4 @@
+// jshint ignore: start
 import { reactWidget } from 'reactR';
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
@@ -1353,7 +1354,7 @@ class AmLineChart extends React.PureComponent {
 		  XAxis = chart.xAxes.push(new am4charts.ValueAxis());
 		}
 		if(xAxis) {
-      XAxis.paddingBottom = xAxis.vjust || 0;
+      XAxis.paddingBottom = xAxis.adjust || 0;
 		}
 		XAxis.strictMinMax = true;
 		XAxis.min = minX;
@@ -1366,7 +1367,28 @@ class AmLineChart extends React.PureComponent {
   		XAxis.title.fill =
   		  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
 		}
-		let xAxisLabels = XAxis.renderer.labels.template;
+    let xAxisLabels = XAxis.renderer.labels.template;
+    if(xAxis.labels.formatter) {
+      let formatter = xAxis.labels.formatter;
+      if(isDate) {
+        XAxis.dateFormats.setKey("day", formatter.day[0]); 
+        if(formatter.day[1]) {
+          XAxis.periodChangeDateFormats.setKey("day", formatter.day[1]);
+        }
+        XAxis.dateFormats.setKey("week", formatter.week[0]); 
+        if(formatter.week[1]) {
+          XAxis.periodChangeDateFormats.setKey("week", formatter.week[1]);
+        }
+        XAxis.dateFormats.setKey("month", formatter.month[0]); 
+        if(formatter.month[1]) {
+          XAxis.periodChangeDateFormats.setKey("month", formatter.month[1]);
+        }
+      } else {
+        XAxis.numberFormatter = new am4core.NumberFormatter();
+        XAxis.numberFormatter.numberFormat = formatter;
+        XAxis.adjustLabelPrecision = false;
+      }
+    }
 		xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
 		xAxisLabels.rotation = xAxis.labels.rotation || 0;
 		if(xAxisLabels.rotation !== 0) {
@@ -1381,7 +1403,6 @@ class AmLineChart extends React.PureComponent {
   	}
 		XAxis.renderer.grid.template.disabled = true;
 		XAxis.renderer.minGridDistance = 50;
-		XAxis.numberFormatter.numberFormat = valueFormatter;
     if(cursor &&
       (cursor === true || !cursor.axes || ["x","xy"].indexOf(cursor.axes)) > -1)
     {
@@ -1393,20 +1414,28 @@ class AmLineChart extends React.PureComponent {
 
 		/* ~~~~\  y-axis  /~~~~ */
 		let YAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    if(yAxis) {
+      YAxis.paddingRight = yAxis.adjust || 0;
+    }
     YAxis.renderer.grid.template.stroke =
       gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
     YAxis.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.15;
     YAxis.renderer.grid.template.strokeWidth = gridLines.width || 1;
-		if (yAxis && yAxis.title && yAxis.title.text !== "") {
+		if(yAxis && yAxis.title && yAxis.title.text !== "") {
 			YAxis.title.text = yAxis.title.text;
 			YAxis.title.fontWeight = "bold";
 			YAxis.title.fontSize = yAxis.title.fontSize || 20;
 			YAxis.title.fill =
 			  yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
 		}
-		if(yAxis.labels !== false) {
+		if(yAxis.labels) {
   		let yAxisLabels = YAxis.renderer.labels.template;
-	  	yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
+      if(yAxis.labels.formatter) {
+        YAxis.numberFormatter = new am4core.NumberFormatter();
+        YAxis.numberFormatter.numberFormat = yAxis.labels.formatter;
+        YAxis.adjustLabelPrecision = false;
+      }
+      yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
 		  yAxisLabels.rotation = yAxis.labels.rotation || 0;
 		  yAxisLabels.fill =
 		    yAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
@@ -2038,6 +2067,9 @@ class AmScatterChart extends React.PureComponent {
 		} else {
 		  XAxis = chart.xAxes.push(new am4charts.ValueAxis());
 		}
+    if(xAxis) {
+      XAxis.paddingBottom = xAxis.adjust || 0;
+    }
 		XAxis.strictMinMax = true;
 		XAxis.min = minX;
 		XAxis.max = maxX;
@@ -2049,8 +2081,18 @@ class AmScatterChart extends React.PureComponent {
   		XAxis.title.fill =
   		  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
 		}
-		var xAxisLabels = XAxis.renderer.labels.template;
-		xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
+		let xAxisLabels = XAxis.renderer.labels.template;
+    if(xAxis.labels.formatter) {
+      if(isDate) {
+        XAxis.dateFormatter = new am4core.DateFormatter();
+        XAxis.dateFormatter.dateFormat = xAxis.labels.formatter;
+      } else {
+        XAxis.numberFormatter = new am4core.NumberFormatter();
+        XAxis.numberFormatter.numberFormat = xAxis.labels.formatter;
+        XAxis.adjustLabelPrecision = false;
+      }
+    }
+    xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
 		xAxisLabels.rotation = xAxis.labels.rotation || 0;
 		if(xAxisLabels.rotation !== 0){
 		  xAxisLabels.horizontalCenter = "right";
@@ -2064,7 +2106,6 @@ class AmScatterChart extends React.PureComponent {
   	}
 		XAxis.renderer.grid.template.disabled = true;
 		XAxis.renderer.minGridDistance = 50;
-		XAxis.numberFormatter.numberFormat = valueFormatter;
     if(cursor &&
       (cursor === true || !cursor.axes || ["x","xy"].indexOf(cursor.axes)) > -1)
     {
@@ -2076,11 +2117,14 @@ class AmScatterChart extends React.PureComponent {
 
 		/* ~~~~\  y-axis  /~~~~ */
 		let YAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    if(yAxis) {
+      YAxis.paddingRight = yAxis.adjust || 0;
+    }
     YAxis.renderer.grid.template.stroke =
       gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
     YAxis.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.15;
     YAxis.renderer.grid.template.strokeWidth = gridLines.width || 1;
-		if (yAxis && yAxis.title && yAxis.title.text !== "") {
+		if(yAxis && yAxis.title && yAxis.title.text !== "") {
 			YAxis.title.text = yAxis.title.text;
 			YAxis.title.fontWeight = "bold";
 			YAxis.title.fontSize = yAxis.title.fontSize || 20;
@@ -2088,7 +2132,12 @@ class AmScatterChart extends React.PureComponent {
 			  yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
 		}
 		let yAxisLabels = YAxis.renderer.labels.template;
-		yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
+    if(yAxis.labels.formatter) {
+      YAxis.numberFormatter = new am4core.NumberFormatter();
+      YAxis.numberFormatter.numberFormat = yAxis.labels.formatter;
+      YAxis.adjustLabelPrecision = false;
+    }
+    yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
 		yAxisLabels.rotation = yAxis.labels.rotation || 0;
 		yAxisLabels.fill =
 		  yAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
@@ -2697,7 +2746,7 @@ class AmRangeAreaChart extends React.PureComponent {
 		  XAxis = chart.xAxes.push(new am4charts.ValueAxis());
 		}
 		if(xAxis) {
-      XAxis.paddingBottom = xAxis.vjust || 0;
+      XAxis.paddingBottom = xAxis.adjust || 0;
 		}
 		XAxis.strictMinMax = true;
 		XAxis.min = minX;
@@ -2711,7 +2760,17 @@ class AmRangeAreaChart extends React.PureComponent {
   		  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
 		}
 		let xAxisLabels = XAxis.renderer.labels.template;
-		xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
+    if(xAxis.labels.formatter) {
+      if(isDate) {
+        XAxis.dateFormatter = new am4core.DateFormatter();
+        XAxis.dateFormatter.dateFormat = xAxis.labels.formatter;
+      } else {
+        XAxis.numberFormatter = new am4core.NumberFormatter();
+        XAxis.numberFormatter.numberFormat = xAxis.labels.formatter;
+        XAxis.adjustLabelPrecision = false;
+      }
+    }
+    xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
 		xAxisLabels.rotation = xAxis.labels.rotation || 0;
 		if(xAxisLabels.rotation !== 0){
 		  xAxisLabels.horizontalCenter = "right";
@@ -2725,7 +2784,6 @@ class AmRangeAreaChart extends React.PureComponent {
   	}
 		XAxis.renderer.grid.template.disabled = true;
 		XAxis.renderer.minGridDistance = 50;
-		XAxis.numberFormatter.numberFormat = valueFormatter;
     if(cursor &&
       (cursor === true || !cursor.axes || ["x","xy"].indexOf(cursor.axes)) > -1)
     {
@@ -2739,6 +2797,9 @@ class AmRangeAreaChart extends React.PureComponent {
 		/* ~~~~\  y-axis  /~~~~ */
 		let YAxis = chart.yAxes.push(new am4charts.ValueAxis());
 		//YAxis.tooltip.disabled = true;
+    if(yAxis) {
+      YAxis.paddingRight = yAxis.adjust || 0;
+    }
     YAxis.renderer.grid.template.stroke =
       gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
     YAxis.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.15;
@@ -2750,8 +2811,13 @@ class AmRangeAreaChart extends React.PureComponent {
 			YAxis.title.fill =
 			  yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
 		}
-		if(yAxis.labels !== false) {
+		if(yAxis.labels) {
   		let yAxisLabels = YAxis.renderer.labels.template;
+      if(yAxis.labels.formatter) {
+        YAxis.numberFormatter = new am4core.NumberFormatter();
+        YAxis.numberFormatter.numberFormat = yAxis.labels.formatter;
+        YAxis.adjustLabelPrecision = false;
+      }
 	  	yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
 		  yAxisLabels.rotation = yAxis.labels.rotation || 0;
 		  yAxisLabels.fill =

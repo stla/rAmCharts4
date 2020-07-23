@@ -67,9 +67,19 @@
 #'   between 0 and 1
 #' @param backgroundColor a color for the chart background
 #' @param xAxis settings of the x-axis given as a list, or just a string
-#' for the axis title XXXX
+#'   for the axis title; the list of settings has three possible fields:
+#'   a field \code{title}, a list of settings for the axis title,
+#'   a field \code{labels}, a list of settings for the axis labels created
+#'   with \code{\link{amAxisLabels}},
+#'   and a field \code{adjust}, a number defining the vertical adjustment of
+#'   the axis (in pixels)
 #' @param yAxis settings of the y-axis given as a list, or just a string
-#' for the axis title
+#'   for the axis title; the list of settings has three possible fields:
+#'   a field \code{title}, a list of settings for the axis title,
+#'   a field \code{labels}, a list of settings for the axis labels created
+#'   with \code{\link{amAxisLabels}},
+#'   and a field \code{adjust}, a number defining the horizontal adjustment of
+#'   the axis (in pixels)
 #' @param scrollbarX logical, whether to add a scrollbar for the x-axis
 #' @param scrollbarY logical, whether to add a scrollbar for the y-axis
 #' @param gridLines settings of the grid lines
@@ -198,7 +208,7 @@
 #'                             color = "silver"),
 #'                labels = list(color = "whitesmoke",
 #'                              fontSize = 17),
-#'                vjust = 5),
+#'                adjust = 5),
 #'   yAxis = list(title = list(text = "Value",
 #'                             fontSize = 20,
 #'                             color = "silver"),
