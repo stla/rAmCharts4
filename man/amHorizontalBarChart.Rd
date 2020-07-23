@@ -69,8 +69,16 @@ the left and the right limits of the x-axis; \code{NULL} for default values}
 \item{expandX}{if \code{xLimits = NULL}, a percentage of the range of the
 x-axis used to expand this range}
 
-\item{valueFormatter}{a number formatter; see XXX
-\url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}}
+\item{valueFormatter}{a
+\href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}{number formatting string};
+it is used to format the values displayed on the chart if
+\code{showValues = TRUE}, the values displayed in the cursor tooltips if
+\code{cursor = TRUE}, the labels of the x-axis unless you specify
+your own formatter in the \code{labels} field of the list passed on to
+the \code{xAxis} option, and the values displayed in the tooltips unless
+you specify your own tooltip text (see the first example of
+\code{\link{amBarChart}} for the way to set
+a number formatter in the tooltip text)}
 
 \item{chartTitle}{chart title, \code{NULL}, character, or list of settings}
 

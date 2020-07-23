@@ -1,4 +1,4 @@
-#' Create a HTML widget displaying a bar chart
+#' HTML widget displaying a bar chart
 #' @description Create a HTML widget displaying a bar chart.
 #'
 #' @param data a dataframe
@@ -21,8 +21,15 @@
 #' the lower and the upper limits of the y-axis; \code{NULL} for default values
 #' @param expandY if \code{yLimits = NULL}, a percentage of the range of the
 #'   y-axis used to expand this range
-#' @param valueFormatter a number formatter; see XXXX
-#' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}
+#' @param valueFormatter a
+#'   \href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}{number formatting string};
+#'   it is used to format the values displayed on the chart if
+#'   \code{showValues = TRUE}, the values displayed in the cursor tooltips if
+#'   \code{cursor = TRUE}, the labels of the y-axis unless you specify
+#'   your own formatter in the \code{labels} field of the list passed on to
+#'   the \code{yAxis} option, and the values displayed in the tooltips unless
+#'   you specify your own tooltip text (see the first example for the way to set
+#'   a number formatter in the tooltip text)
 #' @param chartTitle chart title, \code{NULL}, character, or list of settings
 #' @param theme theme, \code{NULL} or one of \code{"dataviz"},
 #' \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
@@ -134,13 +141,14 @@
 #'   width = "600px",
 #'   category = "country", values = "visits",
 #'   draggable = TRUE,
-#'   tooltip = "[bold font-style:italic #ffff00]{valueY}[/]",
+#'   tooltip =
+#'     "[bold font-style:italic #ffff00]{valueY.value.formatNumber('#,###')}[/]",
 #'   chartTitle =
 #'     list(text = "Visits per country", fontSize = 22, color = "orangered"),
 #'   xAxis = list(title = list(text = "Country", color = "maroon")),
 #'   yAxis = list(title = list(text = "Visits", color = "maroon")),
 #'   yLimits = c(0, 4000),
-#'   valueFormatter = "#.",
+#'   valueFormatter = "#,###",
 #'   caption = list(text = "Year 2018", color = "red"),
 #'   theme = "material")
 #'
@@ -369,17 +377,25 @@ amBarChart <- function(
   # }
 
   if(!isFALSE(tooltip)){
+    tooltipText <- sprintf(
+      "[bold]{name}:\n{valueY.value.formatNumber('%s')}[/]",
+      valueFormatter
+    )
     if(is.null(tooltip)){
       tooltip <-
         setNames(
           rep(list(
-            amTooltip(text = "[bold]{name}:\n{valueY}[/]", auto = FALSE)
+            amTooltip(
+#              text = "[bold]{name}:\n{valueY}[/]",
+              text = tooltipText,
+              auto = FALSE
+            )
           ), length(values)),
           values
         )
     }else if("tooltip" %in% class(tooltip)){
       if(tooltip[["text"]] == "_missing")
-        tooltip[["text"]] <- "[bold]{name}:\n{valueY}[/]"
+        tooltip[["text"]] <- tooltipText
       tooltip <- setNames(rep(list(tooltip), length(values)), values)
     }else if(is.list(tooltip)){
       if(any(!values %in% names(tooltip))){
@@ -387,7 +403,7 @@ amBarChart <- function(
       }
       tooltip <- lapply(tooltip, function(settings){
         if(settings[["text"]] == "_missing")
-          settings[["text"]] <- "[bold]{name}:\n{valueY}[/]"
+          settings[["text"]] <- tooltipText
         return(settings)
       })
     }else if(is.character(tooltip)){
@@ -472,6 +488,13 @@ amBarChart <- function(
     if(is.list(xAxis[["title"]])){
       xAxis[["title"]][["color"]] <- validateColor(xAxis[["title"]][["color"]])
     }
+    # if(is.null(xAxis[["labels"]])){
+    #   xAxis[["labels"]] <- amAxisLabels(
+    #     color = NULL,
+    #     fontSize = 18,
+    #     rotation = 0
+    #   )
+    # }
   }else if(is.null(xAxis)){
     xAxis <- list(
       title = list(
@@ -553,6 +576,14 @@ amBarChart <- function(
       text = yAxis[["title"]],
       fontSize = 20,
       color = NULL
+    )
+  }
+  if(is.null(yAxis[["labels"]])){
+    yAxis[["labels"]] <- amAxisLabels(
+      color = NULL,
+      fontSize = 18,
+      rotation = 0,
+      formatter = valueFormatter
     )
   }
 

@@ -215,7 +215,7 @@ class AmBarChart extends React.PureComponent {
 
 		/* ~~~~\  category axis  /~~~~ */
 		let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-		categoryAxis.paddingRight = xAxis.adjust || 0;
+		categoryAxis.paddingBottom = xAxis.adjust || 0;
 		categoryAxis.renderer.grid.template.location = 0;
 		categoryAxis.renderer.cellStartLocation = 1 - cellWidth/100;
 		categoryAxis.renderer.cellEndLocation = cellWidth/100;

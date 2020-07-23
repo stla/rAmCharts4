@@ -21,8 +21,16 @@
 #' the left and the right limits of the x-axis; \code{NULL} for default values
 #' @param expandX if \code{xLimits = NULL}, a percentage of the range of the
 #'   x-axis used to expand this range
-#' @param valueFormatter a number formatter; see XXX
-#' \url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}
+#' @param valueFormatter a
+#'   \href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}{number formatting string};
+#'   it is used to format the values displayed on the chart if
+#'   \code{showValues = TRUE}, the values displayed in the cursor tooltips if
+#'   \code{cursor = TRUE}, the labels of the x-axis unless you specify
+#'   your own formatter in the \code{labels} field of the list passed on to
+#'   the \code{xAxis} option, and the values displayed in the tooltips unless
+#'   you specify your own tooltip text (see the first example of
+#'   \code{\link{amBarChart}} for the way to set
+#'   a number formatter in the tooltip text)
 #' @param chartTitle chart title, \code{NULL}, character, or list of settings
 #' @param theme theme, \code{NULL} or one of \code{"dataviz"},
 #' \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
@@ -312,17 +320,21 @@ amHorizontalBarChart <- function(
   }
 
   if(!isFALSE(tooltip)){
+    tooltipText <- sprintf(
+      "[bold]{name}:\n{valueX.value.formatNumber('%s')}[/]",
+      valueFormatter
+    )
     if(is.null(tooltip)){
       tooltip <-
         setNames(
           rep(list(
-            amTooltip(text = "[bold]{name}:\n{valueX}[/]", auto = FALSE)
+            amTooltip(text = tooltipText, auto = FALSE)
           ), length(values)),
           values
         )
     }else if("tooltip" %in% class(tooltip)){
       if(tooltip[["text"]] == "_missing")
-        tooltip[["text"]] <- "[bold]{name}:\n{valueX}[/]"
+        tooltip[["text"]] <- tooltipText
       tooltip <- setNames(rep(list(tooltip), length(values)), values)
     }else if(is.list(tooltip)){
       if(any(!values %in% names(tooltip))){
@@ -330,7 +342,7 @@ amHorizontalBarChart <- function(
       }
       tooltip <- lapply(tooltip, function(settings){
         if(settings[["text"]] == "_missing")
-          settings[["text"]] <- "[bold]{name}:\n{valueX}[/]"
+          settings[["text"]] <- tooltipText
         return(settings)
       })
     }else if(is.character(tooltip)){

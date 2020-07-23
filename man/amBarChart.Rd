@@ -2,7 +2,7 @@
 % Please edit documentation in R/amBarChart.R
 \name{amBarChart}
 \alias{amBarChart}
-\title{Create a HTML widget displaying a bar chart}
+\title{HTML widget displaying a bar chart}
 \usage{
 amBarChart(
   data,
@@ -69,8 +69,15 @@ the lower and the upper limits of the y-axis; \code{NULL} for default values}
 \item{expandY}{if \code{yLimits = NULL}, a percentage of the range of the
 y-axis used to expand this range}
 
-\item{valueFormatter}{a number formatter; see XXXX
-\url{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}}
+\item{valueFormatter}{a
+\href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}{number formatting string};
+it is used to format the values displayed on the chart if
+\code{showValues = TRUE}, the values displayed in the cursor tooltips if
+\code{cursor = TRUE}, the labels of the y-axis unless you specify
+your own formatter in the \code{labels} field of the list passed on to
+the \code{yAxis} option, and the values displayed in the tooltips unless
+you specify your own tooltip text (see the first example for the way to set
+a number formatter in the tooltip text)}
 
 \item{chartTitle}{chart title, \code{NULL}, character, or list of settings}
 
@@ -206,13 +213,14 @@ amBarChart(
   width = "600px",
   category = "country", values = "visits",
   draggable = TRUE,
-  tooltip = "[bold font-style:italic #ffff00]{valueY}[/]",
+  tooltip =
+    "[bold font-style:italic #ffff00]{valueY.value.formatNumber('#,###')}[/]",
   chartTitle =
     list(text = "Visits per country", fontSize = 22, color = "orangered"),
   xAxis = list(title = list(text = "Country", color = "maroon")),
   yAxis = list(title = list(text = "Visits", color = "maroon")),
   yLimits = c(0, 4000),
-  valueFormatter = "#.",
+  valueFormatter = "#,###",
   caption = list(text = "Year 2018", color = "red"),
   theme = "material")
 
