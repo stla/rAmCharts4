@@ -234,15 +234,20 @@ with \code{data2}}
 \item{cursor}{option to add a cursor on the chart; \code{FALSE} for no
 cursor, \code{TRUE} for a cursor for both axes with default settings
 for the axes tooltips,
-otherwise a named list with three possible fields: a field
+otherwise a named list with four possible fields: a field
 \code{axes} to specify the axes for which the cursor is requested, can be
 \code{"x"}, \code{"y"}, or \code{"xy"},
 a field \code{tooltip} to set the style of the axes tooltips, this
-must be a list of settings created with \code{\link{amTooltip}}, and a
-field \code{extraTooltipPrecision}, a named list of the form
+must be a list of settings created with \code{\link{amTooltip}},
+a field \code{extraTooltipPrecision}, a named list of the form
 \code{list(x = i, y = j)} where \code{i} and \code{j} are the desired
 numbers of additional decimals for the tooltips on the x-axis and
-on the y-axis respectively}
+on the y-axis respectively, and a field \code{modifier}, a list with two
+possible fields, \code{x} and \code{y}, which defines modifiers for the
+values displayed in the tooltips; a modifier is some JavaScript code
+given a string, which performs a modification of a string named
+\code{text}, e.g. \code{"text = '[font-style:italic]' + text + '[/]';"};
+see the first example for an example of \code{modifier}}
 
 \item{width}{the width of the chart, e.g. \code{"600px"} or \code{"80\%"};
 ignored if the chart is displayed in Shiny, in which case the width is
@@ -306,6 +311,16 @@ amLineChart(
     y2 = amCircle(color = "orangered", strokeColor = "darkred")
   ),
   alwaysShowBullets = TRUE,
+  cursor = list(
+    extraTooltipPrecision = list(x = 0, y = 2),
+    modifier = list(
+      y = c(
+        "var value = parseFloat(text);",
+        "var style = value > 0 ? '[#0000ff]' : '[#ff0000]';",
+        "text = style + text + '[/]';"
+      )
+    )
+  ),
   lineStyle = list(
     y1 = amLine(color = "yellow", width = 4),
     y2 = amLine(color = "orangered", width = 4)

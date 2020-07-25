@@ -108,10 +108,15 @@
 #' @param cursor option to add a cursor on the chart; \code{FALSE} for no
 #'   cursor, \code{TRUE} for a cursor with default settings for the tooltips,
 #'   or a list of settings created with \code{\link{amTooltip}} to
-#'   set the style of the tooltips, or a list with two fields: \code{tooltip},
-#'   a list of tooltip settings created with \code{\link{amTooltip}},
-#'   and \code{extraTooltipPrecision}, an integer, the number of additional
-#'   decimals to display in the tooltips
+#'   set the style of the tooltips, or a list with three possible fields:
+#'   a field \code{tooltip}, a list of tooltip settings created with
+#'   \code{\link{amTooltip}}, a field
+#'   \code{extraTooltipPrecision}, an integer, the number of additional
+#'   decimals to display in the tooltips, and a field \code{modifier},
+#'   which defines a modifier for the
+#'   values displayed in the tooltips; a modifier is some JavaScript code
+#'   given a string, which performs a modification of a string named
+#'   \code{text}, e.g. \code{modifier = "text = '>>>' + text;"}
 #' @param width the width of the chart, e.g. \code{"600px"} or \code{"80\%"};
 #' ignored if the chart is displayed in Shiny, in which case the width is
 #' given in \code{\link{amChart4Output}}
@@ -389,7 +394,7 @@ amBarChart <- function(
         setNames(
           rep(list(
             amTooltip(
-#              text = "[bold]{name}:\n{valueY}[/]",
+              #              text = "[bold]{name}:\n{valueY}[/]",
               text = tooltipText,
               auto = FALSE
             )
@@ -640,6 +645,16 @@ amBarChart <- function(
 
   if("tooltip" %in% class(cursor)){
     cursor <- list(tooltip = cursor)
+  }else if(is.list(cursor)){
+    if("modifier" %in% names(cursor)){
+      cursor[["renderer"]] <- htmlwidgets::JS(
+        "function(text){",
+        cursor[["modifier"]],
+        "return text;",
+        "}"
+      )
+      cursor[["modifier"]] <- NULL
+    }
   }
 
   if(is.null(width)){
