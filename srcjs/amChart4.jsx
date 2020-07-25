@@ -274,6 +274,8 @@ class AmBarChart extends React.PureComponent {
         valueAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
       if(cursor.extraTooltipPrecision)
         valueAxis.extraTooltipPrecision = cursor.extraTooltipPrecision;
+      if(cursor.renderer)
+        valueAxis.adapter.add("getTooltipText", cursor.renderer);
     } else {
       valueAxis.cursorTooltipEnabled = false;
     }
@@ -802,6 +804,8 @@ class AmHorizontalBarChart extends React.PureComponent {
         valueAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
       if(cursor.extraTooltipPrecision)
         valueAxis.extraTooltipPrecision = cursor.extraTooltipPrecision;
+      if(cursor.renderer)
+        valueAxis.adapter.add("getTooltipText", cursor.renderer);
     } else {
       valueAxis.cursorTooltipEnabled = false;
     }
@@ -1414,6 +1418,8 @@ class AmLineChart extends React.PureComponent {
         XAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
       if(cursor.extraTooltipPrecision)
         XAxis.extraTooltipPrecision = cursor.extraTooltipPrecision.x;
+      if(cursor.renderer && cursor.renderer.x)
+        XAxis.adapter.add("getTooltipText", cursor.renderer.x);
     } else {
       XAxis.cursorTooltipEnabled = false;
     }
@@ -1460,6 +1466,8 @@ class AmLineChart extends React.PureComponent {
         YAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
       if(cursor.extraTooltipPrecision)
         YAxis.extraTooltipPrecision = cursor.extraTooltipPrecision.y;
+      if(cursor.renderer && cursor.renderer.y)
+        YAxis.adapter.add("getTooltipText", cursor.renderer.y);
     } else {
       YAxis.cursorTooltipEnabled = false;
     }
@@ -2176,6 +2184,8 @@ class AmScatterChart extends React.PureComponent {
         YAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
       if(cursor.extraTooltipPrecision)
         YAxis.extraTooltipPrecision = cursor.extraTooltipPrecision.y;
+      if(cursor.renderer && cursor.renderer.y)
+        YAxis.adapter.add("getTooltipText", cursor.renderer.y);
     } else {
       YAxis.cursorTooltipEnabled = false;
     }
@@ -2827,6 +2837,8 @@ class AmRangeAreaChart extends React.PureComponent {
         XAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
       if(cursor.extraTooltipPrecision)
         XAxis.extraTooltipPrecision = cursor.extraTooltipPrecision.x;
+      if(cursor.renderer && cursor.renderer.x)
+        XAxis.adapter.add("getTooltipText", cursor.renderer.x);
     } else {
 //      XAxis.tooltip.disabled = true;
       XAxis.cursorTooltipEnabled = false;
@@ -2875,6 +2887,8 @@ class AmRangeAreaChart extends React.PureComponent {
         YAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
       if(cursor.extraTooltipPrecision)
         YAxis.extraTooltipPrecision = cursor.extraTooltipPrecision.y;
+      if(cursor.renderer && cursor.renderer.y)
+        YAxis.adapter.add("getTooltipText", cursor.renderer.y);
     } else {
 //      YAxis.tooltip.disabled = true;
       YAxis.cursorTooltipEnabled = false;
