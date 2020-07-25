@@ -137,18 +137,18 @@ and a field \code{adjust}, a number defining the vertical adjustment of
 the axis (in pixels)}
 
 \item{yAxis}{settings of the value axis given as a list, or just a string
-for the axis title; the list of settings has three possible fields:
+for the axis title; the list of settings has five possible fields:
 a field \code{title}, a list of settings for the axis title,
 a field \code{labels}, a list of settings for the axis labels created
 with \code{\link{amAxisLabels}},
-and a field \code{adjust}, a number defining the horizontal adjustment of
-the axis (in pixels)}
+a field \code{adjust}, a number defining the horizontal adjustment of
+the axis (in pixels), a field \code{gridLines}, a list of settings for
+the grid lines created with \code{\link{amLine}} and a field
+\code{breaks}, a numeric vector of values for the axis breaks}
 
 \item{scrollbarX}{logical, whether to add a scrollbar for the category axis}
 
 \item{scrollbarY}{logical, whether to add a scrollbar for the value axis}
-
-\item{gridLines}{settings of the grid lines}
 
 \item{legend}{logical, whether to display the legend}
 
@@ -312,8 +312,12 @@ amBarChart(
   ),
   chartTitle = list(text = "Income and expenses per country"),
   xAxis = list(title = list(text = "Country")),
-  yAxis = list(title = list(text = "Income and expenses")),
-  yLimits = c(0, 41),
+  yAxis = list(
+    title = list(text = "Income and expenses"),
+    gridLines = amLine(color = "whitesmoke", width = 1, opacity = 0.4),
+    breaks = seq(0, 45, by = 5)
+  ),
+  yLimits = c(0, 45),
   valueFormatter = "#.#",
   caption = list(text = "Year 2018"),
   theme = "dark")

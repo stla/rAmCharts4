@@ -2,17 +2,19 @@
 #' @description Create a list of settings for a line.
 #'
 #' @param color line color
+#' @param opacity line opacity, a number between 0 and 1
 #' @param width line width
 #' @param dash string defining a dashed/dotted line; see
-#'   \url{https://www.amcharts.com/docs/v4/tutorials/dotted-and-dashed-lines/#Dasharray_values}
+#'   \href{https://www.amcharts.com/docs/v4/tutorials/dotted-and-dashed-lines/#Dasharray_values}{Dotted and dashed lines}
 #' @param tensionX,tensionY parameters for the smoothing; see
-#'   \url{https://www.amcharts.com/docs/v4/chart-types/xy-chart/#Smoothed_lines}
+#'   \href{https://www.amcharts.com/docs/v4/chart-types/xy-chart/#Smoothed_lines}{Smoothed lines}
 #'   for the meaning of these parameters
 #'
 #' @return A list of settings for a line.
 #' @export
 amLine <- function(
   color = NULL,
+  opacity = 1,
   width = 3,
   dash = NULL,
   tensionX = NULL,
@@ -26,6 +28,7 @@ amLine <- function(
   }
   settings <- list(
     color = validateColor(color),
+    opacity = opacity,
     width = width,
     dash = dash,
     tensionX = tensionX,

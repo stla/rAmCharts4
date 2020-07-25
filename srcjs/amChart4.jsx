@@ -54,7 +54,6 @@ class AmBarChart extends React.PureComponent {
       columnWidth = this.props.columnWidth,
       xAxis = this.props.xAxis,
       yAxis = this.props.yAxis,
-      gridLines = this.props.gridLines,
       draggable = this.props.draggable,
       tooltips = this.props.tooltip,
       valueFormatter = this.props.valueFormatter,
@@ -181,13 +180,14 @@ class AmBarChart extends React.PureComponent {
     if(this.props.scrollbarX) {
       chart.scrollbarX = new am4core.Scrollbar();
     }
-    if (this.props.scrollbarY) {
+    if(this.props.scrollbarY) {
       chart.scrollbarY = new am4core.Scrollbar();
     }
 
+
 		/* ~~~~\  button  /~~~~ */
 		let button = this.props.button;
-		if (button) {
+		if(button) {
   		let Button = chart.chartContainer.createChild(am4core.Button);
       Button.label.text = button.text;
       Button.label.fill = button.color || Button.label.fill;
@@ -242,28 +242,42 @@ class AmBarChart extends React.PureComponent {
 
 		/* ~~~~\  value axis  /~~~~ */
 		let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-		valueAxis.paddingRight = yAxis.adjust || 0;
-    valueAxis.renderer.grid.template.stroke =
-      gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
-    valueAxis.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.15;
-    valueAxis.renderer.grid.template.strokeWidth = gridLines.width || 1;
+    valueAxis.paddingRight = yAxis.adjust || 0;
+    if(yAxis.gridLines && !yAxis.breaks) {
+      valueAxis.renderer.grid.template.stroke =
+        yAxis.gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
+      valueAxis.renderer.grid.template.strokeOpacity = 
+        yAxis.gridLines.opacity || 0.2;
+      valueAxis.renderer.grid.template.strokeWidth = 
+        yAxis.gridLines.width || 1;
+    } else {
+      valueAxis.renderer.grid.template.disabled = true;
+    }
+    if(yAxis.breaks) {
+      valueAxis.renderer.labels.template.disabled = true;
+      utils.createGridLines(
+        am4core, valueAxis, yAxis.breaks, yAxis.gridLines, yAxis.labels, theme
+      );
+    }
 		if(yAxis && yAxis.title && yAxis.title.text !== "") {
 			valueAxis.title.text = yAxis.title.text;
 			valueAxis.title.fontWeight = "bold";
 			valueAxis.title.fontSize = yAxis.title.fontSize || 20;
 			valueAxis.title.fill =
 			  yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
-		}
-		let yAxisLabels = valueAxis.renderer.labels.template;
-		if(yAxis.labels.formatter) {
-      valueAxis.numberFormatter = new am4core.NumberFormatter();
-      valueAxis.numberFormatter.numberFormat = yAxis.labels.formatter;
-      valueAxis.adjustLabelPrecision = false;
     }
-		yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
-		yAxisLabels.rotation = yAxis.labels.rotation || 0;
-		yAxisLabels.fill =
-		  yAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+    if(!yAxis.breaks) {
+      let yAxisLabels = valueAxis.renderer.labels.template;
+      if(yAxis.labels.formatter) {
+        valueAxis.numberFormatter = new am4core.NumberFormatter();
+        valueAxis.numberFormatter.numberFormat = yAxis.labels.formatter;
+        valueAxis.adjustLabelPrecision = false;
+      }
+      yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
+      yAxisLabels.rotation = yAxis.labels.rotation || 0;
+      yAxisLabels.fill =
+        yAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");  
+    }
 		// we set fixed min/max and strictMinMax to true, as otherwise value axis will adjust min/max while dragging and it won't look smooth
 		valueAxis.strictMinMax = true;
 		valueAxis.min = this.props.minValue;

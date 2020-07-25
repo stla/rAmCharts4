@@ -77,15 +77,16 @@
 #'   and a field \code{adjust}, a number defining the vertical adjustment of
 #'   the axis (in pixels)
 #' @param yAxis settings of the value axis given as a list, or just a string
-#'   for the axis title; the list of settings has three possible fields:
+#'   for the axis title; the list of settings has five possible fields:
 #'   a field \code{title}, a list of settings for the axis title,
 #'   a field \code{labels}, a list of settings for the axis labels created
 #'   with \code{\link{amAxisLabels}},
-#'   and a field \code{adjust}, a number defining the horizontal adjustment of
-#'   the axis (in pixels)
+#'   a field \code{adjust}, a number defining the horizontal adjustment of
+#'   the axis (in pixels), a field \code{gridLines}, a list of settings for
+#'   the grid lines created with \code{\link{amLine}} and a field
+#'   \code{breaks}, a numeric vector of values for the axis breaks
 #' @param scrollbarX logical, whether to add a scrollbar for the category axis
 #' @param scrollbarY logical, whether to add a scrollbar for the value axis
-#' @param gridLines settings of the grid lines
 #' @param legend logical, whether to display the legend
 #' @param caption settings of the caption, or \code{NULL} for no caption
 #' @param image option to include an image in the chart; \code{NULL} or
@@ -240,8 +241,12 @@
 #'   ),
 #'   chartTitle = list(text = "Income and expenses per country"),
 #'   xAxis = list(title = list(text = "Country")),
-#'   yAxis = list(title = list(text = "Income and expenses")),
-#'   yLimits = c(0, 41),
+#'   yAxis = list(
+#'     title = list(text = "Income and expenses"),
+#'     gridLines = amLine(color = "whitesmoke", width = 1, opacity = 0.4),
+#'     breaks = seq(0, 45, by = 5)
+#'   ),
+#'   yLimits = c(0, 45),
 #'   valueFormatter = "#.#",
 #'   caption = list(text = "Year 2018"),
 #'   theme = "dark")
@@ -548,6 +553,9 @@ amBarChart <- function(
     if(is.list(yAxis[["title"]])){
       yAxis[["title"]][["color"]] <- validateColor(yAxis[["title"]][["color"]])
     }
+    if("breaks" %in% names(yAxis)){
+      yAxis[["breaks"]] <- as.list(yAxis[["breaks"]])
+    }
   }else if(is.null(yAxis)){
     yAxis <- list(
       title = if(length(values) == 1L) {
@@ -562,6 +570,11 @@ amBarChart <- function(
         fontSize = 18,
         rotation = 0,
         formatter = valueFormatter
+      ),
+      gridLines = list(
+        color = NULL,
+        opacity = NULL,
+        width = NULL
       )
     )
   }else if(is.character(yAxis)){
@@ -576,6 +589,11 @@ amBarChart <- function(
         fontSize = 18,
         rotation = 0,
         formatter = valueFormatter
+      ),
+      gridLines = list(
+        color = NULL,
+        opacity = NULL,
+        width = NULL
       )
     )
   }else if(is.character(yAxis[["title"]])){
@@ -594,15 +612,15 @@ amBarChart <- function(
     )
   }
 
-  if(is.null(gridLines)){
-    gridLines <- list(
-      color = NULL,
-      opacity = NULL,
-      width = NULL
-    )
-  }else{
-    gridLines[["color"]] <- validateColor(gridLines[["color"]])
-  }
+  # if(is.null(gridLines)){
+  #   gridLines <- list(
+  #     color = NULL,
+  #     opacity = NULL,
+  #     width = NULL
+  #   )
+  # }else{
+  #   gridLines[["color"]] <- validateColor(gridLines[["color"]])
+  # }
 
   if(is.null(legend)){
     legend <- length(values) > 1L
@@ -703,7 +721,6 @@ amBarChart <- function(
       yAxis = yAxis,
       scrollbarX = scrollbarX,
       scrollbarY = scrollbarY,
-      gridLines = gridLines,
       legend = legend,
       caption = caption,
       image = image,

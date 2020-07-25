@@ -94,3 +94,30 @@ export const Shape = function(am4core, chart, index, bullet, shapeConfig) {
 
   return shape;
 };
+
+export const createGridLines =
+  function(am4core, Axis, values, lineconfig, labelsconfig, theme) {
+    for(let i = 0; i < values.length; ++i) {
+      let range = Axis.axisRanges.create();
+      range.value = values[i];
+      range.label.text = "{value}";
+      console.log("range.label", range.label);
+      if(lineconfig) {
+        range.grid.stroke =
+          lineconfig.color || (theme === "dark" ? "#ffffff" : "#000000");
+        range.grid.strokeWidth = lineconfig.width || 1;
+        range.grid.strokeOpacity = lineconfig.opacity || 0.2;
+      }
+      if(labelsconfig) {
+        range.label.fontSize = labelsconfig.fontSize || 17;
+        range.label.rotation = labelsconfig.rotation || 0;
+        range.label.fill =
+          labelsconfig.color || (theme === "dark" ? "#ffffff" : "#000000");
+      }
+    }
+    if(labelsconfig && labelsconfig.formatter) {
+      Axis.numberFormatter = new am4core.NumberFormatter();
+      Axis.numberFormatter.numberFormat = labelsconfig.formatter;
+      Axis.adjustLabelPrecision = false;
+    }
+  };

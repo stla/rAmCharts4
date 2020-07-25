@@ -4,18 +4,27 @@
 \alias{amLine}
 \title{Line style}
 \usage{
-amLine(color = NULL, width = 3, dash = NULL, tensionX = NULL, tensionY = NULL)
+amLine(
+  color = NULL,
+  opacity = 1,
+  width = 3,
+  dash = NULL,
+  tensionX = NULL,
+  tensionY = NULL
+)
 }
 \arguments{
 \item{color}{line color}
 
+\item{opacity}{line opacity, a number between 0 and 1}
+
 \item{width}{line width}
 
 \item{dash}{string defining a dashed/dotted line; see
-\url{https://www.amcharts.com/docs/v4/tutorials/dotted-and-dashed-lines/#Dasharray_values}}
+\href{https://www.amcharts.com/docs/v4/tutorials/dotted-and-dashed-lines/#Dasharray_values}{Dotted and dashed lines}}
 
 \item{tensionX, tensionY}{parameters for the smoothing; see
-\url{https://www.amcharts.com/docs/v4/chart-types/xy-chart/#Smoothed_lines}
+\href{https://www.amcharts.com/docs/v4/chart-types/xy-chart/#Smoothed_lines}{Smoothed lines}
 for the meaning of these parameters}
 }
 \value{
