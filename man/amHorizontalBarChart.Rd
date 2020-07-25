@@ -28,7 +28,6 @@ amHorizontalBarChart(
   yAxis = NULL,
   scrollbarX = FALSE,
   scrollbarY = FALSE,
-  gridLines = NULL,
   legend = NULL,
   caption = NULL,
   image = NULL,
@@ -130,12 +129,14 @@ columns; for a grouped bar chart, this controls the spacing between the
 columns within a cluster of columns; \code{NULL} for the default value}
 
 \item{xAxis}{settings of the value axis given as a list, or just a string
-for the axis title; the list of settings has three possible fields:
+for the axis title; the list of settings has five possible fields:
 a field \code{title}, a list of settings for the axis title,
 a field \code{labels}, a list of settings for the axis labels created
 with \code{\link{amAxisLabels}},
-and a field \code{adjust}, a number defining the vertical adjustment of
-the axis (in pixels)}
+a field \code{adjust}, a number defining the vertical adjustment of
+the axis (in pixels), a field \code{gridLines}, a list of settings for
+the grid lines created with \code{\link{amLine}}, and a field
+\code{breaks}, a numeric vector of values for the axis breaks}
 
 \item{yAxis}{settings of the category axis given as a list, or just a string
 for the axis title; the list of settings has three possible fields:
@@ -148,8 +149,6 @@ the axis (in pixels)}
 \item{scrollbarX}{logical, whether to add a scrollbar for the value axis}
 
 \item{scrollbarY}{logical, whether to add a scrollbar for the category axis}
-
-\item{gridLines}{settings of the grid lines}
 
 \item{legend}{logical, whether to display the legend}
 
@@ -226,7 +225,8 @@ amHorizontalBarChart(
   chartTitle =
     list(text = "Visits per country", fontSize = 22, color = "orangered"),
   xAxis = list(
-    title = list(text = "Country", color = "maroon")
+    title = list(text = "Country", color = "maroon"),
+    gridLines = amLine(opacity = 0.4, width = 1, dash = "3,1")
   ),
   yAxis = list(title = list(text = "Visits", color = "maroon")),
   xLimits = c(0, 4000),

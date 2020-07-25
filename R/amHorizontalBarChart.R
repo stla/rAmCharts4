@@ -71,12 +71,14 @@
 #' columns; for a grouped bar chart, this controls the spacing between the
 #' columns within a cluster of columns; \code{NULL} for the default value
 #' @param xAxis settings of the value axis given as a list, or just a string
-#'   for the axis title; the list of settings has three possible fields:
+#'   for the axis title; the list of settings has five possible fields:
 #'   a field \code{title}, a list of settings for the axis title,
 #'   a field \code{labels}, a list of settings for the axis labels created
 #'   with \code{\link{amAxisLabels}},
-#'   and a field \code{adjust}, a number defining the vertical adjustment of
-#'   the axis (in pixels)
+#'   a field \code{adjust}, a number defining the vertical adjustment of
+#'   the axis (in pixels), a field \code{gridLines}, a list of settings for
+#'   the grid lines created with \code{\link{amLine}}, and a field
+#'   \code{breaks}, a numeric vector of values for the axis breaks
 #' @param yAxis settings of the category axis given as a list, or just a string
 #'   for the axis title; the list of settings has three possible fields:
 #'   a field \code{title}, a list of settings for the axis title,
@@ -86,7 +88,6 @@
 #'   the axis (in pixels)
 #' @param scrollbarX logical, whether to add a scrollbar for the value axis
 #' @param scrollbarY logical, whether to add a scrollbar for the category axis
-#' @param gridLines settings of the grid lines
 #' @param legend logical, whether to display the legend
 #' @param caption settings of the caption, or \code{NULL} for no caption
 #' @param image option to include an image in the chart; \code{NULL} or
@@ -154,7 +155,8 @@
 #'   chartTitle =
 #'     list(text = "Visits per country", fontSize = 22, color = "orangered"),
 #'   xAxis = list(
-#'     title = list(text = "Country", color = "maroon")
+#'     title = list(text = "Country", color = "maroon"),
+#'     gridLines = amLine(opacity = 0.4, width = 1, dash = "3,1")
 #'   ),
 #'   yAxis = list(title = list(text = "Visits", color = "maroon")),
 #'   xLimits = c(0, 4000),
@@ -229,7 +231,6 @@ amHorizontalBarChart <- function(
   yAxis = NULL, # default
   scrollbarX = FALSE,
   scrollbarY = FALSE,
-  gridLines = NULL,
   legend = NULL, # default
   caption = NULL,
   image = NULL,
@@ -404,6 +405,9 @@ amHorizontalBarChart <- function(
     if(is.list(xAxis[["title"]])){
       xAxis[["title"]][["color"]] <- validateColor(xAxis[["title"]][["color"]])
     }
+    if("breaks" %in% names(xAxis)){
+      xAxis[["breaks"]] <- as.list(xAxis[["breaks"]])
+    }
   }else if(is.null(xAxis)){
     xAxis <- list(
       title = if(length(values) == 1L) {
@@ -418,7 +422,8 @@ amHorizontalBarChart <- function(
         fontSize = 18,
         rotation = 0,
         formatter = valueFormatter
-      )
+      ),
+      gridLines = amLine(opacity = 0.2, width = 1)
     )
   }else if(is.character(xAxis)){
     xAxis <- list(
@@ -432,16 +437,17 @@ amHorizontalBarChart <- function(
         fontSize = 18,
         rotation = 0,
         formatter = valueFormatter
-      )
+      ),
+      gridLines = amLine(opacity = 0.2, width = 1)
     )
-  }else if(is.character(xAxis[["title"]])){
+  }
+  if(is.character(xAxis[["title"]])){
     xAxis[["title"]] <- list(
       text = xAxis[["title"]],
       fontSize = 20,
       color = NULL
     )
   }
-
   if(is.null(xAxis[["labels"]])){
     xAxis[["labels"]] <- amAxisLabels(
       color = NULL,
@@ -495,16 +501,6 @@ amHorizontalBarChart <- function(
       fontSize = 18,
       rotation = 0
     )
-  }
-
-  if(is.null(gridLines)){
-    gridLines <- list(
-      color = NULL,
-      opacity = NULL,
-      width = NULL
-    )
-  }else{
-    gridLines[["color"]] <- validateColor(gridLines[["color"]])
   }
 
   if(is.null(legend)){
@@ -606,7 +602,6 @@ amHorizontalBarChart <- function(
       yAxis = yAxis,
       scrollbarX = scrollbarX,
       scrollbarY = scrollbarY,
-      gridLines = gridLines,
       legend = legend,
       caption = caption,
       image = image,

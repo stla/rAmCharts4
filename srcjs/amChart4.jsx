@@ -250,6 +250,10 @@ class AmBarChart extends React.PureComponent {
         yAxis.gridLines.opacity || 0.2;
       valueAxis.renderer.grid.template.strokeWidth = 
         yAxis.gridLines.width || 1;
+      if(yAxis.gridLines.dash) {
+        valueAxis.renderer.grid.template.strokeDasharray = 
+          yAxis.gridLines.dash;
+      }
     } else {
       valueAxis.renderer.grid.template.disabled = true;
     }
@@ -599,7 +603,6 @@ class AmHorizontalBarChart extends React.PureComponent {
       xAxis = this.props.xAxis,
       yAxis = this.props.yAxis,
       cursor = this.props.cursor,
-      gridLines = this.props.gridLines,
       draggable = this.props.draggable,
       tooltips = this.props.tooltip,
       valueFormatter = this.props.valueFormatter,
@@ -610,7 +613,7 @@ class AmHorizontalBarChart extends React.PureComponent {
       shinyId = this.props.shinyId;
 
     if(window.Shiny) {
-      if(shinyId === undefined){
+      if(shinyId === undefined) {
         shinyId = $(document.getElementById(chartId)).parent().attr("id");
       }
       Shiny.setInputValue(
@@ -661,7 +664,7 @@ class AmHorizontalBarChart extends React.PureComponent {
 
 		/* ~~~~\  title  /~~~~ */
 		let chartTitle = this.props.chartTitle;
-		if (chartTitle) {
+		if(chartTitle) {
 			let title = chart.plotContainer.createChild(am4core.Label);
 			title.text = chartTitle.text;
 			title.fill =
@@ -732,7 +735,7 @@ class AmHorizontalBarChart extends React.PureComponent {
 
 		/* ~~~~\  button  /~~~~ */
 		let button = this.props.button;
-		if (button) {
+		if(button) {
   		let Button = chart.chartContainer.createChild(am4core.Button);
       Button.label.text = button.text;
       Button.label.fill = button.color || Button.label.fill;
@@ -787,27 +790,45 @@ class AmHorizontalBarChart extends React.PureComponent {
 		/* ~~~~\  value axis  /~~~~ */
 		let valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
     valueAxis.paddingBottom = xAxis.adjust || 0;
-    valueAxis.renderer.grid.template.stroke =
-      gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
-    valueAxis.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.15;
-    valueAxis.renderer.grid.template.strokeWidth = gridLines.width || 1;
+    if(xAxis.gridLines && !xAxis.breaks) {
+      valueAxis.renderer.grid.template.stroke =
+        xAxis.gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
+      valueAxis.renderer.grid.template.strokeOpacity = 
+        xAxis.gridLines.opacity || 0.2;
+      valueAxis.renderer.grid.template.strokeWidth = 
+        xAxis.gridLines.width || 1;
+      if(xAxis.gridLines.dash) {
+        valueAxis.renderer.grid.template.strokeDasharray = 
+          xAxis.gridLines.dash;
+      }
+    } else {
+      valueAxis.renderer.grid.template.disabled = true;
+    }
+    if(xAxis.breaks) {
+      valueAxis.renderer.labels.template.disabled = true;
+      utils.createGridLines(
+        am4core, valueAxis, xAxis.breaks, xAxis.gridLines, xAxis.labels, theme
+      );
+    }
 		if(xAxis && xAxis.title && xAxis.title.text !== "") {
 			valueAxis.title.text = xAxis.title.text;
 			valueAxis.title.fontWeight = "bold";
 			valueAxis.title.fontSize = xAxis.title.fontSize || 20;
 			valueAxis.title.fill =
 			  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
-		}
-		if(xAxis.labels.formatter) {
-      valueAxis.numberFormatter = new am4core.NumberFormatter();
-      valueAxis.numberFormatter.numberFormat = xAxis.labels.formatter;
-      valueAxis.adjustLabelPrecision = false;
     }
-		let xAxisLabels = valueAxis.renderer.labels.template;
-		xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
-		xAxisLabels.rotation = xAxis.labels.rotation || 0;
-		xAxisLabels.fill =
-		  xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+    if(!xAxis.breaks) {
+      let xAxisLabels = valueAxis.renderer.labels.template;
+      if(xAxis.labels.formatter) {
+        valueAxis.numberFormatter = new am4core.NumberFormatter();
+        valueAxis.numberFormatter.numberFormat = xAxis.labels.formatter;
+        valueAxis.adjustLabelPrecision = false;
+      }
+      xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
+      xAxisLabels.rotation = xAxis.labels.rotation || 0;
+      xAxisLabels.fill =
+        xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");  
+    }
 		// we set fixed min/max and strictMinMax to true, as otherwise value axis will adjust min/max while dragging and it won't look smooth
 		valueAxis.strictMinMax = true;
 		valueAxis.min = minValue;

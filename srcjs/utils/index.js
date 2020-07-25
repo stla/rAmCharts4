@@ -101,12 +101,14 @@ export const createGridLines =
       let range = Axis.axisRanges.create();
       range.value = values[i];
       range.label.text = "{value}";
-      console.log("range.label", range.label);
       if(lineconfig) {
         range.grid.stroke =
           lineconfig.color || (theme === "dark" ? "#ffffff" : "#000000");
         range.grid.strokeWidth = lineconfig.width || 1;
         range.grid.strokeOpacity = lineconfig.opacity || 0.2;
+        if(lineconfig.dash) {
+          range.grid.strokeDasharray = lineconfig.dash;
+        }
       }
       if(labelsconfig) {
         range.label.fontSize = labelsconfig.fontSize || 17;
