@@ -57,12 +57,15 @@
 #'       yValues = "visits",
 #'       draggable = TRUE,
 #'       chartTitle = list(text = "Number of visits", color = "crimson"),
-#'       xAxis = list(title = "Date", labels = list(rotation = -45)),
+#'       xAxis = list(
+#'         title = "Date",
+#'         labels = amAxisLabels(rotation = -45)
+#'       ),
 #'       yAxis = "Visits",
 #'       yLimits = c(0, 35),
 #'       backgroundColor = "whitesmoke",
 #'       tooltip = "[bold][font-style:italic]{dateX}[/]\nvisits: {valueY}[/]",
-#'       valueFormatter = "#",
+#'       Yformatter = "#",
 #'       caption = list(
 #'         text = "[bold font-size:22]Year 2018[/]",
 #'         color = "fuchsia"

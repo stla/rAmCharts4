@@ -382,7 +382,7 @@ class AmBarChart extends React.PureComponent {
           if(window.Shiny) {
             Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
             Shiny.setInputValue(shinyId + "_change", {
-              index: dataItem.index,
+              index: dataItem.index + 1,
               category: dataItem.categoryX,
               field: value,
               value: dataItem.values.valueY.value
@@ -924,7 +924,7 @@ class AmHorizontalBarChart extends React.PureComponent {
           if(window.Shiny) {
             Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
             Shiny.setInputValue(shinyId + "_change", {
-              index: dataItem.index,
+              index: dataItem.index + 1,
               category: dataItem.categoryY,
               field: value,
               value: dataItem.values.valueX.value
@@ -1104,7 +1104,7 @@ class AmLineChart extends React.PureComponent {
     let theme = this.props.theme,
       xValue = this.props.xValue,
       yValues = this.props.yValues,
-      data = utils.subset(this.props.data, [xValue].concat(yValues)),
+      data = this.props.data,
       data2 = this.props.data2 ?
         HTMLWidgets.dataframeToD3(
           utils.subset(this.props.data2, [xValue].concat(yValues))
@@ -1126,7 +1126,6 @@ class AmLineChart extends React.PureComponent {
       tooltips = this.props.tooltip,
       bulletsStyle = this.props.bullets,
       alwaysShowBullets = this.props.alwaysShowBullets,
-      valueFormatter = this.props.valueFormatter,
       lineStyles = this.props.lineStyle,
       cursor = this.props.cursor,
       chartId = this.props.chartId,
@@ -1141,7 +1140,8 @@ class AmLineChart extends React.PureComponent {
       }
     }
     data = HTMLWidgets.dataframeToD3(data);
-    let dataCopy = data.map(row => ({...row}));
+    //let dataCopy = data.map(row => ({...row}));
+    let dataCopy = data.map(row => (utils.subset({...row}, [xValue].concat(yValues))));
     let trendData = trendData0 ?
       Object.assign({}, ...Object.keys(trendData0)
         .map(k => ({[k]: HTMLWidgets.dataframeToD3(trendData0[k])}))
@@ -1559,7 +1559,7 @@ class AmLineChart extends React.PureComponent {
             }
           );
           Shiny.setInputValue(shinyId + "_change:rAmCharts4.lineChange", {
-            index: dataItem.index,
+            index: dataItem.index + 1,
             x: dataItem.dateX,
             variable: value,
             y: dataItem.values.valueY.value
@@ -1569,7 +1569,7 @@ class AmLineChart extends React.PureComponent {
             shinyId + ":rAmCharts4.dataframe", dataCopy
           );
           Shiny.setInputValue(shinyId + "_change", {
-            index: dataItem.index,
+            index: dataItem.index + 1,
             x: dataItem.values.valueX.value,
             variable: value,
             y: dataItem.values.valueY.value
@@ -1820,7 +1820,7 @@ class AmScatterChart extends React.PureComponent {
     let theme = this.props.theme,
       xValue = this.props.xValue,
       yValues = this.props.yValues,
-      data = utils.subset(this.props.data, [xValue].concat(yValues)),
+      data = this.props.data,
       data2 = this.props.data2 ?
         HTMLWidgets.dataframeToD3(
           utils.subset(this.props.data2, [xValue].concat(yValues))
@@ -1855,7 +1855,8 @@ class AmScatterChart extends React.PureComponent {
       }
     }
     data = HTMLWidgets.dataframeToD3(data);
-    let dataCopy = data.map(row => ({...row}));
+    let dataCopy = 
+      data.map(row => (utils.subset({...row}, [xValue].concat(yValues))));
     let trendData = trendData0 ?
       Object.assign({}, ...Object.keys(trendData0)
         .map(k => ({[k]: HTMLWidgets.dataframeToD3(trendData0[k])}))
@@ -2121,6 +2122,10 @@ class AmScatterChart extends React.PureComponent {
     {
       if(cursor.tooltip)
         XAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+      if(cursor.renderer && cursor.renderer.x)
+        XAxis.adapter.add("getTooltipText", cursor.renderer.x);
+      if(cursor.extraTooltipPrecision)
+        XAxis.extraTooltipPrecision = cursor.extraTooltipPrecision.x;
     } else {
       XAxis.cursorTooltipEnabled = false;
     }
@@ -2161,6 +2166,8 @@ class AmScatterChart extends React.PureComponent {
     {
       if(cursor.tooltip)
         YAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+      if(cursor.extraTooltipPrecision)
+        YAxis.extraTooltipPrecision = cursor.extraTooltipPrecision.y;
     } else {
       YAxis.cursorTooltipEnabled = false;
     }
@@ -2277,7 +2284,7 @@ class AmScatterChart extends React.PureComponent {
             }
           );
           Shiny.setInputValue(shinyId + "_change:rAmCharts4.lineChange", {
-            index: dataItem.index,
+            index: dataItem.index + 1,
             x: dataItem.dateX,
             variable: value,
             y: dataItem.values.valueY.value
@@ -2287,7 +2294,7 @@ class AmScatterChart extends React.PureComponent {
             shinyId + ":rAmCharts4.dataframe", dataCopy
           );
           Shiny.setInputValue(shinyId + "_change", {
-            index: dataItem.index,
+            index: dataItem.index + 1,
             x: dataItem.values.valueX.value,
             variable: value,
             y: dataItem.values.valueY.value
@@ -2525,7 +2532,7 @@ class AmRangeAreaChart extends React.PureComponent {
     let theme = this.props.theme,
       xValue = this.props.xValue,
       yValues = this.props.yValues,
-      data = utils.subset(this.props.data, [xValue].concat(yValues.flat())),
+      data = this.props.data,
       data2 = this.props.data2 ?
         HTMLWidgets.dataframeToD3(
           utils.subset(this.props.data2, yValues.flat())
@@ -2553,7 +2560,8 @@ class AmRangeAreaChart extends React.PureComponent {
       data[xValue] = data[xValue].map(utils.toDate);
     }
     data = HTMLWidgets.dataframeToD3(data);
-    let dataCopy = data.map(row => ({...row}));
+    let dataCopy = 
+      data.map(row => (utils.subset({...row}, [xValue].concat(yValues.flat()))));
 
     if(window.Shiny) {
       if(shinyId === undefined){
@@ -2987,7 +2995,7 @@ class AmRangeAreaChart extends React.PureComponent {
             }
           );
           Shiny.setInputValue(shinyId + "_change:rAmCharts4.lineChange", {
-            index: dataItem.index,
+            index: dataItem.index + 1,
             x: dataItem.dateX,
             variable: value,
             y: dataItem.values.valueY.value
@@ -2997,7 +3005,7 @@ class AmRangeAreaChart extends React.PureComponent {
             shinyId + ":rAmCharts4.dataframe", dataCopy
           );
           Shiny.setInputValue(shinyId + "_change", {
-            index: dataItem.index,
+            index: dataItem.index + 1,
             x: dataItem.values.valueX.value,
             variable: value,
             y: dataItem.values.valueY.value

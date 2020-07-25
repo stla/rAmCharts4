@@ -152,11 +152,15 @@
 #' @param cursor option to add a cursor on the chart; \code{FALSE} for no
 #'   cursor, \code{TRUE} for a cursor for both axes with default settings
 #'   for the axes tooltips,
-#'   otherwise a named list with two possible fields: a field
-#'   \code{axes} to specify on which axes the cursor is requested, can be
+#'   otherwise a named list with three possible fields: a field
+#'   \code{axes} to specify the axes for which the cursor is requested, can be
 #'   \code{"x"}, \code{"y"}, or \code{"xy"},
-#'   and a field \code{tooltip} to set the style of the axes tooltips, this
-#'   must be a list of settings created with \code{\link{amTooltip}}
+#'   a field \code{tooltip} to set the style of the axes tooltips, this
+#'   must be a list of settings created with \code{\link{amTooltip}}, and a
+#'   field \code{extraTooltipPrecision}, a named list of the form
+#'   \code{list(x = i, y = j)} where \code{i} and \code{j} are the desired
+#'   numbers of additional decimals for the tooltips on the x-axis and
+#'   on the y-axis respectively
 #' @param width the width of the chart, e.g. \code{"600px"} or \code{"80\%"};
 #' ignored if the chart is displayed in Shiny, in which case the width is
 #' given in \code{\link{amChart4Output}}
@@ -267,8 +271,10 @@
 #'                             color = "gold"),
 #'                labels = amAxisLabels(color = "whitesmoke",
 #'                                      fontSize = 17)),
-#'   Xformatter = "#.0",
-#'   Yformatter = "#.0",
+#'   cursor = list(
+#'     tooltip = amTooltip(backgroundColor = "lightgray"),
+#'     extraTooltipPrecision = list(x = 1, y = 1)
+#'   ),
 #'   caption = list(text = "[font-style:italic]rAmCharts4[/]",
 #'                  color = "yellow"),
 #'   gridLines = list(color = "whitesmoke",
