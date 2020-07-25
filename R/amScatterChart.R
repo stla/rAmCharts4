@@ -895,6 +895,11 @@ amScatterChart <- function(
       }, simplify = FALSE, USE.NAMES = TRUE)
       cursor[["modifier"]] <- NULL
     }
+    if(isDate){
+      cursor <- append(cursor, list(dateFormat = Xformatter))
+    }
+  }else if(isTRUE(cursor) && isDate){
+    cursor <- list(dateFormat = Xformatter)
   }
 
   if(is.null(width)){

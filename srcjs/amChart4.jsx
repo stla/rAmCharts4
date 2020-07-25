@@ -173,7 +173,7 @@ class AmBarChart extends React.PureComponent {
       }
       image.dx = img.hjust || 0;
       image.dy = img.vjust || 0;
-      image.href = img.base64;
+      image.href = img.href;
     }
 
 
@@ -704,7 +704,7 @@ class AmHorizontalBarChart extends React.PureComponent {
       }
       image.dx = img.hjust || 0;
       image.dy = img.vjust || 0;
-      image.href = img.base64;
+      image.href = img.href;
     }
 
 
@@ -1274,7 +1274,7 @@ class AmLineChart extends React.PureComponent {
       }
       image.dx = img.hjust || 0;
       image.dy = img.vjust || 0;
-      image.href = img.base64;
+      image.href = img.href;
     }
 
 
@@ -1420,6 +1420,8 @@ class AmLineChart extends React.PureComponent {
         XAxis.extraTooltipPrecision = cursor.extraTooltipPrecision.x;
       if(cursor.renderer && cursor.renderer.x)
         XAxis.adapter.add("getTooltipText", cursor.renderer.x);
+      if(cursor.dateFormat)
+        XAxis.tooltipDateFormat = cursor.dateFormat;
     } else {
       XAxis.cursorTooltipEnabled = false;
     }
@@ -1996,7 +1998,7 @@ class AmScatterChart extends React.PureComponent {
       }
       image.dx = img.hjust || 0;
       image.dy = img.vjust || 0;
-      image.href = img.base64;
+      image.href = img.href;
     }
 
 
@@ -2142,6 +2144,8 @@ class AmScatterChart extends React.PureComponent {
         XAxis.adapter.add("getTooltipText", cursor.renderer.x);
       if(cursor.extraTooltipPrecision)
         XAxis.extraTooltipPrecision = cursor.extraTooltipPrecision.x;
+      if(cursor.dateFormat)
+        XAxis.tooltipDateFormat = cursor.dateFormat;
     } else {
       XAxis.cursorTooltipEnabled = false;
     }
@@ -2839,6 +2843,8 @@ class AmRangeAreaChart extends React.PureComponent {
         XAxis.extraTooltipPrecision = cursor.extraTooltipPrecision.x;
       if(cursor.renderer && cursor.renderer.x)
         XAxis.adapter.add("getTooltipText", cursor.renderer.x);
+      if(cursor.dateFormat)
+        XAxis.tooltipDateFormat = cursor.dateFormat;
     } else {
 //      XAxis.tooltip.disabled = true;
       XAxis.cursorTooltipEnabled = false;
