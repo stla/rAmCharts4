@@ -865,6 +865,17 @@ amScatterChart <- function(
     button[["fill"]] <- validateColor(button[["fill"]])
   }
 
+  if(is.list(cursor)){
+    if("extraTooltipPrecision" %in% names(cursor) &&
+       length(cursor[["extraTooltipPrecision"]]) == 1L)
+    {
+      cursor[["extraTooltipPrecision"]] <- list(
+        x = cursor[["extraTooltipPrecision"]][[1L]],
+        y = cursor[["extraTooltipPrecision"]][[1L]]
+      )
+    }
+  }
+
   if(is.null(width)){
     width <- "100%"
   }else{
