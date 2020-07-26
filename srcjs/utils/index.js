@@ -96,11 +96,71 @@ export const Shape = function(am4core, chart, index, bullet, shapeConfig) {
 };
 
 export const createGridLines =
-  function(am4core, Axis, values, lineconfig, labelsconfig, theme) {
-    for(let i = 0; i < values.length; ++i) {
+  function(am4core, Axis, values, lineconfig, labelsconfig, theme, isDate) {
+/*    if(labelsconfig && labelsconfig.formatter) {
+      let formatter = labelsconfig.formatter;
+      if(isDate) {
+        Axis.dateFormats.setKey("day", formatter.day[0]);
+        if(formatter.day[1]) {
+          Axis.periodChangeDateFormats.setKey("day", formatter.day[1]);
+        }
+        Axis.dateFormats.setKey("week", formatter.week[0]);
+        if(formatter.week[1]) {
+          Axis.periodChangeDateFormats.setKey("week", formatter.week[1]);
+        }
+        Axis.dateFormats.setKey("month", formatter.month[0]);
+        if(formatter.month[1]) {
+          Axis.periodChangeDateFormats.setKey("month", formatter.month[1]);
+        }
+      } else {
+        Axis.numberFormatter = new am4core.NumberFormatter();
+        Axis.numberFormatter.numberFormat = formatter;
+        Axis.adjustLabelPrecision = false;
+      }
+    } */
+//let formatter = labelsconfig.formatter;
+    let isArray = Array.isArray(values);
+    console.log(values);
+    let length = isArray ? values.length : Object.keys(values).length;
+
+    for(let i = 0; i < length; ++i) {
       let range = Axis.axisRanges.create();
-      range.value = values[i];
-      range.label.text = "{value}";
+
+/*        range.component.dateFormats.setKey("day", formatter.day[0]);
+        if(formatter.day[1]) {
+          range.component.periodChangeDateFormats.setKey("day", formatter.day[1]);
+        }
+        range.component.dateFormats.setKey("week", formatter.week[0]);
+        if(formatter.week[1]) {
+          range.component.periodChangeDateFormats.setKey("week", formatter.week[1]);
+        }
+        range.component.dateFormats.setKey("month", formatter.month[0]);
+        if(formatter.month[1]) {
+          range.component.periodChangeDateFormats.setKey("month", formatter.month[1]);
+        } */
+
+      if(isDate) {
+        if(isArray) {
+          range.date = toDate(values[i]);
+          range.label.text = "{date}";
+        } else {
+          let entry = Object.entries(values)[i];
+          console.log(entry);
+          range.date = toDate(entry[1]);
+          range.label.text = entry[0];
+        }
+      } else {
+        if(isArray) {
+          range.value = values[i];
+          range.label.text = "{value}";
+        } else {
+          let entry = Object.entries(values)[i];
+          range.value = entry[1];
+          range.label.text = entry[0];
+        }
+      }
+      //range.xx = Axis.formatLabel(values[i]);
+      console.log(range);
       if(lineconfig) {
         range.grid.stroke =
           lineconfig.color || (theme === "dark" ? "#ffffff" : "#000000");
@@ -117,9 +177,11 @@ export const createGridLines =
           labelsconfig.color || (theme === "dark" ? "#ffffff" : "#000000");
       }
     }
-    if(labelsconfig && labelsconfig.formatter) {
-      Axis.numberFormatter = new am4core.NumberFormatter();
-      Axis.numberFormatter.numberFormat = labelsconfig.formatter;
-      Axis.adjustLabelPrecision = false;
+/*    setTimeout(function() {
+    for(let i = 0; i < values.length; ++i) {
+      let range = Axis.axisRanges.getIndex(i);
+      range.xx = Axis.getPositionLabel(Axis.valueToPosition(values[i]));
+      range.label.text = "{date}";
     }
+    }, 500); */
   };

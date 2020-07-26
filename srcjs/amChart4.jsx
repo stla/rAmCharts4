@@ -243,6 +243,18 @@ class AmBarChart extends React.PureComponent {
 		/* ~~~~\  value axis  /~~~~ */
 		let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
     valueAxis.paddingRight = yAxis.adjust || 0;
+		if(yAxis.title && yAxis.title.text !== "") {
+			valueAxis.title.text = yAxis.title.text;
+			valueAxis.title.fontWeight = "bold";
+			valueAxis.title.fontSize = yAxis.title.fontSize || 20;
+			valueAxis.title.fill =
+			  yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+    }
+    if(yAxis.labels && yAxis.labels.formatter) {
+      valueAxis.numberFormatter = new am4core.NumberFormatter();
+      valueAxis.numberFormatter.numberFormat = yAxis.labels.formatter;
+      valueAxis.adjustLabelPrecision = false;
+    }
     if(yAxis.gridLines && !yAxis.breaks) {
       valueAxis.renderer.grid.template.stroke =
         yAxis.gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
@@ -262,21 +274,8 @@ class AmBarChart extends React.PureComponent {
       utils.createGridLines(
         am4core, valueAxis, yAxis.breaks, yAxis.gridLines, yAxis.labels, theme
       );
-    }
-		if(yAxis && yAxis.title && yAxis.title.text !== "") {
-			valueAxis.title.text = yAxis.title.text;
-			valueAxis.title.fontWeight = "bold";
-			valueAxis.title.fontSize = yAxis.title.fontSize || 20;
-			valueAxis.title.fill =
-			  yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
-    }
-    if(!yAxis.breaks) {
+    } else {
       let yAxisLabels = valueAxis.renderer.labels.template;
-      if(yAxis.labels.formatter) {
-        valueAxis.numberFormatter = new am4core.NumberFormatter();
-        valueAxis.numberFormatter.numberFormat = yAxis.labels.formatter;
-        valueAxis.adjustLabelPrecision = false;
-      }
       yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
       yAxisLabels.rotation = yAxis.labels.rotation || 0;
       yAxisLabels.fill =
@@ -1268,6 +1267,7 @@ class AmLineChart extends React.PureComponent {
 			title.fillOpacity = 1;
 		}
 
+
     /* ~~~~\  caption  /~~~~ */
     let chartCaption = this.props.caption;
     if (chartCaption) {
@@ -1390,62 +1390,118 @@ class AmLineChart extends React.PureComponent {
 		}
 
 		/* ~~~~\  x-axis  /~~~~ */
-		let XAxis;
+    let XAxis, Xformatter;
+    if(xAxis.labels && xAxis.labels.formatter) {
+      Xformatter = xAxis.labels.formatter;
+    }
 		if(isDate) {
-		  XAxis = chart.xAxes.push(new am4charts.DateAxis());
+      XAxis = chart.xAxes.push(new am4charts.DateAxis());
+      XAxis.dataFields.dateX = xValue;
+      if(Xformatter) {
+        XAxis.dateFormats.setKey("day", Xformatter.day[0]);
+        if(Xformatter.day[1]) {
+          XAxis.periodChangeDateFormats.setKey("day", Xformatter.day[1]);
+        }
+        XAxis.dateFormats.setKey("week", Xformatter.week[0]);
+        if(Xformatter.week[1]) {
+          XAxis.periodChangeDateFormats.setKey("week", Xformatter.week[1]);
+        }
+        XAxis.dateFormats.setKey("month", Xformatter.month[0]);
+        if(Xformatter.month[1]) {
+          XAxis.periodChangeDateFormats.setKey("month", Xformatter.month[1]);
+        }
+      }
 		} else {
-		  XAxis = chart.xAxes.push(new am4charts.ValueAxis());
-		}
+      XAxis = chart.xAxes.push(new am4charts.ValueAxis());
+      XAxis.dataFields.valueX = xValue;
+      if(Xformatter) {
+        XAxis.numberFormatter = new am4core.NumberFormatter();
+        XAxis.numberFormatter.numberFormat = Xformatter;
+        XAxis.adjustLabelPrecision = false;
+      }
+    }
 		if(xAxis) {
       XAxis.paddingBottom = xAxis.adjust || 0;
 		}
 		XAxis.strictMinMax = true;
 		XAxis.min = minX;
 		XAxis.max = maxX;
-		XAxis.renderer.grid.template.location = 0;
 		if(xAxis && xAxis.title && xAxis.title.text !== "") {
   		XAxis.title.text = xAxis.title.text || xValue;
   		XAxis.title.fontWeight = "bold";
   		XAxis.title.fontSize = xAxis.title.fontSize || 20;
   		XAxis.title.fill =
   		  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
-		}
-    let xAxisLabels = XAxis.renderer.labels.template;
-    if(xAxis.labels.formatter) {
-      let formatter = xAxis.labels.formatter;
-      if(isDate) {
-        XAxis.dateFormats.setKey("day", formatter.day[0]); 
-        if(formatter.day[1]) {
-          XAxis.periodChangeDateFormats.setKey("day", formatter.day[1]);
-        }
-        XAxis.dateFormats.setKey("week", formatter.week[0]); 
-        if(formatter.week[1]) {
-          XAxis.periodChangeDateFormats.setKey("week", formatter.week[1]);
-        }
-        XAxis.dateFormats.setKey("month", formatter.month[0]); 
-        if(formatter.month[1]) {
-          XAxis.periodChangeDateFormats.setKey("month", formatter.month[1]);
-        }
-      } else {
-        XAxis.numberFormatter = new am4core.NumberFormatter();
-        XAxis.numberFormatter.numberFormat = formatter;
-        XAxis.adjustLabelPrecision = false;
-      }
     }
-		xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
-		xAxisLabels.rotation = xAxis.labels.rotation || 0;
-		if(xAxisLabels.rotation !== 0) {
-		  xAxisLabels.horizontalCenter = "right";
-		}
-		xAxisLabels.fill =
-		  xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
-		if(isDate) {
-		  XAxis.dataFields.dateX = xValue;
-		} else {
-  		XAxis.dataFields.valueX = xValue;
-  	}
-		XAxis.renderer.grid.template.disabled = true;
-		XAxis.renderer.minGridDistance = 50;
+
+    if(xAxis.gridLines && !xAxis.breaks) {
+      //XAxis.renderer.minGridDistance = 50;
+      XAxis.renderer.grid.template.location = 0.5;
+      XAxis.renderer.labels.template.location = 0.5;
+XAxis.startLocation = 0.5;
+XAxis.endLocation = 0.5;
+      XAxis.renderer.grid.template.stroke =
+        xAxis.gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
+      XAxis.renderer.grid.template.strokeOpacity = 
+        xAxis.gridLines.opacity || 0.2;
+      XAxis.renderer.grid.template.strokeWidth = 
+        xAxis.gridLines.width || 1;
+      if(xAxis.gridLines.dash) {
+        XAxis.renderer.grid.template.strokeDasharray = 
+          xAxis.gridLines.dash;
+      }
+    } else {
+      XAxis.renderer.grid.template.disabled = true;
+    }
+    if(xAxis.breaks) {
+      XAxis.renderer.labels.template.disabled = true;
+      if(isDate) {
+        XAxis.renderer.minGridDistance = 10;
+//        xAxis.breaks = xAxis.breaks.map(function(br){
+//          return utils.toDate(br);//.getTime();
+//        });
+      }
+      utils.createGridLines(
+        am4core, XAxis, xAxis.breaks, xAxis.gridLines, 
+        xAxis.labels, theme, isDate
+      );
+    } else {
+      if(xAxis.labels.timeInterval)
+        XAxis.gridIntervals.setAll(xAxis.labels.timeInterval);
+      let xAxisLabels = XAxis.renderer.labels.template;
+      /*if(xAxis.labels.formatter) {
+        let formatter = xAxis.labels.formatter;
+        if(isDate) {
+          XAxis.dateFormats.setKey("day", formatter.day[0]); 
+          if(formatter.day[1]) {
+            XAxis.periodChangeDateFormats.setKey("day", formatter.day[1]);
+          }
+          XAxis.dateFormats.setKey("week", formatter.week[0]); 
+          if(formatter.week[1]) {
+            XAxis.periodChangeDateFormats.setKey("week", formatter.week[1]);
+          }
+          XAxis.dateFormats.setKey("month", formatter.month[0]); 
+          if(formatter.month[1]) {
+            XAxis.periodChangeDateFormats.setKey("month", formatter.month[1]);
+          }
+        } else {
+          XAxis.numberFormatter = new am4core.NumberFormatter();
+          XAxis.numberFormatter.numberFormat = formatter;
+          XAxis.adjustLabelPrecision = false;
+        }
+      } */
+      xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
+      xAxisLabels.rotation = xAxis.labels.rotation || 0;
+      if(xAxisLabels.rotation !== 0) {
+        xAxisLabels.horizontalCenter = "right";
+      }
+      xAxisLabels.fill =
+        xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+    }
+
+    
+//		XAxis.renderer.grid.template.disabled = true;
+//		XAxis.renderer.minGridDistance = 50;
     if(cursor &&
       (cursor === true || !cursor.axes || ["x","xy"].indexOf(cursor.axes)) > -1)
     {

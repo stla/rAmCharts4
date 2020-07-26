@@ -22,7 +22,8 @@ Imports:
     minpack.lm,
     tools,
     base64enc,
-    xml2
+    xml2,
+    stringr
 Suggests:
     reshape2
 RoxygenNote: 7.0.2

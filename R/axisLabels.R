@@ -9,20 +9,36 @@
 #'   \href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}{number formatting string}
 #'   for a numeric axis, and a list created with
 #'   \code{\link{amDateAxisFormatter}} for a date axis
+#' @param timeInterval for a date axis, this option defines the interval
+#'   between two consecutive labels; it must be a string like \code{"1 day"},
+#'   \code{"7 days"}, \code{"1 week"}, \code{"2 months"}, ...
 #'
 #' @return A list of settings for the labels of an axis.
+#' @importFrom stringr str_extract
 #' @export
 amAxisLabels <- function(
   color = NULL,
   fontSize = 18,
   rotation = 0,
-  formatter = NULL
+  formatter = NULL,
+  timeInterval = NULL
 ){
+  if(!is.null(timeInterval)){
+    unit <- stringr::str_extract(timeInterval, "(day|week|month|year)")
+    count <- as.integer(stringr::str_extract(timeInterval, "^\\d+"))
+    if(is.na(unit) || is.na(count)){
+      stop("Invalid `timeInterval` argument.", call. = TRUE)
+    }
+    timeInterval <- list(
+      list(timeUnit = unit, count = count)
+    )
+  }
   labels <- list(
     color = validateColor(color),
     fontSize = fontSize,
     rotation = rotation,
-    formatter = formatter
+    formatter = formatter,
+    timeInterval = timeInterval
   )
   class(labels) <- "axisLabels"
   labels

@@ -296,11 +296,12 @@
 #'       formatter = amDateAxisFormatter(
 #'         day = c("dt", "[bold]MMM[/] dt"),
 #'         week = c("dt", "[bold]MMM[/] dt")
-#'       )
+#'       ),
+#'       timeInterval = "7 days"
 #'     )
 #'   ),
 #'   yAxis = "Visits",
-#'   xLimits = range(dat$date),
+#'   xLimits = range(dat$date) + c(0,7),
 #'   yLimits = c(0, 35),
 #'   backgroundColor = "whitesmoke",
 #'   tooltip = paste0(
@@ -821,6 +822,15 @@ amLineChart <- function(
     if(is.list(xAxis[["title"]])){
       xAxis[["title"]][["color"]] <- validateColor(xAxis[["title"]][["color"]])
     }
+    if("breaks" %in% names(xAxis)){
+      if(isDate){
+        xAxis[["breaks"]] <- format(xAxis[["breaks"]], "%Y-%m-%d")
+      }
+      if(is.null(names(xAxis[["breaks"]]))){
+
+      }
+      xAxis[["breaks"]] <- as.list(xAxis[["breaks"]])
+    }
   }else if(is.null(xAxis)){
     xAxis <- list(
       title = list(
@@ -837,7 +847,8 @@ amLineChart <- function(
         }else{
           Xformatter
         }
-      )
+      ),
+      gridLines = amLine(opacity = 0.2, width = 1)
     )
   }else if(is.character(xAxis)){
     xAxis <- list(
@@ -855,7 +866,8 @@ amLineChart <- function(
         }else{
           Xformatter
         }
-      )
+      ),
+      gridLines = amLine(opacity = 0.2, width = 1)
     )
   }
   if(is.character(xAxis[["title"]])){

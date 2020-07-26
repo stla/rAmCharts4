@@ -4,7 +4,13 @@
 \alias{amAxisLabels}
 \title{Axis labels}
 \usage{
-amAxisLabels(color = NULL, fontSize = 18, rotation = 0, formatter = NULL)
+amAxisLabels(
+  color = NULL,
+  fontSize = 18,
+  rotation = 0,
+  formatter = NULL,
+  timeInterval = NULL
+)
 }
 \arguments{
 \item{color}{color of the labels}
@@ -18,6 +24,10 @@ this should be a
 \href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}{number formatting string}
 for a numeric axis, and a list created with
 \code{\link{amDateAxisFormatter}} for a date axis}
+
+\item{timeInterval}{for a date axis, this option defines the interval
+between two consecutive labels; it must be a string like \code{"1 day"},
+\code{"7 days"}, \code{"1 week"}, \code{"2 months"}, ...}
 }
 \value{
 A list of settings for the labels of an axis.
