@@ -296,9 +296,9 @@
 #'       formatter = amDateAxisFormatter(
 #'         day = c("dt", "[bold]MMM[/] dt"),
 #'         week = c("dt", "[bold]MMM[/] dt")
-#'       ),
-#'       timeInterval = "7 days"
-#'     )
+#'       )
+#'     ),
+#'     breaks = amAxisBreaks(timeInterval = "7 days")
 #'   ),
 #'   yAxis = "Visits",
 #'   xLimits = range(dat$date) + c(0,7),
@@ -822,15 +822,15 @@ amLineChart <- function(
     if(is.list(xAxis[["title"]])){
       xAxis[["title"]][["color"]] <- validateColor(xAxis[["title"]][["color"]])
     }
-    if("breaks" %in% names(xAxis)){
-      if(isDate){
-        xAxis[["breaks"]] <- format(xAxis[["breaks"]], "%Y-%m-%d")
-      }
-      if(is.null(names(xAxis[["breaks"]]))){
-
-      }
-      xAxis[["breaks"]] <- as.list(xAxis[["breaks"]])
-    }
+    # if("breaks" %in% names(xAxis)){
+    #   if(isDate){
+    #     xAxis[["breaks"]] <- format(xAxis[["breaks"]], "%Y-%m-%d")
+    #   }
+    #   if(is.null(names(xAxis[["breaks"]]))){
+    #
+    #   }
+    #   xAxis[["breaks"]] <- as.list(xAxis[["breaks"]])
+    # }
   }else if(is.null(xAxis)){
     xAxis <- list(
       title = list(

@@ -1,6 +1,6 @@
 export const toDate = function(string) {
   let ymd = string.split("-");
-  return new Date(ymd[0], ymd[1]-1, ymd[2]);
+  return new Date(Date.UTC(ymd[0], ymd[1]-1, ymd[2]));
 };
 
 export const subset = function(data, keys) {
@@ -96,7 +96,7 @@ export const Shape = function(am4core, chart, index, bullet, shapeConfig) {
 };
 
 export const createGridLines =
-  function(am4core, Axis, values, lineconfig, labelsconfig, theme, isDate) {
+  function(am4core, Axis, breaks, lineconfig, labelsconfig, theme, isDate) {
 /*    if(labelsconfig && labelsconfig.formatter) {
       let formatter = labelsconfig.formatter;
       if(isDate) {
@@ -119,11 +119,13 @@ export const createGridLines =
       }
     } */
 //let formatter = labelsconfig.formatter;
-    let isArray = Array.isArray(values);
-    console.log(values);
-    let length = isArray ? values.length : Object.keys(values).length;
+//    let isArray = Array.isArray(values);
+//    console.log(values);
+//    let length = isArray ? values.length : Object.keys(values).length;
 
-    for(let i = 0; i < length; ++i) {
+Axis.axisRanges.template.grid.location = 0.5;
+Axis.axisRanges.template.label.location = 0.5;
+    for(let i = 0; i < breaks.value.length; ++i) {
       let range = Axis.axisRanges.create();
 
 /*        range.component.dateFormats.setKey("day", formatter.day[0]);
@@ -138,8 +140,17 @@ export const createGridLines =
         if(formatter.month[1]) {
           range.component.periodChangeDateFormats.setKey("month", formatter.month[1]);
         } */
-
       if(isDate) {
+        range.value = toDate(breaks.value[i]);
+        range.label.text = breaks.label[i] || "{date}";
+        //range.label.location = 0.5;
+        //range.grid.location = 0.5;
+      } else {
+        range.value = breaks.value[i];
+        range.label.text = breaks.label[i] || "{value}";
+      }
+
+/*      if(isDate) {
         if(isArray) {
           range.date = toDate(values[i]);
           range.label.text = "{date}";
@@ -158,7 +169,7 @@ export const createGridLines =
           range.value = entry[1];
           range.label.text = entry[0];
         }
-      }
+      } */
       //range.xx = Axis.formatLabel(values[i]);
       console.log(range);
       if(lineconfig) {

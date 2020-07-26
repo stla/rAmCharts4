@@ -120152,7 +120152,6 @@ class AmBarChart extends React.PureComponent {
         columnWidth = this.props.columnWidth,
         xAxis = this.props.xAxis,
         yAxis = this.props.yAxis,
-        gridLines = this.props.gridLines,
         draggable = this.props.draggable,
         tooltips = this.props.tooltip,
         valueFormatter = this.props.valueFormatter,
@@ -120360,10 +120359,27 @@ class AmBarChart extends React.PureComponent {
     var valueAxis = chart.yAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]());
     valueAxis.paddingRight = yAxis.adjust || 0;
 
+    if (yAxis.title && yAxis.title.text !== "") {
+      valueAxis.title.text = yAxis.title.text;
+      valueAxis.title.fontWeight = "bold";
+      valueAxis.title.fontSize = yAxis.title.fontSize || 20;
+      valueAxis.title.fill = yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+    }
+
+    if (yAxis.labels && yAxis.labels.formatter) {
+      valueAxis.numberFormatter = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["NumberFormatter"]();
+      valueAxis.numberFormatter.numberFormat = yAxis.labels.formatter;
+      valueAxis.adjustLabelPrecision = false;
+    }
+
     if (yAxis.gridLines && !yAxis.breaks) {
-      valueAxis.renderer.grid.template.stroke = gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
-      valueAxis.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.15;
-      valueAxis.renderer.grid.template.strokeWidth = gridLines.width || 1;
+      valueAxis.renderer.grid.template.stroke = yAxis.gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
+      valueAxis.renderer.grid.template.strokeOpacity = yAxis.gridLines.opacity || 0.2;
+      valueAxis.renderer.grid.template.strokeWidth = yAxis.gridLines.width || 1;
+
+      if (yAxis.gridLines.dash) {
+        valueAxis.renderer.grid.template.strokeDasharray = yAxis.gridLines.dash;
+      }
     } else {
       valueAxis.renderer.grid.template.disabled = true;
     }
@@ -120371,24 +120387,8 @@ class AmBarChart extends React.PureComponent {
     if (yAxis.breaks) {
       valueAxis.renderer.labels.template.disabled = true;
       _utils__WEBPACK_IMPORTED_MODULE_13__["createGridLines"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, valueAxis, yAxis.breaks, yAxis.gridLines, yAxis.labels, theme);
-    }
-
-    if (yAxis && yAxis.title && yAxis.title.text !== "") {
-      valueAxis.title.text = yAxis.title.text;
-      valueAxis.title.fontWeight = "bold";
-      valueAxis.title.fontSize = yAxis.title.fontSize || 20;
-      valueAxis.title.fill = yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
-    }
-
-    if (!yAxis.breaks) {
+    } else {
       var yAxisLabels = valueAxis.renderer.labels.template;
-
-      if (yAxis.labels.formatter) {
-        valueAxis.numberFormatter = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["NumberFormatter"]();
-        valueAxis.numberFormatter.numberFormat = yAxis.labels.formatter;
-        valueAxis.adjustLabelPrecision = false;
-      }
-
       yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
       yAxisLabels.rotation = yAxis.labels.rotation || 0;
       yAxisLabels.fill = yAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
@@ -120719,7 +120719,6 @@ class AmHorizontalBarChart extends React.PureComponent {
         xAxis = this.props.xAxis,
         yAxis = this.props.yAxis,
         cursor = this.props.cursor,
-        gridLines = this.props.gridLines,
         draggable = this.props.draggable,
         tooltips = this.props.tooltip,
         valueFormatter = this.props.valueFormatter,
@@ -120922,9 +120921,23 @@ class AmHorizontalBarChart extends React.PureComponent {
 
     var valueAxis = chart.xAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]());
     valueAxis.paddingBottom = xAxis.adjust || 0;
-    valueAxis.renderer.grid.template.stroke = gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
-    valueAxis.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.15;
-    valueAxis.renderer.grid.template.strokeWidth = gridLines.width || 1;
+
+    if (xAxis.gridLines && !xAxis.breaks) {
+      valueAxis.renderer.grid.template.stroke = xAxis.gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
+      valueAxis.renderer.grid.template.strokeOpacity = xAxis.gridLines.opacity || 0.2;
+      valueAxis.renderer.grid.template.strokeWidth = xAxis.gridLines.width || 1;
+
+      if (xAxis.gridLines.dash) {
+        valueAxis.renderer.grid.template.strokeDasharray = xAxis.gridLines.dash;
+      }
+    } else {
+      valueAxis.renderer.grid.template.disabled = true;
+    }
+
+    if (xAxis.breaks) {
+      valueAxis.renderer.labels.template.disabled = true;
+      _utils__WEBPACK_IMPORTED_MODULE_13__["createGridLines"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, valueAxis, xAxis.breaks, xAxis.gridLines, xAxis.labels, theme);
+    }
 
     if (xAxis && xAxis.title && xAxis.title.text !== "") {
       valueAxis.title.text = xAxis.title.text;
@@ -120933,16 +120946,20 @@ class AmHorizontalBarChart extends React.PureComponent {
       valueAxis.title.fill = xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
     }
 
-    if (xAxis.labels.formatter) {
-      valueAxis.numberFormatter = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["NumberFormatter"]();
-      valueAxis.numberFormatter.numberFormat = xAxis.labels.formatter;
-      valueAxis.adjustLabelPrecision = false;
-    }
+    if (!xAxis.breaks) {
+      var xAxisLabels = valueAxis.renderer.labels.template;
 
-    var xAxisLabels = valueAxis.renderer.labels.template;
-    xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
-    xAxisLabels.rotation = xAxis.labels.rotation || 0;
-    xAxisLabels.fill = xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000"); // we set fixed min/max and strictMinMax to true, as otherwise value axis will adjust min/max while dragging and it won't look smooth
+      if (xAxis.labels.formatter) {
+        valueAxis.numberFormatter = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["NumberFormatter"]();
+        valueAxis.numberFormatter.numberFormat = xAxis.labels.formatter;
+        valueAxis.adjustLabelPrecision = false;
+      }
+
+      xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
+      xAxisLabels.rotation = xAxis.labels.rotation || 0;
+      xAxisLabels.fill = xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+    } // we set fixed min/max and strictMinMax to true, as otherwise value axis will adjust min/max while dragging and it won't look smooth
+
 
     valueAxis.strictMinMax = true;
     valueAxis.min = minValue;
@@ -121523,12 +121540,44 @@ class AmLineChart extends React.PureComponent {
     /* ~~~~\  x-axis  /~~~~ */
 
 
-    var XAxis;
+    var XAxis, Xformatter;
+
+    if (xAxis.labels && xAxis.labels.formatter) {
+      Xformatter = xAxis.labels.formatter;
+    }
 
     if (isDate) {
       XAxis = chart.xAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["DateAxis"]());
+      XAxis.dataFields.dateX = xValue;
+
+      if (Xformatter) {
+        XAxis.dateFormats.setKey("day", Xformatter.day[0]);
+
+        if (Xformatter.day[1]) {
+          XAxis.periodChangeDateFormats.setKey("day", Xformatter.day[1]);
+        }
+
+        XAxis.dateFormats.setKey("week", Xformatter.week[0]);
+
+        if (Xformatter.week[1]) {
+          XAxis.periodChangeDateFormats.setKey("week", Xformatter.week[1]);
+        }
+
+        XAxis.dateFormats.setKey("month", Xformatter.month[0]);
+
+        if (Xformatter.month[1]) {
+          XAxis.periodChangeDateFormats.setKey("month", Xformatter.month[1]);
+        }
+      }
     } else {
       XAxis = chart.xAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]());
+      XAxis.dataFields.valueX = xValue;
+
+      if (Xformatter) {
+        XAxis.numberFormatter = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["NumberFormatter"]();
+        XAxis.numberFormatter.numberFormat = Xformatter;
+        XAxis.adjustLabelPrecision = false;
+      }
     }
 
     if (xAxis) {
@@ -121538,7 +121587,6 @@ class AmLineChart extends React.PureComponent {
     XAxis.strictMinMax = true;
     XAxis.min = minX;
     XAxis.max = maxX;
-    XAxis.renderer.grid.template.location = 0;
 
     if (xAxis && xAxis.title && xAxis.title.text !== "") {
       XAxis.title.text = xAxis.title.text || xValue;
@@ -121547,53 +121595,81 @@ class AmLineChart extends React.PureComponent {
       XAxis.title.fill = xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
     }
 
-    var xAxisLabels = XAxis.renderer.labels.template;
+    var xBreaksType;
 
-    if (xAxis.labels.formatter) {
-      var formatter = xAxis.labels.formatter;
+    if (xAxis.breaks) {
+      xBreaksType = typeof xAxis.breaks === "number" ? "interval" : Array.isArray(xAxis.breaks) ? "timeInterval" : "breaks";
+    }
+
+    if (xAxis.gridLines) {
+      if (xBreaksType === "interval") XAxis.renderer.minGridDistance = xAxis.breaks;
+      XAxis.renderer.grid.template.stroke = xAxis.gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
+      XAxis.renderer.grid.template.strokeOpacity = xAxis.gridLines.opacity || 0.2;
+      XAxis.renderer.grid.template.strokeWidth = xAxis.gridLines.width || 1;
+
+      if (xAxis.gridLines.dash) {
+        XAxis.renderer.grid.template.strokeDasharray = xAxis.gridLines.dash;
+      }
+    } else {
+      XAxis.renderer.grid.template.disabled = true;
+    }
+
+    if (xBreaksType === "breaks") {
+      XAxis.renderer.grid.template.disabled = true;
+      XAxis.renderer.labels.template.disabled = true;
 
       if (isDate) {
-        XAxis.dateFormats.setKey("day", formatter.day[0]);
+        XAxis.renderer.minGridDistance = 10;
+        XAxis.startLocation = 0.5; // ??
 
-        if (formatter.day[1]) {
-          XAxis.periodChangeDateFormats.setKey("day", formatter.day[1]);
-        }
-
-        XAxis.dateFormats.setKey("week", formatter.week[0]);
-
-        if (formatter.week[1]) {
-          XAxis.periodChangeDateFormats.setKey("week", formatter.week[1]);
-        }
-
-        XAxis.dateFormats.setKey("month", formatter.month[0]);
-
-        if (formatter.month[1]) {
-          XAxis.periodChangeDateFormats.setKey("month", formatter.month[1]);
-        }
-      } else {
-        XAxis.numberFormatter = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["NumberFormatter"]();
-        XAxis.numberFormatter.numberFormat = formatter;
-        XAxis.adjustLabelPrecision = false;
+        XAxis.endLocation = 0.5; // ??
       }
-    }
 
-    xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
-    xAxisLabels.rotation = xAxis.labels.rotation || 0;
-
-    if (xAxisLabels.rotation !== 0) {
-      xAxisLabels.horizontalCenter = "right";
-    }
-
-    xAxisLabels.fill = xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
-
-    if (isDate) {
-      XAxis.dataFields.dateX = xValue;
+      _utils__WEBPACK_IMPORTED_MODULE_13__["createGridLines"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, XAxis, xAxis.breaks, xAxis.gridLines, xAxis.labels, theme, isDate);
     } else {
-      XAxis.dataFields.valueX = xValue;
-    }
+      if (xBreaksType === "timeInterval") {
+        XAxis.gridIntervals.setAll(xAxis.breaks);
+        XAxis.renderer.grid.template.location = 0.5;
+        XAxis.renderer.labels.template.location = 0.5;
+        XAxis.startLocation = 0.5; // ??
 
-    XAxis.renderer.grid.template.disabled = true;
-    XAxis.renderer.minGridDistance = 50;
+        XAxis.endLocation = 0.5; // ??
+      }
+
+      var xAxisLabels = XAxis.renderer.labels.template;
+      /*if(xAxis.labels.formatter) {
+        let formatter = xAxis.labels.formatter;
+        if(isDate) {
+          XAxis.dateFormats.setKey("day", formatter.day[0]); 
+          if(formatter.day[1]) {
+            XAxis.periodChangeDateFormats.setKey("day", formatter.day[1]);
+          }
+          XAxis.dateFormats.setKey("week", formatter.week[0]); 
+          if(formatter.week[1]) {
+            XAxis.periodChangeDateFormats.setKey("week", formatter.week[1]);
+          }
+          XAxis.dateFormats.setKey("month", formatter.month[0]); 
+          if(formatter.month[1]) {
+            XAxis.periodChangeDateFormats.setKey("month", formatter.month[1]);
+          }
+        } else {
+          XAxis.numberFormatter = new am4core.NumberFormatter();
+          XAxis.numberFormatter.numberFormat = formatter;
+          XAxis.adjustLabelPrecision = false;
+        }
+      } */
+
+      xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
+      xAxisLabels.rotation = xAxis.labels.rotation || 0;
+
+      if (xAxisLabels.rotation !== 0) {
+        xAxisLabels.horizontalCenter = "right";
+      }
+
+      xAxisLabels.fill = xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+    } //		XAxis.renderer.grid.template.disabled = true;
+    //		XAxis.renderer.minGridDistance = 50;
+
 
     if (cursor && (cursor === true || !cursor.axes || ["x", "xy"].indexOf(cursor.axes)) > -1) {
       if (cursor.tooltip) XAxis.tooltip = _utils__WEBPACK_IMPORTED_MODULE_13__["Tooltip"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, 0, cursor.tooltip);
@@ -123623,7 +123699,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createGridLines", function() { return createGridLines; });
 var toDate = function toDate(string) {
   var ymd = string.split("-");
-  return new Date(ymd[0], ymd[1] - 1, ymd[2]);
+  return new Date(Date.UTC(ymd[0], ymd[1] - 1, ymd[2]));
 };
 var subset = function subset(data, keys) {
   return keys.reduce((a, b) => (a[b] = data[b], a), {});
@@ -123710,17 +123786,91 @@ var Shape = function Shape(am4core, chart, index, bullet, shapeConfig) {
 
   return shape;
 };
-var createGridLines = function createGridLines(am4core, Axis, values, lineconfig, labelsconfig, theme) {
-  for (var i = 0; i < values.length; ++i) {
+var createGridLines = function createGridLines(am4core, Axis, breaks, lineconfig, labelsconfig, theme, isDate) {
+  /*    if(labelsconfig && labelsconfig.formatter) {
+        let formatter = labelsconfig.formatter;
+        if(isDate) {
+          Axis.dateFormats.setKey("day", formatter.day[0]);
+          if(formatter.day[1]) {
+            Axis.periodChangeDateFormats.setKey("day", formatter.day[1]);
+          }
+          Axis.dateFormats.setKey("week", formatter.week[0]);
+          if(formatter.week[1]) {
+            Axis.periodChangeDateFormats.setKey("week", formatter.week[1]);
+          }
+          Axis.dateFormats.setKey("month", formatter.month[0]);
+          if(formatter.month[1]) {
+            Axis.periodChangeDateFormats.setKey("month", formatter.month[1]);
+          }
+        } else {
+          Axis.numberFormatter = new am4core.NumberFormatter();
+          Axis.numberFormatter.numberFormat = formatter;
+          Axis.adjustLabelPrecision = false;
+        }
+      } */
+  //let formatter = labelsconfig.formatter;
+  //    let isArray = Array.isArray(values);
+  //    console.log(values);
+  //    let length = isArray ? values.length : Object.keys(values).length;
+  Axis.axisRanges.template.grid.location = 0.5;
+  Axis.axisRanges.template.label.location = 0.5;
+
+  for (var i = 0; i < breaks.value.length; ++i) {
     var range = Axis.axisRanges.create();
-    range.value = values[i];
-    range.label.text = "{value}";
-    console.log("range.label", range.label);
+    /*        range.component.dateFormats.setKey("day", formatter.day[0]);
+            if(formatter.day[1]) {
+              range.component.periodChangeDateFormats.setKey("day", formatter.day[1]);
+            }
+            range.component.dateFormats.setKey("week", formatter.week[0]);
+            if(formatter.week[1]) {
+              range.component.periodChangeDateFormats.setKey("week", formatter.week[1]);
+            }
+            range.component.dateFormats.setKey("month", formatter.month[0]);
+            if(formatter.month[1]) {
+              range.component.periodChangeDateFormats.setKey("month", formatter.month[1]);
+            } */
+
+    if (isDate) {
+      range.value = toDate(breaks.value[i]);
+      range.label.text = breaks.label[i] || "{date}"; //range.label.location = 0.5;
+      //range.grid.location = 0.5;
+    } else {
+      range.value = breaks.value[i];
+      range.label.text = breaks.label[i] || "{value}";
+    }
+    /*      if(isDate) {
+            if(isArray) {
+              range.date = toDate(values[i]);
+              range.label.text = "{date}";
+            } else {
+              let entry = Object.entries(values)[i];
+              console.log(entry);
+              range.date = toDate(entry[1]);
+              range.label.text = entry[0];
+            }
+          } else {
+            if(isArray) {
+              range.value = values[i];
+              range.label.text = "{value}";
+            } else {
+              let entry = Object.entries(values)[i];
+              range.value = entry[1];
+              range.label.text = entry[0];
+            }
+          } */
+    //range.xx = Axis.formatLabel(values[i]);
+
+
+    console.log(range);
 
     if (lineconfig) {
       range.grid.stroke = lineconfig.color || (theme === "dark" ? "#ffffff" : "#000000");
       range.grid.strokeWidth = lineconfig.width || 1;
       range.grid.strokeOpacity = lineconfig.opacity || 0.2;
+
+      if (lineconfig.dash) {
+        range.grid.strokeDasharray = lineconfig.dash;
+      }
     }
 
     if (labelsconfig) {
@@ -123729,12 +123879,14 @@ var createGridLines = function createGridLines(am4core, Axis, values, lineconfig
       range.label.fill = labelsconfig.color || (theme === "dark" ? "#ffffff" : "#000000");
     }
   }
+  /*    setTimeout(function() {
+      for(let i = 0; i < values.length; ++i) {
+        let range = Axis.axisRanges.getIndex(i);
+        range.xx = Axis.getPositionLabel(Axis.valueToPosition(values[i]));
+        range.label.text = "{date}";
+      }
+      }, 500); */
 
-  if (labelsconfig && labelsconfig.formatter) {
-    Axis.numberFormatter = new am4core.NumberFormatter();
-    Axis.numberFormatter.numberFormat = labelsconfig.formatter;
-    Axis.adjustLabelPrecision = false;
-  }
 };
 
 /***/ }),

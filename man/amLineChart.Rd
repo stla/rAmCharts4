@@ -370,10 +370,11 @@ amLineChart(
         day = c("dt", "[bold]MMM[/] dt"),
         week = c("dt", "[bold]MMM[/] dt")
       )
-    )
+    ),
+    breaks = amAxisBreaks(timeInterval = "7 days")
   ),
   yAxis = "Visits",
-  xLimits = range(dat$date),
+  xLimits = range(dat$date) + c(0,7),
   yLimits = c(0, 35),
   backgroundColor = "whitesmoke",
   tooltip = paste0(

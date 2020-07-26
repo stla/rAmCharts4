@@ -1434,12 +1434,17 @@ class AmLineChart extends React.PureComponent {
   		  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
     }
 
-    if(xAxis.gridLines && !xAxis.breaks) {
-      //XAxis.renderer.minGridDistance = 50;
-      XAxis.renderer.grid.template.location = 0.5;
-      XAxis.renderer.labels.template.location = 0.5;
-XAxis.startLocation = 0.5;
-XAxis.endLocation = 0.5;
+    let xBreaksType; 
+    if(xAxis.breaks) { 
+      xBreaksType = 
+        typeof xAxis.breaks === "number" ? "interval" : 
+        (Array.isArray(xAxis.breaks) ? "timeInterval" : 
+        "breaks");
+    }
+
+    if(xAxis.gridLines) {
+      if(xBreaksType === "interval")
+        XAxis.renderer.minGridDistance = xAxis.breaks;
       XAxis.renderer.grid.template.stroke =
         xAxis.gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
       XAxis.renderer.grid.template.strokeOpacity = 
@@ -1453,21 +1458,26 @@ XAxis.endLocation = 0.5;
     } else {
       XAxis.renderer.grid.template.disabled = true;
     }
-    if(xAxis.breaks) {
+    if(xBreaksType === "breaks") {
+      XAxis.renderer.grid.template.disabled = true;
       XAxis.renderer.labels.template.disabled = true;
       if(isDate) {
         XAxis.renderer.minGridDistance = 10;
-//        xAxis.breaks = xAxis.breaks.map(function(br){
-//          return utils.toDate(br);//.getTime();
-//        });
+        XAxis.startLocation = 0.5; // ??
+        XAxis.endLocation = 0.5; // ??
       }
       utils.createGridLines(
         am4core, XAxis, xAxis.breaks, xAxis.gridLines, 
         xAxis.labels, theme, isDate
       );
     } else {
-      if(xAxis.labels.timeInterval)
-        XAxis.gridIntervals.setAll(xAxis.labels.timeInterval);
+      if(xBreaksType === "timeInterval") {
+        XAxis.gridIntervals.setAll(xAxis.breaks);
+        XAxis.renderer.grid.template.location = 0.5;
+        XAxis.renderer.labels.template.location = 0.5;
+        XAxis.startLocation = 0.5; // ??
+        XAxis.endLocation = 0.5; // ??
+      }
       let xAxisLabels = XAxis.renderer.labels.template;
       /*if(xAxis.labels.formatter) {
         let formatter = xAxis.labels.formatter;
