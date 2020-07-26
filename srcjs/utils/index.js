@@ -123,8 +123,12 @@ export const createGridLines =
 //    console.log(values);
 //    let length = isArray ? values.length : Object.keys(values).length;
 
-Axis.axisRanges.template.grid.location = 0.5;
-Axis.axisRanges.template.label.location = 0.5;
+    Axis.axisRanges.template.grid.location = 0.5;
+    Axis.axisRanges.template.label.location = 0.5;
+    if(!lineconfig) {
+      Axis.axisRanges.template.grid.disabled = true;
+    }
+
     for(let i = 0; i < breaks.value.length; ++i) {
       let range = Axis.axisRanges.create();
 
