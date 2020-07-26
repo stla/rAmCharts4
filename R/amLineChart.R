@@ -182,7 +182,7 @@
 #' ignored if the chart is displayed in Shiny, in which case the width is
 #' given in \code{\link{amChart4Output}}
 #' @param height the height of the chart, e.g. \code{"400px"};
-#' ignored if the chart is displayed in Shiny, in which case the width is
+#' ignored if the chart is displayed in Shiny, in which case the height is
 #' given in \code{\link{amChart4Output}}
 #' @param chartId a HTML id for the chart
 #' @param elementId a HTML id for the container of the chart; ignored if the
@@ -256,8 +256,10 @@
 #'   xAxis = list(title = list(text = "Observation",
 #'                             fontSize = 21,
 #'                             color = "silver"),
-#'                labels = amAxisLabels(color = "whitesmoke",
-#'                                      fontSize = 17)),
+#'                labels = amAxisLabels(fontSize = 17),
+#'                breaks = amAxisBreaks(
+#'                  values = 1:10,
+#'                  labels = sprintf("[bold \%s]\%d[/]", rainbow(10), 1:10))),
 #'   yAxis = list(title = list(text = "Value",
 #'                             fontSize = 21,
 #'                             color = "silver"),
