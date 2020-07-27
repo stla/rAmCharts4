@@ -2000,6 +2000,29 @@ class AmScatterChart extends React.PureComponent {
                 trendSeriesData[i] = point;
               });
               trendSeries.invalidateData();
+
+              let ribbonSeriesName = thisSeriesName + "_ribbon",
+              ribbonSeriesIndex = seriesNames.indexOf(ribbonSeriesName);
+              if(ribbonSeriesIndex > -1) {
+                let ribbonSeries = chart.series.values[ribbonSeriesIndex],
+                  ribbonSeriesData = ribbonSeries.data,
+                  y = data2.map(function(row){
+                    return row[value];
+                  }),
+                  yhat = fit.points.map(function(point){ return point[1]; }),
+                  ssq = 0;
+                for(let i = 0; i < y.length; ++i) {
+                  ssq += (y[i] - yhat[i])*(y[i] - yhat[i]);
+                }
+                let sigma = Math.sqrt(ssq / (y.length - 1 - trendJS[value]));
+                for(let i = 0; i < ribbonSeriesData.length; ++i) {
+                  let yhat = trendSeriesData[i].y,
+                    delta = sigma * ribbonSeriesData[i].seFactor;
+                  ribbonSeriesData[i].lwr = yhat - delta;
+                  ribbonSeriesData[i].upr = yhat + delta;
+                }
+                ribbonSeries.invalidateData();
+              }
             }
           })
         }
@@ -2135,7 +2158,31 @@ class AmScatterChart extends React.PureComponent {
 			      return {x: xy[0], y: xy[1]};
 			    });
 			  regressionLine.forEach(function(point, i){trendSeriesData[i] = point;});
-			  trendSeries.invalidateData();
+        trendSeries.invalidateData();
+
+        let ribbonSeriesName = thisSeriesName + "_ribbon",
+			    ribbonSeriesIndex = seriesNames.indexOf(ribbonSeriesName);
+        if(ribbonSeriesIndex > -1) {
+          let ribbonSeries = chart.series.values[ribbonSeriesIndex],
+            ribbonSeriesData = ribbonSeries.data,
+            y = thisSeriesDataCopy.map(function(row){
+              return row[value];
+            }),
+            yhat = fit.points.map(function(point){ return point[1]; }),
+            ssq = 0;
+          for(let i = 0; i < y.length; ++i) {
+            ssq += (y[i] - yhat[i])*(y[i] - yhat[i]);
+          }
+          let sigma = Math.sqrt(ssq / (y.length - 1 - trendJS[value]));
+          for(let i = 0; i < ribbonSeriesData.length; ++i) {
+            let yhat = trendSeriesData[i].y,
+              delta = sigma * ribbonSeriesData[i].seFactor;
+            ribbonSeriesData[i].lwr = yhat - delta;
+            ribbonSeriesData[i].upr = yhat + delta;
+          }
+          ribbonSeries.invalidateData();
+        }
+
 			}
 
       if(window.Shiny) {
@@ -2323,9 +2370,10 @@ class AmScatterChart extends React.PureComponent {
         /* ~~~~\ ribbon /~~~~ */
         if(trendData[value][0].hasOwnProperty("lwr")) {
           let ribbon = chart.series.push(new am4charts.LineSeries());
+          ribbon.name = yValueNames[value] + "_ribbon";
           ribbon.hiddenInLegend = true;
-          ribbon.data = trendData[value];
-          if(isDate){
+          ribbon.data = trendData[value].map(row => ({...row}));
+          if(isDate) {
             ribbon.dataFields.dateX = "x";
           } else {
             ribbon.dataFields.valueX = "x";

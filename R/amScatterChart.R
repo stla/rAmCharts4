@@ -54,7 +54,7 @@
 #'       the modelling method, can be \code{"lm"}, \code{"lm.js"}, \code{"nls"},
 #'       \code{"nlsLM"}, or \code{"loess"}; \code{"lm.js"} performs a polynomial
 #'       regression in JavaScript, its advantage is that the fitted regression
-#'       line is updated when the points of the line are dragged
+#'       line is updated when the points are dragged
 #'     }
 #'     \item{\code{formula}}{
 #'       a formula passed on to the modelling function for methods \code{"lm"},
@@ -64,7 +64,8 @@
 #'       e.g. \code{y ~ x}, \code{y ~ x + I(x^2)}, \code{y ~ poly(x,2)}
 #'     }
 #'     \item{\code{interval}}{
-#'       effective for method \code{"lm"} only; a list with five possible fields:
+#'       effective for methods \code{"lm"} and \code{"lm.js"} only;
+#'       a list with five possible fields:
 #'       \code{type} can be \code{"confidence"} or \code{"prediction"},
 #'       \code{level} is the confidence or prediction level (number between 0
 #'       and 1), \code{color} is the color of the shaded area, \code{opacity}
@@ -443,7 +444,7 @@ amScatterChart <- function(
         Filter(Negate(is.null), y[c("color","opacity","tensionX","tensionY")]),
       USE.NAMES = TRUE, simplify = FALSE
     ), function(y){
-      y$color <- rAmCharts4:::validateColor(y$color)
+      y$color <- validateColor(y$color)
       return(y)
     }, USE.NAMES = TRUE, simplify = FALSE)
     for(yValue in names(trend)){
@@ -528,25 +529,43 @@ amScatterChart <- function(
           range(X)
       else
         unique(seq(min(X), max(X), length.out = 100)) # unique in case of dates
-      if(trend[[yValue]][["method"]] == "lm" &&
+      if(trend[[yValue]][["method"]] %in% c("lm", "lm.js") &&
          "interval" %in% names(trend[[yValue]])){
         interval <- trend[[yValue]][["interval"]]
+        itype <- interval[["type"]] %||% "confidence"
+        ilevel <- interval[["level"]] %||% 0.95
         if(simpleRegression)
           x <- unique(seq(min(X), max(X), length.out = 100))
-        #print(x)
         predictions <- predict(
           fit,
           newdata = data.frame(x = x),
-          interval = interval[["type"]] %||% "confidence",
-          level = interval[["level"]] %||% 0.95
+          interval = itype,
+          level = ilevel,
+          se.fit = trend[[yValue]][["method"]] == "lm.js"
         )
-        trendData[[yValue]] <- data.frame(
-          x = if(isDate) format(x, "%Y-%m-%d") else x,
-          y = predictions[,"fit"],
-          lwr = predictions[,"lwr"],
-          upr = predictions[,"upr"]
-        )
-        allY <- c(allY, predictions[, c("lwr","upr")])
+        if(trend[[yValue]][["method"]] == "lm"){
+          trendData[[yValue]] <- data.frame(
+            x = if(isDate) format(x, "%Y-%m-%d") else x,
+            y = predictions[,"fit"],
+            lwr = predictions[,"lwr"],
+            upr = predictions[,"upr"]
+          )
+          allY <- c(allY, predictions[, c("lwr","upr")])
+        }else{ # method lm.js
+          seFactor <- predictions[["se.fit"]]/predictions[["residual.scale"]]
+          if(itype == "prediction"){
+            seFactor <- sqrt(1 + seFactor^2)
+          }
+          seFactor <- seFactor * qt(ilevel+(1-ilevel)/2, predictions[["df"]])
+          trendData[[yValue]] <- data.frame(
+            x = x,
+            y = predictions[["fit"]][,"fit"],
+            lwr = predictions[["fit"]][,"lwr"],
+            upr = predictions[["fit"]][,"upr"],
+            seFactor = seFactor
+          )
+          allY <- c(allY, predictions[["fit"]][, c("lwr","upr")])
+        }
       }else{
         y <- predict(fit, newdata = data.frame(x = x))
         trendData[[yValue]] <- data.frame(
