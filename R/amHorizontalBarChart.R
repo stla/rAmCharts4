@@ -53,6 +53,7 @@
 #'   \code{settings1}, \code{settings2}, ... are lists created with
 #'   \code{\link{amColumn}}; this can also be a
 #'   single list of settings that will be applied to each column
+#' @param threeD logical, whether to render the columns in 3D
 #' @param bullets settings of the bullets; \code{NULL} for default,
 #'   otherwise a named list of the form
 #'   \code{list(value1 = settings1, value2 = settings2, ...)} where
@@ -222,6 +223,7 @@ amHorizontalBarChart <- function(
   draggable = FALSE,
   tooltip = NULL, # default
   columnStyle = NULL, # default
+  threeD = FALSE,
   bullets = NULL,
   alwaysShowBullets = FALSE,
   backgroundColor = NULL,
@@ -599,6 +601,7 @@ amHorizontalBarChart <- function(
       draggable = draggable,
       tooltip = tooltip,
       columnStyle = columnStyle,
+      threeD = threeD,
       bullets = bullets,
       alwaysShowBullets = alwaysShowBullets,
       backgroundColor = validateColor(backgroundColor),

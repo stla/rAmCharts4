@@ -4,10 +4,18 @@
 \alias{amColumn}
 \title{Columns style}
 \usage{
-amColumn(color = NULL, strokeColor = NULL, strokeWidth = 4, cornerRadius = 8)
+amColumn(
+  color = NULL,
+  opacity = NULL,
+  strokeColor = NULL,
+  strokeWidth = 4,
+  cornerRadius = 8
+)
 }
 \arguments{
 \item{color}{color of the columns}
+
+\item{opacity}{opacity of the columns, a number between 0 and 1}
 
 \item{strokeColor}{color of the border of the columns}
 

@@ -52,6 +52,7 @@
 #'   \code{settings1}, \code{settings2}, ... are lists created with
 #'   \code{\link{amColumn}}; this can also be a
 #'   single list of settings that will be applied to each column
+#' @param threeD logical, whether to render the columns in 3D
 #' @param bullets settings of the bullets; \code{NULL} for default,
 #'   otherwise a named list of the form
 #'   \code{list(value1 = settings1, value2 = settings2, ...)} where
@@ -151,13 +152,13 @@
 #'   category = "country", values = "visits",
 #'   draggable = TRUE,
 #'   tooltip =
-#'     "[bold font-style:italic #ffff00]{valueY.value.formatNumber('#,###')}[/]",
+#'     "[bold font-style:italic #ffff00]{valueY.value.formatNumber('#,###.')}[/]",
 #'   chartTitle =
 #'     list(text = "Visits per country", fontSize = 22, color = "orangered"),
 #'   xAxis = list(title = list(text = "Country", color = "maroon")),
 #'   yAxis = list(title = list(text = "Visits", color = "maroon")),
 #'   yLimits = c(0, 4000),
-#'   valueFormatter = "#,###",
+#'   valueFormatter = "#,###.",
 #'   caption = list(text = "Year 2018", color = "red"),
 #'   theme = "material")
 #'
@@ -200,7 +201,7 @@
 #'   xAxis = list(title = list(text = "Programming language")),
 #'   yAxis = list(title = list(text = "# users")),
 #'   yLimits = c(0, 12000),
-#'   valueFormatter = "#",
+#'   valueFormatter = "#.",
 #'   theme = "material")
 #'
 #'
@@ -265,6 +266,7 @@ amBarChart <- function(
   draggable = FALSE,
   tooltip = NULL, # default
   columnStyle = NULL, # default
+  threeD = FALSE,
   bullets = NULL, #default
   alwaysShowBullets = FALSE,
   backgroundColor = NULL,
@@ -710,6 +712,7 @@ amBarChart <- function(
       draggable = draggable,
       tooltip = tooltip,
       columnStyle = columnStyle,
+      threeD = threeD,
       bullets = bullets,
       alwaysShowBullets = alwaysShowBullets,
       backgroundColor = validateColor(backgroundColor),

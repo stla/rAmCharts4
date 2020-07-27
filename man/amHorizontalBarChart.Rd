@@ -19,6 +19,7 @@ amHorizontalBarChart(
   draggable = FALSE,
   tooltip = NULL,
   columnStyle = NULL,
+  threeD = FALSE,
   bullets = NULL,
   alwaysShowBullets = FALSE,
   backgroundColor = NULL,
@@ -105,6 +106,8 @@ otherwise a named list of the form
 \code{settings1}, \code{settings2}, ... are lists created with
 \code{\link{amColumn}}; this can also be a
 single list of settings that will be applied to each column}
+
+\item{threeD}{logical, whether to render the columns in 3D}
 
 \item{bullets}{settings of the bullets; \code{NULL} for default,
 otherwise a named list of the form

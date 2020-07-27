@@ -37,6 +37,7 @@ class AmBarChart extends React.PureComponent {
 
   componentDidMount() {
     let theme = this.props.theme,
+      threeD = this.props.threeD, 
       category = this.props.category,
       values = this.props.values,
       data = HTMLWidgets.dataframeToD3(
@@ -103,7 +104,12 @@ class AmBarChart extends React.PureComponent {
         break;
     }
 
-    let chart = am4core.create(this.props.chartId, am4charts.XYChart);
+    let chart;
+    if(threeD) {
+      chart = am4core.create(this.props.chartId, am4charts.XYChart3D);
+    } else {
+      chart = am4core.create(this.props.chartId, am4charts.XYChart);
+    }
 
     chart.data = data;
 
@@ -311,7 +317,12 @@ class AmBarChart extends React.PureComponent {
 
 		values.forEach(function(value, index){
 
-      let series = chart.series.push(new am4charts.ColumnSeries());
+      let series;
+      if(threeD) {
+        series = chart.series.push(new am4charts.ColumnSeries3D());
+      } else {
+        series = chart.series.push(new am4charts.ColumnSeries());
+      }
       series.dataFields.categoryX = category;
       series.dataFields.valueY = value;
       series.name = valueNames[value];
@@ -397,7 +408,8 @@ class AmBarChart extends React.PureComponent {
       columnTemplate.stroke = columnStyle.strokeColor ||
         am4core.color(columnTemplate.fill).lighten(-0.5);
       columnTemplate.strokeOpacity = 1;
-      columnTemplate.column.fillOpacity = 0.8;
+      columnTemplate.column.fillOpacity = columnStyle.opacity || 
+        (threeD ? 1 : 0.8);
       columnTemplate.column.strokeWidth = columnStyle.strokeWidth;
       /* ~~~~\  tooltip  /~~~~ */
       if(tooltips) {
@@ -559,6 +571,7 @@ class AmHorizontalBarChart extends React.PureComponent {
 
   componentDidMount() {
     let theme = this.props.theme,
+      threeD = this.props.threeD,
       category = this.props.category,
       values = this.props.values,
       data = HTMLWidgets.dataframeToD3(
@@ -627,7 +640,12 @@ class AmHorizontalBarChart extends React.PureComponent {
         break;
     }
 
-    let chart = am4core.create(this.props.chartId, am4charts.XYChart);
+    let chart;
+    if(threeD) {
+      chart = am4core.create(this.props.chartId, am4charts.XYChart3D);
+    } else {
+      chart = am4core.create(this.props.chartId, am4charts.XYChart);
+    }
 
     chart.data = data;
 
@@ -680,6 +698,7 @@ class AmHorizontalBarChart extends React.PureComponent {
     if (this.props.scrollbarY) {
       chart.scrollbarY = new am4core.Scrollbar();
     }
+
 
 		/* ~~~~\  button  /~~~~ */
 		let button = this.props.button;
@@ -780,7 +799,12 @@ class AmHorizontalBarChart extends React.PureComponent {
 
 		values.forEach(function(value, index){
 
-      let series = chart.series.push(new am4charts.ColumnSeries());
+      let series;
+      if(threeD) {
+        series = chart.series.push(new am4charts.ColumnSeries3D());
+      } else {
+        series = chart.series.push(new am4charts.ColumnSeries());
+      }
       series.dataFields.categoryY = category;
       series.dataFields.valueX = value;
       series.name = valueNames[value];
@@ -880,7 +904,8 @@ class AmHorizontalBarChart extends React.PureComponent {
       columnTemplate.stroke = columnStyle.strokeColor ||
         am4core.color(columnTemplate.fill).lighten(-0.5);
       columnTemplate.strokeOpacity = 1;
-      columnTemplate.column.fillOpacity = 0.8;
+      columnTemplate.column.fillOpacity = columnStyle.opacity || 
+        (threeD ? 1 : 0.8);
       columnTemplate.column.strokeWidth = columnStyle.strokeWidth;
       /* ~~~~\  tooltip  /~~~~ */
       if(tooltips) {
