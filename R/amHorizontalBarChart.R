@@ -78,7 +78,8 @@
 #'   a field \code{adjust}, a number defining the vertical adjustment of
 #'   the axis (in pixels), a field \code{gridLines}, a list of settings for
 #'   the grid lines created with \code{\link{amLine}}, and a field
-#'   \code{breaks}, a numeric vector of values for the axis breaks
+#'   \code{breaks} to control the axis breaks, an R object created with
+#'   \code{\link{amAxisBreaks}}
 #' @param yAxis settings of the category axis given as a list, or just a string
 #'   for the axis title; the list of settings has three possible fields:
 #'   a field \code{title}, a list of settings for the axis title,
@@ -404,9 +405,6 @@ amHorizontalBarChart <- function(
     if(is.list(xAxis[["title"]])){
       xAxis[["title"]][["color"]] <- validateColor(xAxis[["title"]][["color"]])
     }
-    if("breaks" %in% names(xAxis)){
-      xAxis[["breaks"]] <- as.list(xAxis[["breaks"]])
-    }
   }else if(is.null(xAxis)){
     xAxis <- list(
       title = if(length(values) == 1L) {
@@ -486,14 +484,14 @@ amHorizontalBarChart <- function(
         rotation = 0
       )
     )
-  }else if(is.character(yAxis[["title"]])){
+  }
+  if(is.character(yAxis[["title"]])){
     yAxis[["title"]] <- list(
       text = yAxis[["title"]],
       fontSize = 20,
       color = NULL
     )
   }
-
   if(is.null(yAxis[["labels"]])){
     yAxis[["labels"]] <- amAxisLabels(
       color = NULL,
@@ -550,13 +548,17 @@ amHorizontalBarChart <- function(
     cursor <- list(tooltip = cursor)
   }else if(is.list(cursor)){
     if("modifier" %in% names(cursor)){
-      cursor[["renderer"]] <- htmlwidgets::JS(
+      cursor[["renderer"]] <- list(x = htmlwidgets::JS(
         "function(text){",
         cursor[["modifier"]],
         "return text;",
         "}"
-      )
+      ))
       cursor[["modifier"]] <- NULL
+    }
+    if("extraTooltipPrecision" %in% names(cursor)){
+      cursor[["extraTooltipPrecision"]] <-
+        list(x = cursor[["extraTooltipPrecision"]])
     }
   }
 

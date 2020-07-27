@@ -213,7 +213,11 @@ class AmBarChart extends React.PureComponent {
     categoryAxis.cursorTooltipEnabled = false;
 
 		/* ~~~~\  value axis  /~~~~ */
-		let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    let valueAxis = utils.createAxis(
+      "Y", am4charts, am4core, chart, yAxis, 
+      this.props.minValue, this.props.maxValue, false, theme, cursor
+    );
+/*		let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
     valueAxis.paddingRight = yAxis.adjust || 0;
 		if(yAxis.title && yAxis.title.text !== "") {
 			valueAxis.title.text = yAxis.title.text;
@@ -268,6 +272,7 @@ class AmBarChart extends React.PureComponent {
     } else {
       valueAxis.cursorTooltipEnabled = false;
     }
+    */
 
 
 		/* ~~~~\ cursor /~~~~ */
@@ -731,62 +736,10 @@ class AmHorizontalBarChart extends React.PureComponent {
     categoryAxis.cursorTooltipEnabled = false;
 
 		/* ~~~~\  value axis  /~~~~ */
-		let valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
-    valueAxis.paddingBottom = xAxis.adjust || 0;
-    if(xAxis.gridLines && !xAxis.breaks) {
-      valueAxis.renderer.grid.template.stroke =
-        xAxis.gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
-      valueAxis.renderer.grid.template.strokeOpacity = 
-        xAxis.gridLines.opacity || 0.2;
-      valueAxis.renderer.grid.template.strokeWidth = 
-        xAxis.gridLines.width || 1;
-      if(xAxis.gridLines.dash) {
-        valueAxis.renderer.grid.template.strokeDasharray = 
-          xAxis.gridLines.dash;
-      }
-    } else {
-      valueAxis.renderer.grid.template.disabled = true;
-    }
-    if(xAxis.breaks) {
-      valueAxis.renderer.labels.template.disabled = true;
-      utils.createGridLines(
-        am4core, valueAxis, xAxis.breaks, xAxis.gridLines, xAxis.labels, theme
-      );
-    }
-		if(xAxis && xAxis.title && xAxis.title.text !== "") {
-			valueAxis.title.text = xAxis.title.text;
-			valueAxis.title.fontWeight = "bold";
-			valueAxis.title.fontSize = xAxis.title.fontSize || 20;
-			valueAxis.title.fill =
-			  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
-    }
-    if(!xAxis.breaks) {
-      let xAxisLabels = valueAxis.renderer.labels.template;
-      if(xAxis.labels.formatter) {
-        valueAxis.numberFormatter = new am4core.NumberFormatter();
-        valueAxis.numberFormatter.numberFormat = xAxis.labels.formatter;
-        valueAxis.adjustLabelPrecision = false;
-      }
-      xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
-      xAxisLabels.rotation = xAxis.labels.rotation || 0;
-      xAxisLabels.fill =
-        xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");  
-    }
-		// we set fixed min/max and strictMinMax to true, as otherwise value axis will adjust min/max while dragging and it won't look smooth
-		valueAxis.strictMinMax = true;
-		valueAxis.min = minValue;
-		valueAxis.max = maxValue;
-		valueAxis.renderer.minWidth = 60;
-    if(cursor) {
-      if(cursor.tooltip)
-        valueAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
-      if(cursor.extraTooltipPrecision)
-        valueAxis.extraTooltipPrecision = cursor.extraTooltipPrecision;
-      if(cursor.renderer)
-        valueAxis.adapter.add("getTooltipText", cursor.renderer);
-    } else {
-      valueAxis.cursorTooltipEnabled = false;
-    }
+    let valueAxis = utils.createAxis(
+      "X", am4charts, am4core, chart, xAxis, 
+      minValue, maxValue, false, theme, cursor
+    );
 
 
 		/* ~~~~\ cursor /~~~~ */
@@ -2057,7 +2010,7 @@ class AmScatterChart extends React.PureComponent {
       "Y", am4charts, am4core, chart, yAxis, minY, maxY, false, theme, cursor
     );
 
-    
+
 		/* ~~~~\ cursor /~~~~ */
 		if(cursor) {
       chart.cursor = new am4charts.XYCursor();

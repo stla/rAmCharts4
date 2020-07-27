@@ -136,7 +136,8 @@ with \code{\link{amAxisLabels}},
 a field \code{adjust}, a number defining the vertical adjustment of
 the axis (in pixels), a field \code{gridLines}, a list of settings for
 the grid lines created with \code{\link{amLine}}, and a field
-\code{breaks}, a numeric vector of values for the axis breaks}
+\code{breaks} to control the axis breaks, an R object created with
+\code{\link{amAxisBreaks}}}
 
 \item{yAxis}{settings of the category axis given as a list, or just a string
 for the axis title; the list of settings has three possible fields:

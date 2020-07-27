@@ -84,7 +84,8 @@
 #'   a field \code{adjust}, a number defining the horizontal adjustment of
 #'   the axis (in pixels), a field \code{gridLines}, a list of settings for
 #'   the grid lines created with \code{\link{amLine}} and a field
-#'   \code{breaks}, a numeric vector of values for the axis breaks
+#'   \code{breaks} to control the axis breaks, an R object created with
+#'   \code{\link{amAxisBreaks}}
 #' @param scrollbarX logical, whether to add a scrollbar for the category axis
 #' @param scrollbarY logical, whether to add a scrollbar for the value axis
 #' @param legend logical, whether to display the legend
@@ -243,7 +244,7 @@
 #'   yAxis = list(
 #'     title = list(text = "Income and expenses"),
 #'     gridLines = amLine(color = "whitesmoke", width = 1, opacity = 0.4),
-#'     breaks = seq(0, 45, by = 5)
+#'     breaks = amAxisBreaks(values = seq(0, 45, by = 5))
 #'   ),
 #'   yLimits = c(0, 45),
 #'   valueFormatter = "#.#",
@@ -273,7 +274,6 @@ amBarChart <- function(
   yAxis = NULL, # default
   scrollbarX = FALSE,
   scrollbarY = FALSE,
-  gridLines = NULL,
   legend = NULL, # default
   caption = NULL,
   image = NULL,
@@ -552,9 +552,6 @@ amBarChart <- function(
     if(is.list(yAxis[["title"]])){
       yAxis[["title"]][["color"]] <- validateColor(yAxis[["title"]][["color"]])
     }
-    if("breaks" %in% names(yAxis)){
-      yAxis[["breaks"]] <- as.list(yAxis[["breaks"]])
-    }
   }else if(is.null(yAxis)){
     yAxis <- list(
       title = if(length(values) == 1L) {
@@ -570,11 +567,7 @@ amBarChart <- function(
         rotation = 0,
         formatter = valueFormatter
       ),
-      gridLines = list(
-        color = NULL,
-        opacity = NULL,
-        width = NULL
-      )
+      gridLines = amLine(opacity = 0.2, width = 1)
     )
   }else if(is.character(yAxis)){
     yAxis <- list(
@@ -589,13 +582,10 @@ amBarChart <- function(
         rotation = 0,
         formatter = valueFormatter
       ),
-      gridLines = list(
-        color = NULL,
-        opacity = NULL,
-        width = NULL
-      )
+      gridLines = amLine(opacity = 0.2, width = 1)
     )
-  }else if(is.character(yAxis[["title"]])){
+  }
+  if(is.character(yAxis[["title"]])){
     yAxis[["title"]] <- list(
       text = yAxis[["title"]],
       fontSize = 20,
@@ -669,13 +659,17 @@ amBarChart <- function(
     cursor <- list(tooltip = cursor)
   }else if(is.list(cursor)){
     if("modifier" %in% names(cursor)){
-      cursor[["renderer"]] <- htmlwidgets::JS(
+      cursor[["renderer"]] <- list(y = htmlwidgets::JS(
         "function(text){",
         cursor[["modifier"]],
         "return text;",
         "}"
-      )
+      ))
       cursor[["modifier"]] <- NULL
+    }
+    if("extraTooltipPrecision" %in% names(cursor)){
+      cursor[["extraTooltipPrecision"]] <-
+        list(y = cursor[["extraTooltipPrecision"]])
     }
   }
 

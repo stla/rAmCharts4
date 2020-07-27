@@ -28,7 +28,6 @@ amBarChart(
   yAxis = NULL,
   scrollbarX = FALSE,
   scrollbarY = FALSE,
-  gridLines = NULL,
   legend = NULL,
   caption = NULL,
   image = NULL,
@@ -144,7 +143,8 @@ with \code{\link{amAxisLabels}},
 a field \code{adjust}, a number defining the horizontal adjustment of
 the axis (in pixels), a field \code{gridLines}, a list of settings for
 the grid lines created with \code{\link{amLine}} and a field
-\code{breaks}, a numeric vector of values for the axis breaks}
+\code{breaks} to control the axis breaks, an R object created with
+\code{\link{amAxisBreaks}}}
 
 \item{scrollbarX}{logical, whether to add a scrollbar for the category axis}
 
@@ -314,7 +314,7 @@ amBarChart(
   yAxis = list(
     title = list(text = "Income and expenses"),
     gridLines = amLine(color = "whitesmoke", width = 1, opacity = 0.4),
-    breaks = seq(0, 45, by = 5)
+    breaks = amAxisBreaks(values = seq(0, 45, by = 5))
   ),
   yLimits = c(0, 45),
   valueFormatter = "#.#",
