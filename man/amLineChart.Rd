@@ -29,7 +29,6 @@ amLineChart(
   yAxis = NULL,
   scrollbarX = FALSE,
   scrollbarY = FALSE,
-  gridLines = NULL,
   legend = NULL,
   caption = NULL,
   image = NULL,
@@ -187,36 +186,41 @@ single list of settings that will be applied to each line}
 \item{backgroundColor}{a color for the chart background}
 
 \item{xAxis}{settings of the x-axis given as a list, or just a string
-for the axis title; the list of settings has three possible fields:
+for the axis title; the list of settings has five possible fields:
 a field \code{title}, a list of settings for the axis title,
 a field \code{labels}, a list of settings for the axis labels created
 with \code{\link{amAxisLabels}},
-and a field \code{adjust}, a number defining the vertical adjustment of
-the axis (in pixels)}
+a field \code{adjust}, a number defining the vertical adjustment of
+the axis (in pixels),
+a field \code{gridLines}, a list of settings for the grid lines created
+with \code{\link{amLine}},
+and a field \code{breaks} to control the axis breaks, an R object created
+with \code{\link{amAxisBreaks}}}
 
 \item{yAxis}{settings of the y-axis given as a list, or just a string
-for the axis title; the list of settings has three possible fields:
+for the axis title; the list of settings has five possible fields:
 a field \code{title}, a list of settings for the axis title,
 a field \code{labels}, a list of settings for the axis labels created
 with \code{\link{amAxisLabels}},
-and a field \code{adjust}, a number defining the horizontal adjustment of
-the axis (in pixels)}
+a field \code{adjust}, a number defining the horizontal adjustment of
+the axis (in pixels),
+a field \code{gridLines}, a list of settings for the grid lines created
+with \code{\link{amLine}},
+and a field \code{breaks} to control the axis breaks, an R object created
+with \code{\link{amAxisBreaks}}}
 
 \item{scrollbarX}{logical, whether to add a scrollbar for the x-axis}
 
 \item{scrollbarY}{logical, whether to add a scrollbar for the y-axis}
 
-\item{gridLines}{settings of the grid lines}
-
 \item{legend}{logical, whether to display the legend}
 
 \item{caption}{settings of the caption, or \code{NULL} for no caption}
 
-\item{image}{option to include an image in the chart; \code{NULL} or
-\code{FALSE} for no image, otherwise a named list with six possible fields:
-the field \code{base64} (required) is a base64 string representing the
-image (you can create it from a file with \code{base64enc::dataURI}),
-the fields \code{width} and \code{height} define the image dimensions,
+\item{image}{option to include an image at a corner of the chart;
+\code{NULL} or \code{FALSE} for no image, otherwise a named list with four
+possible fields: the field \code{image} (required) is a list created with
+\code{\link{amImage}},
 the field \code{position} can be \code{"topleft"}, \code{"topright"},
 \code{"bottomleft"} or \code{"bottomright"}, the field \code{hjust}
 defines the horizontal adjustment, and the field \code{vjust} defines

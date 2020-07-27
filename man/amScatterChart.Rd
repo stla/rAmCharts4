@@ -194,11 +194,10 @@ the axis (in pixels)}
 
 \item{caption}{settings of the caption, or \code{NULL} for no caption}
 
-\item{image}{option to include an image in the chart; \code{NULL} or
-\code{FALSE} for no image, otherwise a named list with six possible fields:
-the field \code{base64} (required) is a base64 string representing the
-image (you can create it from a file with \code{base64enc::dataURI}),
-the fields \code{width} and \code{height} define the image dimensions,
+\item{image}{option to include an image at a corner of the chart;
+\code{NULL} or \code{FALSE} for no image, otherwise a named list with four
+possible fields: the field \code{image} (required) is a list created with
+\code{\link{amImage}},
 the field \code{position} can be \code{"topleft"}, \code{"topright"},
 \code{"bottomleft"} or \code{"bottomright"}, the field \code{hjust}
 defines the horizontal adjustment, and the field \code{vjust} defines
@@ -236,7 +235,7 @@ ignored if the chart is displayed in Shiny, in which case the width is
 given in \code{\link{amChart4Output}}}
 
 \item{height}{the height of the chart, e.g. \code{"400px"};
-ignored if the chart is displayed in Shiny, in which case the width is
+ignored if the chart is displayed in Shiny, in which case the height is
 given in \code{\link{amChart4Output}}}
 
 \item{chartId}{a HTML id for the chart}

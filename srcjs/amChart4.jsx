@@ -143,36 +143,8 @@ class AmBarChart extends React.PureComponent {
 
 
     /* ~~~~\  image  /~~~~ */
-    let img = this.props.image;
-    if(img) {
-      let image =
-        chart.topParent.children.getIndex(1).createChild(am4core.Image);
-      image.layout = "absolute";
-      image.width = img.width || 60;
-      image.height = img.height || 60;
-      img.position = img.position || "bottomleft";
-      switch(img.position) {
-        case "bottomleft":
-          chart.logo.dispose();
-          image.x = 0;
-          image.y = chart.pixelHeight - image.height;
-          break;
-        case "bottomright":
-          image.x = chart.pixelWidth - image.width;
-          image.y = chart.pixelHeight - image.height;
-          break;
-        case "topleft":
-          image.x = 0;
-          image.y = 0;
-          break;
-        case "topright":
-          image.x = chart.pixelWidth - image.width;
-          image.y = 0;
-          break;
-      }
-      image.dx = img.hjust || 0;
-      image.dy = img.vjust || 0;
-      image.href = img.href;
+    if(this.props.image) {
+      utils.Image(am4core, chart, this.props.image);
     }
 
 
@@ -691,36 +663,8 @@ class AmHorizontalBarChart extends React.PureComponent {
 
 
     /* ~~~~\  image  /~~~~ */
-    let img = this.props.image;
-    if(img) {
-      let image =
-        chart.topParent.children.getIndex(1).createChild(am4core.Image);
-      image.layout = "absolute";
-      image.width = img.width || 60;
-      image.height = img.height || 60;
-      img.position = img.position || "bottomleft";
-      switch(img.position) {
-        case "bottomleft":
-          chart.logo.dispose();
-          image.x = 0;
-          image.y = chart.pixelHeight - image.height;
-          break;
-        case "bottomright":
-          image.x = chart.pixelWidth - image.width;
-          image.y = chart.pixelHeight - image.height;
-          break;
-        case "topleft":
-          image.x = 0;
-          image.y = 0;
-          break;
-        case "topright":
-          image.x = chart.pixelWidth - image.width;
-          image.y = 0;
-          break;
-      }
-      image.dx = img.hjust || 0;
-      image.dy = img.vjust || 0;
-      image.href = img.href;
+    if(this.props.image) {
+      utils.Image(am4core, chart, this.props.image);
     }
 
 
@@ -1279,36 +1223,8 @@ class AmLineChart extends React.PureComponent {
 
 
     /* ~~~~\  image  /~~~~ */
-    let img = this.props.image;
-    if(img) {
-      let image =
-        chart.topParent.children.getIndex(1).createChild(am4core.Image);
-      image.layout = "absolute";
-      image.width = img.width || 60;
-      image.height = img.height || 60;
-      img.position = img.position || "bottomleft";
-      switch(img.position) {
-        case "bottomleft":
-          chart.logo.dispose();
-          image.x = 0;
-          image.y = chart.pixelHeight - image.height;
-          break;
-        case "bottomright":
-          image.x = chart.pixelWidth - image.width;
-          image.y = chart.pixelHeight - image.height;
-          break;
-        case "topleft":
-          image.x = 0;
-          image.y = 0;
-          break;
-        case "topright":
-          image.x = chart.pixelWidth - image.width;
-          image.y = 0;
-          break;
-      }
-      image.dx = img.hjust || 0;
-      image.dy = img.vjust || 0;
-      image.href = img.href;
+    if(this.props.image) {
+      utils.Image(am4core, chart, this.props.image);
     }
 
 
@@ -2049,36 +1965,8 @@ class AmScatterChart extends React.PureComponent {
 
 
     /* ~~~~\  image  /~~~~ */
-    let img = this.props.image;
-    if(img) {
-      let image =
-        chart.topParent.children.getIndex(1).createChild(am4core.Image);
-      image.layout = "absolute";
-      image.width = img.width || 60;
-      image.height = img.height || 60;
-      img.position = img.position || "bottomleft";
-      switch(img.position) {
-        case "bottomleft":
-          chart.logo.dispose();
-          image.x = 0;
-          image.y = chart.pixelHeight - image.height;
-          break;
-        case "bottomright":
-          image.x = chart.pixelWidth - image.width;
-          image.y = chart.pixelHeight - image.height;
-          break;
-        case "topleft":
-          image.x = 0;
-          image.y = 0;
-          break;
-        case "topright":
-          image.x = chart.pixelWidth - image.width;
-          image.y = 0;
-          break;
-      }
-      image.dx = img.hjust || 0;
-      image.dy = img.vjust || 0;
-      image.href = img.href;
+    if(this.props.image) {
+      utils.Image(am4core, chart, this.props.image);
     }
 
 
@@ -2641,8 +2529,8 @@ class AmRangeAreaChart extends React.PureComponent {
         ) : null,
       yValueNames = this.props.yValueNames,
       isDate = this.props.isDate,
-      minX = isDate ? utils.toDate(this.props.minX).getTime() : this.props.minX,
-      maxX = isDate ? utils.toDate(this.props.maxX).getTime() : this.props.maxX,
+      minX = isDate ? utils.toUTCtime(this.props.minX) : this.props.minX,
+      maxX = isDate ? utils.toUTCtime(this.props.maxX) : this.props.maxX,
       minY = this.props.minY,
       maxY = this.props.maxY,
       xAxis = this.props.xAxis,

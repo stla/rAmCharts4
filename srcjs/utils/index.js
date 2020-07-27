@@ -9,9 +9,11 @@ export const toDate = function(string) {
   return new Date(toUTCtime(string));
 };
 
+
 export const subset = function(data, keys) {
   return keys.reduce((a,b) => (a[b]=data[b],a), {});
 };
+
 
 export const isLightColor = function(color) {  // color is given in HEX
   let r, g, b;
@@ -30,6 +32,7 @@ export const isLightColor = function(color) {  // color is given in HEX
   // Using the HSP value, determine whether the color is light or dark
   return hsp > 127.5;
 };
+
 
 export const Tooltip = function(am4core, chart, index, tooltipStyle) {
   let tooltip = new am4core.Tooltip();
@@ -50,6 +53,7 @@ export const Tooltip = function(am4core, chart, index, tooltipStyle) {
 
   return tooltip;
 };
+
 
 export const Shape = function(am4core, chart, index, bullet, shapeConfig) {
   let shape;
@@ -100,6 +104,7 @@ export const Shape = function(am4core, chart, index, bullet, shapeConfig) {
 
   return shape;
 };
+
 
 export const createGridLines =
   function(am4core, Axis, breaks, lineconfig, labelsconfig, theme, isDate) {
@@ -371,6 +376,41 @@ export const createAxis = function(
     }
   }
 
-
   return Axis;
+};
+
+
+export const Image = function(am4core, chart, settings) {
+  let img = settings.image;
+  img.position = settings.position;
+  img.hjust = settings.hjust;
+  img.vjust = settings.vjust;
+  let image = chart.topParent.children.getIndex(1).createChild(am4core.Image); // same as: chart.logo.parent.createChild(am4core.Image);
+  image.layout = "absolute";
+  image.width = img.width || 60;
+  image.height = img.height || 60;
+  image.fillOpacity = img.opacity || 1;
+  img.position = img.position || "bottomleft";
+  switch(img.position) {
+    case "bottomleft":
+      chart.logo.dispose();
+      image.x = 0;
+      image.y = chart.pixelHeight - image.height;
+      break;
+    case "bottomright":
+      image.x = chart.pixelWidth - image.width;
+      image.y = chart.pixelHeight - image.height;
+      break;
+    case "topleft":
+      image.x = 0;
+      image.y = 0;
+      break;
+    case "topright":
+      image.x = chart.pixelWidth - image.width;
+      image.y = 0;
+      break;
+  }
+  image.dx = img.hjust || 0;
+  image.dy = img.vjust || 0;
+  image.href = img.href;
 };
