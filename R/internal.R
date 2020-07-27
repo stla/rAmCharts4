@@ -1,3 +1,16 @@
+#' Called by HTMLWidgets to produce the widget's root element.
+#' @noRd
+amChart4_html <- function(id, style, class, ...) {
+  htmltools::tagList(
+    # Necessary for RStudio viewer version < 1.2
+    reactR::html_dependency_corejs(),
+    reactR::html_dependency_react(),
+    reactR::html_dependency_reacttools(),
+    htmltools::tags$div(id = id, class = class, style = style)
+  )
+}
+
+
 regex_255 <- "\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*"
 
 regex_rgb <- paste0("^rgb\\(",

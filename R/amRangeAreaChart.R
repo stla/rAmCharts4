@@ -739,17 +739,13 @@ amRangeAreaChart <- function(
     )
   )
   # create widget
-  htmlwidgets::prependContent(
-    htmlwidgets::createWidget(
-      name = 'amChart4',
-      reactR::reactMarkup(component),
-      width = "auto",
-      height = "auto",
-      package = 'rAmCharts4',
-      elementId = elementId
-    ),
-    reactR::html_dependency_react(),
-    reactR::html_dependency_reacttools()
+  htmlwidgets::createWidget(
+    name = 'amChart4',
+    reactR::reactMarkup(component),
+    width = "auto",
+    height = "auto",
+    package = 'rAmCharts4',
+    elementId = elementId
   )
 }
 
