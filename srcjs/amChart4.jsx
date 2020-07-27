@@ -1157,13 +1157,12 @@ class AmLineChart extends React.PureComponent {
       ribbonStyles = this.props.ribbonStyle,
       yValueNames = this.props.yValueNames,
       isDate = this.props.isDate,
-      minX = isDate ? utils.toDate(this.props.minX).getTime() : this.props.minX,
-      maxX = isDate ? utils.toDate(this.props.maxX).getTime() : this.props.maxX,
+      minX = isDate ? utils.toUTCtime(this.props.minX) : this.props.minX,
+      maxX = isDate ? utils.toUTCtime(this.props.maxX) : this.props.maxX,
       minY = this.props.minY,
       maxY = this.props.maxY,
       xAxis = this.props.xAxis,
       yAxis = this.props.yAxis,
-      gridLines = this.props.gridLines,
       draggable = this.props.draggable,
       tooltips = this.props.tooltip,
       bulletsStyle = this.props.bullets,
@@ -1479,27 +1478,6 @@ class AmLineChart extends React.PureComponent {
         XAxis.endLocation = 0.5; // ??
       }
       let xAxisLabels = XAxis.renderer.labels.template;
-      /*if(xAxis.labels.formatter) {
-        let formatter = xAxis.labels.formatter;
-        if(isDate) {
-          XAxis.dateFormats.setKey("day", formatter.day[0]); 
-          if(formatter.day[1]) {
-            XAxis.periodChangeDateFormats.setKey("day", formatter.day[1]);
-          }
-          XAxis.dateFormats.setKey("week", formatter.week[0]); 
-          if(formatter.week[1]) {
-            XAxis.periodChangeDateFormats.setKey("week", formatter.week[1]);
-          }
-          XAxis.dateFormats.setKey("month", formatter.month[0]); 
-          if(formatter.month[1]) {
-            XAxis.periodChangeDateFormats.setKey("month", formatter.month[1]);
-          }
-        } else {
-          XAxis.numberFormatter = new am4core.NumberFormatter();
-          XAxis.numberFormatter.numberFormat = formatter;
-          XAxis.adjustLabelPrecision = false;
-        }
-      } */
       xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
       xAxisLabels.rotation = xAxis.labels.rotation || 0;
       if(xAxisLabels.rotation !== 0) {
@@ -1508,10 +1486,6 @@ class AmLineChart extends React.PureComponent {
       xAxisLabels.fill =
         xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
     }
-
-    
-//		XAxis.renderer.grid.template.disabled = true;
-//		XAxis.renderer.minGridDistance = 50;
     if(cursor &&
       (cursor === true || !cursor.axes || ["x","xy"].indexOf(cursor.axes)) > -1)
     {
@@ -1527,8 +1501,11 @@ class AmLineChart extends React.PureComponent {
       XAxis.cursorTooltipEnabled = false;
     }
 
-		/* ~~~~\  y-axis  /~~~~ */
-		let YAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    /* ~~~~\  y-axis  /~~~~ */
+    let YAxis = utils.createAxis(
+      "Y", am4charts, am4core, chart, yAxis, minY, maxY, false, theme, cursor
+    );
+/*		let YAxis = chart.yAxes.push(new am4charts.ValueAxis());
     if(yAxis) {
       YAxis.paddingRight = yAxis.adjust || 0;
     }
@@ -1561,7 +1538,8 @@ class AmLineChart extends React.PureComponent {
 		YAxis.strictMinMax = true;
 		YAxis.min = minY;
 		YAxis.max = maxY;
-		YAxis.renderer.minWidth = 60;
+    YAxis.renderer.minWidth = 60;
+    */
     if(cursor &&
       (cursor === true || !cursor.axes || ["y","xy"].indexOf(cursor.axes)) > -1)
     {
@@ -1574,6 +1552,7 @@ class AmLineChart extends React.PureComponent {
     } else {
       YAxis.cursorTooltipEnabled = false;
     }
+    
 
 
 		/* ~~~~\ cursor /~~~~ */

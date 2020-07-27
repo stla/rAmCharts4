@@ -126,25 +126,32 @@
 #'   single list of settings that will be applied to each line
 #' @param backgroundColor a color for the chart background
 #' @param xAxis settings of the x-axis given as a list, or just a string
-#'   for the axis title; the list of settings has three possible fields:
+#'   for the axis title; the list of settings has five possible fields:
 #'   a field \code{title}, a list of settings for the axis title,
 #'   a field \code{labels}, a list of settings for the axis labels created
 #'   with \code{\link{amAxisLabels}},
-#'   and a field \code{adjust}, a number defining the vertical adjustment of
-#'   the axis (in pixels)
+#'   a field \code{adjust}, a number defining the vertical adjustment of
+#'   the axis (in pixels),
+#'   a field \code{gridLines}, a list of settings for the grid lines created
+#'   with \code{\link{amLine}},
+#'   and a field \code{breaks} to control the axis breaks, an R object created
+#'   with \code{\link{amAxisBreaks}}
 #' @param yAxis settings of the y-axis given as a list, or just a string
-#'   for the axis title; the list of settings has three possible fields:
+#'   for the axis title; the list of settings has five possible fields:
 #'   a field \code{title}, a list of settings for the axis title,
 #'   a field \code{labels}, a list of settings for the axis labels created
 #'   with \code{\link{amAxisLabels}},
-#'   and a field \code{adjust}, a number defining the horizontal adjustment of
-#'   the axis (in pixels)
+#'   a field \code{adjust}, a number defining the horizontal adjustment of
+#'   the axis (in pixels),
+#'   a field \code{gridLines}, a list of settings for the grid lines created
+#'   with \code{\link{amLine}},
+#'   and a field \code{breaks} to control the axis breaks, an R object created
+#'   with \code{\link{amAxisBreaks}}
 #' @param scrollbarX logical, whether to add a scrollbar for the x-axis
 #' @param scrollbarY logical, whether to add a scrollbar for the y-axis
-#' @param gridLines settings of the grid lines
 #' @param legend logical, whether to display the legend
 #' @param caption settings of the caption, or \code{NULL} for no caption
-#' @param image option to include an image in the chart; \code{NULL} or
+#' @param image XXXX option to include an image in the chart; \code{NULL} or
 #'   \code{FALSE} for no image, otherwise a named list with six possible fields:
 #'   the field \code{base64} (required) is a base64 string representing the
 #'   image (you can create it from a file with \code{base64enc::dataURI}),
@@ -375,7 +382,6 @@ amLineChart <- function(
   yAxis = NULL, # default
   scrollbarX = FALSE,
   scrollbarY = FALSE,
-  gridLines = NULL,
   legend = NULL, # default
   caption = NULL,
   image = NULL,
@@ -910,7 +916,8 @@ amLineChart <- function(
         fontSize = 18,
         rotation = 0,
         formatter = Yformatter
-      )
+      ),
+      gridLines = amLine(opacity = 0.2, width = 1)
     )
   }else if(is.character(yAxis)){
     yAxis <- list(
@@ -924,7 +931,8 @@ amLineChart <- function(
         fontSize = 18,
         rotation = 0,
         formatter = Yformatter
-      )
+      ),
+      gridLines = amLine(opacity = 0.2, width = 1)
     )
   }
   if(is.character(yAxis[["title"]])){
@@ -941,16 +949,6 @@ amLineChart <- function(
       rotation = 0,
       formatter = Yformatter
     )
-  }
-
-  if(is.null(gridLines)){
-    gridLines <- list(
-      color = NULL,
-      opacity = NULL,
-      width = NULL
-    )
-  }else{
-    gridLines[["color"]] <- validateColor(gridLines[["color"]])
   }
 
   if(is.null(legend)){
@@ -1075,7 +1073,6 @@ amLineChart <- function(
       yAxis = yAxis,
       scrollbarX = scrollbarX,
       scrollbarY = scrollbarY,
-      gridLines = gridLines,
       legend = legend,
       caption = caption,
       image = image,
