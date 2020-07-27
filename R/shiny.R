@@ -98,19 +98,7 @@ amChart4Output <- function(outputId, width = "100%", height = "400px"){
 #' @rdname rAmCharts4-shiny
 #' @export
 renderAmChart4 <- function(expr, env = parent.frame(), quoted = FALSE) {
-  expr[["prepend"]] <- NULL
   if (!quoted) { expr <- substitute(expr) } # force quoted
   htmlwidgets::shinyRenderWidget(expr, amChart4Output, env, quoted = TRUE)
 }
 
-#' Called by HTMLWidgets to produce the widget's root element.
-#' @noRd
-amChart4_html <- function(id, style, class, ...) {
-  htmltools::tagList(
-    # Necessary for RStudio viewer version < 1.2
-    reactR::html_dependency_corejs(),
-    reactR::html_dependency_react(),
-    reactR::html_dependency_reacttools(),
-    htmltools::tags$div(id = id, class = class, style = style)
-  )
-}
