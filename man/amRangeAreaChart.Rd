@@ -29,7 +29,6 @@ amRangeAreaChart(
   yAxis = NULL,
   scrollbarX = FALSE,
   scrollbarY = FALSE,
-  gridLines = NULL,
   legend = NULL,
   caption = NULL,
   image = NULL,
@@ -150,26 +149,32 @@ between 0 and 1}
 \item{backgroundColor}{a color for the chart background}
 
 \item{xAxis}{settings of the x-axis given as a list, or just a string
-for the axis title; the list of settings has three possible fields:
+for the axis title; the list of settings has five possible fields:
 a field \code{title}, a list of settings for the axis title,
 a field \code{labels}, a list of settings for the axis labels created
 with \code{\link{amAxisLabels}},
-and a field \code{adjust}, a number defining the vertical adjustment of
-the axis (in pixels)}
+a field \code{adjust}, a number defining the vertical adjustment of
+the axis (in pixels),
+a field \code{gridLines}, a list of settings for the grid lines created
+with \code{\link{amLine}},
+and a field \code{breaks} to control the axis breaks, an R object created
+with \code{\link{amAxisBreaks}}}
 
 \item{yAxis}{settings of the y-axis given as a list, or just a string
-for the axis title; the list of settings has three possible fields:
+for the axis title; the list of settings has five possible fields:
 a field \code{title}, a list of settings for the axis title,
 a field \code{labels}, a list of settings for the axis labels created
 with \code{\link{amAxisLabels}},
-and a field \code{adjust}, a number defining the horizontal adjustment of
-the axis (in pixels)}
+a field \code{adjust}, a number defining the horizontal adjustment of
+the axis (in pixels),
+a field \code{gridLines}, a list of settings for the grid lines created
+with \code{\link{amLine}},
+and a field \code{breaks} to control the axis breaks, an R object created
+with \code{\link{amAxisBreaks}}}
 
 \item{scrollbarX}{logical, whether to add a scrollbar for the x-axis}
 
 \item{scrollbarY}{logical, whether to add a scrollbar for the y-axis}
-
-\item{gridLines}{settings of the grid lines}
 
 \item{legend}{logical, whether to display the legend}
 
@@ -321,12 +326,11 @@ amRangeAreaChart(
                             fontSize = 20,
                             color = "silver"),
                labels = amAxisLabels(color = "whitesmoke",
-                                     fontSize = 17)),
+                                     fontSize = 17),
+               gridLines = amLine(color = "antiquewhite",
+                                  opacity = 0.4, width = 1)),
   Xformatter = "#",
   Yformatter = "#.00",
-  gridLines = list(color = "antiquewhite",
-                   opacity = 0.4,
-                   width = 1),
   image = list(
     image = amImage(
       href = tinyIcon("react", backgroundColor = "transparent"),

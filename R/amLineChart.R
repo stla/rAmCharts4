@@ -829,15 +829,6 @@ amLineChart <- function(
     if(is.list(xAxis[["title"]])){
       xAxis[["title"]][["color"]] <- validateColor(xAxis[["title"]][["color"]])
     }
-    # if("breaks" %in% names(xAxis)){
-    #   if(isDate){
-    #     xAxis[["breaks"]] <- format(xAxis[["breaks"]], "%Y-%m-%d")
-    #   }
-    #   if(is.null(names(xAxis[["breaks"]]))){
-    #
-    #   }
-    #   xAxis[["breaks"]] <- as.list(xAxis[["breaks"]])
-    # }
   }else if(is.null(xAxis)){
     xAxis <- list(
       title = list(

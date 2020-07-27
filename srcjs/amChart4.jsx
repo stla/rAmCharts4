@@ -2047,121 +2047,17 @@ class AmScatterChart extends React.PureComponent {
 		}
 
 		/* ~~~~\  x-axis  /~~~~ */
-		let XAxis;
-		if(isDate) {
-		  XAxis = chart.xAxes.push(new am4charts.DateAxis());
-		} else {
-		  XAxis = chart.xAxes.push(new am4charts.ValueAxis());
-		}
-    if(xAxis) {
-      XAxis.paddingBottom = xAxis.adjust || 0;
-    }
-		XAxis.strictMinMax = true;
-		XAxis.min = minX;
-		XAxis.max = maxX;
-		XAxis.renderer.grid.template.location = 0;
-		if(xAxis && xAxis.title && xAxis.title.text !== ""){
-  		XAxis.title.text = xAxis.title.text || xValue;
-  		XAxis.title.fontWeight = "bold";
-  		XAxis.title.fontSize = xAxis.title.fontSize || 20;
-  		XAxis.title.fill =
-  		  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
-		}
-		let xAxisLabels = XAxis.renderer.labels.template;
-    if(xAxis.labels.formatter) {
-      let formatter = xAxis.labels.formatter;
-      if(isDate) {
-        XAxis.dateFormats.setKey("day", formatter.day[0]); 
-        if(formatter.day[1]) {
-          XAxis.periodChangeDateFormats.setKey("day", formatter.day[1]);
-        }
-        XAxis.dateFormats.setKey("week", formatter.week[0]); 
-        if(formatter.week[1]) {
-          XAxis.periodChangeDateFormats.setKey("week", formatter.week[1]);
-        }
-        XAxis.dateFormats.setKey("month", formatter.month[0]); 
-        if(formatter.month[1]) {
-          XAxis.periodChangeDateFormats.setKey("month", formatter.month[1]);
-        }
-      } else {
-        XAxis.numberFormatter = new am4core.NumberFormatter();
-        XAxis.numberFormatter.numberFormat = formatter;
-        XAxis.adjustLabelPrecision = false;
-      }
-    }
-    xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
-		xAxisLabels.rotation = xAxis.labels.rotation || 0;
-		if(xAxisLabels.rotation !== 0){
-		  xAxisLabels.horizontalCenter = "right";
-		}
-		xAxisLabels.fill =
-		  xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
-		if(isDate) {
-		  XAxis.dataFields.dateX = xValue;
-		} else {
-  		XAxis.dataFields.valueX = xValue;
-  	}
-		XAxis.renderer.grid.template.disabled = true;
-		XAxis.renderer.minGridDistance = 50;
-    if(cursor &&
-      (cursor === true || !cursor.axes || ["x","xy"].indexOf(cursor.axes)) > -1)
-    {
-      if(cursor.tooltip)
-        XAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
-      if(cursor.renderer && cursor.renderer.x)
-        XAxis.adapter.add("getTooltipText", cursor.renderer.x);
-      if(cursor.extraTooltipPrecision)
-        XAxis.extraTooltipPrecision = cursor.extraTooltipPrecision.x;
-      if(cursor.dateFormat)
-        XAxis.tooltipDateFormat = cursor.dateFormat;
-    } else {
-      XAxis.cursorTooltipEnabled = false;
-    }
+    let XAxis = utils.createAxis(
+      "X", am4charts, am4core, chart, xAxis, 
+      minX, maxX, isDate, theme, cursor, xValue
+    );
 
 		/* ~~~~\  y-axis  /~~~~ */
-		let YAxis = chart.yAxes.push(new am4charts.ValueAxis());
-    if(yAxis) {
-      YAxis.paddingRight = yAxis.adjust || 0;
-    }
-    YAxis.renderer.grid.template.stroke =
-      gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
-    YAxis.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.15;
-    YAxis.renderer.grid.template.strokeWidth = gridLines.width || 1;
-		if(yAxis && yAxis.title && yAxis.title.text !== "") {
-			YAxis.title.text = yAxis.title.text;
-			YAxis.title.fontWeight = "bold";
-			YAxis.title.fontSize = yAxis.title.fontSize || 20;
-			YAxis.title.fill =
-			  yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
-		}
-		let yAxisLabels = YAxis.renderer.labels.template;
-    if(yAxis.labels.formatter) {
-      YAxis.numberFormatter = new am4core.NumberFormatter();
-      YAxis.numberFormatter.numberFormat = yAxis.labels.formatter;
-      YAxis.adjustLabelPrecision = false;
-    }
-    yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
-		yAxisLabels.rotation = yAxis.labels.rotation || 0;
-		yAxisLabels.fill =
-		  yAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
-		// we set fixed min/max and strictMinMax to true, as otherwise value axis will adjust min/max while dragging and it won't look smooth
-		YAxis.strictMinMax = true;
-		YAxis.min = minY;
-		YAxis.max = maxY;
-		YAxis.renderer.minWidth = 60;
-    if(cursor &&
-      (cursor === true || !cursor.axes || ["y","xy"].indexOf(cursor.axes)) > -1)
-    {
-      if(cursor.tooltip)
-        YAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
-      if(cursor.extraTooltipPrecision)
-        YAxis.extraTooltipPrecision = cursor.extraTooltipPrecision.y;
-      if(cursor.renderer && cursor.renderer.y)
-        YAxis.adapter.add("getTooltipText", cursor.renderer.y);
-    } else {
-      YAxis.cursorTooltipEnabled = false;
-    }
+    let YAxis = utils.createAxis(
+      "Y", am4charts, am4core, chart, yAxis, minY, maxY, false, theme, cursor
+    );
 
+    
 		/* ~~~~\ cursor /~~~~ */
 		if(cursor) {
       chart.cursor = new am4charts.XYCursor();
@@ -2746,127 +2642,15 @@ class AmRangeAreaChart extends React.PureComponent {
 		}
 
 		/* ~~~~\  x-axis  /~~~~ */
-		let XAxis;
-		if(isDate) {
-		  XAxis = chart.xAxes.push(new am4charts.DateAxis());
-		} else {
-		  XAxis = chart.xAxes.push(new am4charts.ValueAxis());
-		}
-		if(xAxis) {
-      XAxis.paddingBottom = xAxis.adjust || 0;
-		}
-		XAxis.strictMinMax = true;
-		XAxis.min = minX;
-		XAxis.max = maxX;
-		XAxis.renderer.grid.template.location = 0;
-		if(xAxis && xAxis.title && xAxis.title.text !== "") {
-  		XAxis.title.text = xAxis.title.text || xValue;
-  		XAxis.title.fontWeight = "bold";
-  		XAxis.title.fontSize = xAxis.title.fontSize || 20;
-  		XAxis.title.fill =
-  		  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
-		}
-		let xAxisLabels = XAxis.renderer.labels.template;
-    if(xAxis.labels.formatter) {
-      let formatter = xAxis.labels.formatter;
-      if(isDate) {
-        XAxis.dateFormats.setKey("day", formatter.day[0]); 
-        if(formatter.day[1]) {
-          XAxis.periodChangeDateFormats.setKey("day", formatter.day[1]);
-        }
-        XAxis.dateFormats.setKey("week", formatter.week[0]); 
-        if(formatter.week[1]) {
-          XAxis.periodChangeDateFormats.setKey("week", formatter.week[1]);
-        }
-        XAxis.dateFormats.setKey("month", formatter.month[0]); 
-        if(formatter.month[1]) {
-          XAxis.periodChangeDateFormats.setKey("month", formatter.month[1]);
-        }
-      } else {
-        XAxis.numberFormatter = new am4core.NumberFormatter();
-        XAxis.numberFormatter.numberFormat = formatter;
-        XAxis.adjustLabelPrecision = false;
-      }
-    }
-    xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
-		xAxisLabels.rotation = xAxis.labels.rotation || 0;
-		if(xAxisLabels.rotation !== 0){
-		  xAxisLabels.horizontalCenter = "right";
-		}
-		xAxisLabels.fill =
-		  xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
-		if(isDate) {
-		  XAxis.dataFields.dateX = xValue;
-		} else {
-  		XAxis.dataFields.valueX = xValue;
-  	}
-		XAxis.renderer.grid.template.disabled = true;
-		XAxis.renderer.minGridDistance = 50;
-    if(cursor &&
-      (cursor === true || !cursor.axes || ["x","xy"].indexOf(cursor.axes)) > -1)
-    {
-      if(cursor.tooltip)
-        XAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
-      if(cursor.extraTooltipPrecision)
-        XAxis.extraTooltipPrecision = cursor.extraTooltipPrecision.x;
-      if(cursor.renderer && cursor.renderer.x)
-        XAxis.adapter.add("getTooltipText", cursor.renderer.x);
-      if(cursor.dateFormat)
-        XAxis.tooltipDateFormat = cursor.dateFormat;
-    } else {
-//      XAxis.tooltip.disabled = true;
-      XAxis.cursorTooltipEnabled = false;
-    }
+    let XAxis = utils.createAxis(
+      "X", am4charts, am4core, chart, xAxis, 
+      minX, maxX, isDate, theme, cursor, xValue
+    );
 
 		/* ~~~~\  y-axis  /~~~~ */
-		let YAxis = chart.yAxes.push(new am4charts.ValueAxis());
-		//YAxis.tooltip.disabled = true;
-    if(yAxis) {
-      YAxis.paddingRight = yAxis.adjust || 0;
-    }
-    YAxis.renderer.grid.template.stroke =
-      gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
-    YAxis.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.15;
-    YAxis.renderer.grid.template.strokeWidth = gridLines.width || 1;
-		if (yAxis && yAxis.title && yAxis.title.text !== "") {
-			YAxis.title.text = yAxis.title.text;
-			YAxis.title.fontWeight = "bold";
-			YAxis.title.fontSize = yAxis.title.fontSize || 20;
-			YAxis.title.fill =
-			  yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
-		}
-		if(yAxis.labels) {
-  		let yAxisLabels = YAxis.renderer.labels.template;
-      if(yAxis.labels.formatter) {
-        YAxis.numberFormatter = new am4core.NumberFormatter();
-        YAxis.numberFormatter.numberFormat = yAxis.labels.formatter;
-        YAxis.adjustLabelPrecision = false;
-      }
-	  	yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
-		  yAxisLabels.rotation = yAxis.labels.rotation || 0;
-		  yAxisLabels.fill =
-		    yAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
-		} else {
-		  YAxis.renderer.labels.template.disabled = true;
-		}
-		// we set fixed min/max and strictMinMax to true, as otherwise value axis will adjust min/max while dragging and it won't look smooth
-		YAxis.strictMinMax = true;
-		YAxis.min = minY;
-		YAxis.max = maxY;
-		YAxis.renderer.minWidth = 60;
-    if(cursor &&
-      (cursor === true || !cursor.axes || ["y","xy"].indexOf(cursor.axes)) > -1)
-    {
-      if(cursor.tooltip)
-        YAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
-      if(cursor.extraTooltipPrecision)
-        YAxis.extraTooltipPrecision = cursor.extraTooltipPrecision.y;
-      if(cursor.renderer && cursor.renderer.y)
-        YAxis.adapter.add("getTooltipText", cursor.renderer.y);
-    } else {
-//      YAxis.tooltip.disabled = true;
-      YAxis.cursorTooltipEnabled = false;
-    }
+    let YAxis = utils.createAxis(
+      "Y", am4charts, am4core, chart, yAxis, minY, maxY, false, theme, cursor
+    );
 
 
 		/* ~~~~\ cursor /~~~~ */
