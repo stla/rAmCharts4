@@ -821,7 +821,7 @@ class AmHorizontalBarChart extends React.PureComponent {
       });
     });
 
-    
+
 		values.forEach(function(value, index){
 
       let series;
@@ -2826,7 +2826,6 @@ class AmRangeAreaChart extends React.PureComponent {
 		/* ~~~~\  function handling the drag event  /~~~~ */
 		function handleDrag(event) {
 			let dataItem = event.target.dataItem;
-			//console.log("dataItem", dataItem);
 			// convert coordinate to value
 			let value = YAxis.yToValue(event.target.pixelY);
 			// set new value
@@ -2900,7 +2899,6 @@ class AmRangeAreaChart extends React.PureComponent {
       let series1 = chart.series.push(new am4charts.LineSeries()),
         series2 = chart.series.push(new am4charts.LineSeries());
         series2.hiddenInLegend = true;
-console.log("series1", series1);
       if(isDate) {
         series1.dataFields.dateX = xValue;
         series2.dataFields.dateX = xValue;
@@ -2916,8 +2914,10 @@ console.log("series1", series1);
       series2.dataFields.openValueY = y1;
       //series1.tooltipText = "yyyyy";// "y1: {openValueY} y2: {valueY}";
       series1.fill = areas[index].color || chart.colors.getIndex(index);
-      series1.fillOpacity = areas[index].opacity || 0.2;
-      series2.fillOpacity = 0;
+      //series2.fill = series1.fill;
+      series1.fillOpacity = areas[index].opacity;
+      //series2.fillOpacity = series1.fillOpacity;
+      //series2.zIndex = -1;
       series1.sequencedInterpolation = true;
       series2.sequencedInterpolation = true;
       series1.defaultState.interpolationDuration = 1000;
@@ -3038,7 +3038,7 @@ console.log("series1", series1);
       let hoverState2 = shape2.states.create("hover");
       hoverState2.properties.strokeWidth = shape2.strokeWidth + 3;
       hoverState2.properties.opacity = 1; // visible when hovered
-      if(draggable[y1]){
+      if(draggable[y1]) {
         bullet1.draggable = true;
         // resize cursor when over
         bullet1.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
@@ -3070,13 +3070,15 @@ console.log("series1", series1);
           }
         });
       }
-      if(draggable[y2]){
+      if(draggable[y2]) {
         bullet2.draggable = true;
         // resize cursor when over
         bullet2.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
         // while dragging
         bullet2.events.on("drag", event => {
           handleDrag(event);
+          let dataItem = event.target.dataItem;
+          series1.dataItems.values[dataItem.index].openValueY = dataItem.valueY;
         });
         // on dragging stop
         bullet2.events.on("dragstop", event => {
