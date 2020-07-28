@@ -1,0 +1,5 @@
+dependencies:
+  - name: amcharts4-css
+    version: 0.0.0
+    src: "htmlwidgets/css"
+    stylesheet: amcharts4.css

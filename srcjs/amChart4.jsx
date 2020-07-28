@@ -120,6 +120,14 @@ class AmBarChart extends React.PureComponent {
       this.props.backgroundColor || chart.background.fill;
     chart.background.fill = chartBackgroundColor;
 
+
+    /* ~~~~\  Enable export  /~~~~ */
+    if(this.props.export) {
+      chart.exporting.menu = new am4core.ExportMenu();
+      chart.exporting.menu.items = utils.exportMenuItems;
+    }
+
+
 		/* ~~~~\  title  /~~~~ */
 		let chartTitle = this.props.chartTitle;
 		if(chartTitle) {
@@ -669,6 +677,14 @@ class AmHorizontalBarChart extends React.PureComponent {
       this.props.backgroundColor || chart.background.fill;
     chart.background.fill = chartBackgroundColor;
 
+
+    /* ~~~~\  Enable export  /~~~~ */
+    if(this.props.export) {
+      chart.exporting.menu = new am4core.ExportMenu();
+      chart.exporting.menu.items = utils.exportMenuItems;
+    }
+    
+
 		/* ~~~~\  title  /~~~~ */
 		let chartTitle = this.props.chartTitle;
 		if(chartTitle) {
@@ -1197,6 +1213,14 @@ class AmLineChart extends React.PureComponent {
     let chartBackgroundColor =
       this.props.backgroundColor || chart.background.fill;
     chart.background.fill = chartBackgroundColor;
+
+
+    /* ~~~~\  Enable export  /~~~~ */
+    if(this.props.export) {
+      chart.exporting.menu = new am4core.ExportMenu();
+      chart.exporting.menu.items = utils.exportMenuItems;
+    }
+
 
 		/* ~~~~\  title  /~~~~ */
 		let chartTitle = this.props.chartTitle;
@@ -2003,6 +2027,14 @@ class AmScatterChart extends React.PureComponent {
       this.props.backgroundColor || chart.background.fill;
     chart.background.fill = chartBackgroundColor;
 
+
+    /* ~~~~\  Enable export  /~~~~ */
+    if(this.props.export) {
+      chart.exporting.menu = new am4core.ExportMenu();
+      chart.exporting.menu.items = utils.exportMenuItems;
+    }
+
+
 		/* ~~~~\  title  /~~~~ */
 		let chartTitle = this.props.chartTitle;
 		if (chartTitle) {
@@ -2652,6 +2684,13 @@ class AmRangeAreaChart extends React.PureComponent {
     chart.background.fill = chartBackgroundColor;
 
     let allSeries = chart.series.values;
+
+
+    /* ~~~~\  Enable export  /~~~~ */
+    if(this.props.export) {
+      chart.exporting.menu = new am4core.ExportMenu();
+      chart.exporting.menu.items = utils.exportMenuItems;
+    }
 
 
 		/* ~~~~\  title  /~~~~ */

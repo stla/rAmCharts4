@@ -36,6 +36,7 @@ amBarChart(
   cursor = FALSE,
   width = NULL,
   height = NULL,
+  export = FALSE,
   chartId = NULL,
   elementId = NULL
 )
@@ -195,6 +196,8 @@ given in \code{\link{amChart4Output}}}
 \item{height}{the height of the chart, e.g. \code{"400px"};
 ignored if the chart is displayed in Shiny, in which case the height is
 given in \code{\link{amChart4Output}}}
+
+\item{export}{logical, whether to enable the export menu}
 
 \item{chartId}{a HTML id for the chart}
 

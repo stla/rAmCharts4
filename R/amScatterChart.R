@@ -179,6 +179,7 @@
 #' @param height the height of the chart, e.g. \code{"400px"};
 #' ignored if the chart is displayed in Shiny, in which case the height is
 #' given in \code{\link{amChart4Output}}
+#' @param export logical, whether to enable the export menu
 #' @param chartId a HTML id for the chart
 #' @param elementId a HTML id for the container of the chart; ignored if the
 #' chart is displayed in Shiny, in which case the id is given by the Shiny id
@@ -367,6 +368,7 @@ amScatterChart <- function(
   cursor = FALSE,
   width = NULL,
   height = NULL,
+  export = FALSE,
   chartId = NULL,
   elementId = NULL
 ) {
@@ -986,6 +988,7 @@ amScatterChart <- function(
       button = button,
       width = width,
       height = height,
+      export = export,
       chartId = chartId,
       shinyId = elementId
     )

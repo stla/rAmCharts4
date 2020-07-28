@@ -1,0 +1,5 @@
+.amcharts-amexport-top.amcharts-amexport-right>.amcharts-amexport-item {
+  width: fit-content !important;
+  min-height: fit-content !important;
+  padding: 2px !important;
+}

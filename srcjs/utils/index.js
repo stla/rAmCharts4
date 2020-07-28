@@ -414,3 +414,16 @@ export const Image = function(am4core, chart, settings) {
   image.dy = img.vjust || 0;
   image.href = img.href;
 };
+
+
+export const exportMenuItems = [
+  {
+    "label": "Export",
+    "menu": [
+      { "type": "png", "label": "PNG" },
+      { "type": "jpg", "label": "JPG" },
+      { "type": "svg", "label": "SVG" },
+      { "label": "Print", "type": "print" }
+    ]
+  }
+];
