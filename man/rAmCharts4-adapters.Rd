@@ -2,13 +2,20 @@
 % Please edit documentation in R/adapters.R
 \name{rAmCharts4-adapters}
 \alias{rAmCharts4-adapters}
-\alias{amAdapterFromVector}
+\alias{amColorAdapterFromVector}
+\alias{amColorAdapterFromCuts}
 \title{Adapters}
 \usage{
-amAdapterFromVector(values)
+amColorAdapterFromVector(colors)
+
+amColorAdapterFromCuts(cuts, colors, axis)
 }
 \arguments{
-\item{values}{vector of values}
+\item{colors}{vector of colors}
+
+\item{cuts}{a vector of cut points (sorted increasingly)}
+
+\item{axis}{\code{"X"} or \code{"Y"}}
 }
 \description{
 Adapters
