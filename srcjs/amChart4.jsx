@@ -315,6 +315,19 @@ class AmBarChart extends React.PureComponent {
 			event.target.isHover = true;
 		}
 
+    /* 
+      trigger the "positionchanged" event on bullets when a resizing occurs, 
+      otherwise bullets are unresponsive  
+    */
+    chart.events.on("sizechanged", event => {
+      event.target.series.each(function(s) {
+        s.bulletsContainer.children.each(function(b) {
+          b.dispatchImmediately("positionchanged");
+        });
+      });
+    });
+
+
 		values.forEach(function(value, index){
 
       let series;
@@ -796,7 +809,19 @@ class AmHorizontalBarChart extends React.PureComponent {
 			event.target.isHover = true;
 		}
 
+    /* 
+      trigger the "positionchanged" event on bullets when a resizing occurs, 
+      otherwise bullets are unresponsive  
+    */
+    chart.events.on("sizechanged", event => {
+      event.target.series.each(function(s) {
+        s.bulletsContainer.children.each(function(b) {
+          b.dispatchImmediately("positionchanged");
+        });
+      });
+    });
 
+    
 		values.forEach(function(value, index){
 
       let series;
@@ -1161,6 +1186,8 @@ class AmLineChart extends React.PureComponent {
     }
 
     let chart = am4core.create(this.props.chartId, am4charts.XYChart);
+
+    chart.responsive.enabled = true;
 
     chart.data = data;
 
@@ -1570,6 +1597,18 @@ class AmLineChart extends React.PureComponent {
       }
 		}
 
+    /* 
+      trigger the "positionchanged" event on bullets when a resizing occurs, 
+      otherwise bullets are unresponsive  
+    */
+    chart.events.on("sizechanged", event => {
+      event.target.series.each(function(s) {
+        s.bulletsContainer.children.each(function(b) {
+          b.dispatchImmediately("positionchanged");
+        });
+      });
+    });
+
 
 		yValues.forEach(function(value, index){
 
@@ -1587,6 +1626,8 @@ class AmLineChart extends React.PureComponent {
       series.defaultState.interpolationDuration = 1500;
       series.tensionX = lineStyle.tensionX || 1;
       series.tensionY = lineStyle.tensionY || 1;
+
+
 
       /* ~~~~\  value label  /~~~~ */
 /*    let valueLabel = new am4charts.LabelBullet();
@@ -1694,7 +1735,6 @@ class AmLineChart extends React.PureComponent {
         // when line position changes, adjust minX/maxX of bullets so that we could only dragg vertically
         bullet.events.on("positionchanged", event => {
           let dataItem = event.target.dataItem;
-          //console.log("dataItem", dataItem);
           if(dataItem.bullets) {
             let itemBullet = dataItem.bullets.getKey(bullet.uid);
             let point = dataItem.point;
@@ -1703,7 +1743,7 @@ class AmLineChart extends React.PureComponent {
             itemBullet.minY = 0;
             itemBullet.maxY = chart.seriesContainer.pixelHeight;
           }
-        });
+        }); 
       }
 
       /* ~~~~\  line template  /~~~~ */
@@ -1774,7 +1814,7 @@ class AmLineChart extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    if (this.chart) {
+    if(this.chart) {
       this.chart.dispose();
     }
   }
@@ -2213,6 +2253,19 @@ class AmScatterChart extends React.PureComponent {
         }
       }
 		}
+
+    /* 
+      trigger the "positionchanged" event on bullets when a resizing occurs, 
+      otherwise bullets are unresponsive  
+    */
+    chart.events.on("sizechanged", event => {
+      event.target.series.each(function(s) {
+        s.bulletsContainer.children.each(function(b) {
+          b.dispatchImmediately("positionchanged");
+        });
+      });
+    });
+
 
 		yValues.forEach(function(value, index){
 
@@ -2823,6 +2876,18 @@ class AmRangeAreaChart extends React.PureComponent {
         }
       }
 		}
+
+    /* 
+      trigger the "positionchanged" event on bullets when a resizing occurs, 
+      otherwise bullets are unresponsive  
+    */
+    chart.events.on("sizechanged", event => {
+      event.target.series.each(function(s) {
+        s.bulletsContainer.children.each(function(b) {
+          b.dispatchImmediately("positionchanged");
+        });
+      });
+    });
 
 
 		yValues.forEach(function(y1y2, index){
