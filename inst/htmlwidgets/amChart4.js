@@ -120423,7 +120423,19 @@ class AmBarChart extends React.PureComponent {
 
       event.target.isHover = true;
     }
+    /* 
+      trigger the "positionchanged" event on bullets when a resizing occurs, 
+      otherwise bullets are unresponsive  
+    */
 
+
+    chart.events.on("sizechanged", event => {
+      event.target.series.each(function (s) {
+        s.bulletsContainer.children.each(function (b) {
+          b.dispatchImmediately("positionchanged");
+        });
+      });
+    });
     values.forEach(function (value, index) {
       var series;
 
@@ -120917,7 +120929,19 @@ class AmHorizontalBarChart extends React.PureComponent {
 
       event.target.isHover = true;
     }
+    /* 
+      trigger the "positionchanged" event on bullets when a resizing occurs, 
+      otherwise bullets are unresponsive  
+    */
 
+
+    chart.events.on("sizechanged", event => {
+      event.target.series.each(function (s) {
+        s.bulletsContainer.children.each(function (b) {
+          b.dispatchImmediately("positionchanged");
+        });
+      });
+    });
     values.forEach(function (value, index) {
       var series;
 
@@ -121295,6 +121319,7 @@ class AmLineChart extends React.PureComponent {
     }
 
     var chart = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["create"](this.props.chartId, _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYChart"]);
+    chart.responsive.enabled = true;
     chart.data = data;
     chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
 
@@ -121414,6 +121439,35 @@ class AmLineChart extends React.PureComponent {
                 trendSeriesData[i] = point;
               });
               trendSeries.invalidateData();
+              var ribbonSeriesName = thisSeriesName + "_ribbon",
+                  ribbonSeriesIndex = seriesNames.indexOf(ribbonSeriesName);
+
+              if (ribbonSeriesIndex > -1) {
+                var ribbonSeries = chart.series.values[ribbonSeriesIndex],
+                    ribbonSeriesData = ribbonSeries.data,
+                    y = data2.map(function (row) {
+                  return row[value];
+                }),
+                    yhat = fit.points.map(function (point) {
+                  return point[1];
+                }),
+                    ssq = 0;
+
+                for (var i = 0; i < y.length; ++i) {
+                  ssq += (y[i] - yhat[i]) * (y[i] - yhat[i]);
+                }
+
+                var sigma = Math.sqrt(ssq / (y.length - 1 - trendJS[value]));
+
+                for (var _i = 0; _i < ribbonSeriesData.length; ++_i) {
+                  var _yhat = trendSeriesData[_i].y,
+                      delta = sigma * ribbonSeriesData[_i].seFactor;
+                  ribbonSeriesData[_i].lwr = _yhat - delta;
+                  ribbonSeriesData[_i].upr = _yhat + delta;
+                }
+
+                ribbonSeries.invalidateData();
+              }
             }
           });
         }
@@ -121691,6 +121745,35 @@ class AmLineChart extends React.PureComponent {
           trendSeriesData[i] = point;
         });
         trendSeries.invalidateData();
+        var ribbonSeriesName = thisSeriesName + "_ribbon",
+            ribbonSeriesIndex = seriesNames.indexOf(ribbonSeriesName);
+
+        if (ribbonSeriesIndex > -1) {
+          var ribbonSeries = chart.series.values[ribbonSeriesIndex],
+              ribbonSeriesData = ribbonSeries.data,
+              y = thisSeriesDataCopy.map(function (row) {
+            return row[value];
+          }),
+              yhat = fit.points.map(function (point) {
+            return point[1];
+          }),
+              ssq = 0;
+
+          for (var i = 0; i < y.length; ++i) {
+            ssq += (y[i] - yhat[i]) * (y[i] - yhat[i]);
+          }
+
+          var sigma = Math.sqrt(ssq / (y.length - 1 - trendJS[value]));
+
+          for (var _i2 = 0; _i2 < ribbonSeriesData.length; ++_i2) {
+            var _yhat2 = trendSeriesData[_i2].y,
+                delta = sigma * ribbonSeriesData[_i2].seFactor;
+            ribbonSeriesData[_i2].lwr = _yhat2 - delta;
+            ribbonSeriesData[_i2].upr = _yhat2 + delta;
+          }
+
+          ribbonSeries.invalidateData();
+        }
       }
 
       if (window.Shiny) {
@@ -121716,7 +121799,19 @@ class AmLineChart extends React.PureComponent {
         }
       }
     }
+    /* 
+      trigger the "positionchanged" event on bullets when a resizing occurs, 
+      otherwise bullets are unresponsive  
+    */
 
+
+    chart.events.on("sizechanged", event => {
+      event.target.series.each(function (s) {
+        s.bulletsContainer.children.each(function (b) {
+          b.dispatchImmediately("positionchanged");
+        });
+      });
+    });
     yValues.forEach(function (value, index) {
       var lineStyle = lineStyles[value];
       var series = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LineSeries"]());
@@ -121844,7 +121939,7 @@ class AmLineChart extends React.PureComponent {
         }); // when line position changes, adjust minX/maxX of bullets so that we could only dragg vertically
 
         bullet.events.on("positionchanged", event => {
-          var dataItem = event.target.dataItem; //console.log("dataItem", dataItem);
+          var dataItem = event.target.dataItem;
 
           if (dataItem.bullets) {
             var itemBullet = dataItem.bullets.getKey(bullet.uid);
@@ -121898,8 +121993,9 @@ class AmLineChart extends React.PureComponent {
 
         if (trendData[value][0].hasOwnProperty("lwr")) {
           var ribbon = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LineSeries"]());
+          ribbon.name = yValueNames[value] + "_ribbon";
           ribbon.hiddenInLegend = true;
-          ribbon.data = trendData[value];
+          ribbon.data = trendData[value].map(row => _objectSpread({}, row));
 
           if (isDate) {
             ribbon.dataFields.dateX = "x";
@@ -122164,6 +122260,35 @@ class AmScatterChart extends React.PureComponent {
                 trendSeriesData[i] = point;
               });
               trendSeries.invalidateData();
+              var ribbonSeriesName = thisSeriesName + "_ribbon",
+                  ribbonSeriesIndex = seriesNames.indexOf(ribbonSeriesName);
+
+              if (ribbonSeriesIndex > -1) {
+                var ribbonSeries = chart.series.values[ribbonSeriesIndex],
+                    ribbonSeriesData = ribbonSeries.data,
+                    y = data2.map(function (row) {
+                  return row[value];
+                }),
+                    yhat = fit.points.map(function (point) {
+                  return point[1];
+                }),
+                    ssq = 0;
+
+                for (var i = 0; i < y.length; ++i) {
+                  ssq += (y[i] - yhat[i]) * (y[i] - yhat[i]);
+                }
+
+                var sigma = Math.sqrt(ssq / (y.length - 1 - trendJS[value]));
+
+                for (var _i3 = 0; _i3 < ribbonSeriesData.length; ++_i3) {
+                  var _yhat3 = trendSeriesData[_i3].y,
+                      delta = sigma * ribbonSeriesData[_i3].seFactor;
+                  ribbonSeriesData[_i3].lwr = _yhat3 - delta;
+                  ribbonSeriesData[_i3].upr = _yhat3 + delta;
+                }
+
+                ribbonSeries.invalidateData();
+              }
             }
           });
         }
@@ -122301,6 +122426,35 @@ class AmScatterChart extends React.PureComponent {
           trendSeriesData[i] = point;
         });
         trendSeries.invalidateData();
+        var ribbonSeriesName = thisSeriesName + "_ribbon",
+            ribbonSeriesIndex = seriesNames.indexOf(ribbonSeriesName);
+
+        if (ribbonSeriesIndex > -1) {
+          var ribbonSeries = chart.series.values[ribbonSeriesIndex],
+              ribbonSeriesData = ribbonSeries.data,
+              y = thisSeriesDataCopy.map(function (row) {
+            return row[value];
+          }),
+              yhat = fit.points.map(function (point) {
+            return point[1];
+          }),
+              ssq = 0;
+
+          for (var i = 0; i < y.length; ++i) {
+            ssq += (y[i] - yhat[i]) * (y[i] - yhat[i]);
+          }
+
+          var sigma = Math.sqrt(ssq / (y.length - 1 - trendJS[value]));
+
+          for (var _i4 = 0; _i4 < ribbonSeriesData.length; ++_i4) {
+            var _yhat4 = trendSeriesData[_i4].y,
+                delta = sigma * ribbonSeriesData[_i4].seFactor;
+            ribbonSeriesData[_i4].lwr = _yhat4 - delta;
+            ribbonSeriesData[_i4].upr = _yhat4 + delta;
+          }
+
+          ribbonSeries.invalidateData();
+        }
       }
 
       if (window.Shiny) {
@@ -122326,7 +122480,19 @@ class AmScatterChart extends React.PureComponent {
         }
       }
     }
+    /* 
+      trigger the "positionchanged" event on bullets when a resizing occurs, 
+      otherwise bullets are unresponsive  
+    */
 
+
+    chart.events.on("sizechanged", event => {
+      event.target.series.each(function (s) {
+        s.bulletsContainer.children.each(function (b) {
+          b.dispatchImmediately("positionchanged");
+        });
+      });
+    });
     yValues.forEach(function (value, index) {
       var series = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LineSeries"]());
       series.bulletsContainer.parent = chart.seriesContainer;
@@ -122490,8 +122656,9 @@ class AmScatterChart extends React.PureComponent {
 
         if (trendData[value][0].hasOwnProperty("lwr")) {
           var ribbon = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LineSeries"]());
+          ribbon.name = yValueNames[value] + "_ribbon";
           ribbon.hiddenInLegend = true;
-          ribbon.data = trendData[value];
+          ribbon.data = trendData[value].map(row => _objectSpread({}, row));
 
           if (isDate) {
             ribbon.dataFields.dateX = "x";
@@ -122503,6 +122670,20 @@ class AmScatterChart extends React.PureComponent {
           ribbon.dataFields.openValueY = "upr";
           ribbon.sequencedInterpolation = true;
           ribbon.defaultState.interpolationDuration = 1500;
+          /*  attempt animation upr line        
+                    let ribbon2 = chart.series.push(new am4charts.LineSeries());
+                    ribbon2.name = yValueNames[value] + "_ribbon2";
+                    ribbon2.hiddenInLegend = true;
+                    ribbon2.data = ribbon.data;
+                    if(isDate) {
+                      ribbon2.dataFields.dateX = "x";
+                    } else {
+                      ribbon2.dataFields.valueX = "x";
+                    }
+                    ribbon2.dataFields.valueY = "upr";
+                    ribbon2.sequencedInterpolation = true;
+                    ribbon2.defaultState.interpolationDuration = 1000; */
+
           var ribbonStyle = ribbonStyles[value];
           ribbon.fill = ribbonStyle.color || trend.stroke.lighten(0.4);
           ribbon.fillOpacity = ribbonStyle.opacity || 0.3;
@@ -122891,8 +123072,7 @@ class AmRangeAreaChart extends React.PureComponent {
 
 
     function handleDrag(event) {
-      var dataItem = event.target.dataItem; //console.log("dataItem", dataItem);
-      // convert coordinate to value
+      var dataItem = event.target.dataItem; // convert coordinate to value
 
       var value = YAxis.yToValue(event.target.pixelY); // set new value
 
@@ -122939,7 +123119,19 @@ class AmRangeAreaChart extends React.PureComponent {
         }
       }
     }
+    /* 
+      trigger the "positionchanged" event on bullets when a resizing occurs, 
+      otherwise bullets are unresponsive  
+    */
 
+
+    chart.events.on("sizechanged", event => {
+      event.target.series.each(function (s) {
+        s.bulletsContainer.children.each(function (b) {
+          b.dispatchImmediately("positionchanged");
+        });
+      });
+    });
     yValues.forEach(function (y1y2, index) {
       var y1 = y1y2[0],
           y2 = y1y2[1];
@@ -122948,7 +123140,6 @@ class AmRangeAreaChart extends React.PureComponent {
       var series1 = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LineSeries"]()),
           series2 = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LineSeries"]());
       series2.hiddenInLegend = true;
-      console.log("series1", series1);
 
       if (isDate) {
         series1.dataFields.dateX = xValue;
@@ -122965,9 +123156,11 @@ class AmRangeAreaChart extends React.PureComponent {
       series1.dataFields.openValueY = y2;
       series2.dataFields.openValueY = y1; //series1.tooltipText = "yyyyy";// "y1: {openValueY} y2: {valueY}";
 
-      series1.fill = areas[index].color || chart.colors.getIndex(index);
-      series1.fillOpacity = areas[index].opacity || 0.2;
-      series2.fillOpacity = 0;
+      series1.fill = areas[index].color || chart.colors.getIndex(index); //series2.fill = series1.fill;
+
+      series1.fillOpacity = areas[index].opacity; //series2.fillOpacity = series1.fillOpacity;
+      //series2.zIndex = -1;
+
       series1.sequencedInterpolation = true;
       series2.sequencedInterpolation = true;
       series1.defaultState.interpolationDuration = 1000;
@@ -123135,6 +123328,8 @@ class AmRangeAreaChart extends React.PureComponent {
 
         bullet2.events.on("drag", event => {
           handleDrag(event);
+          var dataItem = event.target.dataItem;
+          series1.dataItems.values[dataItem.index].openValueY = dataItem.valueY;
         }); // on dragging stop
 
         bullet2.events.on("dragstop", event => {

@@ -1302,6 +1302,30 @@ class AmLineChart extends React.PureComponent {
                 trendSeriesData[i] = point;
               });
               trendSeries.invalidateData();
+
+              let ribbonSeriesName = thisSeriesName + "_ribbon",
+                ribbonSeriesIndex = seriesNames.indexOf(ribbonSeriesName);
+              if(ribbonSeriesIndex > -1) {
+                let ribbonSeries = chart.series.values[ribbonSeriesIndex],
+                  ribbonSeriesData = ribbonSeries.data,
+                  y = data2.map(function(row){
+                    return row[value];
+                  }),
+                  yhat = fit.points.map(function(point){ return point[1]; }),
+                  ssq = 0;
+                for(let i = 0; i < y.length; ++i) {
+                  ssq += (y[i] - yhat[i])*(y[i] - yhat[i]);
+                }
+                let sigma = Math.sqrt(ssq / (y.length - 1 - trendJS[value]));
+                for(let i = 0; i < ribbonSeriesData.length; ++i) {
+                  let yhat = trendSeriesData[i].y,
+                    delta = sigma * ribbonSeriesData[i].seFactor;
+                  ribbonSeriesData[i].lwr = yhat - delta;
+                  ribbonSeriesData[i].upr = yhat + delta;
+                }
+                ribbonSeries.invalidateData();
+              }
+
             }
           })
         }
@@ -1566,7 +1590,31 @@ class AmLineChart extends React.PureComponent {
 			    });
 			  regressionLine.forEach(function(point, i){trendSeriesData[i] = point;});
 			  trendSeries.invalidateData();
-			}
+
+        let ribbonSeriesName = thisSeriesName + "_ribbon",
+          ribbonSeriesIndex = seriesNames.indexOf(ribbonSeriesName);
+        if(ribbonSeriesIndex > -1) {
+          let ribbonSeries = chart.series.values[ribbonSeriesIndex],
+            ribbonSeriesData = ribbonSeries.data,
+            y = thisSeriesDataCopy.map(function(row){
+              return row[value];
+            }),
+            yhat = fit.points.map(function(point){ return point[1]; }),
+            ssq = 0;
+          for(let i = 0; i < y.length; ++i) {
+            ssq += (y[i] - yhat[i])*(y[i] - yhat[i]);
+          }
+          let sigma = Math.sqrt(ssq / (y.length - 1 - trendJS[value]));
+          for(let i = 0; i < ribbonSeriesData.length; ++i) {
+            let yhat = trendSeriesData[i].y,
+              delta = sigma * ribbonSeriesData[i].seFactor;
+            ribbonSeriesData[i].lwr = yhat - delta;
+            ribbonSeriesData[i].upr = yhat + delta;
+          }
+          ribbonSeries.invalidateData();
+        }
+
+      }
 
       if(window.Shiny) {
         if(isDate) {
@@ -1787,8 +1835,9 @@ class AmLineChart extends React.PureComponent {
         /* ~~~~\ ribbon /~~~~ */
         if(trendData[value][0].hasOwnProperty("lwr")) {
           let ribbon = chart.series.push(new am4charts.LineSeries());
+          ribbon.name = yValueNames[value] + "_ribbon";
           ribbon.hiddenInLegend = true;
-          ribbon.data = trendData[value];
+          ribbon.data = trendData[value].map(row => ({...row}));
           if(isDate){
             ribbon.dataFields.dateX = "x";
           } else {
@@ -2435,6 +2484,19 @@ class AmScatterChart extends React.PureComponent {
           ribbon.dataFields.openValueY = "upr";
           ribbon.sequencedInterpolation = true;
           ribbon.defaultState.interpolationDuration = 1500;
+/*  attempt animation upr line        
+          let ribbon2 = chart.series.push(new am4charts.LineSeries());
+          ribbon2.name = yValueNames[value] + "_ribbon2";
+          ribbon2.hiddenInLegend = true;
+          ribbon2.data = ribbon.data;
+          if(isDate) {
+            ribbon2.dataFields.dateX = "x";
+          } else {
+            ribbon2.dataFields.valueX = "x";
+          }
+          ribbon2.dataFields.valueY = "upr";
+          ribbon2.sequencedInterpolation = true;
+          ribbon2.defaultState.interpolationDuration = 1000; */
           let ribbonStyle = ribbonStyles[value];
           ribbon.fill = ribbonStyle.color || trend.stroke.lighten(0.4);
           ribbon.fillOpacity = ribbonStyle.opacity || 0.3;

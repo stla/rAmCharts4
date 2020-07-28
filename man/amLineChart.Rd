@@ -119,7 +119,8 @@ a number formatter in the tooltip text)}
     e.g. \code{y ~ x}, \code{y ~ x + I(x^2)}, \code{y ~ poly(x,2)}
   }
   \item{\code{interval}}{
-    effective for method \code{"lm"} only; a list with five possible fields:
+    effective for methods \code{"lm"} and \code{"lm.js"} only;
+    a list with five possible fields:
     \code{type} can be \code{"confidence"} or \code{"prediction"},
     \code{level} is the confidence or prediction level (number between 0
     and 1), \code{color} is the color of the shaded area, \code{opacity}
