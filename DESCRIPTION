@@ -1,14 +1,31 @@
 Package: rAmCharts4
-Title: What the Package Does (One Line, Title Case)
+Title: An R Interface to the JavaScript Library 'amCharts 4' 
+Date: 2020-07-28
 Version: 0.0.0.9000
-Authors@R: 
-    person(given = "First",
-           family = "Last",
+Authors@R: c(
+    person(given = "Stéphane",
+           family = "Laurent",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: What license it uses
+           email = "laurent_step@outlook.fr"),
+    person(given = "amCharts",
+           role = c("ctb", "cph"),
+           email = "contact@amcharts.com",
+           comment = "'amCharts' library (https://www.amcharts.com/)"),
+    person(given = "Terence",
+           family = "Eden",
+           role = c("ctb", "cph"),
+           comment = "SuperTinyIcons library (https://github.com/edent/SuperTinyIcons/)"),
+    person(given = "Tom",
+           family = "Alexander",
+           role = c("ctb", "cph"),
+           email = "me@tomalexander.co.nz",
+           comment = "'regression' library")
+    )
+Maintainer: Stéphane Laurent <laurent_step@outlook.fr>
+Description: Creates JavaScript charts. The charts can be included in 'Shiny' apps and R markdown documents, or viewed from the R console and 'RStudio' viewer. Based on the JavaScript library 'amCharts 4' and the R packages 'htmlwidgets' and 'reactR'. Currently available types of chart are: vertical and horizontal bar chart, line chart, scatter chart, and range area chart.
+URL: https://github.com/stla/rAmCharts4
+BugReports: https://github.com/stla/rAmCharts4/issues
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Imports: 
