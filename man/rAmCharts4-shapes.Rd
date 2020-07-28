@@ -44,7 +44,8 @@ amRectangle(
 )
 }
 \arguments{
-\item{color}{bullet color}
+\item{color}{bullet color; this can be a
+\link[rAmCharts4:amColorAdapterFromVector]{color adapter}}
 
 \item{opacity}{bullet opacity, a number between 0 and 1}
 
@@ -52,7 +53,8 @@ amRectangle(
 
 \item{height}{bullet height}
 
-\item{strokeColor}{stroke color of the bullet}
+\item{strokeColor}{stroke color of the bullet; this can be a
+\link[rAmCharts4:amColorAdapterFromVector]{color adapter}}
 
 \item{strokeOpacity}{stroke opacity of the bullet, a number between 0 and 1}
 

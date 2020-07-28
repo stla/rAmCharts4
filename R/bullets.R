@@ -2,14 +2,16 @@
 #' @description Create a list of settings for bullets,
 #' their shape and their style.
 #'
-#' @param color bullet color
+#' @param color bullet color; this can be a
+#'   \link[rAmCharts4:amColorAdapterFromVector]{color adapter}
 #' @param opacity bullet opacity, a number between 0 and 1
 #' @param width bullet width
 #' @param height bullet height
 #' @param image option to include an image in the bullet, a list created
 #'   with \code{\link{amImage}}
 #' @param radius circle radius
-#' @param strokeColor stroke color of the bullet
+#' @param strokeColor stroke color of the bullet; this can be a
+#'   \link[rAmCharts4:amColorAdapterFromVector]{color adapter}
 #' @param strokeOpacity stroke opacity of the bullet, a number between 0 and 1
 #' @param strokeWidth stroke width of the bullet
 #' @param direction triangle direction
@@ -35,13 +37,17 @@ amTriangle <- function(
   if(!is.null(image) && !"image" %in% class(image)){
     stop("Invalid `image` argument.", call. = TRUE)
   }
+  colorAdapter <- class(color) == "JS_EVAL"
+  strokeColorAdapter <- class(strokeColor) == "JS_EVAL"
   bullet <- list(
     shape = "triangle",
-    color = validateColor(color),
+    color = if(!colorAdapter) validateColor(color),
+    colorAdapter = if(colorAdapter) color,
     opacity = opacity,
     width = width,
     height = height,
-    strokeColor = validateColor(strokeColor),
+    strokeColor = if(!strokeColorAdapter) validateColor(strokeColor),
+    strokeColorAdapter = if(strokeColorAdapter) strokeColorAdapter,
     strokeOpacity = strokeOpacity,
     strokeWidth = strokeWidth,
     direction = match.arg(direction, c("top", "bottom", "left", "right")),
@@ -66,12 +72,16 @@ amCircle <- function(
   if(!is.null(image) && !"image" %in% class(image)){
     stop("Invalid `image` argument.", call. = TRUE)
   }
+  colorAdapter <- class(color) == "JS_EVAL"
+  strokeColorAdapter <- class(strokeColor) == "JS_EVAL"
   bullet <- list(
     shape = "circle",
-    color = validateColor(color),
+    color = if(!colorAdapter) validateColor(color),
+    colorAdapter = if(colorAdapter) color,
     opacity = opacity,
     radius = radius,
-    strokeColor = validateColor(strokeColor),
+    strokeColor = if(!strokeColorAdapter) validateColor(strokeColor),
+    strokeColorAdapter = if(strokeColorAdapter) strokeColorAdapter,
     strokeOpacity = strokeOpacity,
     strokeWidth = strokeWidth,
     image = image
@@ -97,13 +107,17 @@ amRectangle <- function(
   if(!is.null(image) && !"image" %in% class(image)){
     stop("Invalid `image` argument.", call. = TRUE)
   }
+  colorAdapter <- class(color) == "JS_EVAL"
+  strokeColorAdapter <- class(strokeColor) == "JS_EVAL"
   bullet <- list(
     shape = "rectangle",
-    color = validateColor(color),
+    color = if(!colorAdapter) validateColor(color),
+    colorAdapter = if(colorAdapter) color,
     opacity = opacity,
     width = width,
     height = height,
-    strokeColor = validateColor(strokeColor),
+    strokeColor = if(!strokeColorAdapter) validateColor(strokeColor),
+    strokeColorAdapter = if(strokeColorAdapter) strokeColorAdapter,
     strokeOpacity = strokeOpacity,
     strokeWidth = strokeWidth,
     rotation = rotation,

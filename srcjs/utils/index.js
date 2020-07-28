@@ -88,6 +88,12 @@ export const Shape = function(am4core, chart, index, bullet, shapeConfig) {
   shape.stroke = shapeConfig.strokeColor ||
     chart.colors.getIndex(index).lighten(-0.5);
   shape.strokeOpacity = shapeConfig.strokeOpacity || 1;
+  if(shapeConfig.colorAdapter) {
+    shape.adapter.add("fill", shapeConfig.colorAdapter);
+  }
+  if(shapeConfig.strokeColorAdapter) {
+    shape.adapter.add("stroke", shapeConfig.strokeColorAdapter);
+  }
   if(shapeConfig.image) {
     let image = bullet.createChild(am4core.Image);
     image.width = shapeConfig.image.width;
