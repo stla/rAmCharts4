@@ -1,9 +1,11 @@
 #' Columns style
 #' @description Create a list of settings for the columns of a bar chart.
 #'
-#' @param color color of the columns
+#' @param color color of the columns; this can be an
+#'   \link[rAmCharts4:amAdapterFromVector]{adapter}
 #' @param opacity opacity of the columns, a number between 0 and 1
-#' @param strokeColor color of the border of the columns
+#' @param strokeColor color of the border of the columns; this can be an
+#'   \link[rAmCharts4:amAdapterFromVector]{adapter}
 #' @param strokeWidth width of the border of the the columns
 #' @param cornerRadius radius of the corners of the columns
 #'
@@ -17,10 +19,14 @@ amColumn <- function(
   strokeWidth = 4,
   cornerRadius = 8
 ){
+  colorAdapter <- class(color) == "JS_EVAL"
+  strokeColorAdapter <- class(strokeColor) == "JS_EVAL"
   settings <- list(
-    color = validateColor(color),
+    color = if(!colorAdapter) validateColor(color),
+    colorAdapter = if(colorAdapter) color,
     opacity = opacity,
-    strokeColor = validateColor(strokeColor),
+    strokeColor = if(!strokeColorAdapter) validateColor(strokeColor),
+    strokeColorAdapter = if(strokeColorAdapter) strokeColorAdapter,
     strokeWidth = strokeWidth,
     cornerRadius = cornerRadius
   )

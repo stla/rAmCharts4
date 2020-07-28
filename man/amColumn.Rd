@@ -13,11 +13,13 @@ amColumn(
 )
 }
 \arguments{
-\item{color}{color of the columns}
+\item{color}{color of the columns; this can be an
+\link[rAmCharts4:amAdapterFromVector]{adapter}}
 
 \item{opacity}{opacity of the columns, a number between 0 and 1}
 
-\item{strokeColor}{color of the border of the columns}
+\item{strokeColor}{color of the border of the columns; this can be an
+\link[rAmCharts4:amAdapterFromVector]{adapter}}
 
 \item{strokeWidth}{width of the border of the the columns}
 

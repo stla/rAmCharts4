@@ -373,7 +373,10 @@ class AmBarChart extends React.PureComponent {
 
       /* ~~~~\  bullet  /~~~~ */
       let bullet;
-      let columnStyle = columnStyles[value];
+      let columnStyle = columnStyles[value],
+        color = columnStyle.color || chart.colors.getIndex(index),
+        strokeColor = columnStyle.strokeColor || 
+          am4core.color(columnStyle.color).lighten(-0.5);
       if(alwaysShowBullets || draggable[value]) {
         bullet = series.bullets.create();
         if(!alwaysShowBullets) {
@@ -383,10 +386,10 @@ class AmBarChart extends React.PureComponent {
         // add sprite to bullet
         let shapeConfig = bulletsStyle[value];
         if(!shapeConfig.color) {
-          shapeConfig.color = columnStyle.color;
+          shapeConfig.color = color;
         }
         if(!shapeConfig.strokeColor) {
-          shapeConfig.strokeColor = columnStyle.strokeColor;
+          shapeConfig.strokeColor = strokeColor;
         }
         let shape =
           utils.Shape(am4core, chart, index, bullet, shapeConfig);
@@ -424,14 +427,33 @@ class AmBarChart extends React.PureComponent {
       /* ~~~~\  column template  /~~~~ */
       let columnTemplate = series.columns.template;
       columnTemplate.width = am4core.percent(columnWidth);
-      columnTemplate.fill =
-        columnStyle.color || chart.colors.getIndex(index);
-      columnTemplate.stroke = columnStyle.strokeColor ||
-        am4core.color(columnTemplate.fill).lighten(-0.5);
+      columnTemplate.fill = color;
+      if(columnStyle.colorAdapter) {
+        // columnTemplate.adapter.add("fill", (x, target) => {
+        //   let item = target.dataItem;
+        //   let value = item.valueY;
+        //   //
+        //   let colors = ["red", "green", "blue", "yellow", "crimson", "fuchsia"];
+        //   let color = colors[index];
+        //   //
+        //   return color;
+        // });
+        columnTemplate.adapter.add("fill", columnStyle.colorAdapter);
+        if(!columnStyle.strokeColor && !columnStyle.strokeColorAdapter) {
+          columnTemplate.adapter.add("stroke", (x, target) => {
+            let color = columnStyle.colorAdapter(x, target);
+            return am4core.color(color).lighten(-0.5);
+          });
+        }
+      }
+      columnTemplate.stroke = strokeColor;
+      if(columnStyle.strokeColorAdapter) {
+        columnTemplate.adapter.add("stroke", columnStyle.strokeColorAdapter);
+      }
       columnTemplate.strokeOpacity = 1;
       columnTemplate.column.fillOpacity = columnStyle.opacity || 
         (threeD ? 1 : 0.8);
-      columnTemplate.column.strokeWidth = columnStyle.strokeWidth;
+      columnTemplate.column.strokeWidth = columnStyle.strokeWidth || 4;
       /* ~~~~\  tooltip  /~~~~ */
       if(tooltips) {
         columnTemplate.tooltipText = tooltips[value].text;

@@ -120225,7 +120225,14 @@ class AmBarChart extends React.PureComponent {
 
     var chartBackgroundColor = this.props.backgroundColor || chart.background.fill;
     chart.background.fill = chartBackgroundColor;
+    /* ~~~~\  Enable export  /~~~~ */
+
+    if (this.props.export) {
+      chart.exporting.menu = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["ExportMenu"]();
+      chart.exporting.menu.items = _utils__WEBPACK_IMPORTED_MODULE_13__["exportMenuItems"];
+    }
     /* ~~~~\  title  /~~~~ */
+
 
     var chartTitle = this.props.chartTitle;
 
@@ -120473,7 +120480,9 @@ class AmBarChart extends React.PureComponent {
 
 
       var bullet;
-      var columnStyle = columnStyles[value];
+      var columnStyle = columnStyles[value],
+          color = columnStyle.color || chart.colors.getIndex(index),
+          strokeColor = columnStyle.strokeColor || _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](columnStyle.color).lighten(-0.5);
 
       if (alwaysShowBullets || draggable[value]) {
         bullet = series.bullets.create();
@@ -120488,11 +120497,11 @@ class AmBarChart extends React.PureComponent {
         var shapeConfig = bulletsStyle[value];
 
         if (!shapeConfig.color) {
-          shapeConfig.color = columnStyle.color;
+          shapeConfig.color = color;
         }
 
         if (!shapeConfig.strokeColor) {
-          shapeConfig.strokeColor = columnStyle.strokeColor;
+          shapeConfig.strokeColor = strokeColor;
         }
 
         var shape = _utils__WEBPACK_IMPORTED_MODULE_13__["Shape"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, bullet, shapeConfig);
@@ -120534,11 +120543,37 @@ class AmBarChart extends React.PureComponent {
 
       var columnTemplate = series.columns.template;
       columnTemplate.width = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](columnWidth);
-      columnTemplate.fill = columnStyle.color || chart.colors.getIndex(index);
-      columnTemplate.stroke = columnStyle.strokeColor || _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](columnTemplate.fill).lighten(-0.5);
+      columnTemplate.fill = color;
+
+      if (columnStyle.colorAdapter) {
+        // columnTemplate.adapter.add("fill", (x, target) => {
+        //   let item = target.dataItem;
+        //   let value = item.valueY;
+        //   //
+        //   let colors = ["red", "green", "blue", "yellow", "crimson", "fuchsia"];
+        //   let color = colors[index];
+        //   //
+        //   return color;
+        // });
+        columnTemplate.adapter.add("fill", columnStyle.colorAdapter);
+
+        if (!columnStyle.strokeColor && !columnStyle.strokeColorAdapter) {
+          columnTemplate.adapter.add("stroke", (x, target) => {
+            var color = columnStyle.colorAdapter(x, target);
+            return _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](color).lighten(-0.5);
+          });
+        }
+      }
+
+      columnTemplate.stroke = strokeColor;
+
+      if (columnStyle.strokeColorAdapter) {
+        columnTemplate.adapter.add("stroke", columnStyle.strokeColorAdapter);
+      }
+
       columnTemplate.strokeOpacity = 1;
       columnTemplate.column.fillOpacity = columnStyle.opacity || (threeD ? 1 : 0.8);
-      columnTemplate.column.strokeWidth = columnStyle.strokeWidth;
+      columnTemplate.column.strokeWidth = columnStyle.strokeWidth || 4;
       /* ~~~~\  tooltip  /~~~~ */
 
       if (tooltips) {
@@ -120791,7 +120826,14 @@ class AmHorizontalBarChart extends React.PureComponent {
 
     var chartBackgroundColor = this.props.backgroundColor || chart.background.fill;
     chart.background.fill = chartBackgroundColor;
+    /* ~~~~\  Enable export  /~~~~ */
+
+    if (this.props.export) {
+      chart.exporting.menu = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["ExportMenu"]();
+      chart.exporting.menu.items = _utils__WEBPACK_IMPORTED_MODULE_13__["exportMenuItems"];
+    }
     /* ~~~~\  title  /~~~~ */
+
 
     var chartTitle = this.props.chartTitle;
 
@@ -121328,7 +121370,14 @@ class AmLineChart extends React.PureComponent {
 
     var chartBackgroundColor = this.props.backgroundColor || chart.background.fill;
     chart.background.fill = chartBackgroundColor;
+    /* ~~~~\  Enable export  /~~~~ */
+
+    if (this.props.export) {
+      chart.exporting.menu = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["ExportMenu"]();
+      chart.exporting.menu.items = _utils__WEBPACK_IMPORTED_MODULE_13__["exportMenuItems"];
+    }
     /* ~~~~\  title  /~~~~ */
+
 
     var chartTitle = this.props.chartTitle;
 
@@ -122162,7 +122211,14 @@ class AmScatterChart extends React.PureComponent {
 
     var chartBackgroundColor = this.props.backgroundColor || chart.background.fill;
     chart.background.fill = chartBackgroundColor;
+    /* ~~~~\  Enable export  /~~~~ */
+
+    if (this.props.export) {
+      chart.exporting.menu = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["ExportMenu"]();
+      chart.exporting.menu.items = _utils__WEBPACK_IMPORTED_MODULE_13__["exportMenuItems"];
+    }
     /* ~~~~\  title  /~~~~ */
+
 
     var chartTitle = this.props.chartTitle;
 
@@ -122837,7 +122893,14 @@ class AmRangeAreaChart extends React.PureComponent {
     var chartBackgroundColor = this.props.backgroundColor || chart.background.fill;
     chart.background.fill = chartBackgroundColor;
     var allSeries = chart.series.values;
+    /* ~~~~\  Enable export  /~~~~ */
+
+    if (this.props.export) {
+      chart.exporting.menu = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["ExportMenu"]();
+      chart.exporting.menu.items = _utils__WEBPACK_IMPORTED_MODULE_13__["exportMenuItems"];
+    }
     /* ~~~~\  title  /~~~~ */
+
 
     var chartTitle = this.props.chartTitle; //let container;
 
@@ -123455,7 +123518,7 @@ Object(reactR__WEBPACK_IMPORTED_MODULE_0__["reactWidget"])('amChart4', 'output',
 /*!******************************!*\
   !*** ./srcjs/utils/index.js ***!
   \******************************/
-/*! exports provided: toUTCtime, toDate, subset, isLightColor, Tooltip, Shape, createGridLines, createAxis, Image */
+/*! exports provided: toUTCtime, toDate, subset, isLightColor, Tooltip, Shape, createGridLines, createAxis, Image, exportMenuItems */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -123469,6 +123532,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createGridLines", function() { return createGridLines; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createAxis", function() { return createAxis; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Image", function() { return Image; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "exportMenuItems", function() { return exportMenuItems; });
 /* jshint esversion: 6 */
 var toUTCtime = function toUTCtime(string) {
   var ymd = string.split("-");
@@ -123864,6 +123928,22 @@ var Image = function Image(am4core, chart, settings) {
   image.dy = img.vjust || 0;
   image.href = img.href;
 };
+var exportMenuItems = [{
+  "label": "Export",
+  "menu": [{
+    "type": "png",
+    "label": "PNG"
+  }, {
+    "type": "jpg",
+    "label": "JPG"
+  }, {
+    "type": "svg",
+    "label": "SVG"
+  }, {
+    "label": "Print",
+    "type": "print"
+  }]
+}];
 
 /***/ }),
 
