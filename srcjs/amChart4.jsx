@@ -15,6 +15,8 @@ import am4themes_spiritedaway from "@amcharts/amcharts4/themes/spiritedaway";
 import * as utils from "./utils";
 import regression from "regression";
 
+am4core.options.queue = true;
+
 am4core.useTheme(am4themes_animated);
 
 

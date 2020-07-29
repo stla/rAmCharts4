@@ -203,8 +203,8 @@
 #'     )
 #'   ),
 #'   chartTitle = list(text = "Income and expenses per country"),
-#'   xAxis = list(title = list(text = "Country")),
-#'   yAxis = list(title = list(text = "Income and expenses")),
+#'   yAxis = list(title = list(text = "Country")),
+#'   xAxis = list(title = list(text = "Income and expenses")),
 #'   xLimits = c(0, 41),
 #'   valueFormatter = "#.#",
 #'   caption = list(text = "Year 2018"),

@@ -7,4 +7,5 @@
 ^webpack\.config\.js$
 ^yarn\.lock$
 ^\.Rhistory$
-^\./inst/rAmCharts4\.gif$
+^\./inst/rAmCharts4_shiny\.gif$
+^\./inst/rAmCharts4_browsable\.gif$
