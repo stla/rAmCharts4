@@ -26,7 +26,7 @@ amColumn <- function(
     colorAdapter = if(colorAdapter) color,
     opacity = opacity,
     strokeColor = if(!strokeColorAdapter) validateColor(strokeColor),
-    strokeColorAdapter = if(strokeColorAdapter) strokeColorAdapter,
+    strokeColorAdapter = if(strokeColorAdapter) strokeColor,
     strokeWidth = strokeWidth,
     cornerRadius = cornerRadius
   )
