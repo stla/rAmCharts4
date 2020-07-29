@@ -89,9 +89,31 @@ export const Shape = function(am4core, chart, index, bullet, shapeConfig) {
     chart.colors.getIndex(index).lighten(-0.5);
   shape.strokeOpacity = shapeConfig.strokeOpacity || 1;
   if(shapeConfig.colorAdapter) {
+    try {
+      let test = shapeConfig.colorAdapter(
+        null, {dataItem: {valueX: 0, valueY: 0}}
+      );
+    } catch(err) {
+      console.error(
+        "Error detected in color adapter: ", err.message
+      );
+      chart.dispose();
+      throw err.name;
+    }
     shape.adapter.add("fill", shapeConfig.colorAdapter);
   }
   if(shapeConfig.strokeColorAdapter) {
+    try {
+      let test = shapeConfig.strokeColorAdapter(
+        null, {dataItem: {valueX: 0, valueY: 0}}
+      );
+    } catch(err) {
+      console.error(
+        "Error detected in strokeColor adapter: ", err.message
+      );
+      chart.dispose();
+      throw err.name;
+    }
     shape.adapter.add("stroke", shapeConfig.strokeColorAdapter);
   }
   if(shapeConfig.image) {
