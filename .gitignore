@@ -1,4 +1,5 @@
 .Rproj.user
 .Rhistory
 node_modules
-inst/test_*
+inst/tests_rAmCharts4
+inst/tests_html

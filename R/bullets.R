@@ -18,6 +18,11 @@
 #' @param rotation rotation angle
 #' @param cornerRadius radius of the rectangle corners
 #'
+#' @note A color can be given by the name of a R color, the name of a CSS
+#'   color, e.g. \code{"transparent"} or \code{"fuchsia"}, an HEX code like
+#'   \code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
+#'   like \code{"hsl(360,11,255)"}.
+#'
 #' @return A list of settings for the bullets.
 #' @export
 #'

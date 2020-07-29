@@ -9,3 +9,5 @@
 ^\.Rhistory$
 ^\./inst/rAmCharts4_shiny\.gif$
 ^\./inst/rAmCharts4_browsable\.gif$
+^\./inst/tests_rAmCharts4$
+^\./inst/tests_html$
