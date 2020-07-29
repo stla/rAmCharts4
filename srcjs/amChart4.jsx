@@ -147,6 +147,7 @@ class AmBarChart extends React.PureComponent {
 			title.fillOpacity = 1;
 		}
 
+
     /* ~~~~\  caption  /~~~~ */
     let chartCaption = this.props.caption;
     if(chartCaption) {
@@ -300,15 +301,25 @@ class AmBarChart extends React.PureComponent {
 
 
     /* ~~~~\  legend  /~~~~ */
-    if (this.props.legend) {
+    if(this.props.legend) {
       chart.legend = new am4charts.Legend();
       chart.legend.useDefaultMarker = false;
       let markerTemplate = chart.legend.markers.template;
       markerTemplate.width = 20;
-      markerTemplate.strokeWidth = 1;
-      markerTemplate.strokeOpacity = 1;
-//      markerTemplate.stroke = am4core.color("#000000"); no effect
+      // markerTemplate.strokeWidth = 1;
+      // markerTemplate.strokeOpacity = 1;
+      chart.legend.itemContainers.template.events.on("over", function(ev) {
+        ev.target.dataItem.dataContext.columns.each(function(x) {
+          x.column.isHover = true;
+        })
+      });
+      chart.legend.itemContainers.template.events.on("out", function(ev) {
+        ev.target.dataItem.dataContext.columns.each(function(x) {
+          x.column.isHover = false;
+        })
+      });
     }
+
 
 		/* ~~~~\  function handling the drag event  /~~~~ */
 		function handleDrag(event) {
@@ -830,6 +841,16 @@ class AmHorizontalBarChart extends React.PureComponent {
       markerTemplate.width = 20;
       markerTemplate.strokeWidth = 1;
       markerTemplate.strokeOpacity = 1;
+      chart.legend.itemContainers.template.events.on("over", function(ev) {
+        ev.target.dataItem.dataContext.columns.each(function(x) {
+          x.column.isHover = true;
+        })
+      });
+      chart.legend.itemContainers.template.events.on("out", function(ev) {
+        ev.target.dataItem.dataContext.columns.each(function(x) {
+          x.column.isHover = false;
+        })
+      });
 //      markerTemplate.stroke = am4core.color("#000000"); no effect
     }
 
@@ -2101,6 +2122,7 @@ class AmScatterChart extends React.PureComponent {
       chart.scrollbarY = new am4core.Scrollbar();
     }
 
+
 		/* ~~~~\  button  /~~~~ */
 		let button = this.props.button;
 		if(button) {
@@ -2255,6 +2277,7 @@ class AmScatterChart extends React.PureComponent {
         );
       });
     }
+
 
 		/* ~~~~\  function handling the drag event  /~~~~ */
 		function handleDrag(event) {
