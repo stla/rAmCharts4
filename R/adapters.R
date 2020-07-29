@@ -3,10 +3,14 @@
 #'   the colors of the columns of a bar chart or the colors of the points
 #'   of a scatter chart.
 #'
-#' @param colors vector of colors
+#' @param colors a vector of colors
 #' @param cuts a vector of cut points (sorted increasingly)
-#' @param axis \code{"X"} or \code{"Y"}, the axis to which the current value
-#'   refers to
+#' @param value a mathematical expression of the variables \code{X} and
+#'   \code{Y} given as JavaScript code; the simplest examples are \code{"X"}
+#'   and \code{"Y"}, a more elaborate example is
+#'   \code{"Math.sqrt(X**2+Y**2)"} (don't forget that the power in JavaScript
+#'   is '\code{**}', not '\code{^}'!);
+#'   see the examples
 #'
 #' @export
 #' @name rAmCharts4-adapters
@@ -71,13 +75,109 @@
 #'     color = amColorAdapterFromCuts(
 #'       cuts = c(-2, -1, 1, 2),
 #'       colors = c("red", "green", "blue", "green", "red"),
-#'       axis = "Y" # try to change to "X"
+#'       value = "Y"
 #'     ),
 #'     opacity = 0.5,
 #'     strokeColor = amColorAdapterFromCuts(
 #'       cuts = c(-2, -1, 1, 2),
 #'       colors = c("darkred", "darkgreen", "darkblue", "darkgreen", "darkred"),
-#'       axis = "Y" # try to change to "X"
+#'       value = "Y"
+#'     )
+#'   ),
+#'   xAxis = list(
+#'     breaks = amAxisBreaks(seq(-3, 3, by=1)),
+#'     gridLines = amLine(opacity = 0.3, width = 1)
+#'   ),
+#'   yAxis = list(
+#'     breaks = amAxisBreaks(seq(-3, 3, by=1)),
+#'     gridLines = amLine(opacity = 0.3, width = 1)
+#'   ),
+#'   tooltip = FALSE,
+#'   caption = list(text = "[font-style:italic]rAmCharts4[/]",
+#'                  color = "yellow"),
+#'   theme = "dark")
+#'
+#'
+#' # other usage example of amColorAdapterFromCuts: linear gradient ####
+#'
+#' set.seed(314159)
+#' dat <- data.frame(
+#'   x = rnorm(500),
+#'   y = rnorm(500)
+#' )
+#'
+#' amScatterChart(
+#'   data = dat,
+#'   width = "500px", height = "500px",
+#'   xValue = "x", yValues = "y",
+#'   xLimits = c(-3,3), yLimits = c(-3,3),
+#'   draggable = FALSE,
+#'   backgroundColor = "#30303d",
+#'   pointsStyle = amCircle(
+#'     radius = 4,
+#'     strokeWidth = 1,
+#'     color = amColorAdapterFromCuts(
+#'       cuts = seq(-3, 3, length.out = 121),
+#'       colors = colorRampPalette(
+#'         c("red","orangered","blue","white","blue","orangered","red")
+#'       )(122),
+#'       value = "X"
+#'     ),
+#'     opacity = 0.75,
+#'     strokeColor = amColorAdapterFromCuts(
+#'       cuts = seq(-3, 3, length.out = 121),
+#'       colors = colorRampPalette(
+#'         c("red","orangered","blue","white","blue","orangered","red")
+#'       )(122),
+#'       value = "X"
+#'     )
+#'   ),
+#'   xAxis = list(
+#'     breaks = amAxisBreaks(seq(-3, 3, by=1)),
+#'     gridLines = amLine(opacity = 0.3, width = 1)
+#'   ),
+#'   yAxis = list(
+#'     breaks = amAxisBreaks(seq(-3, 3, by=1)),
+#'     gridLines = amLine(opacity = 0.3, width = 1)
+#'   ),
+#'   tooltip = FALSE,
+#'   caption = list(text = "[font-style:italic]rAmCharts4[/]",
+#'                  color = "yellow"),
+#'   theme = "dark")
+#'
+#'
+#' # yet another usage example of amColorAdapterFromCuts: radial gradient
+#'
+#' set.seed(314159)
+#' dat <- data.frame(
+#'   x = rnorm(1000),
+#'   y = rnorm(1000)
+#' )
+#'
+#' amScatterChart(
+#'   data = dat,
+#'   width = "500px", height = "500px",
+#'   xValue = "x", yValues = "y",
+#'   xLimits = c(-3,3), yLimits = c(-3,3),
+#'   draggable = FALSE,
+#'   backgroundColor = "#30303d",
+#'   pointsStyle = amCircle(
+#'     radius = 4,
+#'     strokeWidth = 1,
+#'     color = amColorAdapterFromCuts(
+#'       cuts = seq(0, 3, length.out = 121),
+#'       colors = colorRampPalette(
+#'         c("white","blue","orangered","red")
+#'       )(122),
+#'       value = "Math.sqrt(X**2+Y**2)"
+#'     ),
+#'     opacity = 0.75,
+#'     strokeColor = amColorAdapterFromCuts(
+#'       cuts = seq(0, 3, length.out = 121),
+#'       colors = colorRampPalette(
+#'         c("white","blue","orangered","red")
+#'       )(122),
+#'       value = "Math.sqrt(X**2+Y**2)"
 #'     )
 #'   ),
 #'   xAxis = list(
@@ -96,6 +196,7 @@ amColorAdapterFromVector <- function(colors){
   colors <- sapply(colors, validateColor)
   js <- c(
     "function(x, target) {",
+    "  if(!target.dataItem) return x;",
     sprintf("  let values = [%s];", toString(paste0("'", colors, "'"))),
     "  return values[target.dataItem.index];",
     "}"
@@ -107,10 +208,10 @@ amColorAdapterFromVector <- function(colors){
 
 #' @rdname rAmCharts4-adapters
 #' @export
-amColorAdapterFromCuts <- function(cuts, colors, axis){
-  axis <- match.arg(axis, c("X", "Y"))
+amColorAdapterFromCuts <- function(cuts, colors, value){
+  #axis <- match.arg(axis, c("X", "Y"))
   colors <- sapply(colors, validateColor)
-  itemValue <- ifelse(axis == "X", "valueX", "valueY")
+  #itemValue <- ifelse(axis == "X", "valueX", "valueY")
   n <- length(cuts)
   if(n != length(colors) - 1L)
     stop("`length(cuts)` must be equal to `length(colors)-1`", call. = TRUE)
@@ -129,7 +230,9 @@ amColorAdapterFromCuts <- function(cuts, colors, axis){
   js <- c(
     "function(x, target) {",
     "  if(!target.dataItem) return x;",
-    sprintf("  let value = target.dataItem.%s;", itemValue),
+    "  let X = target.dataItem.valueX, Y = target.dataItem.valueY;",
+    sprintf("  let value = %s;", value),
+    # sprintf("  let value = target.dataItem.%s;", itemValue),
     sprintf("  return %s;", returnValue),
     "}"
   )
