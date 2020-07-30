@@ -11,3 +11,4 @@
 ^\./inst/rAmCharts4_browsable\.gif$
 ^\./inst/tests_rAmCharts4$
 ^\./inst/tests_html$
+^TODO\.txt$

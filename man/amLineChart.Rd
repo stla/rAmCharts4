@@ -215,7 +215,9 @@ with \code{\link{amAxisBreaks}}}
 
 \item{scrollbarY}{logical, whether to add a scrollbar for the y-axis}
 
-\item{legend}{logical, whether to display the legend}
+\item{legend}{\code{FALSE} for no legend, \code{TRUE} for a legend with
+default settings, or a list of settings created with
+\code{\link{amLegend}}}
 
 \item{caption}{settings of the caption, or \code{NULL} for no caption}
 

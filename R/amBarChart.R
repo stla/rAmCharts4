@@ -89,7 +89,8 @@
 #'   \code{\link{amAxisBreaks}}
 #' @param scrollbarX logical, whether to add a scrollbar for the category axis
 #' @param scrollbarY logical, whether to add a scrollbar for the value axis
-#' @param legend logical, whether to display the legend
+#' @param legend either a logical value, whether to display the legend, or
+#'   a list of settings for the legend created with \code{\link{amLegend}}
 #' @param caption settings of the caption, or \code{NULL} for no caption
 #' @param image option to include an image at a corner of the chart;
 #'   \code{NULL} or \code{FALSE} for no image, otherwise a named list with four
@@ -617,6 +618,13 @@ amBarChart <- function(
 
   if(is.null(legend)){
     legend <- length(values) > 1L
+  }
+  if(isTRUE(legend)){
+    legend <- amLegend(
+      position = "bottom",
+      itemsWidth = 20,
+      itemsHeight = 20
+    )
   }
 
   if(is.character(caption)){

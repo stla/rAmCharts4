@@ -112,7 +112,9 @@
 #'   with \code{\link{amAxisBreaks}}
 #' @param scrollbarX logical, whether to add a scrollbar for the x-axis
 #' @param scrollbarY logical, whether to add a scrollbar for the y-axis
-#' @param legend logical, whether to display the legend
+#' @param legend \code{FALSE} for no legend, \code{TRUE} for a legend with
+#'   default settings, or a list of settings created with
+#'   \code{\link{amLegend}}
 #' @param caption settings of the caption, or \code{NULL} for no caption
 #' @param image option to include an image at a corner of the chart;
 #'   \code{NULL} or \code{FALSE} for no image, otherwise a named list with four
@@ -609,6 +611,13 @@ amRangeAreaChart <- function(
 
   if(is.null(legend)){
     legend <- nrow(yValues) > 1L
+  }
+  if(isTRUE(legend)){
+    legend <- amLegend(
+      position = "bottom",
+      itemsWidth = 35,
+      itemsHeight = 20
+    )
   }
 
   if(is.character(caption)){

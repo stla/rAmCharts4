@@ -38,8 +38,10 @@ class AmBarChart extends React.PureComponent {
   }
 
   componentDidMount() {
+
     let theme = this.props.theme,
       threeD = this.props.threeD, 
+      chartLegend = this.props.legend,
       category = this.props.category,
       values = this.props.values,
       data = HTMLWidgets.dataframeToD3(
@@ -133,18 +135,19 @@ class AmBarChart extends React.PureComponent {
 		/* ~~~~\  title  /~~~~ */
 		let chartTitle = this.props.chartTitle;
 		if(chartTitle) {
-			let title = chart.plotContainer.createChild(am4core.Label);
+      //let title = chart.plotContainer.createChild(am4core.Label);
+      let title = chart.titles.create();
 			title.text = chartTitle.text;
 			title.fill =
 			  chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
 			title.fontSize = chartTitle.fontSize || 22;
 			title.fontWeight = "bold";
 			title.fontFamily = "Tahoma";
-			title.y = this.props.scrollbarX ? -56 : -42;
-			title.x = -45;
-			title.horizontalCenter = "left";
-			title.zIndex = 100;
-			title.fillOpacity = 1;
+			//title.y = this.props.scrollbarX ? -56 : -42;
+			//title.x = -45;
+			//title.horizontalCenter = "left";
+			//title.zIndex = 100;
+			//title.fillOpacity = 1;
 		}
 
 
@@ -202,6 +205,7 @@ class AmBarChart extends React.PureComponent {
         }
       });
 		}
+
 
 		/* ~~~~\  category axis  /~~~~ */
 		let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
@@ -301,11 +305,13 @@ class AmBarChart extends React.PureComponent {
 
 
     /* ~~~~\  legend  /~~~~ */
-    if(this.props.legend) {
+    if(chartLegend) {
       chart.legend = new am4charts.Legend();
+      chart.legend.position = chartLegend.position || "bottom";
       chart.legend.useDefaultMarker = false;
       let markerTemplate = chart.legend.markers.template;
-      markerTemplate.width = 20;
+      markerTemplate.width = chartLegend.itemsWidth || 20;
+      markerTemplate.height = chartLegend.itemsHeight || 20;
       // markerTemplate.strokeWidth = 1;
       // markerTemplate.strokeOpacity = 1;
       chart.legend.itemContainers.template.events.on("over", function(ev) {
@@ -626,8 +632,10 @@ class AmHorizontalBarChart extends React.PureComponent {
   }
 
   componentDidMount() {
+
     let theme = this.props.theme,
       threeD = this.props.threeD,
+      chartLegend = this.props.legend,
       category = this.props.category,
       values = this.props.values,
       data = HTMLWidgets.dataframeToD3(
@@ -723,18 +731,19 @@ class AmHorizontalBarChart extends React.PureComponent {
 		/* ~~~~\  title  /~~~~ */
 		let chartTitle = this.props.chartTitle;
 		if(chartTitle) {
-			let title = chart.plotContainer.createChild(am4core.Label);
+      //let title = chart.plotContainer.createChild(am4core.Label);
+      let title = chart.titles.create();
 			title.text = chartTitle.text;
 			title.fill =
 			  chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
 			title.fontSize = chartTitle.fontSize || 22;
 			title.fontWeight = "bold";
 			title.fontFamily = "Tahoma";
-			title.y = this.props.scrollbarX ? -56 : -42;
-			title.x = -45;
-			title.horizontalCenter = "left";
-			title.zIndex = 100;
-			title.fillOpacity = 1;
+			// title.y = this.props.scrollbarX ? -56 : -42;
+			// title.x = -45;
+			// title.horizontalCenter = "left";
+			// title.zIndex = 100;
+			// title.fillOpacity = 1;
 		}
 
 
@@ -793,6 +802,7 @@ class AmHorizontalBarChart extends React.PureComponent {
       });
 		}
 
+
 		/* ~~~~\  category axis  /~~~~ */
 		let categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
     categoryAxis.paddingRight = yAxis.adjust || 0;
@@ -834,13 +844,15 @@ class AmHorizontalBarChart extends React.PureComponent {
 
 
     /* ~~~~\  legend  /~~~~ */
-    if(this.props.legend) {
+    if(chartLegend) {
       chart.legend = new am4charts.Legend();
+      chart.legend.position = chartLegend.position || "bottom";
       chart.legend.useDefaultMarker = false;
       let markerTemplate = chart.legend.markers.template;
-      markerTemplate.width = 20;
-      markerTemplate.strokeWidth = 1;
-      markerTemplate.strokeOpacity = 1;
+      markerTemplate.width = chartLegend.itemsWidth || 20;
+      markerTemplate.height = chartLegend.itemsHeight || 20;
+      //markerTemplate.strokeWidth = 1;
+      //markerTemplate.strokeOpacity = 1;
       chart.legend.itemContainers.template.events.on("over", function(ev) {
         ev.target.dataItem.dataContext.columns.each(function(x) {
           x.column.isHover = true;
@@ -1152,6 +1164,7 @@ class AmLineChart extends React.PureComponent {
   componentDidMount() {
 
     let theme = this.props.theme,
+      chartLegend = this.props.legend,
       xValue = this.props.xValue,
       yValues = this.props.yValues,
       data = this.props.data,
@@ -1270,18 +1283,18 @@ class AmLineChart extends React.PureComponent {
 		/* ~~~~\  title  /~~~~ */
 		let chartTitle = this.props.chartTitle;
 		if(chartTitle) {
-			let title = chart.plotContainer.createChild(am4core.Label);
+			let title = chart.titles.create();
 			title.text = chartTitle.text;
 			title.fill =
 			  chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
 			title.fontSize = chartTitle.fontSize || 22;
 			title.fontWeight = "bold";
 			title.fontFamily = "Tahoma";
-			title.y = this.props.scrollbarX ? -56 : -42;
-			title.x = -45;
-			title.horizontalCenter = "left";
-			title.zIndex = 100;
-			title.fillOpacity = 1;
+			// title.y = this.props.scrollbarX ? -56 : -42;
+			// title.x = -45;
+			// title.horizontalCenter = "left";
+			// title.zIndex = 100;
+			// title.fillOpacity = 1;
 		}
 
 
@@ -1309,6 +1322,7 @@ class AmLineChart extends React.PureComponent {
     if(this.props.scrollbarY) {
       chart.scrollbarY = new am4core.Scrollbar();
     }
+
 
 		/* ~~~~\  button  /~~~~ */
 		let button = this.props.button;
@@ -1401,6 +1415,7 @@ class AmLineChart extends React.PureComponent {
 
       });
 		}
+
 
 		/* ~~~~\  x-axis  /~~~~ */
     let XAxis, Xformatter;
@@ -1568,7 +1583,6 @@ class AmLineChart extends React.PureComponent {
     }
     
 
-
 		/* ~~~~\ cursor /~~~~ */
 		if(cursor) {
       chart.cursor = new am4charts.XYCursor();
@@ -1593,14 +1607,13 @@ class AmLineChart extends React.PureComponent {
 
 
     /* ~~~~\  legend  /~~~~ */
-    if(this.props.legend) {
+    if(chartLegend) {
       chart.legend = new am4charts.Legend();
+      chart.legend.position = chartLegend.position || "bottom";
       chart.legend.useDefaultMarker = false;
       let markerTemplate = chart.legend.markers.template;
-      markerTemplate.width = 20;
-      markerTemplate.strokeWidth = 1;
-      markerTemplate.strokeOpacity = 1;
-//      markerTemplate.stroke = am4core.color("#000000"); no effect
+      markerTemplate.width = chartLegend.itemsWidth || 30;
+      markerTemplate.height = chartLegend.itemsHeight || 20;
       let toggleHover = this.toggleHover;
       chart.legend.itemContainers.template.events.on("over", function(ev) {
         toggleHover(ev.target.dataItem.dataContext, true);
@@ -1968,6 +1981,7 @@ class AmScatterChart extends React.PureComponent {
   componentDidMount() {
 
     let theme = this.props.theme,
+      chartLegend = this.props.legend,
       xValue = this.props.xValue,
       yValues = this.props.yValues,
       data = this.props.data,
@@ -2082,20 +2096,21 @@ class AmScatterChart extends React.PureComponent {
 
 		/* ~~~~\  title  /~~~~ */
 		let chartTitle = this.props.chartTitle;
-		if (chartTitle) {
-			let title = chart.plotContainer.createChild(am4core.Label);
+		if(chartTitle) {
+			let title = chart.titles.create();
 			title.text = chartTitle.text;
 			title.fill =
 			  chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
 			title.fontSize = chartTitle.fontSize || 22;
 			title.fontWeight = "bold";
 			title.fontFamily = "Tahoma";
-			title.y = this.props.scrollbarX ? -56 : -42;
-			title.x = -45;
-			title.horizontalCenter = "left";
-			title.zIndex = 100;
-			title.fillOpacity = 1;
+			// title.y = this.props.scrollbarX ? -56 : -42;
+			// title.x = -45;
+			// title.horizontalCenter = "left";
+			// title.zIndex = 100;
+			// title.fillOpacity = 1;
 		}
+
 
     /* ~~~~\  caption  /~~~~ */
     let chartCaption = this.props.caption;
@@ -2214,6 +2229,7 @@ class AmScatterChart extends React.PureComponent {
       });
 		}
 
+
 		/* ~~~~\  x-axis  /~~~~ */
     let XAxis = utils.createAxis(
       "X", am4charts, am4core, chart, xAxis, 
@@ -2250,14 +2266,13 @@ class AmScatterChart extends React.PureComponent {
 
 
     /* ~~~~\  legend  /~~~~ */
-    if(this.props.legend) {
+    if(chartLegend) {
       chart.legend = new am4charts.Legend();
+      chart.legend.position = chartLegend.position || "bottom";
       chart.legend.useDefaultMarker = false;
       let markerTemplate = chart.legend.markers.template;
-      markerTemplate.width = 20;
-      markerTemplate.strokeWidth = 1;
-      markerTemplate.strokeOpacity = 1;
-//      markerTemplate.stroke = am4core.color("#000000"); no effect
+      markerTemplate.width = chartLegend.itemsWidth || 20;
+      markerTemplate.height = chartLegend.itemsHeight || 20;
       chart.legend.itemContainers.template.events.on("over", function(ev) {
         ev.target.dataItem.dataContext.bulletsContainer.children.each(
           function(bullet){
@@ -2636,6 +2651,7 @@ class AmRangeAreaChart extends React.PureComponent {
   componentDidMount() {
 
     let theme = this.props.theme,
+      chartLegend = this.props.legend,
       xValue = this.props.xValue,
       yValues = this.props.yValues,
       data = this.props.data,
@@ -2744,24 +2760,26 @@ class AmRangeAreaChart extends React.PureComponent {
 		let chartTitle = this.props.chartTitle;
 		//let container;
 		if(chartTitle) {
-			let title = chart.plotContainer.createChild(am4core.Label);
+			//let title = chart.plotContainer.createChild(am4core.Label);
 			//container = chart.plotContainer.createChild(am4core.Container);
 			//container.y = this.props.scrollbarX ? -56 : -42;
 			//container.x = -45;
 			//container.horizontalCenter = "left";
-			//let title = container.createChild(am4core.Label);
+      //let title = container.createChild(am4core.Label);
+      let title = chart.titles.create();
 			title.text = chartTitle.text;
 			title.fill =
 			  chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
 			title.fontSize = chartTitle.fontSize || 22;
 			title.fontWeight = "bold";
 			title.fontFamily = "Tahoma";
-			title.y = this.props.scrollbarX ? -56 : -42;
-			title.x = -45;
-			title.horizontalCenter = "left";
-			title.zIndex = 100;
-			title.fillOpacity = 1;
+			// title.y = this.props.scrollbarX ? -56 : -42;
+			// title.x = -45;
+			// title.horizontalCenter = "left";
+			// title.zIndex = 100;
+			// title.fillOpacity = 1;
 		}
+
 
     /* ~~~~\  caption  /~~~~ */
     let chartCaption = this.props.caption;
@@ -2868,6 +2886,7 @@ class AmRangeAreaChart extends React.PureComponent {
       });
 		}
 
+
 		/* ~~~~\  x-axis  /~~~~ */
     let XAxis = utils.createAxis(
       "X", am4charts, am4core, chart, xAxis, 
@@ -2904,8 +2923,9 @@ class AmRangeAreaChart extends React.PureComponent {
 
 
     /* ~~~~\  legend  /~~~~ */
-    if(this.props.legend) {
+    if(chartLegend) {
       let legend = new am4charts.Legend();
+      legend.position = chartLegend.position || "bottom";
       legend.useDefaultMarker = false;
       legend.events.on("dataitemsvalidated", function(ev) {
         ev.target.markers.values.forEach(function(container, index) {
@@ -2916,25 +2936,26 @@ class AmRangeAreaChart extends React.PureComponent {
           if(bullet > -1)
             container.children.values[bullet].dispose();
           if(JSON.stringify(children) !== '["Line","Rectangle","Line"]'){
-          let y2series = allSeries[2*index+1];
-          let line = new am4core.Line();
-          line.stroke = y2series.stroke;
-          line.valign = "bottom";
-          line.x2 = 40; // it is the width given below
-          line.strokeWidth = y2series.strokeWidth;
-          line.strokeOpacity = y2series.strokeOpacity;
-          //let l = chart.legend.markers.template.createChild(am4core.Line);
-          //chart.legend.markers.values[0].children.push(line);
-          line.parent = container;
-          //console.log("l", l);
+            let y2series = allSeries[2*index+1];
+            let line = new am4core.Line();
+            line.stroke = y2series.stroke;
+            line.valign = "bottom";
+            line.x2 = 40; // it is the width given below
+            line.strokeWidth = y2series.strokeWidth;
+            line.strokeOpacity = y2series.strokeOpacity;
+            //let l = chart.legend.markers.template.createChild(am4core.Line);
+            //chart.legend.markers.values[0].children.push(line);
+            line.parent = container;
+            //console.log("l", l);
           }
         });
       });
 
       let markerTemplate = legend.markers.template;
-      markerTemplate.width = 40;
-      markerTemplate.strokeWidth = 1;
-      markerTemplate.strokeOpacity = 1;
+      markerTemplate.width = chartLegend.itemsWidth || 35;
+      markerTemplate.height = chartLegend.itemsHeight || 20;
+      //markerTemplate.strokeWidth = 1;
+      //markerTemplate.strokeOpacity = 1;
 
       let toggleHover = this.toggleHover;
       legend.itemContainers.template.events.on("over", function(ev) {
@@ -2971,6 +2992,7 @@ class AmRangeAreaChart extends React.PureComponent {
       chart.legend = legend;
     }
 
+    
 		/* ~~~~\  function handling the drag event  /~~~~ */
 		function handleDrag(event) {
 			let dataItem = event.target.dataItem;

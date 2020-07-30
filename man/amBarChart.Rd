@@ -154,7 +154,8 @@ the grid lines created with \code{\link{amLine}} and a field
 
 \item{scrollbarY}{logical, whether to add a scrollbar for the value axis}
 
-\item{legend}{logical, whether to display the legend}
+\item{legend}{either a logical value, whether to display the legend, or
+a list of settings for the legend created with \code{\link{amLegend}}}
 
 \item{caption}{settings of the caption, or \code{NULL} for no caption}
 
