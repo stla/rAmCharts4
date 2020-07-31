@@ -10,8 +10,8 @@ amAxisLabels(color = NULL, fontSize = 18, rotation = 0, formatter = NULL)
 amAxisLabelsCircular(
   color = NULL,
   fontSize = 14,
-  radius = -60,
-  relativeRotation = 90
+  radius = NULL,
+  relativeRotation = NULL
 )
 }
 \arguments{

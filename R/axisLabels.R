@@ -42,8 +42,8 @@ amAxisLabels <- function(
 amAxisLabelsCircular <- function(
   color = NULL,
   fontSize = 14,
-  radius = -60,
-  relativeRotation = 90
+  radius = NULL,
+  relativeRotation = NULL
 ){
   labels <- list(
     color = validateColor(color),

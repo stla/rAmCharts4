@@ -30,7 +30,11 @@
 #'   the \code{yAxis} option, and the values displayed in the tooltips unless
 #'   you specify your own tooltip text (see the first example for the way to set
 #'   a number formatter in the tooltip text)
-#' @param chartTitle chart title, \code{NULL}, character, or list of settings
+#' @param chartTitle chart title, it can be \code{NULL} or \code{FALSE} for no
+#'   title, a character string,
+#'   a list of settings created with \code{\link{amText}}, or a list with two
+#'   fields: \code{text}, a list of settings created with \code{\link{amText}},
+#'   and \code{align}, can be \code{"left"}, \code{"right"} or \code{"center"}
 #' @param theme theme, \code{NULL} or one of \code{"dataviz"},
 #' \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
 #' \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
@@ -90,7 +94,10 @@
 #' @param scrollbarY logical, whether to add a scrollbar for the value axis
 #' @param legend either a logical value, whether to display the legend, or
 #'   a list of settings for the legend created with \code{\link{amLegend}}
-#' @param caption settings of the caption, or \code{NULL} for no caption
+#' @param caption \code{NULL} or \code{FALSE} for no caption, a formatted
+#'   text created with \code{\link{amText}}, or a list with two fields:
+#'   \code{text}, a list created with \code{\link{amText}}, and \code{align},
+#'   can be \code{"left"}, \code{"right"} or \code{"center"}
 #' @param image option to include an image at a corner of the chart;
 #'   \code{NULL} or \code{FALSE} for no image, otherwise a named list with four
 #'   possible fields: the field \code{image} (required) is a list created with
@@ -175,20 +182,24 @@
 #'       strokeWidth = 2
 #'     )
 #'   ),
-#'   chartTitle = list(text = "Income and expenses per country"),
+#'   chartTitle = "Income and expenses per country",
 #'   xAxis = list(
 #'     labels = amAxisLabelsCircular(
-#'       radius = -82
+#'       radius = -82, relativeRotation = 90
 #'     )
 #'   ),
 #'   yAxis = list(
-#'     labels = amAxisLabels(color="orange"),
+#'     labels = amAxisLabels(color = "orange"),
 #'     gridLines = amLine(color = "whitesmoke", width = 1, opacity = 0.4),
 #'     breaks = amAxisBreaks(values = seq(0, 40, by = 10))
 #'   ),
 #'   yLimits = c(0, 40),
 #'   valueFormatter = "#.#",
-#'   caption = list(text = "Year 2018"),
+#'   caption = amText(
+#'     text = "Year 2018",
+#'     fontFamily = "Impact",
+#'     fontSize = 18
+#'   ),
 #'   theme = "dark")
 amRadialBarChart <- function(
   data,
@@ -268,11 +279,23 @@ amRadialBarChart <- function(
   }
 
   if(is.character(chartTitle)){
-    chartTitle <- list(text = chartTitle, fontSize = 22, color = NULL)
+    chartTitle <- list(
+      text = amText(
+        text = chartTitle, color = NULL, fontSize = 22,
+        fontWeight = "bold", fontFamily = "Tahoma"
+      ),
+      align = "left"
+    )
+  }else if("text" %in% class(chartTitle)){
+    chartTitle <- list(text = chartTitle, align = "left")
   }
-  if(!is.null(chartTitle$color)){
-    chartTitle$color <- validateColor(chartTitle$color)
+
+  if(is.character(caption)){
+    caption <- list(text = amText(caption), align = "right")
+  }else if("text" %in% class(caption)){
+    caption <- list(text = caption, align = "right")
   }
+
 
   if(is.atomic(draggable)){
     if(length(draggable) != 1L || !is.logical(draggable)){
@@ -541,12 +564,6 @@ amRadialBarChart <- function(
       itemsWidth = 20,
       itemsHeight = 20
     )
-  }
-
-  if(is.character(caption)){
-    caption <- list(text = caption)
-  }else if(!is.null(caption)){
-    caption[["color"]] <- validateColor(caption[["color"]])
   }
 
   if(!(is.null(image) || isFALSE(image))){

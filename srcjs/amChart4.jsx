@@ -3480,12 +3480,14 @@ class AmRadialBarChart extends React.PureComponent {
 		let chartTitle = this.props.chartTitle;
 		if(chartTitle) {
       let title = chart.titles.create();
-			title.text = chartTitle.text;
+      title.dy = -20;
+			title.text = chartTitle.text.text;
 			title.fill =
-			  chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
-			title.fontSize = chartTitle.fontSize || 22;
-			title.fontWeight = "bold";
-			title.fontFamily = "Tahoma";
+			  chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+			title.fontSize = chartTitle.text.fontSize || 22;
+			title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.fontFamily = chartTitle.text.fontFamily;
+      title.align = chartTitle.align;
 		}
 
 
@@ -3493,9 +3495,12 @@ class AmRadialBarChart extends React.PureComponent {
     let chartCaption = this.props.caption;
     if(chartCaption) {
       let caption = chart.chartContainer.createChild(am4core.Label);
-      caption.text = chartCaption.text;
+      caption.text = chartCaption.text.text;
       caption.fill =
-        chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
+        chartCaption.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.fontSize = chartCaption.text.fontSize;
+      caption.fontWeight = chartCaption.text.fontWeight;
+      caption.fontFamily = chartCaption.text.fontFamily;
       caption.align = chartCaption.align || "right";
     }
 
@@ -3557,15 +3562,20 @@ class AmRadialBarChart extends React.PureComponent {
   		categoryAxis.title.fontSize = xAxis.title.fontSize || 20;
   		categoryAxis.title.fill =
   		  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
-		}
-		let xAxisLabels = categoryAxis.renderer.labels.template;
-    xAxisLabels.radius = xAxis.labels.radius ? 
-      am4core.percent(xAxis.labels.radius) : am4core.percent(-60);
-    xAxisLabels.location = 0.5;
-    xAxisLabels.relativeRotation = xAxis.labels.relativeRotation || 90; 
+    }
+    if(xAxis.labels) {
+      let xAxisLabels = categoryAxis.renderer.labels.template;
+      xAxisLabels.location = 0.5;
+      if(typeof xAxis.labels.radius === "number")
+        xAxisLabels.radius = am4core.percent(xAxis.labels.radius);
+      if(typeof xAxis.labels.relativeRotation === "number")
+        xAxisLabels.relativeRotation = xAxis.labels.relativeRotation; 
       xAxisLabels.fontSize = xAxis.labels.fontSize || 14;
-		xAxisLabels.fill =
-		  xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+      xAxisLabels.fill =
+        xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+    } else {
+      categoryAxis.renderer.labels.template.disabled = true;
+    }
 		categoryAxis.dataFields.category = category;
 		//categoryAxis.renderer.grid.template.disabled = true;
 		//categoryAxis.renderer.minGridDistance = 50;
