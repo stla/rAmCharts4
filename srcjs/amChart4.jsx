@@ -3385,7 +3385,6 @@ class AmRadialBarChart extends React.PureComponent {
   componentDidMount() {
 
     let theme = this.props.theme,
-      threeD = this.props.threeD, 
       chartLegend = this.props.legend,
       category = this.props.category,
       values = this.props.values,
@@ -3457,12 +3456,16 @@ class AmRadialBarChart extends React.PureComponent {
 
     let chart = am4core.create(this.props.chartId, am4charts.RadarChart);
     chart.radius = am4core.percent(100);
-    chart.innerRadius = am4core.percent(50);
+    chart.innerRadius = am4core.percent(this.props.innerRadius);
   
     chart.data = data;
 
     chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
-    chart.padding(50, 40, 0, 10);
+    if(this.props.chartTitle) {
+      chart.padding(50, 10, 10, 10);
+    } else {
+      chart.padding(10, 10, 10, 10);
+    }
     chart.maskBullets = false; // allow bullets to go out of plot area
     let chartBackgroundColor =
       this.props.backgroundColor || chart.background.fill;
@@ -3755,9 +3758,10 @@ class AmRadialBarChart extends React.PureComponent {
         columnTemplate.adapter.add("stroke", columnStyle.strokeColorAdapter);
       }
       columnTemplate.strokeOpacity = 1;
-      columnTemplate.radarColumn.fillOpacity = columnStyle.opacity || 
-        (threeD ? 1 : 0.8);
-      columnTemplate.radarColumn.strokeWidth = columnStyle.strokeWidth || 4;
+      columnTemplate.radarColumn.fillOpacity = columnStyle.opacity || 0.8;
+      columnTemplate.radarColumn.strokeWidth = 
+        typeof columnStyle.strokeWidth === "number" ? 
+          columnStyle.strokeWidth : 4;
       /* ~~~~\  tooltip  /~~~~ */
       if(tooltips) {
         columnTemplate.tooltipText = tooltips[value].text;

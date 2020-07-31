@@ -11,6 +11,7 @@ amRadialBarChart(
   values,
   valueNames = NULL,
   showValues = TRUE,
+  innerRadius = 50,
   yLimits = NULL,
   expandY = 5,
   valueFormatter = "#.",
@@ -62,6 +63,9 @@ form \code{list(value1 = "ValueName1", value2 = "ValueName2", ...)} where
 desired names to appear in the legend}
 
 \item{showValues}{logical, whether to display the values on the chart}
+
+\item{innerRadius}{inner radius of the chart, a percentage (between 0 and
+100 theoretically, but in practice it should be between 30 and 70)}
 
 \item{yLimits}{range of the y-axis, a vector of two values specifying
 the lower and the upper limits of the y-axis; \code{NULL} for default values}
@@ -274,4 +278,36 @@ amRadialBarChart(
     fontSize = 18
   ),
   theme = "dark")
+
+
+# just for fun ####
+
+dat <- data.frame(
+  cluster = letters[1:6],
+  y1 = rep(10, 6),
+  y2 = rep(8, 6),
+  y3 = rep(6, 6),
+  y4 = rep(4, 6),
+  y5 = rep(2, 6),
+  y6 = rep(4, 6),
+  y7 = rep(6, 6),
+  y8 = rep(8, 6),
+  y9 = rep(10, 6)
+)
+
+amRadialBarChart(
+  data = dat,
+  width = "500px", height = "500px",
+  innerRadius = 10,
+  category = "cluster", values = paste0("y", 1:9),
+  showValues = FALSE,
+  tooltip = FALSE, draggable = FALSE,
+  backgroundColor = "black",
+  columnStyle = amColumn(strokeWidth = 1, strokeColor = "white"),
+  cellWidth = 96,
+  xAxis = list(labels = FALSE),
+  yAxis = list(labels = FALSE, gridLines = FALSE),
+  yLimits = c(0, 10),
+  legend = FALSE,
+  theme = "kelly")
 }

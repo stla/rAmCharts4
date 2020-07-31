@@ -331,9 +331,11 @@ export const createAxis = function(
     Axis.renderer.grid.template.stroke =
       axisSettings.gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
     Axis.renderer.grid.template.strokeOpacity = 
-      axisSettings.gridLines.opacity || 0.2;
+      typeof axisSettings.gridLines.opacity === "number" ? 
+        axisSettings.gridLines.opacity : 0.2;
     Axis.renderer.grid.template.strokeWidth = 
-      axisSettings.gridLines.width || 1;
+      typeof axisSettings.gridLines.width === "number" ?
+        axisSettings.gridLines.width : 1;
     if(axisSettings.gridLines.dash) {
       Axis.renderer.grid.template.strokeDasharray = 
         axisSettings.gridLines.dash;
@@ -362,14 +364,18 @@ export const createAxis = function(
       Axis.startLocation = 0.5; // ??
       Axis.endLocation = 0.5; // ??
     }
-    let axisSettingsLabels = Axis.renderer.labels.template;
-    axisSettingsLabels.fontSize = axisSettings.labels.fontSize || 17;
-    axisSettingsLabels.rotation = axisSettings.labels.rotation || 0;
-    if(XY === "x" && axisSettingsLabels.rotation !== 0) {
-      axisSettingsLabels.horizontalCenter = "right";
+    if(axisSettings.labels) {
+      let axisSettingsLabels = Axis.renderer.labels.template;
+      axisSettingsLabels.fontSize = axisSettings.labels.fontSize || 17;
+      axisSettingsLabels.rotation = axisSettings.labels.rotation || 0;
+      if(XY === "x" && axisSettingsLabels.rotation !== 0) {
+        axisSettingsLabels.horizontalCenter = "right";
+      }
+      axisSettingsLabels.fill =
+        axisSettings.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+    } else {
+      Axis.renderer.labels.template.disabled = true;
     }
-    axisSettingsLabels.fill =
-      axisSettings.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
   }
 
   if(XY === "X") {
