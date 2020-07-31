@@ -140,7 +140,6 @@
 #'
 #' @import htmlwidgets
 #' @importFrom shiny validateCssUnit
-#' @importFrom stringi stri_rand_strings
 #' @export
 #'
 #' @examples # a simple horizontal bar chart ####
@@ -591,7 +590,7 @@ amHorizontalBarChart <- function(
   }
 
   if(is.null(chartId)){
-    chartId <- paste0("horizontalbarchart-", stringi::stri_rand_strings(1, 15))
+    chartId <- paste0("horizontalbarchart-", randomString(15))
   }
 
   # describe a React component to send to the browser for rendering.

@@ -34,7 +34,6 @@ Imports:
     reactR,
     shiny,
     jsonlite,
-    stringi,
     lubridate,
     minpack.lm,
     tools,

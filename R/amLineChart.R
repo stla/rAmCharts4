@@ -205,7 +205,6 @@
 #'
 #' @import htmlwidgets minpack.lm
 #' @importFrom shiny validateCssUnit
-#' @importFrom stringi stri_rand_strings
 #' @importFrom lubridate is.Date is.POSIXt
 #' @export
 #'
@@ -1063,7 +1062,7 @@ amLineChart <- function(
   }
 
   if(is.null(chartId)){
-    chartId <- paste0("linechart-", stringi::stri_rand_strings(1, 15))
+    chartId <- paste0("linechart-", randomString(15))
   }
 
   # describe a React component to send to the browser for rendering.

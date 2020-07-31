@@ -11,6 +11,14 @@ amChart4_html <- function(id, style, class, ...) {
 }
 
 
+randomString <- function(size){
+  paste0(
+    sample(c(letters,LETTERS,0:9), size, replace = TRUE),
+    collapse = ""
+  )
+}
+
+
 regex_255 <- "\\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\\s*"
 
 regex_rgb <- paste0("^rgb\\(",

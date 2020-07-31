@@ -193,7 +193,6 @@
 #'
 #' @import htmlwidgets
 #' @importFrom shiny validateCssUnit
-#' @importFrom stringi stri_rand_strings
 #' @importFrom lubridate is.Date is.POSIXt
 #' @export
 #'
@@ -959,7 +958,7 @@ amScatterChart <- function(
   }
 
   if(is.null(chartId)){
-    chartId <- paste0("scatterchart-", stringi::stri_rand_strings(1, 15))
+    chartId <- paste0("scatterchart-", randomString(15))
   }
 
   # describe a React component to send to the browser for rendering.
