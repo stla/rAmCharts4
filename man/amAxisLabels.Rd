@@ -2,9 +2,17 @@
 % Please edit documentation in R/axisLabels.R
 \name{amAxisLabels}
 \alias{amAxisLabels}
+\alias{amAxisLabelsCircular}
 \title{Axis labels}
 \usage{
 amAxisLabels(color = NULL, fontSize = 18, rotation = 0, formatter = NULL)
+
+amAxisLabelsCircular(
+  color = NULL,
+  fontSize = 14,
+  radius = -60,
+  relativeRotation = 90
+)
 }
 \arguments{
 \item{color}{color of the labels}
@@ -18,6 +26,10 @@ this should be a
 \href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}{number formatting string}
 for a numeric axis, and a list created with
 \code{\link{amDateAxisFormatter}} for a date axis}
+
+\item{radius}{radius in percentage}
+
+\item{relativeRotation}{relative rotation angle}
 }
 \value{
 A list of settings for the labels of an axis.

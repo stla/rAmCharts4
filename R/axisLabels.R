@@ -9,6 +9,8 @@
 #'   \href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}{number formatting string}
 #'   for a numeric axis, and a list created with
 #'   \code{\link{amDateAxisFormatter}} for a date axis
+#' @param radius radius in percentage
+#' @param relativeRotation relative rotation angle
 #'
 #' @return A list of settings for the labels of an axis.
 #'
@@ -18,6 +20,7 @@
 #'   like \code{"hsl(360,11,255)"}.
 #'
 #' @export
+#' @name amAxisLabels
 amAxisLabels <- function(
   color = NULL,
   fontSize = 18,
@@ -33,6 +36,25 @@ amAxisLabels <- function(
   class(labels) <- "axisLabels"
   labels
 }
+
+#' @rdname amAxisLabels
+#' @export
+amAxisLabelsCircular <- function(
+  color = NULL,
+  fontSize = 14,
+  radius = -60,
+  relativeRotation = 90
+){
+  labels <- list(
+    color = validateColor(color),
+    fontSize = fontSize,
+    radius = radius,
+    relativeRotation = relativeRotation
+  )
+  class(labels) <- "axisLabelsCircular"
+  labels
+}
+
 
 #' Date axis formatter
 #' @description Create a list of settings for formatting the labels of a
