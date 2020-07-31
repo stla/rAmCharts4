@@ -44,6 +44,8 @@ class AmBarChart extends React.PureComponent {
       chartLegend = this.props.legend,
       category = this.props.category,
       values = this.props.values,
+      minValue = this.props.minValue,
+      maxValue = this.props.maxValue,
       data = HTMLWidgets.dataframeToD3(
         this.props.data
       ),
@@ -236,7 +238,7 @@ class AmBarChart extends React.PureComponent {
 		/* ~~~~\  value axis  /~~~~ */
     let valueAxis = utils.createAxis(
       "Y", am4charts, am4core, chart, yAxis, 
-      this.props.minValue, this.props.maxValue, false, theme, cursor
+      minValue, maxValue, false, theme, cursor
     );
 /*		let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
     valueAxis.paddingRight = yAxis.adjust || 0;
@@ -3387,6 +3389,8 @@ class AmRadialBarChart extends React.PureComponent {
       chartLegend = this.props.legend,
       category = this.props.category,
       values = this.props.values,
+      minValue = this.props.minValue,
+      maxValue = this.props.maxValue,
       data = HTMLWidgets.dataframeToD3(
         this.props.data
       ),
@@ -3570,7 +3574,7 @@ class AmRadialBarChart extends React.PureComponent {
 		/* ~~~~\  value axis  /~~~~ */
     let valueAxis = utils.createAxis(
       "Y", am4charts, am4core, chart, yAxis, 
-      this.props.minValue, this.props.maxValue, false, theme, cursor
+      minValue, maxValue, false, theme, cursor
     );
 
 
@@ -3605,11 +3609,20 @@ class AmRadialBarChart extends React.PureComponent {
 
 		/* ~~~~\  function handling the drag event  /~~~~ */
 		function handleDrag(event) {
-			var dataItem = event.target.dataItem;
+      let dataItem = event.target.dataItem;
+      //console.log(event.target);
+      let position = valueAxis.pointToPosition(
+        {
+          x: event.target.pixelX,
+          y: event.target.pixelY
+        }
+      ),
+        value = valueAxis.positionToValue(position);
+      console.log("value:", value);
 			// convert coordinate to value
-			let value = valueAxis.yToValue(event.target.pixelY);
+//			let value = valueAxis.yToValue(event.target.pixelY);
 			// set new value
-			dataItem.valueY = value;
+			dataItem.valueY = maxValue - value; // should I use minValue as well?
 			// make column hover
 			dataItem.column.isHover = true;
 			// hide tooltip not to interrupt
@@ -3685,8 +3698,8 @@ class AmRadialBarChart extends React.PureComponent {
           utils.Shape(am4core, chart, index, bullet, shapeConfig);
       }
       if(draggable[value]) {
-        // resize cursor when over
-        bullet.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
+        // cursor when over
+        bullet.cursorOverStyle = am4core.MouseCursorStyle.pointer;
         bullet.draggable = true;
         // create bullet hover state
         let hoverState = bullet.states.create("hover");
