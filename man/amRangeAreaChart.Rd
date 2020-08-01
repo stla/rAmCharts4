@@ -102,7 +102,11 @@ you specify your own tooltip text (see the first example of
 \code{\link{amBarChart}} for the way to set
 a number formatter in the tooltip text)}
 
-\item{chartTitle}{chart title, \code{NULL}, character, or list of settings}
+\item{chartTitle}{chart title, it can be \code{NULL} or \code{FALSE} for no
+title, a character string,
+a list of settings created with \code{\link{amText}}, or a list with two
+fields: \code{text}, a list of settings created with \code{\link{amText}},
+and \code{align}, can be \code{"left"}, \code{"right"} or \code{"center"}}
 
 \item{theme}{theme, \code{NULL} or one of \code{"dataviz"},
 \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
@@ -151,7 +155,8 @@ between 0 and 1}
 
 \item{xAxis}{settings of the x-axis given as a list, or just a string
 for the axis title; the list of settings has five possible fields:
-a field \code{title}, a list of settings for the axis title,
+a field \code{title}, a list of settings for the axis title created
+with \code{\link{amText}},
 a field \code{labels}, a list of settings for the axis labels created
 with \code{\link{amAxisLabels}},
 a field \code{adjust}, a number defining the vertical adjustment of
@@ -163,7 +168,8 @@ with \code{\link{amAxisBreaks}}}
 
 \item{yAxis}{settings of the y-axis given as a list, or just a string
 for the axis title; the list of settings has five possible fields:
-a field \code{title}, a list of settings for the axis title,
+a field \code{title}, a list of settings for the axis title created
+with \code{\link{amText}},
 a field \code{labels}, a list of settings for the axis labels created
 with \code{\link{amAxisLabels}},
 a field \code{adjust}, a number defining the horizontal adjustment of
@@ -181,7 +187,10 @@ with \code{\link{amAxisBreaks}}}
 default settings, or a list of settings created with
 \code{\link{amLegend}}}
 
-\item{caption}{settings of the caption, or \code{NULL} for no caption}
+\item{caption}{\code{NULL} or \code{FALSE} for no caption, a formatted
+text created with \code{\link{amText}}, or a list with two fields:
+\code{text}, a list created with \code{\link{amText}}, and \code{align},
+can be \code{"left"}, \code{"right"} or \code{"center"}}
 
 \item{image}{option to include an image at a corner of the chart;
 \code{NULL} or \code{FALSE} for no image, otherwise a named list with four
@@ -320,16 +329,18 @@ amRangeAreaChart(
     extraTooltipPrecision = list(x = 0, y = 2),
     modifier = list(y = "text = parseFloat(text).toFixed(2);")
   ),
-  chartTitle = list(text = "Range area chart", color = "whitesmoke"),
-  xAxis = list(title = list(text = "Observation",
-                            fontSize = 20,
-                            color = "silver"),
+  chartTitle = amText(text = "Range area chart",
+                      color = "whitesmoke",
+                      fontWeight = "bold"),
+  xAxis = list(title = amText(text = "Observation",
+                              fontSize = 20,
+                              color = "silver"),
                labels = amAxisLabels(color = "whitesmoke",
                                      fontSize = 17),
                adjust = 5),
-  yAxis = list(title = list(text = "Value",
-                            fontSize = 20,
-                            color = "silver"),
+  yAxis = list(title = amText(text = "Value",
+                              fontSize = 20,
+                              color = "silver"),
                labels = amAxisLabels(color = "whitesmoke",
                                      fontSize = 17),
                gridLines = amLine(color = "antiquewhite",

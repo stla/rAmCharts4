@@ -147,7 +147,11 @@ given by the \code{yValues} argument, by passing a list of the
 form \code{list("_all" = trendconfig)}, e.g.
 \code{list("_all" = list(method = "lm", formula = y ~ 0+x, style = amLine()))}}
 
-\item{chartTitle}{chart title, \code{NULL}, character, or list of settings}
+\item{chartTitle}{chart title, it can be \code{NULL} or \code{FALSE} for no
+title, a character string,
+a list of settings created with \code{\link{amText}}, or a list with two
+fields: \code{text}, a list of settings created with \code{\link{amText}},
+and \code{align}, can be \code{"left"}, \code{"right"} or \code{"center"}}
 
 \item{theme}{theme, \code{NULL} or one of \code{"dataviz"},
 \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
@@ -189,7 +193,8 @@ single list of settings that will be applied to each line}
 
 \item{xAxis}{settings of the x-axis given as a list, or just a string
 for the axis title; the list of settings has five possible fields:
-a field \code{title}, a list of settings for the axis title,
+a field \code{title}, a list of settings for the axis title created
+with \code{\link{amText}},
 a field \code{labels}, a list of settings for the axis labels created
 with \code{\link{amAxisLabels}},
 a field \code{adjust}, a number defining the vertical adjustment of
@@ -201,7 +206,8 @@ with \code{\link{amAxisBreaks}}}
 
 \item{yAxis}{settings of the y-axis given as a list, or just a string
 for the axis title; the list of settings has five possible fields:
-a field \code{title}, a list of settings for the axis title,
+a field \code{title}, a list of settings for the axis title created
+with \code{\link{amText}},
 a field \code{labels}, a list of settings for the axis labels created
 with \code{\link{amAxisLabels}},
 a field \code{adjust}, a number defining the horizontal adjustment of
@@ -219,7 +225,10 @@ with \code{\link{amAxisBreaks}}}
 default settings, or a list of settings created with
 \code{\link{amLegend}}}
 
-\item{caption}{settings of the caption, or \code{NULL} for no caption}
+\item{caption}{\code{NULL} or \code{FALSE} for no caption, a formatted
+text created with \code{\link{amText}}, or a list with two fields:
+\code{text}, a list created with \code{\link{amText}}, and \code{align},
+can be \code{"left"}, \code{"right"} or \code{"center"}}
 
 \item{image}{option to include an image at a corner of the chart;
 \code{NULL} or \code{FALSE} for no image, otherwise a named list with four
@@ -335,26 +344,32 @@ amLineChart(
     y1 = amLine(color = "yellow", width = 4),
     y2 = amLine(color = "orangered", width = 4)
   ),
-  chartTitle = list(text = "Gaussian samples", color = "whitesmoke"),
-  xAxis = list(title = list(text = "Observation",
-                            fontSize = 21,
-                            color = "silver"),
+  chartTitle = amText(
+    text = "Gaussian samples",
+    color = "whitesmoke",
+    fontWeight = "bold"
+  ),
+  xAxis = list(title = amText(text = "Observation",
+                             fontSize = 21,
+                             color = "silver",
+                             fontWeight = "bold"),
                labels = amAxisLabels(fontSize = 17),
                breaks = amAxisBreaks(
                  values = 1:10,
                  labels = sprintf("[bold \\%s]\\%d[/]", rainbow(10), 1:10))),
-  yAxis = list(title = list(text = "Value",
-                            fontSize = 21,
-                            color = "silver"),
+  yAxis = list(title = amText(text = "Value",
+                             fontSize = 21,
+                             color = "silver",
+                             fontWeight = "bold"),
                labels = amAxisLabels(color = "whitesmoke",
-                                     fontSize = 14)),
+                                     fontSize = 14),
+               gridLines = amLine(color = "whitesmoke",
+                                  opacity = 0.4,
+                                  width = 1)),
   yLimits = c(-3, 3),
   Yformatter = "#.00",
-  caption = list(text = "[font-style:italic]try to drag the yellow line![/]",
-                 color = "yellow"),
-  gridLines = list(color = "whitesmoke",
-                   opacity = 0.4,
-                   width = 1),
+  caption = amText(text = "[font-style:italic]try to drag the yellow line![/]",
+                  color = "yellow"),
   theme = "dark")
 
 
@@ -422,15 +437,15 @@ amLineChart(
     tensionX = 0.8,
     tensionY = 0.8
   ),
-  xAxis = list(title = list(text = "x",
-                            fontSize = 21,
-                            color = "navyblue"),
+  xAxis = list(title = amText(text = "x",
+                             fontSize = 21,
+                             color = "navyblue"),
                labels = amAxisLabels(
                  color = "midnightblue",
                  fontSize = 17)),
-  yAxis = list(title = list(text = "density",
-                            fontSize = 21,
-                            color = "navyblue"),
+  yAxis = list(title = amText(text = "density",
+                              fontSize = 21,
+                              color = "navyblue"),
                labels = FALSE),
   theme = "dataviz")
 }

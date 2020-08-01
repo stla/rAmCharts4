@@ -139,7 +139,11 @@ given by the \code{yValues} argument, by passing a list of the
 form \code{list("_all" = trendconfig)}, e.g.
 \code{list("_all" = list(method = "lm", formula = y ~ 0+x, style = amLine()))}}
 
-\item{chartTitle}{chart title, \code{NULL}, character, or list of settings}
+\item{chartTitle}{chart title, it can be \code{NULL} or \code{FALSE} for no
+title, a character string,
+a list of settings created with \code{\link{amText}}, or a list with two
+fields: \code{text}, a list of settings created with \code{\link{amText}},
+and \code{align}, can be \code{"left"}, \code{"right"} or \code{"center"}}
 
 \item{theme}{theme, \code{NULL} or one of \code{"dataviz"},
 \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
@@ -171,7 +175,8 @@ single list of settings that will be applied to each series}
 
 \item{xAxis}{settings of the x-axis given as a list, or just a string
 for the axis title; the list of settings has five possible fields:
-a field \code{title}, a list of settings for the axis title,
+a field \code{title}, a list of settings for the axis title created
+with \code{\link{amText}},
 a field \code{labels}, a list of settings for the axis labels created
 with \code{\link{amAxisLabels}},
 a field \code{adjust}, a number defining the vertical adjustment of
@@ -183,7 +188,8 @@ with \code{\link{amAxisBreaks}}}
 
 \item{yAxis}{settings of the y-axis given as a list, or just a string
 for the axis title; the list of settings has five possible fields:
-a field \code{title}, a list of settings for the axis title,
+a field \code{title}, a list of settings for the axis title created
+with \code{\link{amText}},
 a field \code{labels}, a list of settings for the axis labels created
 with \code{\link{amAxisLabels}},
 a field \code{adjust}, a number defining the horizontal adjustment of
@@ -201,7 +207,10 @@ with \code{\link{amAxisBreaks}}}
 default settings, or a list of settings created with
 \code{\link{amLegend}}}
 
-\item{caption}{settings of the caption, or \code{NULL} for no caption}
+\item{caption}{\code{NULL} or \code{FALSE} for no caption, a formatted
+text created with \code{\link{amText}}, or a list with two fields:
+\code{text}, a list created with \code{\link{amText}}, and \code{align},
+can be \code{"left"}, \code{"right"} or \code{"center"}}
 
 \item{image}{option to include an image at a corner of the chart;
 \code{NULL} or \code{FALSE} for no image, otherwise a named list with four
@@ -282,23 +291,23 @@ amScatterChart(
     virginica = amCircle(color = "palegreen", strokeColor = "darkgreen")
   ),
   tooltip = "obs: {valueX}\nvalue: {valueY}",
-  chartTitle = list(text = "Iris data", color = "whitesmoke"),
-  xAxis = list(title = list(text = "Observation",
-                            fontSize = 21,
-                            color = "silver"),
+  chartTitle = amText(text = "Iris data", color = "whitesmoke"),
+  xAxis = list(title = amText(text = "Observation",
+                              fontSize = 21,
+                              color = "silver"),
                labels = amAxisLabels(color = "whitesmoke",
                                      fontSize = 17)),
-  yAxis = list(title = list(text = "Petal width",
-                            fontSize = 21,
-                            color = "silver"),
+  yAxis = list(title = amText(text = "Petal width",
+                              fontSize = 21,
+                              color = "silver"),
                labels = amAxisLabels(color = "whitesmoke",
                                      fontSize = 14),
                gridLines = amLine(color = "whitesmoke",
                                   opacity = 0.4, width = 1)),
   Xformatter = "#",
   Yformatter = "#.0",
-  caption = list(text = "[font-style:italic]rAmCharts4[/]",
-                 color = "yellow"),
+  caption = amText(text = "[font-style:italic]rAmCharts4[/]",
+                   color = "yellow"),
   theme = "dark")
 
 
@@ -341,15 +350,15 @@ amScatterChart(
       textColor = "black"
     )
   ),
-  chartTitle = list(text = "Iris data", color = "silver"),
-  xAxis = list(title = list(text = "Petal length",
-                            fontSize = 19,
-                            color = "gold"),
+  chartTitle = amText(text = "Iris data", color = "silver"),
+  xAxis = list(title = amText(text = "Petal length",
+                              fontSize = 19,
+                              color = "gold"),
                labels = amAxisLabels(color = "whitesmoke",
                                      fontSize = 17)),
-  yAxis = list(title = list(text = "Petal width",
-                            fontSize = 19,
-                            color = "gold"),
+  yAxis = list(title = amText(text = "Petal width",
+                              fontSize = 19,
+                              color = "gold"),
                labels = amAxisLabels(color = "whitesmoke",
                                      fontSize = 17),
                gridLines = amLine(color = "whitesmoke",
@@ -358,8 +367,8 @@ amScatterChart(
     tooltip = amTooltip(backgroundColor = "lightgray"),
     extraTooltipPrecision = list(x = 1, y = 1)
   ),
-  caption = list(text = "[font-style:italic]rAmCharts4[/]",
-                 color = "yellow"),
+  caption = amText(text = "[font-style:italic]rAmCharts4[/]",
+                   color = "yellow"),
   theme = "dark")
 
 
@@ -401,7 +410,7 @@ amScatterChart(
       rotation = 180
     )
   ),
-  chartTitle = list(text = "Asymptotic regression model"),
+  chartTitle = amText(text = "Asymptotic regression model"),
   xAxis = "x",
   yAxis = "y",
   Xformatter = "#.###",

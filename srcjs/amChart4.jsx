@@ -134,7 +134,7 @@ class AmBarChart extends React.PureComponent {
     }
 
 
-		/* ~~~~\  title  /~~~~ */
+/* 		 ~~~~\  title  /~~~~ 
 		let chartTitle = this.props.chartTitle;
 		if(chartTitle) {
       //let title = chart.plotContainer.createChild(am4core.Label);
@@ -151,15 +151,32 @@ class AmBarChart extends React.PureComponent {
 			//title.zIndex = 100;
 			//title.fillOpacity = 1;
 		}
+ */
+
+		/* ~~~~\  title  /~~~~ */
+		let chartTitle = this.props.chartTitle;
+		if(chartTitle) {
+      let title = chart.titles.create();
+			title.text = chartTitle.text.text;
+			title.fill =
+			  chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+			title.fontSize = chartTitle.text.fontSize || 22;
+			title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.fontFamily = chartTitle.text.fontFamily;
+      title.align = chartTitle.align || "left";
+		}
 
 
     /* ~~~~\  caption  /~~~~ */
     let chartCaption = this.props.caption;
     if(chartCaption) {
       let caption = chart.chartContainer.createChild(am4core.Label);
-      caption.text = chartCaption.text;
+      caption.text = chartCaption.text.text;
       caption.fill =
-        chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
+        chartCaption.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.fontSize = chartCaption.text.fontSize;
+      caption.fontWeight = chartCaption.text.fontWeight;
+      caption.fontFamily = chartCaption.text.fontFamily;
       caption.align = chartCaption.align || "right";
     }
 
@@ -733,19 +750,14 @@ class AmHorizontalBarChart extends React.PureComponent {
 		/* ~~~~\  title  /~~~~ */
 		let chartTitle = this.props.chartTitle;
 		if(chartTitle) {
-      //let title = chart.plotContainer.createChild(am4core.Label);
       let title = chart.titles.create();
-			title.text = chartTitle.text;
+			title.text = chartTitle.text.text;
 			title.fill =
-			  chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
-			title.fontSize = chartTitle.fontSize || 22;
-			title.fontWeight = "bold";
-			title.fontFamily = "Tahoma";
-			// title.y = this.props.scrollbarX ? -56 : -42;
-			// title.x = -45;
-			// title.horizontalCenter = "left";
-			// title.zIndex = 100;
-			// title.fillOpacity = 1;
+			  chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+			title.fontSize = chartTitle.text.fontSize || 22;
+			title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.fontFamily = chartTitle.text.fontFamily;
+      title.align = chartTitle.align || "left";
 		}
 
 
@@ -753,9 +765,12 @@ class AmHorizontalBarChart extends React.PureComponent {
     let chartCaption = this.props.caption;
     if(chartCaption) {
       let caption = chart.chartContainer.createChild(am4core.Label);
-      caption.text = chartCaption.text;
+      caption.text = chartCaption.text.text;
       caption.fill =
-        chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
+        chartCaption.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.fontSize = chartCaption.text.fontSize;
+      caption.fontWeight = chartCaption.text.fontWeight;
+      caption.fontFamily = chartCaption.text.fontFamily;
       caption.align = chartCaption.align || "right";
     }
 
@@ -1285,28 +1300,27 @@ class AmLineChart extends React.PureComponent {
 		/* ~~~~\  title  /~~~~ */
 		let chartTitle = this.props.chartTitle;
 		if(chartTitle) {
-			let title = chart.titles.create();
-			title.text = chartTitle.text;
+      let title = chart.titles.create();
+			title.text = chartTitle.text.text;
 			title.fill =
-			  chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
-			title.fontSize = chartTitle.fontSize || 22;
-			title.fontWeight = "bold";
-			title.fontFamily = "Tahoma";
-			// title.y = this.props.scrollbarX ? -56 : -42;
-			// title.x = -45;
-			// title.horizontalCenter = "left";
-			// title.zIndex = 100;
-			// title.fillOpacity = 1;
+			  chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+			title.fontSize = chartTitle.text.fontSize || 22;
+			title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.fontFamily = chartTitle.text.fontFamily;
+      title.align = chartTitle.align || "left";
 		}
 
 
     /* ~~~~\  caption  /~~~~ */
     let chartCaption = this.props.caption;
-    if (chartCaption) {
-      var caption = chart.chartContainer.createChild(am4core.Label);
-      caption.text = chartCaption.text;
+    if(chartCaption) {
+      let caption = chart.chartContainer.createChild(am4core.Label);
+      caption.text = chartCaption.text.text;
       caption.fill =
-        chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
+        chartCaption.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.fontSize = chartCaption.text.fontSize;
+      caption.fontWeight = chartCaption.text.fontWeight;
+      caption.fontFamily = chartCaption.text.fontFamily;
       caption.align = chartCaption.align || "right";
     }
 
@@ -2099,18 +2113,14 @@ class AmScatterChart extends React.PureComponent {
 		/* ~~~~\  title  /~~~~ */
 		let chartTitle = this.props.chartTitle;
 		if(chartTitle) {
-			let title = chart.titles.create();
-			title.text = chartTitle.text;
+      let title = chart.titles.create();
+			title.text = chartTitle.text.text;
 			title.fill =
-			  chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
-			title.fontSize = chartTitle.fontSize || 22;
-			title.fontWeight = "bold";
-			title.fontFamily = "Tahoma";
-			// title.y = this.props.scrollbarX ? -56 : -42;
-			// title.x = -45;
-			// title.horizontalCenter = "left";
-			// title.zIndex = 100;
-			// title.fillOpacity = 1;
+			  chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+			title.fontSize = chartTitle.text.fontSize || 22;
+			title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.fontFamily = chartTitle.text.fontFamily;
+      title.align = chartTitle.align || "left";
 		}
 
 
@@ -2118,9 +2128,12 @@ class AmScatterChart extends React.PureComponent {
     let chartCaption = this.props.caption;
     if(chartCaption) {
       let caption = chart.chartContainer.createChild(am4core.Label);
-      caption.text = chartCaption.text;
+      caption.text = chartCaption.text.text;
       caption.fill =
-        chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
+        chartCaption.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.fontSize = chartCaption.text.fontSize;
+      caption.fontWeight = chartCaption.text.fontWeight;
+      caption.fontFamily = chartCaption.text.fontFamily;
       caption.align = chartCaption.align || "right";
     }
 
@@ -2758,7 +2771,7 @@ class AmRangeAreaChart extends React.PureComponent {
     }
 
 
-		/* ~~~~\  title  /~~~~ */
+/* 		 ~~~~\  title  /~~~~ 
 		let chartTitle = this.props.chartTitle;
 		//let container;
 		if(chartTitle) {
@@ -2781,15 +2794,32 @@ class AmRangeAreaChart extends React.PureComponent {
 			// title.zIndex = 100;
 			// title.fillOpacity = 1;
 		}
+ */
+
+		/* ~~~~\  title  /~~~~ */
+		let chartTitle = this.props.chartTitle;
+		if(chartTitle) {
+      let title = chart.titles.create();
+			title.text = chartTitle.text.text;
+			title.fill =
+			  chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+			title.fontSize = chartTitle.text.fontSize || 22;
+			title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.fontFamily = chartTitle.text.fontFamily;
+      title.align = chartTitle.align || "left";
+		}
 
 
     /* ~~~~\  caption  /~~~~ */
     let chartCaption = this.props.caption;
     if(chartCaption) {
       let caption = chart.chartContainer.createChild(am4core.Label);
-      caption.text = chartCaption.text;
+      caption.text = chartCaption.text.text;
       caption.fill =
-        chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
+        chartCaption.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.fontSize = chartCaption.text.fontSize;
+      caption.fontWeight = chartCaption.text.fontWeight;
+      caption.fontFamily = chartCaption.text.fontFamily;
       caption.align = chartCaption.align || "right";
     }
 
@@ -3490,7 +3520,7 @@ class AmRadialBarChart extends React.PureComponent {
 			title.fontSize = chartTitle.text.fontSize || 22;
 			title.fontWeight = chartTitle.text.fontWeight || "bold";
       title.fontFamily = chartTitle.text.fontFamily;
-      title.align = chartTitle.align;
+      title.align = chartTitle.align || "left";
 		}
 
 

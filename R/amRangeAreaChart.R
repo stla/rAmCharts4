@@ -50,7 +50,11 @@
 #'   you specify your own tooltip text (see the first example of
 #'   \code{\link{amBarChart}} for the way to set
 #'   a number formatter in the tooltip text)
-#' @param chartTitle chart title, \code{NULL}, character, or list of settings
+#' @param chartTitle chart title, it can be \code{NULL} or \code{FALSE} for no
+#'   title, a character string,
+#'   a list of settings created with \code{\link{amText}}, or a list with two
+#'   fields: \code{text}, a list of settings created with \code{\link{amText}},
+#'   and \code{align}, can be \code{"left"}, \code{"right"} or \code{"center"}
 #' @param theme theme, \code{NULL} or one of \code{"dataviz"},
 #' \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
 #' \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
@@ -88,34 +92,16 @@
 #'   area, and \code{opacity} for the opacity of the range area, a number
 #'   between 0 and 1
 #' @param backgroundColor a color for the chart background
-#' @param xAxis settings of the x-axis given as a list, or just a string
-#'   for the axis title; the list of settings has five possible fields:
-#'   a field \code{title}, a list of settings for the axis title,
-#'   a field \code{labels}, a list of settings for the axis labels created
-#'   with \code{\link{amAxisLabels}},
-#'   a field \code{adjust}, a number defining the vertical adjustment of
-#'   the axis (in pixels),
-#'   a field \code{gridLines}, a list of settings for the grid lines created
-#'   with \code{\link{amLine}},
-#'   and a field \code{breaks} to control the axis breaks, an R object created
-#'   with \code{\link{amAxisBreaks}}
-#' @param yAxis settings of the y-axis given as a list, or just a string
-#'   for the axis title; the list of settings has five possible fields:
-#'   a field \code{title}, a list of settings for the axis title,
-#'   a field \code{labels}, a list of settings for the axis labels created
-#'   with \code{\link{amAxisLabels}},
-#'   a field \code{adjust}, a number defining the horizontal adjustment of
-#'   the axis (in pixels),
-#'   a field \code{gridLines}, a list of settings for the grid lines created
-#'   with \code{\link{amLine}},
-#'   and a field \code{breaks} to control the axis breaks, an R object created
-#'   with \code{\link{amAxisBreaks}}
+#' @template axesTemplate
 #' @param scrollbarX logical, whether to add a scrollbar for the x-axis
 #' @param scrollbarY logical, whether to add a scrollbar for the y-axis
 #' @param legend \code{FALSE} for no legend, \code{TRUE} for a legend with
 #'   default settings, or a list of settings created with
 #'   \code{\link{amLegend}}
-#' @param caption settings of the caption, or \code{NULL} for no caption
+#' @param caption \code{NULL} or \code{FALSE} for no caption, a formatted
+#'   text created with \code{\link{amText}}, or a list with two fields:
+#'   \code{text}, a list created with \code{\link{amText}}, and \code{align},
+#'   can be \code{"left"}, \code{"right"} or \code{"center"}
 #' @param image option to include an image at a corner of the chart;
 #'   \code{NULL} or \code{FALSE} for no image, otherwise a named list with four
 #'   possible fields: the field \code{image} (required) is a list created with
@@ -246,16 +232,18 @@
 #'     extraTooltipPrecision = list(x = 0, y = 2),
 #'     modifier = list(y = "text = parseFloat(text).toFixed(2);")
 #'   ),
-#'   chartTitle = list(text = "Range area chart", color = "whitesmoke"),
-#'   xAxis = list(title = list(text = "Observation",
-#'                             fontSize = 20,
-#'                             color = "silver"),
+#'   chartTitle = amText(text = "Range area chart",
+#'                       color = "whitesmoke",
+#'                       fontWeight = "bold"),
+#'   xAxis = list(title = amText(text = "Observation",
+#'                               fontSize = 20,
+#'                               color = "silver"),
 #'                labels = amAxisLabels(color = "whitesmoke",
 #'                                      fontSize = 17),
 #'                adjust = 5),
-#'   yAxis = list(title = list(text = "Value",
-#'                             fontSize = 20,
-#'                             color = "silver"),
+#'   yAxis = list(title = amText(text = "Value",
+#'                               fontSize = 20,
+#'                               color = "silver"),
 #'                labels = amAxisLabels(color = "whitesmoke",
 #'                                      fontSize = 17),
 #'                gridLines = amLine(color = "antiquewhite",
@@ -385,10 +373,21 @@ amRangeAreaChart <- function(
   }
 
   if(is.character(chartTitle)){
-    chartTitle <- list(text = chartTitle, fontSize = 22, color = NULL)
+    chartTitle <- list(
+      text = amText(
+        text = chartTitle, color = NULL, fontSize = 22,
+        fontWeight = "bold", fontFamily = "Tahoma"
+      ),
+      align = "left"
+    )
+  }else if("text" %in% class(chartTitle)){
+    chartTitle <- list(text = chartTitle, align = "left")
   }
-  if(!is.null(chartTitle$color)){
-    chartTitle$color <- validateColor(chartTitle$color)
+
+  if(is.character(caption)){
+    caption <- list(text = amText(caption), align = "right")
+  }else if("text" %in% class(caption)){
+    caption <- list(text = caption, align = "right")
   }
 
   if(is.atomic(draggable)){
@@ -617,12 +616,6 @@ amRangeAreaChart <- function(
       itemsWidth = 35,
       itemsHeight = 20
     )
-  }
-
-  if(is.character(caption)){
-    caption <- list(text = caption)
-  }else if(!is.null(caption)){
-    caption[["color"]] <- validateColor(caption[["color"]])
   }
 
   if(!(is.null(image) || isFALSE(image))){

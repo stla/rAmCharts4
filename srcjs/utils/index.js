@@ -312,8 +312,9 @@ export const createAxis = function(
 
   if(axisSettings && axisSettings.title && axisSettings.title.text !== "") {
     Axis.title.text = axisSettings.title.text;
-    Axis.title.fontWeight = "bold";
+    Axis.title.fontWeight = axisSettings.title.fontWeight || "bold";
     Axis.title.fontSize = axisSettings.title.fontSize || 20;
+    Axis.title.fontFamily = axisSettings.title.fontFamily;
     Axis.title.fill =
       axisSettings.title.color || (theme === "dark" ? "#ffffff" : "#000000");
   }

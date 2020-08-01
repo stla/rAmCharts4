@@ -77,14 +77,16 @@
 #' columns within a cluster of columns; \code{NULL} for the default value
 #' @param xAxis settings of the category axis given as a list, or just a string
 #'   for the axis title; the list of settings has three possible fields:
-#'   a field \code{title}, a list of settings for the axis title,
+#'   a field \code{title}, a list of settings for the axis title created
+#'   with \code{\link{amText}},
 #'   a field \code{labels}, a list of settings for the axis labels created
 #'   with \code{\link{amAxisLabelsCircular}},
 #'   and a field \code{adjust}, a number defining the vertical adjustment of
 #'   the axis (in pixels)
 #' @param yAxis settings of the value axis given as a list, or just a string
 #'   for the axis title; the list of settings has five possible fields:
-#'   a field \code{title}, a list of settings for the axis title,
+#'   a field \code{title}, a list of settings for the axis title created
+#'   with \code{\link{amText}},
 #'   a field \code{labels}, a list of settings for the axis labels created
 #'   with \code{\link{amAxisLabels}},
 #'   a field \code{adjust}, a number defining the horizontal adjustment of

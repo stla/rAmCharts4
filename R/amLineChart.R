@@ -94,7 +94,11 @@
 #'   given by the \code{yValues} argument, by passing a list of the
 #'   form \code{list("_all" = trendconfig)}, e.g.
 #'   \code{list("_all" = list(method = "lm", formula = y ~ 0+x, style = amLine()))}
-#' @param chartTitle chart title, \code{NULL}, character, or list of settings
+#' @param chartTitle chart title, it can be \code{NULL} or \code{FALSE} for no
+#'   title, a character string,
+#'   a list of settings created with \code{\link{amText}}, or a list with two
+#'   fields: \code{text}, a list of settings created with \code{\link{amText}},
+#'   and \code{align}, can be \code{"left"}, \code{"right"} or \code{"center"}
 #' @param theme theme, \code{NULL} or one of \code{"dataviz"},
 #' \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
 #' \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
@@ -126,34 +130,16 @@
 #'   \code{\link{amLine}}; this can also be a
 #'   single list of settings that will be applied to each line
 #' @param backgroundColor a color for the chart background
-#' @param xAxis settings of the x-axis given as a list, or just a string
-#'   for the axis title; the list of settings has five possible fields:
-#'   a field \code{title}, a list of settings for the axis title,
-#'   a field \code{labels}, a list of settings for the axis labels created
-#'   with \code{\link{amAxisLabels}},
-#'   a field \code{adjust}, a number defining the vertical adjustment of
-#'   the axis (in pixels),
-#'   a field \code{gridLines}, a list of settings for the grid lines created
-#'   with \code{\link{amLine}},
-#'   and a field \code{breaks} to control the axis breaks, an R object created
-#'   with \code{\link{amAxisBreaks}}
-#' @param yAxis settings of the y-axis given as a list, or just a string
-#'   for the axis title; the list of settings has five possible fields:
-#'   a field \code{title}, a list of settings for the axis title,
-#'   a field \code{labels}, a list of settings for the axis labels created
-#'   with \code{\link{amAxisLabels}},
-#'   a field \code{adjust}, a number defining the horizontal adjustment of
-#'   the axis (in pixels),
-#'   a field \code{gridLines}, a list of settings for the grid lines created
-#'   with \code{\link{amLine}},
-#'   and a field \code{breaks} to control the axis breaks, an R object created
-#'   with \code{\link{amAxisBreaks}}
+#' @template axesTemplate
 #' @param scrollbarX logical, whether to add a scrollbar for the x-axis
 #' @param scrollbarY logical, whether to add a scrollbar for the y-axis
 #' @param legend \code{FALSE} for no legend, \code{TRUE} for a legend with
 #'   default settings, or a list of settings created with
 #'   \code{\link{amLegend}}
-#' @param caption settings of the caption, or \code{NULL} for no caption
+#' @param caption \code{NULL} or \code{FALSE} for no caption, a formatted
+#'   text created with \code{\link{amText}}, or a list with two fields:
+#'   \code{text}, a list created with \code{\link{amText}}, and \code{align},
+#'   can be \code{"left"}, \code{"right"} or \code{"center"}
 #' @param image option to include an image at a corner of the chart;
 #'   \code{NULL} or \code{FALSE} for no image, otherwise a named list with four
 #'   possible fields: the field \code{image} (required) is a list created with
@@ -261,26 +247,32 @@
 #'     y1 = amLine(color = "yellow", width = 4),
 #'     y2 = amLine(color = "orangered", width = 4)
 #'   ),
-#'   chartTitle = list(text = "Gaussian samples", color = "whitesmoke"),
-#'   xAxis = list(title = list(text = "Observation",
-#'                             fontSize = 21,
-#'                             color = "silver"),
+#'   chartTitle = amText(
+#'     text = "Gaussian samples",
+#'     color = "whitesmoke",
+#'     fontWeight = "bold"
+#'   ),
+#'   xAxis = list(title = amText(text = "Observation",
+#'                              fontSize = 21,
+#'                              color = "silver",
+#'                              fontWeight = "bold"),
 #'                labels = amAxisLabels(fontSize = 17),
 #'                breaks = amAxisBreaks(
 #'                  values = 1:10,
 #'                  labels = sprintf("[bold \%s]\%d[/]", rainbow(10), 1:10))),
-#'   yAxis = list(title = list(text = "Value",
-#'                             fontSize = 21,
-#'                             color = "silver"),
+#'   yAxis = list(title = amText(text = "Value",
+#'                              fontSize = 21,
+#'                              color = "silver",
+#'                              fontWeight = "bold"),
 #'                labels = amAxisLabels(color = "whitesmoke",
-#'                                      fontSize = 14)),
+#'                                      fontSize = 14),
+#'                gridLines = amLine(color = "whitesmoke",
+#'                                   opacity = 0.4,
+#'                                   width = 1)),
 #'   yLimits = c(-3, 3),
 #'   Yformatter = "#.00",
-#'   caption = list(text = "[font-style:italic]try to drag the yellow line![/]",
-#'                  color = "yellow"),
-#'   gridLines = list(color = "whitesmoke",
-#'                    opacity = 0.4,
-#'                    width = 1),
+#'   caption = amText(text = "[font-style:italic]try to drag the yellow line![/]",
+#'                   color = "yellow"),
 #'   theme = "dark")
 #'
 #'
@@ -348,15 +340,15 @@
 #'     tensionX = 0.8,
 #'     tensionY = 0.8
 #'   ),
-#'   xAxis = list(title = list(text = "x",
-#'                             fontSize = 21,
-#'                             color = "navyblue"),
+#'   xAxis = list(title = amText(text = "x",
+#'                              fontSize = 21,
+#'                              color = "navyblue"),
 #'                labels = amAxisLabels(
 #'                  color = "midnightblue",
 #'                  fontSize = 17)),
-#'   yAxis = list(title = list(text = "density",
-#'                             fontSize = 21,
-#'                             color = "navyblue"),
+#'   yAxis = list(title = amText(text = "density",
+#'                               fontSize = 21,
+#'                               color = "navyblue"),
 #'                labels = FALSE),
 #'   theme = "dataviz")
 amLineChart <- function(
@@ -610,10 +602,21 @@ amLineChart <- function(
   }
 
   if(is.character(chartTitle)){
-    chartTitle <- list(text = chartTitle, fontSize = 22, color = NULL)
+    chartTitle <- list(
+      text = amText(
+        text = chartTitle, color = NULL, fontSize = 22,
+        fontWeight = "bold", fontFamily = "Tahoma"
+      ),
+      align = "left"
+    )
+  }else if("text" %in% class(chartTitle)){
+    chartTitle <- list(text = chartTitle, align = "left")
   }
-  if(!is.null(chartTitle$color)){
-    chartTitle$color <- validateColor(chartTitle$color)
+
+  if(is.character(caption)){
+    caption <- list(text = amText(caption), align = "right")
+  }else if("text" %in% class(caption)){
+    caption <- list(text = caption, align = "right")
   }
 
   if(is.atomic(draggable)){
@@ -972,12 +975,6 @@ amLineChart <- function(
       itemsWidth = 30,
       itemsHeight = 20
     )
-  }
-
-  if(is.character(caption)){
-    caption <- list(text = caption)
-  }else if(!is.null(caption)){
-    caption[["color"]] <- validateColor(caption[["color"]])
   }
 
   if(!(is.null(image) || isFALSE(image))){

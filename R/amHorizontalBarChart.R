@@ -31,7 +31,11 @@
 #'   you specify your own tooltip text (see the first example of
 #'   \code{\link{amBarChart}} for the way to set
 #'   a number formatter in the tooltip text)
-#' @param chartTitle chart title, \code{NULL}, character, or list of settings
+#' @param chartTitle chart title, it can be \code{NULL} or \code{FALSE} for no
+#'   title, a character string,
+#'   a list of settings created with \code{\link{amText}}, or a list with two
+#'   fields: \code{text}, a list of settings created with \code{\link{amText}},
+#'   and \code{align}, can be \code{"left"}, \code{"right"} or \code{"center"}
 #' @param theme theme, \code{NULL} or one of \code{"dataviz"},
 #' \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
 #' \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
@@ -73,7 +77,8 @@
 #' columns within a cluster of columns; \code{NULL} for the default value
 #' @param xAxis settings of the value axis given as a list, or just a string
 #'   for the axis title; the list of settings has five possible fields:
-#'   a field \code{title}, a list of settings for the axis title,
+#'   a field \code{title}, a list of settings for the axis title created
+#'   with \code{\link{amText}},
 #'   a field \code{labels}, a list of settings for the axis labels created
 #'   with \code{\link{amAxisLabels}},
 #'   a field \code{adjust}, a number defining the vertical adjustment of
@@ -83,7 +88,8 @@
 #'   \code{\link{amAxisBreaks}}
 #' @param yAxis settings of the category axis given as a list, or just a string
 #'   for the axis title; the list of settings has three possible fields:
-#'   a field \code{title}, a list of settings for the axis title,
+#'   a field \code{title}, a list of settings for the axis title created
+#'   with \code{\link{amText}},
 #'   a field \code{labels}, a list of settings for the axis labels created
 #'   with \code{\link{amAxisLabels}},
 #'   and a field \code{adjust}, a number defining the horizontal adjustment of
@@ -93,7 +99,10 @@
 #' @param legend \code{FALSE} for no legend, \code{TRUE} for a legend with
 #'   default settings, or a list of settings created with
 #'   \code{\link{amLegend}}
-#' @param caption settings of the caption, or \code{NULL} for no caption
+#' @param caption \code{NULL} or \code{FALSE} for no caption, a formatted
+#'   text created with \code{\link{amText}}, or a list with two fields:
+#'   \code{text}, a list created with \code{\link{amText}}, and \code{align},
+#'   can be \code{"left"}, \code{"right"} or \code{"center"}
 #' @param image option to include an image at a corner of the chart;
 #'   \code{NULL} or \code{FALSE} for no image, otherwise a named list with four
 #'   possible fields: the field \code{image} (required) is a list created with
@@ -156,15 +165,15 @@
 #'   draggable = TRUE,
 #'   tooltip = "[font-style:italic #ffff00]{valueX}[/]",
 #'   chartTitle =
-#'     list(text = "Visits per country", fontSize = 22, color = "orangered"),
+#'     amText(text = "Visits per country", fontSize = 22, color = "orangered"),
 #'   xAxis = list(
-#'     title = list(text = "Country", color = "maroon"),
+#'     title = amText(text = "Country", color = "maroon"),
 #'     gridLines = amLine(opacity = 0.4, width = 1, dash = "3,1")
 #'   ),
-#'   yAxis = list(title = list(text = "Visits", color = "maroon")),
+#'   yAxis = list(title = amText(text = "Visits", color = "maroon")),
 #'   xLimits = c(0, 4000),
 #'   valueFormatter = "#,###",
-#'   caption = list(text = "Year 2018", color = "red"),
+#'   caption = amText(text = "Year 2018", color = "red"),
 #'   theme = "moonrisekingdom")
 #'
 #'
@@ -203,12 +212,12 @@
 #'       strokeWidth = 2
 #'     )
 #'   ),
-#'   chartTitle = list(text = "Income and expenses per country"),
-#'   yAxis = list(title = list(text = "Country")),
-#'   xAxis = list(title = list(text = "Income and expenses")),
+#'   chartTitle = amText(text = "Income and expenses per country"),
+#'   yAxis = list(title = amText(text = "Country")),
+#'   xAxis = list(title = amText(text = "Income and expenses")),
 #'   xLimits = c(0, 41),
 #'   valueFormatter = "#.#",
-#'   caption = list(text = "Year 2018"),
+#'   caption = amText(text = "Year 2018"),
 #'   theme = "dark")
 amHorizontalBarChart <- function(
   data,
@@ -289,10 +298,21 @@ amHorizontalBarChart <- function(
   }
 
   if(is.character(chartTitle)){
-    chartTitle <- list(text = chartTitle, fontSize = 22, color = NULL)
+    chartTitle <- list(
+      text = amText(
+        text = chartTitle, color = NULL, fontSize = 22,
+        fontWeight = "bold", fontFamily = "Tahoma"
+      ),
+      align = "left"
+    )
+  }else if("text" %in% class(chartTitle)){
+    chartTitle <- list(text = chartTitle, align = "left")
   }
-  if(!is.null(chartTitle$color)){
-    chartTitle$color <- validateColor(chartTitle$color)
+
+  if(is.character(caption)){
+    caption <- list(text = amText(caption), align = "right")
+  }else if("text" %in% class(caption)){
+    caption <- list(text = caption, align = "right")
   }
 
   if(is.atomic(draggable)){
@@ -514,12 +534,6 @@ amHorizontalBarChart <- function(
       itemsWidth = 20,
       itemsHeight = 20
     )
-  }
-
-  if(is.character(caption)){
-    caption <- list(text = caption)
-  }else if(!is.null(caption)){
-    caption[["color"]] <- validateColor(caption[["color"]])
   }
 
   if(!(is.null(image) || isFALSE(image))){

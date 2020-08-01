@@ -80,7 +80,11 @@ the \code{yAxis} option, and the values displayed in the tooltips unless
 you specify your own tooltip text (see the first example for the way to set
 a number formatter in the tooltip text)}
 
-\item{chartTitle}{chart title, \code{NULL}, character, or list of settings}
+\item{chartTitle}{chart title, it can be \code{NULL} or \code{FALSE} for no
+title, a character string,
+a list of settings created with \code{\link{amText}}, or a list with two
+fields: \code{text}, a list of settings created with \code{\link{amText}},
+and \code{align}, can be \code{"left"}, \code{"right"} or \code{"center"}}
 
 \item{theme}{theme, \code{NULL} or one of \code{"dataviz"},
 \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
@@ -133,7 +137,8 @@ columns within a cluster of columns; \code{NULL} for the default value}
 
 \item{xAxis}{settings of the category axis given as a list, or just a string
 for the axis title; the list of settings has three possible fields:
-a field \code{title}, a list of settings for the axis title,
+a field \code{title}, a list of settings for the axis title created
+with \code{\link{amText}},
 a field \code{labels}, a list of settings for the axis labels created
 with \code{\link{amAxisLabels}},
 and a field \code{adjust}, a number defining the vertical adjustment of
@@ -141,7 +146,8 @@ the axis (in pixels)}
 
 \item{yAxis}{settings of the value axis given as a list, or just a string
 for the axis title; the list of settings has five possible fields:
-a field \code{title}, a list of settings for the axis title,
+a field \code{title}, a list of settings for the axis title created
+with \code{\link{amText}},
 a field \code{labels}, a list of settings for the axis labels created
 with \code{\link{amAxisLabels}},
 a field \code{adjust}, a number defining the horizontal adjustment of
@@ -157,7 +163,10 @@ the grid lines created with \code{\link{amLine}} and a field
 \item{legend}{either a logical value, whether to display the legend, or
 a list of settings for the legend created with \code{\link{amLegend}}}
 
-\item{caption}{settings of the caption, or \code{NULL} for no caption}
+\item{caption}{\code{NULL} or \code{FALSE} for no caption, a formatted
+text created with \code{\link{amText}}, or a list with two fields:
+\code{text}, a list created with \code{\link{amText}}, and \code{align},
+can be \code{"left"}, \code{"right"} or \code{"center"}}
 
 \item{image}{option to include an image at a corner of the chart;
 \code{NULL} or \code{FALSE} for no image, otherwise a named list with four
@@ -230,12 +239,12 @@ amBarChart(
   tooltip =
     "[bold font-style:italic #ffff00]{valueY.value.formatNumber('#,###.')}[/]",
   chartTitle =
-    list(text = "Visits per country", fontSize = 22, color = "orangered"),
-  xAxis = list(title = list(text = "Country", color = "maroon")),
-  yAxis = list(title = list(text = "Visits", color = "maroon")),
+    amText(text = "Visits per country", fontSize = 22, color = "orangered"),
+  xAxis = list(title = amText(text = "Country", color = "maroon")),
+  yAxis = list(title = amText(text = "Visits", color = "maroon")),
   yLimits = c(0, 4000),
   valueFormatter = "#,###.",
-  caption = list(text = "Year 2018", color = "red"),
+  caption = amText(text = "Year 2018", color = "red"),
   theme = "material")
 
 
@@ -274,8 +283,8 @@ amBarChart(
     )
   ),
   alwaysShowBullets = TRUE,
-  xAxis = list(title = list(text = "Programming language")),
-  yAxis = list(title = list(text = "# users")),
+  xAxis = list(title = amText(text = "Programming language")),
+  yAxis = list(title = amText(text = "# users")),
   yLimits = c(0, 12000),
   valueFormatter = "#.",
   theme = "material")
@@ -316,15 +325,15 @@ amBarChart(
       strokeWidth = 2
     )
   ),
-  chartTitle = list(text = "Income and expenses per country"),
-  xAxis = list(title = list(text = "Country")),
+  chartTitle = amText(text = "Income and expenses per country"),
+  xAxis = list(title = amText(text = "Country")),
   yAxis = list(
-    title = list(text = "Income and expenses"),
+    title = amText(text = "Income and expenses"),
     gridLines = amLine(color = "whitesmoke", width = 1, opacity = 0.4),
     breaks = amAxisBreaks(values = seq(0, 45, by = 5))
   ),
   yLimits = c(0, 45),
   valueFormatter = "#.#",
-  caption = list(text = "Year 2018"),
+  caption = amText(text = "Year 2018"),
   theme = "dark")
 }

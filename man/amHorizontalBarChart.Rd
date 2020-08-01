@@ -81,7 +81,11 @@ you specify your own tooltip text (see the first example of
 \code{\link{amBarChart}} for the way to set
 a number formatter in the tooltip text)}
 
-\item{chartTitle}{chart title, \code{NULL}, character, or list of settings}
+\item{chartTitle}{chart title, it can be \code{NULL} or \code{FALSE} for no
+title, a character string,
+a list of settings created with \code{\link{amText}}, or a list with two
+fields: \code{text}, a list of settings created with \code{\link{amText}},
+and \code{align}, can be \code{"left"}, \code{"right"} or \code{"center"}}
 
 \item{theme}{theme, \code{NULL} or one of \code{"dataviz"},
 \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
@@ -134,7 +138,8 @@ columns within a cluster of columns; \code{NULL} for the default value}
 
 \item{xAxis}{settings of the value axis given as a list, or just a string
 for the axis title; the list of settings has five possible fields:
-a field \code{title}, a list of settings for the axis title,
+a field \code{title}, a list of settings for the axis title created
+with \code{\link{amText}},
 a field \code{labels}, a list of settings for the axis labels created
 with \code{\link{amAxisLabels}},
 a field \code{adjust}, a number defining the vertical adjustment of
@@ -145,7 +150,8 @@ the grid lines created with \code{\link{amLine}}, and a field
 
 \item{yAxis}{settings of the category axis given as a list, or just a string
 for the axis title; the list of settings has three possible fields:
-a field \code{title}, a list of settings for the axis title,
+a field \code{title}, a list of settings for the axis title created
+with \code{\link{amText}},
 a field \code{labels}, a list of settings for the axis labels created
 with \code{\link{amAxisLabels}},
 and a field \code{adjust}, a number defining the horizontal adjustment of
@@ -159,7 +165,10 @@ the axis (in pixels)}
 default settings, or a list of settings created with
 \code{\link{amLegend}}}
 
-\item{caption}{settings of the caption, or \code{NULL} for no caption}
+\item{caption}{\code{NULL} or \code{FALSE} for no caption, a formatted
+text created with \code{\link{amText}}, or a list with two fields:
+\code{text}, a list created with \code{\link{amText}}, and \code{align},
+can be \code{"left"}, \code{"right"} or \code{"center"}}
 
 \item{image}{option to include an image at a corner of the chart;
 \code{NULL} or \code{FALSE} for no image, otherwise a named list with four
@@ -231,15 +240,15 @@ amHorizontalBarChart(
   draggable = TRUE,
   tooltip = "[font-style:italic #ffff00]{valueX}[/]",
   chartTitle =
-    list(text = "Visits per country", fontSize = 22, color = "orangered"),
+    amText(text = "Visits per country", fontSize = 22, color = "orangered"),
   xAxis = list(
-    title = list(text = "Country", color = "maroon"),
+    title = amText(text = "Country", color = "maroon"),
     gridLines = amLine(opacity = 0.4, width = 1, dash = "3,1")
   ),
-  yAxis = list(title = list(text = "Visits", color = "maroon")),
+  yAxis = list(title = amText(text = "Visits", color = "maroon")),
   xLimits = c(0, 4000),
   valueFormatter = "#,###",
-  caption = list(text = "Year 2018", color = "red"),
+  caption = amText(text = "Year 2018", color = "red"),
   theme = "moonrisekingdom")
 
 
@@ -278,11 +287,11 @@ amHorizontalBarChart(
       strokeWidth = 2
     )
   ),
-  chartTitle = list(text = "Income and expenses per country"),
-  yAxis = list(title = list(text = "Country")),
-  xAxis = list(title = list(text = "Income and expenses")),
+  chartTitle = amText(text = "Income and expenses per country"),
+  yAxis = list(title = amText(text = "Country")),
+  xAxis = list(title = amText(text = "Income and expenses")),
   xLimits = c(0, 41),
   valueFormatter = "#.#",
-  caption = list(text = "Year 2018"),
+  caption = amText(text = "Year 2018"),
   theme = "dark")
 }
