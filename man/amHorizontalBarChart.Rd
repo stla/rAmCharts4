@@ -289,7 +289,10 @@ amHorizontalBarChart(
   ),
   chartTitle = amText(text = "Income and expenses per country"),
   yAxis = list(title = amText(text = "Country")),
-  xAxis = list(title = amText(text = "Income and expenses")),
+  xAxis = list(
+    title = amText(text = "Income and expenses"),
+    gridLines = amLine(color = "whitesmoke", width = 1, opacity = 0.4),
+  ),
   xLimits = c(0, 41),
   valueFormatter = "#.#",
   caption = amText(text = "Year 2018"),

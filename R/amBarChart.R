@@ -166,7 +166,10 @@
 #'   chartTitle =
 #'     amText(text = "Visits per country", fontSize = 22, color = "orangered"),
 #'   xAxis = list(title = amText(text = "Country", color = "maroon")),
-#'   yAxis = list(title = amText(text = "Visits", color = "maroon")),
+#'   yAxis = list(
+#'     title = amText(text = "Visits", color = "maroon"),
+#'     gridLines = amLine(color = "orange", width = 1, opacity = 0.4),
+#'   ),
 #'   yLimits = c(0, 4000),
 #'   valueFormatter = "#,###.",
 #'   caption = amText(text = "Year 2018", color = "red"),
@@ -209,7 +212,10 @@
 #'   ),
 #'   alwaysShowBullets = TRUE,
 #'   xAxis = list(title = amText(text = "Programming language")),
-#'   yAxis = list(title = amText(text = "# users")),
+#'   yAxis = list(
+#'     title = amText(text = "# users"),
+#'     gridLines = amLine(color = "orange", width = 1, opacity = 0.4),
+#'   ),
 #'   yLimits = c(0, 12000),
 #'   valueFormatter = "#.",
 #'   theme = "material")

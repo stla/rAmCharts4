@@ -164,6 +164,7 @@ class AmBarChart extends React.PureComponent {
 			title.fontWeight = chartTitle.text.fontWeight || "bold";
       title.fontFamily = chartTitle.text.fontFamily;
       title.align = chartTitle.align || "left";
+      title.dy = -30;
 		}
 
 
@@ -758,6 +759,7 @@ class AmHorizontalBarChart extends React.PureComponent {
 			title.fontWeight = chartTitle.text.fontWeight || "bold";
       title.fontFamily = chartTitle.text.fontFamily;
       title.align = chartTitle.align || "left";
+      title.dy = -30;
 		}
 
 
@@ -1308,6 +1310,7 @@ class AmLineChart extends React.PureComponent {
 			title.fontWeight = chartTitle.text.fontWeight || "bold";
       title.fontFamily = chartTitle.text.fontFamily;
       title.align = chartTitle.align || "left";
+      title.dy = -30;
 		}
 
 
@@ -2121,6 +2124,7 @@ class AmScatterChart extends React.PureComponent {
 			title.fontWeight = chartTitle.text.fontWeight || "bold";
       title.fontFamily = chartTitle.text.fontFamily;
       title.align = chartTitle.align || "left";
+      title.dy = -30;
 		}
 
 
@@ -2807,6 +2811,7 @@ class AmRangeAreaChart extends React.PureComponent {
 			title.fontWeight = chartTitle.text.fontWeight || "bold";
       title.fontFamily = chartTitle.text.fontFamily;
       title.align = chartTitle.align || "left";
+      title.dy = -30;
 		}
 
 
@@ -3513,7 +3518,7 @@ class AmRadialBarChart extends React.PureComponent {
 		let chartTitle = this.props.chartTitle;
 		if(chartTitle) {
       let title = chart.titles.create();
-      title.dy = -20;
+      title.dy = -30;
 			title.text = chartTitle.text.text;
 			title.fill =
 			  chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
