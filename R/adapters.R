@@ -43,16 +43,16 @@
 #'   ),
 #'   alwaysShowBullets = TRUE,
 #'   chartTitle =
-#'     list(text = "Visits per country", fontSize = 22, color = "orangered"),
+#'     amText(text = "Visits per country", fontSize = 22, color = "orangered"),
 #'   backgroundColor = "rgb(164,167,174)",
-#'   xAxis = list(title = list(text = "Country", color = "maroon")),
+#'   xAxis = list(title = amText(text = "Country", color = "maroon")),
 #'   yAxis = list(
-#'     title = list(text = "Visits", color = "maroon"),
+#'     title = amText(text = "Visits", color = "maroon"),
 #'     gridLines = amLine(color = "white", width = 1, dash = "3,3")
 #'   ),
 #'   yLimits = c(0, 4000),
 #'   valueFormatter = "#,###.",
-#'   caption = list(text = "Year 2018", color = "red")
+#'   caption = amText(text = "Year 2018", color = "red")
 #' )
 #'
 #'
@@ -93,8 +93,8 @@
 #'     gridLines = amLine(opacity = 0.3, width = 1)
 #'   ),
 #'   tooltip = FALSE,
-#'   caption = list(text = "[font-style:italic]rAmCharts4[/]",
-#'                  color = "yellow"),
+#'   caption = amText(text = "[font-style:italic]rAmCharts4[/]",
+#'                    color = "yellow"),
 #'   theme = "dark")
 #'
 #'
@@ -141,8 +141,8 @@
 #'     gridLines = amLine(opacity = 0.3, width = 1)
 #'   ),
 #'   tooltip = FALSE,
-#'   caption = list(text = "[font-style:italic]rAmCharts4[/]",
-#'                  color = "yellow"),
+#'   caption = amText(text = "[font-style:italic]rAmCharts4[/]",
+#'                    color = "yellow"),
 #'   theme = "dark")
 #'
 #'
@@ -189,8 +189,8 @@
 #'     gridLines = amLine(opacity = 0.3, width = 1)
 #'   ),
 #'   tooltip = FALSE,
-#'   caption = list(text = "[font-style:italic]rAmCharts4[/]",
-#'                  color = "yellow"),
+#'   caption = amText(text = "[font-style:italic]rAmCharts4[/]",
+#'                    color = "yellow"),
 #'   theme = "dark")
 amColorAdapterFromVector <- function(colors){
   colors <- sapply(colors, validateColor)

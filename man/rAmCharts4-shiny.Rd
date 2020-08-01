@@ -68,7 +68,7 @@ server <- function(input, output){
       xValue = "date",
       yValues = "visits",
       draggable = TRUE,
-      chartTitle = list(text = "Number of visits", color = "crimson"),
+      chartTitle = amText(text = "Number of visits", color = "crimson"),
       xAxis = list(
         title = "Date",
         labels = amAxisLabels(rotation = -45)
@@ -78,7 +78,7 @@ server <- function(input, output){
       backgroundColor = "whitesmoke",
       tooltip = "[bold][font-style:italic]{dateX}[/]\nvisits: {valueY}[/]",
       Yformatter = "#",
-      caption = list(
+      caption = amText(
         text = "[bold font-size:22]Year 2018[/]",
         color = "fuchsia"
       ),
