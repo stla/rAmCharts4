@@ -120146,6 +120146,8 @@ class AmBarChart extends React.PureComponent {
         chartLegend = this.props.legend,
         category = this.props.category,
         values = this.props.values,
+        minValue = this.props.minValue,
+        maxValue = this.props.maxValue,
         data = HTMLWidgets.dataframeToD3(this.props.data),
         dataCopy = HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [category].concat(values))),
         data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, values)) : null,
@@ -120233,23 +120235,39 @@ class AmBarChart extends React.PureComponent {
       chart.exporting.menu = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["ExportMenu"]();
       chart.exporting.menu.items = _utils__WEBPACK_IMPORTED_MODULE_13__["exportMenuItems"];
     }
+    /* 		 ~~~~\  title  /~~~~ 
+    		let chartTitle = this.props.chartTitle;
+    		if(chartTitle) {
+          //let title = chart.plotContainer.createChild(am4core.Label);
+          let title = chart.titles.create();
+    			title.text = chartTitle.text;
+    			title.fill =
+    			  chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
+    			title.fontSize = chartTitle.fontSize || 22;
+    			title.fontWeight = "bold";
+    			title.fontFamily = "Tahoma";
+    			//title.y = this.props.scrollbarX ? -56 : -42;
+    			//title.x = -45;
+    			//title.horizontalCenter = "left";
+    			//title.zIndex = 100;
+    			//title.fillOpacity = 1;
+    		}
+     */
+
     /* ~~~~\  title  /~~~~ */
 
 
     var chartTitle = this.props.chartTitle;
 
     if (chartTitle) {
-      //let title = chart.plotContainer.createChild(am4core.Label);
       var title = chart.titles.create();
-      title.text = chartTitle.text;
-      title.fill = chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
-      title.fontSize = chartTitle.fontSize || 22;
-      title.fontWeight = "bold";
-      title.fontFamily = "Tahoma"; //title.y = this.props.scrollbarX ? -56 : -42;
-      //title.x = -45;
-      //title.horizontalCenter = "left";
-      //title.zIndex = 100;
-      //title.fillOpacity = 1;
+      title.text = chartTitle.text.text;
+      title.fill = chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.fontFamily = chartTitle.text.fontFamily;
+      title.align = chartTitle.align || "left";
+      title.dy = -30;
     }
     /* ~~~~\  caption  /~~~~ */
 
@@ -120258,8 +120276,11 @@ class AmBarChart extends React.PureComponent {
 
     if (chartCaption) {
       var caption = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Label"]);
-      caption.text = chartCaption.text;
-      caption.fill = chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.text = chartCaption.text.text;
+      caption.fill = chartCaption.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.fontSize = chartCaption.text.fontSize;
+      caption.fontWeight = chartCaption.text.fontWeight;
+      caption.fontFamily = chartCaption.text.fontFamily;
       caption.align = chartCaption.align || "right";
     }
     /* ~~~~\  image  /~~~~ */
@@ -120340,7 +120361,7 @@ class AmBarChart extends React.PureComponent {
     categoryAxis.cursorTooltipEnabled = false;
     /* ~~~~\  value axis  /~~~~ */
 
-    var valueAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("Y", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, yAxis, this.props.minValue, this.props.maxValue, false, theme, cursor);
+    var valueAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("Y", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, yAxis, minValue, maxValue, false, theme, cursor);
     /*		let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
         valueAxis.paddingRight = yAxis.adjust || 0;
     		if(yAxis.title && yAxis.title.text !== "") {
@@ -120853,17 +120874,14 @@ class AmHorizontalBarChart extends React.PureComponent {
     var chartTitle = this.props.chartTitle;
 
     if (chartTitle) {
-      //let title = chart.plotContainer.createChild(am4core.Label);
       var title = chart.titles.create();
-      title.text = chartTitle.text;
-      title.fill = chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
-      title.fontSize = chartTitle.fontSize || 22;
-      title.fontWeight = "bold";
-      title.fontFamily = "Tahoma"; // title.y = this.props.scrollbarX ? -56 : -42;
-      // title.x = -45;
-      // title.horizontalCenter = "left";
-      // title.zIndex = 100;
-      // title.fillOpacity = 1;
+      title.text = chartTitle.text.text;
+      title.fill = chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.fontFamily = chartTitle.text.fontFamily;
+      title.align = chartTitle.align || "left";
+      title.dy = -30;
     }
     /* ~~~~\  caption  /~~~~ */
 
@@ -120872,8 +120890,11 @@ class AmHorizontalBarChart extends React.PureComponent {
 
     if (chartCaption) {
       var caption = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Label"]);
-      caption.text = chartCaption.text;
-      caption.fill = chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.text = chartCaption.text.text;
+      caption.fill = chartCaption.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.fontSize = chartCaption.text.fontSize;
+      caption.fontWeight = chartCaption.text.fontWeight;
+      caption.fontFamily = chartCaption.text.fontFamily;
       caption.align = chartCaption.align || "right";
     }
     /* ~~~~\  image  /~~~~ */
@@ -121411,15 +121432,13 @@ class AmLineChart extends React.PureComponent {
 
     if (chartTitle) {
       var title = chart.titles.create();
-      title.text = chartTitle.text;
-      title.fill = chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
-      title.fontSize = chartTitle.fontSize || 22;
-      title.fontWeight = "bold";
-      title.fontFamily = "Tahoma"; // title.y = this.props.scrollbarX ? -56 : -42;
-      // title.x = -45;
-      // title.horizontalCenter = "left";
-      // title.zIndex = 100;
-      // title.fillOpacity = 1;
+      title.text = chartTitle.text.text;
+      title.fill = chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.fontFamily = chartTitle.text.fontFamily;
+      title.align = chartTitle.align || "left";
+      title.dy = -30;
     }
     /* ~~~~\  caption  /~~~~ */
 
@@ -121428,8 +121447,11 @@ class AmLineChart extends React.PureComponent {
 
     if (chartCaption) {
       var caption = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Label"]);
-      caption.text = chartCaption.text;
-      caption.fill = chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.text = chartCaption.text.text;
+      caption.fill = chartCaption.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.fontSize = chartCaption.text.fontSize;
+      caption.fontWeight = chartCaption.text.fontWeight;
+      caption.fontFamily = chartCaption.text.fontFamily;
       caption.align = chartCaption.align || "right";
     }
     /* ~~~~\  image  /~~~~ */
@@ -122251,15 +122273,13 @@ class AmScatterChart extends React.PureComponent {
 
     if (chartTitle) {
       var title = chart.titles.create();
-      title.text = chartTitle.text;
-      title.fill = chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
-      title.fontSize = chartTitle.fontSize || 22;
-      title.fontWeight = "bold";
-      title.fontFamily = "Tahoma"; // title.y = this.props.scrollbarX ? -56 : -42;
-      // title.x = -45;
-      // title.horizontalCenter = "left";
-      // title.zIndex = 100;
-      // title.fillOpacity = 1;
+      title.text = chartTitle.text.text;
+      title.fill = chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.fontFamily = chartTitle.text.fontFamily;
+      title.align = chartTitle.align || "left";
+      title.dy = -30;
     }
     /* ~~~~\  caption  /~~~~ */
 
@@ -122268,8 +122288,11 @@ class AmScatterChart extends React.PureComponent {
 
     if (chartCaption) {
       var caption = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Label"]);
-      caption.text = chartCaption.text;
-      caption.fill = chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.text = chartCaption.text.text;
+      caption.fill = chartCaption.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.fontSize = chartCaption.text.fontSize;
+      caption.fontWeight = chartCaption.text.fontWeight;
+      caption.fontFamily = chartCaption.text.fontFamily;
       caption.align = chartCaption.align || "right";
     }
     /* ~~~~\  image  /~~~~ */
@@ -122925,28 +122948,45 @@ class AmRangeAreaChart extends React.PureComponent {
       chart.exporting.menu = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["ExportMenu"]();
       chart.exporting.menu.items = _utils__WEBPACK_IMPORTED_MODULE_13__["exportMenuItems"];
     }
+    /* 		 ~~~~\  title  /~~~~ 
+    		let chartTitle = this.props.chartTitle;
+    		//let container;
+    		if(chartTitle) {
+    			//let title = chart.plotContainer.createChild(am4core.Label);
+    			//container = chart.plotContainer.createChild(am4core.Container);
+    			//container.y = this.props.scrollbarX ? -56 : -42;
+    			//container.x = -45;
+    			//container.horizontalCenter = "left";
+          //let title = container.createChild(am4core.Label);
+          let title = chart.titles.create();
+    			title.text = chartTitle.text;
+    			title.fill =
+    			  chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
+    			title.fontSize = chartTitle.fontSize || 22;
+    			title.fontWeight = "bold";
+    			title.fontFamily = "Tahoma";
+    			// title.y = this.props.scrollbarX ? -56 : -42;
+    			// title.x = -45;
+    			// title.horizontalCenter = "left";
+    			// title.zIndex = 100;
+    			// title.fillOpacity = 1;
+    		}
+     */
+
     /* ~~~~\  title  /~~~~ */
 
 
-    var chartTitle = this.props.chartTitle; //let container;
+    var chartTitle = this.props.chartTitle;
 
     if (chartTitle) {
-      //let title = chart.plotContainer.createChild(am4core.Label);
-      //container = chart.plotContainer.createChild(am4core.Container);
-      //container.y = this.props.scrollbarX ? -56 : -42;
-      //container.x = -45;
-      //container.horizontalCenter = "left";
-      //let title = container.createChild(am4core.Label);
       var title = chart.titles.create();
-      title.text = chartTitle.text;
-      title.fill = chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
-      title.fontSize = chartTitle.fontSize || 22;
-      title.fontWeight = "bold";
-      title.fontFamily = "Tahoma"; // title.y = this.props.scrollbarX ? -56 : -42;
-      // title.x = -45;
-      // title.horizontalCenter = "left";
-      // title.zIndex = 100;
-      // title.fillOpacity = 1;
+      title.text = chartTitle.text.text;
+      title.fill = chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.fontFamily = chartTitle.text.fontFamily;
+      title.align = chartTitle.align || "left";
+      title.dy = -30;
     }
     /* ~~~~\  caption  /~~~~ */
 
@@ -122955,8 +122995,11 @@ class AmRangeAreaChart extends React.PureComponent {
 
     if (chartCaption) {
       var caption = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Label"]);
-      caption.text = chartCaption.text;
-      caption.fill = chartCaption.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.text = chartCaption.text.text;
+      caption.fill = chartCaption.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.fontSize = chartCaption.text.fontSize;
+      caption.fontWeight = chartCaption.text.fontWeight;
+      caption.fontFamily = chartCaption.text.fontFamily;
       caption.align = chartCaption.align || "right";
     }
     /* ~~~~\  image  /~~~~ */
@@ -123529,6 +123572,532 @@ class AmRangeAreaChart extends React.PureComponent {
   }
 
 }
+/* COMPONENT: RADIAL BAR CHART */
+
+
+class AmRadialBarChart extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.style = this.style.bind(this);
+  }
+
+  style() {
+    if (window.Shiny && !window.FlexDashboard) {
+      return {
+        width: "100%",
+        height: "100%"
+      };
+    } else {
+      return {
+        width: this.props.width,
+        height: this.props.height
+      };
+    }
+  }
+
+  componentDidMount() {
+    var theme = this.props.theme,
+        chartLegend = this.props.legend,
+        category = this.props.category,
+        values = this.props.values,
+        minValue = this.props.minValue,
+        maxValue = this.props.maxValue,
+        data = HTMLWidgets.dataframeToD3(this.props.data),
+        dataCopy = HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [category].concat(values))),
+        data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, values)) : null,
+        valueNames = this.props.valueNames,
+        showValues = this.props.showValues,
+        cellWidth = this.props.cellWidth,
+        columnWidth = this.props.columnWidth,
+        xAxis = this.props.xAxis,
+        yAxis = this.props.yAxis,
+        draggable = this.props.draggable,
+        tooltips = this.props.tooltip,
+        valueFormatter = this.props.valueFormatter,
+        columnStyles = this.props.columnStyle,
+        bulletsStyle = this.props.bullets,
+        alwaysShowBullets = this.props.alwaysShowBullets,
+        cursor = this.props.cursor,
+        chartId = this.props.chartId,
+        shinyId = this.props.shinyId;
+
+    if (window.Shiny) {
+      if (shinyId === undefined) {
+        shinyId = $(document.getElementById(chartId)).parent().attr("id");
+      }
+
+      Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+    }
+
+    switch (theme) {
+      case "dark":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_dark__WEBPACK_IMPORTED_MODULE_4__["default"]);
+        break;
+
+      case "dataviz":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_dataviz__WEBPACK_IMPORTED_MODULE_5__["default"]);
+        break;
+
+      case "frozen":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_frozen__WEBPACK_IMPORTED_MODULE_6__["default"]);
+        break;
+
+      case "kelly":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_kelly__WEBPACK_IMPORTED_MODULE_7__["default"]);
+        break;
+
+      case "material":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_material__WEBPACK_IMPORTED_MODULE_8__["default"]);
+        break;
+
+      case "microchart":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_microchart__WEBPACK_IMPORTED_MODULE_9__["default"]);
+        break;
+
+      case "moonrisekingdom":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_moonrisekingdom__WEBPACK_IMPORTED_MODULE_10__["default"]);
+        break;
+
+      case "patterns":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_patterns__WEBPACK_IMPORTED_MODULE_11__["default"]);
+        break;
+
+      case "spiritedaway":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_spiritedaway__WEBPACK_IMPORTED_MODULE_12__["default"]);
+        break;
+    }
+
+    var chart = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["create"](this.props.chartId, _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["RadarChart"]);
+    chart.radius = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](100);
+    chart.innerRadius = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](this.props.innerRadius);
+    chart.data = data;
+    chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
+
+    if (this.props.chartTitle) {
+      chart.padding(50, 10, 10, 10);
+    } else {
+      chart.padding(10, 10, 10, 10);
+    }
+
+    chart.maskBullets = false; // allow bullets to go out of plot area
+
+    var chartBackgroundColor = this.props.backgroundColor || chart.background.fill;
+    chart.background.fill = chartBackgroundColor;
+    /* ~~~~\  Enable export  /~~~~ */
+
+    if (this.props.export) {
+      chart.exporting.menu = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["ExportMenu"]();
+      chart.exporting.menu.items = _utils__WEBPACK_IMPORTED_MODULE_13__["exportMenuItems"];
+    }
+    /* ~~~~\  title  /~~~~ */
+
+
+    var chartTitle = this.props.chartTitle;
+
+    if (chartTitle) {
+      var title = chart.titles.create();
+      title.dy = -30;
+      title.text = chartTitle.text.text;
+      title.fill = chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.fontFamily = chartTitle.text.fontFamily;
+      title.align = chartTitle.align || "left";
+    }
+    /* ~~~~\  caption  /~~~~ */
+
+
+    var chartCaption = this.props.caption;
+
+    if (chartCaption) {
+      var caption = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Label"]);
+      caption.text = chartCaption.text.text;
+      caption.fill = chartCaption.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.fontSize = chartCaption.text.fontSize;
+      caption.fontWeight = chartCaption.text.fontWeight;
+      caption.fontFamily = chartCaption.text.fontFamily;
+      caption.align = chartCaption.align || "right";
+    }
+    /* ~~~~\  image  /~~~~ */
+
+
+    if (this.props.image) {
+      _utils__WEBPACK_IMPORTED_MODULE_13__["Image"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, this.props.image);
+    }
+    /* ~~~~\  scrollbars  /~~~~ */
+
+
+    if (this.props.scrollbarX) {
+      chart.scrollbarX = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Scrollbar"]();
+    }
+
+    if (this.props.scrollbarY) {
+      chart.scrollbarY = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Scrollbar"]();
+    }
+    /* ~~~~\  button  /~~~~ */
+
+
+    var button = this.props.button;
+
+    if (button) {
+      var Button = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Button"]);
+      Button.label.text = button.text;
+      Button.label.fill = button.color || Button.label.fill;
+      Button.background.fill = button.fill || Button.background.fill;
+      setTimeout(function () {
+        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
+      }, 0);
+      Button.padding(5, 5, 5, 5);
+      Button.align = "right";
+      Button.marginRight = 15;
+      Button.events.on("hit", function () {
+        for (var r = 0; r < data.length; ++r) {
+          for (var v = 0; v < values.length; ++v) {
+            chart.data[r][values[v]] = data2[r][values[v]];
+          }
+        }
+
+        chart.invalidateRawData();
+
+        if (window.Shiny) {
+          Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", chart.data);
+          Shiny.setInputValue(shinyId + "_change", null);
+        }
+      });
+    }
+    /* ~~~~\  category axis  /~~~~ */
+
+
+    var categoryAxis = chart.xAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["CategoryAxis"]());
+    categoryAxis.paddingBottom = xAxis.adjust || 0;
+    categoryAxis.renderer.grid.template.location = 0;
+    categoryAxis.renderer.cellStartLocation = 1 - cellWidth / 100;
+    categoryAxis.renderer.cellEndLocation = cellWidth / 100;
+
+    if (xAxis && xAxis.title && xAxis.title.text !== "") {
+      categoryAxis.title.text = xAxis.title.text || category;
+      categoryAxis.title.fontWeight = "bold";
+      categoryAxis.title.fontSize = xAxis.title.fontSize || 20;
+      categoryAxis.title.fill = xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+    }
+
+    if (xAxis.labels) {
+      var xAxisLabels = categoryAxis.renderer.labels.template;
+      xAxisLabels.location = 0.5;
+      if (typeof xAxis.labels.radius === "number") xAxisLabels.radius = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](xAxis.labels.radius);
+      if (typeof xAxis.labels.relativeRotation === "number") xAxisLabels.relativeRotation = xAxis.labels.relativeRotation;
+      xAxisLabels.fontSize = xAxis.labels.fontSize || 14;
+      xAxisLabels.fill = xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+    } else {
+      categoryAxis.renderer.labels.template.disabled = true;
+    }
+
+    categoryAxis.dataFields.category = category; //categoryAxis.renderer.grid.template.disabled = true;
+    //categoryAxis.renderer.minGridDistance = 50;
+
+    categoryAxis.cursorTooltipEnabled = false;
+    /* ~~~~\  value axis  /~~~~ */
+
+    var valueAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("Y", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, yAxis, minValue, maxValue, false, theme, cursor);
+    /* ~~~~\ cursor /~~~~ */
+
+    if (cursor) {
+      chart.cursor = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYCursor"]();
+      chart.cursor.yAxis = valueAxis;
+      chart.cursor.lineX.disabled = true;
+    }
+    /* ~~~~\  legend  /~~~~ */
+
+
+    if (chartLegend) {
+      chart.legend = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Legend"]();
+      chart.legend.position = chartLegend.position || "bottom";
+      chart.legend.useDefaultMarker = false;
+      var markerTemplate = chart.legend.markers.template;
+      markerTemplate.width = chartLegend.itemsWidth || 20;
+      markerTemplate.height = chartLegend.itemsHeight || 20;
+      chart.legend.itemContainers.template.events.on("over", function (ev) {
+        ev.target.dataItem.dataContext.columns.each(function (x) {
+          x.column.isHover = true;
+        });
+      });
+      chart.legend.itemContainers.template.events.on("out", function (ev) {
+        ev.target.dataItem.dataContext.columns.each(function (x) {
+          x.column.isHover = false;
+        });
+      });
+    }
+    /* ~~~~\  function handling the drag event  /~~~~ */
+
+
+    function handleDrag(event) {
+      var dataItem = event.target.dataItem; //console.log(event.target);
+
+      var position = valueAxis.pointToPosition({
+        x: event.target.pixelX,
+        y: event.target.pixelY
+      }),
+          value = valueAxis.positionToValue(position);
+      console.log("value:", value); // convert coordinate to value
+      //			let value = valueAxis.yToValue(event.target.pixelY);
+      // set new value
+
+      dataItem.valueY = maxValue - value; // should I use minValue as well?
+      // make column hover
+
+      dataItem.column.isHover = true; // hide tooltip not to interrupt
+
+      dataItem.column.hideTooltip(0); // make bullet hovered (as it might hide if mouse moves away)
+
+      event.target.isHover = true;
+    }
+    /* 
+      trigger the "positionchanged" event on bullets when a resizing occurs, 
+      otherwise bullets are unresponsive  
+    */
+
+
+    chart.events.on("sizechanged", event => {
+      event.target.series.each(function (s) {
+        s.bulletsContainer.children.each(function (b) {
+          b.dispatchImmediately("positionchanged");
+        });
+      });
+    });
+    values.forEach(function (value, index) {
+      var series = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["RadarColumnSeries"]());
+      series.dataFields.categoryX = category;
+      series.dataFields.valueY = value;
+      series.name = valueNames[value];
+      series.sequencedInterpolation = true;
+      series.defaultState.interpolationDuration = 1500;
+      /* ~~~~\  value label  /~~~~ */
+
+      var valueLabel;
+
+      if (showValues) {
+        valueLabel = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LabelBullet"]();
+        series.bullets.push(valueLabel);
+        valueLabel.label.text = "{valueY.value.formatNumber('" + valueFormatter + "')}";
+        valueLabel.label.hideOversized = true;
+        valueLabel.label.truncate = false;
+        valueLabel.strokeOpacity = 0;
+        valueLabel.adapter.add("dy", (x, target) => {
+          if (target.dataItem.valueY > 0) {
+            return -10;
+          } else {
+            return 10;
+          }
+        });
+      }
+      /* ~~~~\  bullet  /~~~~ */
+
+
+      var bullet;
+      var columnStyle = columnStyles[value],
+          color = columnStyle.color || chart.colors.getIndex(index),
+          strokeColor = columnStyle.strokeColor || _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](columnStyle.color).lighten(-0.5);
+
+      if (alwaysShowBullets || draggable[value]) {
+        bullet = series.bullets.create();
+
+        if (!alwaysShowBullets) {
+          bullet.opacity = 0; // initially invisible
+
+          bullet.defaultState.properties.opacity = 0;
+        } // add sprite to bullet
+
+
+        var shapeConfig = bulletsStyle[value];
+
+        if (!shapeConfig.color) {
+          shapeConfig.color = color;
+        }
+
+        if (!shapeConfig.strokeColor) {
+          shapeConfig.strokeColor = strokeColor;
+        }
+
+        var shape = _utils__WEBPACK_IMPORTED_MODULE_13__["Shape"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, bullet, shapeConfig);
+      }
+
+      if (draggable[value]) {
+        // cursor when over
+        bullet.cursorOverStyle = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["MouseCursorStyle"].pointer;
+        bullet.draggable = true; // create bullet hover state
+
+        var hoverState = bullet.states.create("hover");
+        hoverState.properties.opacity = 1; // visible when hovered
+        // while dragging
+
+        bullet.events.on("drag", event => {
+          handleDrag(event);
+        }); // on dragging stop
+
+        bullet.events.on("dragstop", event => {
+          handleDrag(event);
+          var dataItem = event.target.dataItem;
+          dataItem.column.isHover = false;
+          event.target.isHover = false;
+          dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
+
+          if (window.Shiny) {
+            Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+            Shiny.setInputValue(shinyId + "_change", {
+              index: dataItem.index + 1,
+              category: dataItem.categoryX,
+              field: value,
+              value: dataItem.values.valueY.value
+            });
+          }
+        });
+      }
+      /* ~~~~\  column template  /~~~~ */
+
+
+      var columnTemplate = series.columns.template;
+      columnTemplate.width = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](columnWidth);
+      columnTemplate.fill = color;
+
+      if (columnStyle.colorAdapter) {
+        columnTemplate.adapter.add("fill", columnStyle.colorAdapter);
+
+        if (!columnStyle.strokeColor && !columnStyle.strokeColorAdapter) {
+          columnTemplate.adapter.add("stroke", (x, target) => {
+            var color = columnStyle.colorAdapter(x, target);
+            return _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](color).lighten(-0.5);
+          });
+        }
+      }
+
+      columnTemplate.stroke = strokeColor;
+
+      if (columnStyle.strokeColorAdapter) {
+        columnTemplate.adapter.add("stroke", columnStyle.strokeColorAdapter);
+      }
+
+      columnTemplate.strokeOpacity = 1;
+      columnTemplate.radarColumn.fillOpacity = columnStyle.opacity || 0.8;
+      columnTemplate.radarColumn.strokeWidth = typeof columnStyle.strokeWidth === "number" ? columnStyle.strokeWidth : 4;
+      /* ~~~~\  tooltip  /~~~~ */
+
+      if (tooltips) {
+        columnTemplate.tooltipText = tooltips[value].text;
+        var tooltip = _utils__WEBPACK_IMPORTED_MODULE_13__["Tooltip"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, tooltips[value]);
+        tooltip.pointerOrientation = "vertical";
+        tooltip.dy = 0;
+        tooltip.adapter.add("rotation", (x, target) => {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip.label.adapter.add("verticalCenter", (x, target) => {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
+              return "none";
+            } else {
+              return "bottom";
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip.label.adapter.add("rotation", (x, target) => {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        columnTemplate.tooltip = tooltip;
+        columnTemplate.adapter.add("tooltipY", (x, target) => {
+          if (target.dataItem.valueY > 0) {
+            return 0;
+          } else {
+            return -valueAxis.valueToPoint(maxValue - target.dataItem.valueY).y;
+          }
+        });
+      }
+
+      var cr = columnStyle.cornerRadius || 8;
+      columnTemplate.radarColumn.adapter.add("cornerRadius", (x, target) => {
+        if (target.dataItem.valueY > 0) {
+          return target.isHover ? 2 * cr : cr;
+        } else {
+          return 0;
+        }
+      });
+      columnTemplate.radarColumn.innerCornerRadius = 0; // columns hover state
+
+      var columnHoverState = columnTemplate.radarColumn.states.create("hover"); // you can change any property on hover state and it will be animated
+
+      columnHoverState.properties.fillOpacity = 1;
+      columnHoverState.properties.strokeWidth = columnStyle.strokeWidth + 2;
+
+      if (tooltips && showValues) {
+        // hide label when hovered because the tooltip is shown
+        columnTemplate.events.on("over", event => {
+          var dataItem = event.target.dataItem;
+          var itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
+          itemLabelBullet.fillOpacity = 0;
+        }); // show label when mouse is out
+
+        columnTemplate.events.on("out", event => {
+          var dataItem = event.target.dataItem;
+          var itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
+          itemLabelBullet.fillOpacity = 1;
+        });
+      }
+
+      if (draggable[value]) {
+        // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
+        columnTemplate.events.on("down", event => {
+          var dataItem = event.target.dataItem;
+          var itemBullet = dataItem.bullets.getKey(bullet.uid);
+          itemBullet.dragStart(event.pointer);
+        }); // when columns position changes, adjust minX/maxX of bullets so that we could only dragg vertically
+
+        columnTemplate.events.on("positionchanged", event => {
+          var dataItem = event.target.dataItem;
+
+          if (dataItem.bullets) {
+            var itemBullet = dataItem.bullets.getKey(bullet.uid);
+            var column = dataItem.column;
+            itemBullet.minX = column.pixelX + column.pixelWidth / 2;
+            itemBullet.maxX = itemBullet.minX;
+            itemBullet.minY = 0;
+            itemBullet.maxY = chart.seriesContainer.pixelHeight;
+          }
+        });
+      }
+    });
+    this.chart = chart;
+  }
+
+  componentWillUnmount() {
+    if (this.chart) {
+      this.chart.dispose();
+    }
+  }
+
+  render() {
+    return /*#__PURE__*/React.createElement("div", {
+      id: this.props.chartId,
+      style: this.style()
+    });
+  }
+
+}
 /* CREATE WIDGETS */
 
 
@@ -123537,7 +124106,8 @@ Object(reactR__WEBPACK_IMPORTED_MODULE_0__["reactWidget"])('amChart4', 'output',
   AmHorizontalBarChart: AmHorizontalBarChart,
   AmLineChart: AmLineChart,
   AmScatterChart: AmScatterChart,
-  AmRangeAreaChart: AmRangeAreaChart
+  AmRangeAreaChart: AmRangeAreaChart,
+  AmRadialBarChart: AmRadialBarChart
 }, {});
 
 /***/ }),
@@ -123871,8 +124441,9 @@ var createAxis = function createAxis(XY, am4charts, am4core, chart, axisSettings
 
   if (axisSettings && axisSettings.title && axisSettings.title.text !== "") {
     Axis.title.text = axisSettings.title.text;
-    Axis.title.fontWeight = "bold";
+    Axis.title.fontWeight = axisSettings.title.fontWeight || "bold";
     Axis.title.fontSize = axisSettings.title.fontSize || 20;
+    Axis.title.fontFamily = axisSettings.title.fontFamily;
     Axis.title.fill = axisSettings.title.color || (theme === "dark" ? "#ffffff" : "#000000");
   }
 
@@ -123885,8 +124456,8 @@ var createAxis = function createAxis(XY, am4charts, am4core, chart, axisSettings
   if (axisSettings.gridLines) {
     if (BreaksType === "interval") Axis.renderer.minGridDistance = axisSettings.breaks;
     Axis.renderer.grid.template.stroke = axisSettings.gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
-    Axis.renderer.grid.template.strokeOpacity = axisSettings.gridLines.opacity || 0.2;
-    Axis.renderer.grid.template.strokeWidth = axisSettings.gridLines.width || 1;
+    Axis.renderer.grid.template.strokeOpacity = typeof axisSettings.gridLines.opacity === "number" ? axisSettings.gridLines.opacity : 0.2;
+    Axis.renderer.grid.template.strokeWidth = typeof axisSettings.gridLines.width === "number" ? axisSettings.gridLines.width : 1;
 
     if (axisSettings.gridLines.dash) {
       Axis.renderer.grid.template.strokeDasharray = axisSettings.gridLines.dash;
@@ -123917,15 +124488,19 @@ var createAxis = function createAxis(XY, am4charts, am4core, chart, axisSettings
       Axis.endLocation = 0.5; // ??
     }
 
-    var axisSettingsLabels = Axis.renderer.labels.template;
-    axisSettingsLabels.fontSize = axisSettings.labels.fontSize || 17;
-    axisSettingsLabels.rotation = axisSettings.labels.rotation || 0;
+    if (axisSettings.labels) {
+      var axisSettingsLabels = Axis.renderer.labels.template;
+      axisSettingsLabels.fontSize = axisSettings.labels.fontSize || 17;
+      axisSettingsLabels.rotation = axisSettings.labels.rotation || 0;
 
-    if (XY === "x" && axisSettingsLabels.rotation !== 0) {
-      axisSettingsLabels.horizontalCenter = "right";
+      if (XY === "x" && axisSettingsLabels.rotation !== 0) {
+        axisSettingsLabels.horizontalCenter = "right";
+      }
+
+      axisSettingsLabels.fill = axisSettings.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+    } else {
+      Axis.renderer.labels.template.disabled = true;
     }
-
-    axisSettingsLabels.fill = axisSettings.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
   }
 
   if (XY === "X") {
