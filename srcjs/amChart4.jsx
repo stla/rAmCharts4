@@ -3917,6 +3917,532 @@ class AmRadialBarChart extends React.PureComponent {
 
 
 
+/* COMPONENT: DUMBBELL CHART */
+
+class AmDumbbellChart extends React.PureComponent {
+
+  constructor(props) {
+    super(props);
+    this.style = this.style.bind(this);
+  }
+
+  style() {
+    if(window.Shiny && !window.FlexDashboard) {
+      return {width: "100%", height: "100%"};
+    } else {
+      return {width: this.props.width, height: this.props.height};
+    }
+  }
+
+  componentDidMount() {
+
+    let theme = this.props.theme,
+      chartLegend = this.props.legend,
+      category = this.props.category,
+      values = this.props.values,
+      minValue = this.props.minValue,
+      maxValue = this.props.maxValue,
+      data = HTMLWidgets.dataframeToD3(
+        this.props.data
+      ),
+      dataCopy = HTMLWidgets.dataframeToD3(
+        utils.subset(this.props.data, [category].concat(values.flat()))
+      ),
+      data2 = this.props.data2 ?
+        HTMLWidgets.dataframeToD3(utils.subset(this.props.data2, values.flat())) :
+        null,
+      valueNames = this.props.valueNames,
+      seriesNames = this.props.seriesNames,
+      xAxis = this.props.xAxis,
+      yAxis = this.props.yAxis,
+      draggable = this.props.draggable,
+      tooltips = this.props.tooltip,
+      valueFormatter = this.props.valueFormatter,
+      segmentsStyles = this.props.segmentsStyle,
+      bulletsStyle = this.props.bullets,
+      cursor = this.props.cursor,
+      chartId = this.props.chartId,
+      shinyId = this.props.shinyId;
+
+    if(window.Shiny) {
+      if(shinyId === undefined) {
+        shinyId = $(document.getElementById(chartId)).parent().attr("id");
+      }
+      Shiny.setInputValue(
+        shinyId + ":rAmCharts4.dataframe", dataCopy
+      );
+    }
+
+    switch(theme) {
+      case "dark":
+        am4core.useTheme(am4themes_dark);
+        break;
+      case "dataviz":
+        am4core.useTheme(am4themes_dataviz);
+        break;
+      case "frozen":
+        am4core.useTheme(am4themes_frozen);
+        break;
+      case "kelly":
+        am4core.useTheme(am4themes_kelly);
+        break;
+      case "material":
+        am4core.useTheme(am4themes_material);
+        break;
+      case "microchart":
+        am4core.useTheme(am4themes_microchart);
+        break;
+      case "moonrisekingdom":
+        am4core.useTheme(am4themes_moonrisekingdom);
+        break;
+      case "patterns":
+        am4core.useTheme(am4themes_patterns);
+        break;
+      case "spiritedaway":
+        am4core.useTheme(am4themes_spiritedaway);
+        break;
+    }
+
+    let chart;
+    chart = am4core.create(this.props.chartId, am4charts.XYChart);
+
+    chart.data = data;
+
+    chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
+    chart.padding(50, 40, 0, 10);
+    chart.maskBullets = false; // allow bullets to go out of plot area
+    let chartBackgroundColor =
+      this.props.backgroundColor || chart.background.fill;
+    chart.background.fill = chartBackgroundColor;
+
+
+    /* ~~~~\  Enable export  /~~~~ */
+    if(this.props.export) {
+      chart.exporting.menu = new am4core.ExportMenu();
+      chart.exporting.menu.items = utils.exportMenuItems;
+    }
+
+
+		/* ~~~~\  title  /~~~~ */
+		let chartTitle = this.props.chartTitle;
+		if(chartTitle) {
+      let title = chart.titles.create();
+			title.text = chartTitle.text.text;
+			title.fill =
+			  chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+			title.fontSize = chartTitle.text.fontSize || 22;
+			title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.fontFamily = chartTitle.text.fontFamily;
+      title.align = chartTitle.align || "left";
+      title.dy = -30;
+		}
+
+
+    /* ~~~~\  caption  /~~~~ */
+    let chartCaption = this.props.caption;
+    if(chartCaption) {
+      let caption = chart.chartContainer.createChild(am4core.Label);
+      caption.text = chartCaption.text.text;
+      caption.fill =
+        chartCaption.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.fontSize = chartCaption.text.fontSize;
+      caption.fontWeight = chartCaption.text.fontWeight;
+      caption.fontFamily = chartCaption.text.fontFamily;
+      caption.align = chartCaption.align || "right";
+    }
+
+
+    /* ~~~~\  image  /~~~~ */
+    if(this.props.image) {
+      utils.Image(am4core, chart, this.props.image);
+    }
+
+
+    /* ~~~~\  scrollbars  /~~~~ */
+    if(this.props.scrollbarX) {
+      chart.scrollbarX = new am4core.Scrollbar();
+    }
+    if(this.props.scrollbarY) {
+      chart.scrollbarY = new am4core.Scrollbar();
+    }
+
+
+		/* ~~~~\  button  /~~~~ */
+		let button = this.props.button;
+		if(button) {
+  		let Button = chart.chartContainer.createChild(am4core.Button);
+      Button.label.text = button.text;
+      Button.label.fill = button.color || Button.label.fill;
+      Button.background.fill = button.fill || Button.background.fill;
+      setTimeout(function() {
+        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
+      }, 0);
+      Button.padding(5, 5, 5, 5);
+      Button.align = "right";
+      Button.marginRight = 15;
+      Button.events.on("hit", function() {
+        for (let r = 0; r < data.length; ++r){
+          for (let v = 0; v < values.length; ++v) {
+            chart.data[r][values[v]] = data2[r][values[v]];
+          }
+        }
+        chart.invalidateRawData();
+        if(window.Shiny) {
+          Shiny.setInputValue(
+            shinyId + ":rAmCharts4.dataframe", chart.data
+          );
+          Shiny.setInputValue(shinyId + "_change", null);
+        }
+      });
+		}
+
+
+		/* ~~~~\  category axis  /~~~~ */
+		let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+		categoryAxis.paddingBottom = xAxis.adjust || 0;
+		categoryAxis.renderer.grid.template.location = 0;
+		//categoryAxis.renderer.cellStartLocation = 1 - cellWidth/100;
+		//categoryAxis.renderer.cellEndLocation = cellWidth/100;
+		if(xAxis && xAxis.title && xAxis.title.text !== "") {
+  		categoryAxis.title.text = xAxis.title.text || category;
+  		categoryAxis.title.fontWeight = xAxis.title.fontWeight || "bold";
+      categoryAxis.title.fontSize = xAxis.title.fontSize || 20;
+      categoryAxis.title.fontFamily = xAxis.title.fontFamily;
+  		categoryAxis.title.fill =
+  		  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+		}
+		let xAxisLabels = categoryAxis.renderer.labels.template;
+		xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
+		xAxisLabels.rotation = xAxis.labels.rotation || 0;
+		if(xAxisLabels.rotation !== 0) {
+		  xAxisLabels.horizontalCenter = "right";
+		}
+		xAxisLabels.fill =
+		  xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+		categoryAxis.dataFields.category = category;
+		categoryAxis.renderer.grid.template.disabled = true;
+		categoryAxis.renderer.minGridDistance = 50;
+    categoryAxis.cursorTooltipEnabled = false;
+
+		/* ~~~~\  value axis  /~~~~ */
+    let valueAxis = utils.createAxis(
+      "Y", am4charts, am4core, chart, yAxis, 
+      minValue, maxValue, false, theme, cursor
+    );
+
+
+		/* ~~~~\ cursor /~~~~ */
+		if(cursor) {
+      chart.cursor = new am4charts.XYCursor();
+      chart.cursor.yAxis = valueAxis;
+      chart.cursor.lineX.disabled = true;
+    }
+
+
+    /* ~~~~\  legend  /~~~~ */
+    if(chartLegend) {
+      chart.legend = new am4charts.Legend();
+      chart.legend.position = chartLegend.position || "bottom";
+      chart.legend.useDefaultMarker = false;
+      let markerTemplate = chart.legend.markers.template;
+      markerTemplate.width = chartLegend.itemsWidth || 20;
+      markerTemplate.height = chartLegend.itemsHeight || 20;
+      chart.legend.itemContainers.template.events.on("over", function(ev) {
+        ev.target.dataItem.dataContext.columns.each(function(x) {
+          x.column.isHover = true;
+        })
+      });
+      chart.legend.itemContainers.template.events.on("out", function(ev) {
+        ev.target.dataItem.dataContext.columns.each(function(x) {
+          x.column.isHover = false;
+        })
+      });
+    }
+
+
+		/* ~~~~\  function handling the drag event  /~~~~ */
+		function handleDrag(event) {
+      console.log("handleDrag event", event);
+			var dataItem = event.target.dataItem;
+			// convert coordinate to value
+			let value = valueAxis.yToValue(event.target.pixelY);
+			// set new value
+			dataItem.valueY = value;
+			// make column hover
+      //dataItem.column.isHover = true;
+      
+			// hide tooltip not to interrupt
+      //dataItem.column.hideTooltip(0);
+      event.target.hideTooltip(0);
+			// make bullet hovered (as it might hide if mouse moves away)
+			event.target.isHover = true;
+		}
+
+		/* ~~~~\  function handling the dragstop event  /~~~~ */
+		function handleDragStop(event, value) {
+      console.log("bullet dragstop");
+      handleDrag(event);
+      let dataItem = event.target.dataItem;
+      //dataItem.component.isHover = false; // XXXX
+      event.target.isHover = false;
+      dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
+
+      if(window.Shiny) {
+        Shiny.setInputValue(
+          shinyId + ":rAmCharts4.dataframe", dataCopy
+        );
+        Shiny.setInputValue(shinyId + "_change", {
+          index: dataItem.index + 1,
+          category: dataItem.categoryX,
+          variable: value,
+          value: dataItem.values.valueY.value
+        });
+      }
+		}
+
+
+    /* 
+      trigger the "positionchanged" event on bullets when a resizing occurs, 
+      otherwise bullets are unresponsive  
+    */
+    chart.events.on("sizechanged", event => {
+      event.target.series.each(function(s) {
+        s.bulletsContainer.children.each(function(b) {
+          b.dispatchImmediately("positionchanged");
+        });
+      });
+    });
+
+
+		values.forEach(function(y1y2, index){
+
+      let y1 = y1y2[0], y2 = y1y2[1];
+
+      let series1 = chart.series.push(new am4charts.ColumnSeries()),
+        series2 = chart.series.push(new am4charts.LineSeries());
+      series2.hiddenInLegend = true;
+      series2.strokeWidth = 0;
+      series2.strokeOpacity = 0;
+      series1.dataFields.categoryX = category;
+      series2.dataFields.categoryX = category;
+      series1.dataFields.valueY = y1;
+      series2.dataFields.valueY = y2;
+      series1.name = seriesNames[index];
+      series2.name = valueNames[y2];
+      series1.dataFields.openValueY = y2;
+      series2.dataFields.openValueY = y1;
+//      series1.fill = areas[index].color || chart.colors.getIndex(index);
+//      series1.fillOpacity = areas[index].opacity;
+      //series2.fillOpacity = series1.fillOpacity;
+      //series2.zIndex = -1;
+      series1.sequencedInterpolation = true;
+      series2.sequencedInterpolation = true;
+      series1.defaultState.interpolationDuration = 1000;
+      series2.defaultState.interpolationDuration = 1500;
+      /* ~~~~\  bullet  /~~~~ */
+      let bullet1 = series1.bullets.push(new am4charts.Bullet()),
+        shape1 = utils.Shape(am4core, chart, index, bullet1, bulletsStyle[y1]);
+      let bullet2 = series2.bullets.push(new am4charts.Bullet()),
+        shape2 = utils.Shape(am4core, chart, index, bullet2, bulletsStyle[y2]);
+      if(tooltips) {
+        /* ~~~~\  tooltip  /~~~~ */
+        bullet1.tooltipText = tooltips[y1].text;
+        let tooltip1 = utils.Tooltip(am4core, chart, index, tooltips[y1]);
+        bullet2.tooltipText = tooltips[y2].text;
+        let tooltip2 = utils.Tooltip(am4core, chart, index, tooltips[y2]);
+        tooltip1.pointerOrientation = "horizontal";
+        tooltip1.dy = 0;
+        tooltip2.pointerOrientation = "horizontal";
+        tooltip2.dy = 0;
+        bullet1.tooltip = tooltip1;
+        bullet2.tooltip = tooltip2;
+      }
+      // create bullet hover state
+      let hoverState1 = shape1.states.create("hover");
+      hoverState1.properties.strokeWidth = shape1.strokeWidth + 3;
+      hoverState1.properties.opacity = 1; // visible when hovered
+      let hoverState2 = shape2.states.create("hover");
+      hoverState2.properties.strokeWidth = shape2.strokeWidth + 3;
+      hoverState2.properties.opacity = 1; // visible when hovered
+      if(draggable[y1]) {
+        bullet1.draggable = true;
+        // resize cursor when over
+        bullet1.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
+        // while dragging
+        bullet1.events.on("drag", event => {
+          handleDrag(event);
+        });
+        // on dragging stop
+        bullet1.events.on("dragstop", event => {
+          handleDragStop(event, y1);
+        });
+        // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
+        bullet1.events.on("down", event => {
+          let dataItem = event.target.dataItem;
+          let itemBullet = dataItem.bullets.getKey(bullet1.uid);
+          itemBullet.dragStart(event.pointer);
+        });
+        // when line position changes, adjust minX/maxX of bullets so that we could only dragg vertically
+        bullet1.events.on("positionchanged", event => {
+          console.log("positionchanged event", event);
+          let dataItem = event.target.dataItem;
+          if(dataItem.bullets) {
+            let itemBullet = dataItem.bullets.getKey(bullet1.uid);
+            let column = dataItem.column;
+            itemBullet.minX = column.pixelX + column.pixelWidth / 2;
+            itemBullet.maxX = itemBullet.minX;
+            itemBullet.minY = 0;
+            itemBullet.maxY = chart.seriesContainer.pixelHeight;
+          }
+        });
+      }
+      if(draggable[y2]) {
+        bullet2.draggable = true;
+        // resize cursor when over
+        bullet2.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
+        // while dragging
+        bullet2.events.on("drag", event => {
+          handleDrag(event);
+          let dataItem = event.target.dataItem;
+          series1.dataItems.values[dataItem.index].openValueY = dataItem.valueY;
+        });
+        // on dragging stop
+        bullet2.events.on("dragstop", event => {
+          handleDragStop(event, y2);
+        });
+        // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
+        bullet2.events.on("down", event => {
+          let dataItem = event.target.dataItem;
+          let itemBullet = dataItem.bullets.getKey(bullet2.uid);
+          itemBullet.dragStart(event.pointer);
+        });
+        // when line position changes, adjust minX/maxX of bullets so that we could only dragg vertically
+        bullet2.events.on("positionchanged", event => {
+          let dataItem = event.target.dataItem;
+          if(dataItem.bullets) {
+            let itemBullet = dataItem.bullets.getKey(bullet2.uid);
+            console.log("bullet2 poschanged", dataItem);
+            let point = dataItem.point;
+            itemBullet.minX = point.x;
+            itemBullet.maxX = itemBullet.minX;
+            itemBullet.minY = 0;
+            itemBullet.maxY = chart.seriesContainer.pixelHeight;
+          }
+        });
+      }
+
+      /* ~~~~\  column template  /~~~~ */
+      let columnStyle = segmentsStyles[seriesNames[index]];
+      let columnTemplate = series1.columns.template;
+      console.log("columnTemplaye", columnTemplate);
+      columnTemplate.width = columnStyle.width || 1; //am4core.percent(columnWidth);
+      columnTemplate.fill = columnStyle.color || chart.colors.getIndex(index);
+      if(columnStyle.colorAdapter) { // TODO
+        columnTemplate.adapter.add("fill", columnStyle.colorAdapter);
+        columnTemplate.adapter.add("stroke", columnStyle.colorAdapter);
+      }
+      columnTemplate.stroke = columnTemplate.fill;
+      columnTemplate.strokeOpacity = 1;
+      columnTemplate.column.fillOpacity = 1;
+      columnTemplate.column.strokeWidth = 1;
+      /* ~~~~\  tooltip  /~~~~ */
+      /*if(tooltips) {
+        columnTemplate.tooltipText = tooltips[value].text;
+        let tooltip = utils.Tooltip(am4core, chart, index, tooltips[value]);
+        tooltip.pointerOrientation = "vertical";
+        tooltip.dy = 0;
+        tooltip.adapter.add("rotation", (x, target) => {
+          if(target.dataItem) {
+            if(target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip.label.adapter.add("verticalCenter", (x, target) => {
+          if(target.dataItem) {
+            if(target.dataItem.valueY >= 0) {
+              return "none";
+            } else {
+              return "bottom";
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip.label.adapter.add("rotation", (x, target) => {
+          if(target.dataItem) {
+            if(target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        columnTemplate.tooltip = tooltip;
+        columnTemplate.adapter.add("tooltipY", (x, target) => {
+          if(target.dataItem.valueY > 0) {
+            return 0;
+          } else {
+            return -valueAxis.valueToPoint(maxValue - target.dataItem.valueY).y;
+          }
+        });
+      }*/
+      // columns hover state
+      let columnHoverState = columnTemplate.column.states.create("hover");
+      // you can change any property on hover state and it will be animated
+      columnHoverState.properties.strokeWidth = 4;
+/*      if(draggable[value]) {
+        // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
+        columnTemplate.events.on("down", event => {
+          let dataItem = event.target.dataItem;
+          let itemBullet = dataItem.bullets.getKey(bullet.uid);
+          itemBullet.dragStart(event.pointer);
+        });
+        // when columns position changes, adjust minX/maxX of bullets so that we could only dragg vertically
+        columnTemplate.events.on("positionchanged", event => {
+          let dataItem = event.target.dataItem;
+          if(dataItem.bullets) {
+            //console.log('dataItem.bullets', dataItem.bullets);
+            //console.log('bullet.uid', bullet.uid);
+            let itemBullet = dataItem.bullets.getKey(bullet.uid);
+            let column = dataItem.column;
+            itemBullet.minX = column.pixelX + column.pixelWidth / 2;
+            itemBullet.maxX = itemBullet.minX;
+            itemBullet.minY = 0;
+            itemBullet.maxY = chart.seriesContainer.pixelHeight;
+          }
+        });
+      } */
+    });
+
+    this.chart = chart;
+
+  }
+
+  componentWillUnmount() {
+    if(this.chart) {
+      this.chart.dispose();
+    }
+  }
+
+  render() {
+    return (
+      <div
+        id = {this.props.chartId}
+        style = {this.style()}
+      ></div>
+    );
+  }
+}
+
+
+
 /* CREATE WIDGETS */
 
 reactWidget(
@@ -3928,7 +4454,8 @@ reactWidget(
     AmLineChart: AmLineChart,
     AmScatterChart: AmScatterChart,
     AmRangeAreaChart: AmRangeAreaChart,
-    AmRadialBarChart: AmRadialBarChart
+    AmRadialBarChart: AmRadialBarChart,
+    AmDumbbellChart: AmDumbbellChart
   },
   {}
 );
