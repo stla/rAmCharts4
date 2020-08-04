@@ -1,7 +1,8 @@
 #' Segment style
 #' @description Create a list of settings for a segment.
 #'
-#' @param color color of the segment
+#' @param color color of the segment; this can be a
+#'   \link[rAmCharts4:amColorAdapterFromVector]{color adapter}
 #' @param width width of the segment
 #'
 #' @return A list of settings for a segment.
@@ -13,8 +14,10 @@
 #'
 #' @export
 amSegment <- function(color = NULL, width = 1){
+  colorAdapter <- class(color) == "JS_EVAL"
   segment <- list(
-    color = validateColor(color),
+    color = if(!colorAdapter) validateColor(color),
+    colorAdapter = if(colorAdapter) color,
     width = width
   )
   class(segment) <- "segment"

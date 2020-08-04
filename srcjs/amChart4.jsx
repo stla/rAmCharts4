@@ -4179,13 +4179,13 @@ class AmDumbbellChart extends React.PureComponent {
 		}
 
 		/* ~~~~\  function handling the dragstop event  /~~~~ */
-		function handleDragStop(event, value) {
+		function handleDragStop(event, value, field) {
       console.log("bullet dragstop");
       //handleDrag(event);
       let dataItem = event.target.dataItem;
-      //dataItem.component.isHover = false; // XXXX
       event.target.isHover = false;
-      dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
+      let newValue = dataItem.values[field].value;
+      dataCopy[dataItem.index][value] = newValue;
 
       if(window.Shiny) {
         Shiny.setInputValue(
@@ -4195,7 +4195,7 @@ class AmDumbbellChart extends React.PureComponent {
           index: dataItem.index + 1,
           category: dataItem.categoryX,
           variable: value,
-          value: dataItem.values.valueY.value
+          value: newValue
         });
       }
 		}
@@ -4232,7 +4232,6 @@ class AmDumbbellChart extends React.PureComponent {
       series2.name = valueNames[y2];
       series1.dataFields.openValueY = y2;
       series2.dataFields.openValueY = y1;
-
 //      series1.fill = areas[index].color || chart.colors.getIndex(index);
 //      series1.fillOpacity = areas[index].opacity;
       //series2.fillOpacity = series1.fillOpacity;
@@ -4262,10 +4261,10 @@ class AmDumbbellChart extends React.PureComponent {
       }
       // create bullet hover state
       let hoverState1 = shape1.states.create("hover");
-      hoverState1.properties.strokeWidth = shape1.strokeWidth + 3;
+      hoverState1.properties.strokeWidth = shape1.strokeWidth + 2;
       hoverState1.properties.opacity = 1; // visible when hovered
       let hoverState2 = shape2.states.create("hover");
-      hoverState2.properties.strokeWidth = shape2.strokeWidth + 3;
+      hoverState2.properties.strokeWidth = shape2.strokeWidth + 2;
       hoverState2.properties.opacity = 1; // visible when hovered
       if(draggable[y1]) {
         bullet1.draggable = true;
@@ -4285,7 +4284,7 @@ class AmDumbbellChart extends React.PureComponent {
         });
         // on dragging stop
         bullet1.events.on("dragstop", event => {
-          handleDragStop(event, y1);
+          handleDragStop(event, y2, "openValueY");
         });
         // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
         bullet1.events.on("down", event => {
@@ -4295,7 +4294,6 @@ class AmDumbbellChart extends React.PureComponent {
         });
         // when line position changes, adjust minX/maxX of bullets so that we could only dragg vertically
         bullet1.events.on("positionchanged", event => {
-          console.log("positionchanged event", event);
           let dataItem = event.target.dataItem;
           if(dataItem.bullets) {
             let itemBullet = dataItem.bullets.getKey(bullet1.uid);
@@ -4325,7 +4323,7 @@ class AmDumbbellChart extends React.PureComponent {
         });
         // on dragging stop
         bullet2.events.on("dragstop", event => {
-          handleDragStop(event, y2);
+          handleDragStop(event, y1, "valueY");
         });
         // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
         bullet2.events.on("down", event => {
@@ -4338,9 +4336,6 @@ class AmDumbbellChart extends React.PureComponent {
           let dataItem = event.target.dataItem;
           if(dataItem.bullets) {
             let itemBullet = dataItem.bullets.getKey(bullet2.uid);
-            console.log("bullet2 poschanged", dataItem);
-            //let point = dataItem.point;
-            //itemBullet.minX = point.x;
             let column = dataItem.column;
             itemBullet.minX = column.pixelX + column.pixelWidth / 2;
             itemBullet.maxX = itemBullet.minX;
@@ -4353,10 +4348,9 @@ class AmDumbbellChart extends React.PureComponent {
       /* ~~~~\  column template  /~~~~ */
       let columnStyle = segmentsStyles[seriesNames[index]];
       let columnTemplate = series1.columns.template;
-      console.log("columnTemplaye", columnTemplate);
-      columnTemplate.width = columnStyle.width || 1; //am4core.percent(columnWidth);
+      columnTemplate.width = columnStyle.width || 1; 
       columnTemplate.fill = columnStyle.color || chart.colors.getIndex(index);
-      if(columnStyle.colorAdapter) { // TODO
+      if(columnStyle.colorAdapter) { 
         columnTemplate.adapter.add("fill", columnStyle.colorAdapter);
         columnTemplate.adapter.add("stroke", columnStyle.colorAdapter);
       }
@@ -4364,80 +4358,27 @@ class AmDumbbellChart extends React.PureComponent {
       columnTemplate.strokeOpacity = 1;
       columnTemplate.column.fillOpacity = 1;
       columnTemplate.column.strokeWidth = 1;
-      /* ~~~~\  tooltip  /~~~~ */
-      /*if(tooltips) {
-        columnTemplate.tooltipText = tooltips[value].text;
-        let tooltip = utils.Tooltip(am4core, chart, index, tooltips[value]);
-        tooltip.pointerOrientation = "vertical";
-        tooltip.dy = 0;
-        tooltip.adapter.add("rotation", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
-              return 0;
-            } else {
-              return 180;
-            }
-          } else {
-            return x;
-          }
-        });
-        tooltip.label.adapter.add("verticalCenter", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
-              return "none";
-            } else {
-              return "bottom";
-            }
-          } else {
-            return x;
-          }
-        });
-        tooltip.label.adapter.add("rotation", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
-              return 0;
-            } else {
-              return 180;
-            }
-          } else {
-            return x;
-          }
-        });
-        columnTemplate.tooltip = tooltip;
-        columnTemplate.adapter.add("tooltipY", (x, target) => {
-          if(target.dataItem.valueY > 0) {
-            return 0;
-          } else {
-            return -valueAxis.valueToPoint(maxValue - target.dataItem.valueY).y;
-          }
-        });
-      }*/
       // columns hover state
       let columnHoverState = columnTemplate.column.states.create("hover");
       // you can change any property on hover state and it will be animated
-      columnHoverState.properties.strokeWidth = 4;
-/*      if(draggable[value]) {
-        // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
-        columnTemplate.events.on("down", event => {
-          let dataItem = event.target.dataItem;
-          let itemBullet = dataItem.bullets.getKey(bullet.uid);
-          itemBullet.dragStart(event.pointer);
-        });
-        // when columns position changes, adjust minX/maxX of bullets so that we could only dragg vertically
-        columnTemplate.events.on("positionchanged", event => {
-          let dataItem = event.target.dataItem;
-          if(dataItem.bullets) {
-            //console.log('dataItem.bullets', dataItem.bullets);
-            //console.log('bullet.uid', bullet.uid);
-            let itemBullet = dataItem.bullets.getKey(bullet.uid);
-            let column = dataItem.column;
-            itemBullet.minX = column.pixelX + column.pixelWidth / 2;
-            itemBullet.maxX = itemBullet.minX;
-            itemBullet.minY = 0;
-            itemBullet.maxY = chart.seriesContainer.pixelHeight;
-          }
-        });
-      } */
+      columnHoverState.properties.strokeWidth = 3;
+      // trigger bullet hover state
+      columnTemplate.events.on("over", event => {
+        let dataItem = event.target.dataItem,
+          itemBullet1 = dataItem.bullets.getKey(bullet1.uid),
+          itemBullet2 = dataItem.bullets.getKey(bullet2.uid);
+        itemBullet1.children.getIndex(0).isHover = true;
+        itemBullet2.children.getIndex(0).isHover = true;
+      });
+      columnTemplate.events.on("out", event => {
+        let dataItem = event.target.dataItem,
+          itemBullet1 = dataItem.bullets.getKey(bullet1.uid),
+          itemBullet2 = dataItem.bullets.getKey(bullet2.uid);
+        itemBullet1.children.getIndex(0).isHover = false;
+        itemBullet2.children.getIndex(0).isHover = false;
+      });
+
+
     });
 
     this.chart = chart;

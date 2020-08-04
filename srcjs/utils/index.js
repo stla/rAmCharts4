@@ -83,11 +83,13 @@ export const Shape = function(am4core, chart, index, bullet, shapeConfig) {
   shape.horizontalCenter = "middle";
   shape.verticalCenter = "middle";
   shape.fill = shapeConfig.color || chart.colors.getIndex(index);
-  shape.fillOpacity = shapeConfig.opacity || 1;
+  shape.fillOpacity = typeof shapeConfig.opacity === "number" ? 
+    shapeConfig.opacity : 1;
   shape.strokeWidth = shapeConfig.strokeWidth;
   shape.stroke = shapeConfig.strokeColor ||
     chart.colors.getIndex(index).lighten(-0.5);
-  shape.strokeOpacity = shapeConfig.strokeOpacity || 1;
+  shape.strokeOpacity = typeof shapeConfig.strokeOpacity === "number" ? 
+    shapeConfig.strokeOpacity : 1;
   if(shapeConfig.colorAdapter) {
     try {
       let test = shapeConfig.colorAdapter(

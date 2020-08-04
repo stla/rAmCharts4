@@ -7,7 +7,8 @@
 amSegment(color = NULL, width = 1)
 }
 \arguments{
-\item{color}{color of the segment}
+\item{color}{color of the segment; this can be a
+\link[rAmCharts4:amColorAdapterFromVector]{color adapter}}
 
 \item{width}{width of the segment}
 }
