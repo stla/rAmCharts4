@@ -6,8 +6,8 @@
 #' button; its column names must include the column names of \code{data}
 #' given in \code{values} and it must have the same number of rows as
 #' \code{data}
-#' @param category name of the column of \code{data} to be used on the
-#' category axis
+#' @param category name of the column of \code{data} to be used for the
+#'   category axis
 #' @param values a character matrix with two columns; each row corresponds to
 #'   a series and provides the names of two columns of \code{data} to be
 #'   used as the limits of the segments
@@ -37,8 +37,8 @@
 #' \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
 #' \code{"microchart"}
 #' @param draggable \code{TRUE}/\code{FALSE} to enable/disable dragging of
-#' all bullets, otherwise a named list of the form
-#' \code{list(value1 = TRUE, value2 = FALSE, ...)}
+#'   all bullets, otherwise a named list of the form
+#'   \code{list(value1 = TRUE, value2 = FALSE, ...)}
 #' @param tooltip settings of the tooltips; \code{NULL} for default,
 #'   \code{FALSE} for no tooltip, otherwise a named list of the form
 #'   \code{list(value1 = settings1, value2 = settings2, ...)} where
@@ -52,7 +52,7 @@
 #'   \code{series1}, \code{series2}, ... are the names of the series
 #'   provided in \code{seriesNames} and
 #'   \code{settings1}, \code{settings2}, ... are lists created with
-#'   \code{\link{amColumn}}; this can also be a
+#'   \code{\link{amSegment}}; this can also be a
 #'   single list of settings that will be applied to each series
 #' @param bullets settings of the bullets; \code{NULL} for default,
 #'   otherwise a named list of the form
@@ -260,24 +260,38 @@ amDumbbellChart <- function(
   }
 
   if(!isFALSE(tooltip)){
-    tooltipText <- sprintf(
+    tooltipText1 <- sprintf(
+      "[bold]{openValueY.value.formatNumber('%s')}[/]",
+      valueFormatter
+    )
+    tooltipText2 <- sprintf(
       "[bold]{valueY.value.formatNumber('%s')}[/]",
       valueFormatter
     )
     if(is.null(tooltip)){
-      tooltip <-
+      tooltip <- c(
         setNames(
           rep(list(
             amTooltip(
-              text = tooltipText,
+              text = tooltipText1,
               auto = FALSE
             )
-          ), length(values)),
-          values
+          ), nrow(values)),
+          values[,1L]
+        ),
+        setNames(
+          rep(list(
+            amTooltip(
+              text = tooltipText2,
+              auto = FALSE
+            )
+          ), nrow(values)),
+          values[,2L]
         )
+      )
     }else if("tooltip" %in% class(tooltip)){
       if(tooltip[["text"]] == "_missing")
-        tooltip[["text"]] <- tooltipText
+        tooltip[["text"]] <- paste0(tooltipText1, " - ", tooltipText2)
       tooltip <- setNames(rep(list(tooltip), length(values)), values)
     }else if(is.list(tooltip)){
       if(any(!values %in% names(tooltip))){
@@ -285,7 +299,7 @@ amDumbbellChart <- function(
       }
       tooltip <- lapply(tooltip, function(settings){
         if(settings[["text"]] == "_missing")
-          settings[["text"]] <- tooltipText
+          settings[["text"]] <- paste0(tooltipText1, " - ", tooltipText2)
         return(settings)
       })
     }else if(is.character(tooltip)){
@@ -301,8 +315,8 @@ amDumbbellChart <- function(
 
   if(is.null(segmentsStyle)){
     segmentsStyle <-
-      setNames(rep(list(amColumn()), length(seriesNames)), seriesNames)
-  }else if("column" %in% class(segmentsStyle)){
+      setNames(rep(list(amSegment()), length(seriesNames)), seriesNames)
+  }else if("segment" %in% class(segmentsStyle)){
     segmentsStyle <-
       setNames(rep(list(segmentsStyle), length(seriesNames)), seriesNames)
   }else if(is.list(segmentsStyle)){
@@ -423,7 +437,7 @@ amDumbbellChart <- function(
   }
 
   if(is.null(legend)){
-    legend <- length(values) > 1L
+    legend <- nrow(values) > 1L
   }
   if(isTRUE(legend)){
     legend <- amLegend(

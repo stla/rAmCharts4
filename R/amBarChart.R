@@ -127,7 +127,7 @@
 #'   decimals to display in the tooltips, and a field \code{modifier},
 #'   which defines a modifier for the
 #'   values displayed in the tooltips; a modifier is some JavaScript code
-#'   given a string, which performs a modification of a string named
+#'   given as a string, which performs a modification of a string named
 #'   \code{text}, e.g. \code{modifier = "text = '>>>' + text;"}
 #' @param width the width of the chart, e.g. \code{"600px"} or \code{"80\%"};
 #' ignored if the chart is displayed in Shiny, in which case the width is

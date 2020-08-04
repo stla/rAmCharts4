@@ -6,13 +6,12 @@
 #' button; its column names must include the column names of \code{data}
 #' given in \code{values} and it must have the same number of rows as
 #' \code{data}
-#' @param xValue name of the column of \code{data} to be used on the
-#' x-axis
+#' @param xValue name of the column of \code{data} to be used on the x-axis
 #' @param yValues a character matrix with two columns; each row corresponds to
 #'   a range area and provides the names of two columns of \code{data} to be
 #'   used as the limits of the range area
 #' @param yValueNames names of the variables on the y-axis,
-#' to appear in the legend;
+#' to appear in the legend; XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 #' \code{NULL} to use \code{yValues} as names, otherwise a named list of the
 #' form \code{list(yvalue1 = "ValueName1", yvalue2 = "ValueName2", ...)} where
 #' \code{yvalue1}, \code{yvalue2}, ... are the column names given in
@@ -86,7 +85,7 @@
 #'   \code{\link{amLine}}; this can also be a
 #'   single list of settings that will be applied to each line
 #' @param areas an unnamed list of list of settings for the range areas; the
-#'   n-th inner list of settings correspond to the n-th row of the
+#'   n-th inner list of settings corresponds to the n-th row of the
 #'   \code{yValues} matrix; each list of settings has three possible fields:
 #'   \code{name} for the legend label, \code{color} for the color of the range
 #'   area, and \code{opacity} for the opacity of the range area, a number

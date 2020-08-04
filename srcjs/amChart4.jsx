@@ -4101,8 +4101,8 @@ class AmDumbbellChart extends React.PureComponent {
 		let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
 		categoryAxis.paddingBottom = xAxis.adjust || 0;
 		categoryAxis.renderer.grid.template.location = 0;
-		//categoryAxis.renderer.cellStartLocation = 1 - cellWidth/100;
-		//categoryAxis.renderer.cellEndLocation = cellWidth/100;
+		categoryAxis.renderer.cellStartLocation = 1 - 80/100;
+		categoryAxis.renderer.cellEndLocation = 80/100;
 		if(xAxis && xAxis.title && xAxis.title.text !== "") {
   		categoryAxis.title.text = xAxis.title.text || category;
   		categoryAxis.title.fontWeight = xAxis.title.fontWeight || "bold";
@@ -4167,7 +4167,7 @@ class AmDumbbellChart extends React.PureComponent {
 			// convert coordinate to value
 			let value = valueAxis.yToValue(event.target.pixelY);
 			// set new value
-			dataItem.valueY = value;
+			dataItem.openValueY = value;
 			// make column hover
       //dataItem.column.isHover = true;
       
@@ -4181,7 +4181,7 @@ class AmDumbbellChart extends React.PureComponent {
 		/* ~~~~\  function handling the dragstop event  /~~~~ */
 		function handleDragStop(event, value) {
       console.log("bullet dragstop");
-      handleDrag(event);
+      //handleDrag(event);
       let dataItem = event.target.dataItem;
       //dataItem.component.isHover = false; // XXXX
       event.target.isHover = false;
@@ -4220,6 +4220,7 @@ class AmDumbbellChart extends React.PureComponent {
 
       let series1 = chart.series.push(new am4charts.ColumnSeries()),
         series2 = chart.series.push(new am4charts.LineSeries());
+        // je n'utilise plus series2
       series2.hiddenInLegend = true;
       series2.strokeWidth = 0;
       series2.strokeOpacity = 0;
@@ -4231,6 +4232,7 @@ class AmDumbbellChart extends React.PureComponent {
       series2.name = valueNames[y2];
       series1.dataFields.openValueY = y2;
       series2.dataFields.openValueY = y1;
+
 //      series1.fill = areas[index].color || chart.colors.getIndex(index);
 //      series1.fillOpacity = areas[index].opacity;
       //series2.fillOpacity = series1.fillOpacity;
@@ -4242,7 +4244,8 @@ class AmDumbbellChart extends React.PureComponent {
       /* ~~~~\  bullet  /~~~~ */
       let bullet1 = series1.bullets.push(new am4charts.Bullet()),
         shape1 = utils.Shape(am4core, chart, index, bullet1, bulletsStyle[y1]);
-      let bullet2 = series2.bullets.push(new am4charts.Bullet()),
+      bullet1.locationY = 1;
+      let bullet2 = series1.bullets.push(new am4charts.Bullet()),
         shape2 = utils.Shape(am4core, chart, index, bullet2, bulletsStyle[y2]);
       if(tooltips) {
         /* ~~~~\  tooltip  /~~~~ */
@@ -4270,7 +4273,15 @@ class AmDumbbellChart extends React.PureComponent {
         bullet1.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
         // while dragging
         bullet1.events.on("drag", event => {
-          handleDrag(event);
+          let dataItem = event.target.dataItem;
+          // convert coordinate to value
+          let value = valueAxis.yToValue(event.target.pixelY);
+          // set new value
+          dataItem.openValueY = value;
+          // hide tooltip not to interrupt
+          event.target.hideTooltip(0);
+          // make bullet hovered (as it might hide if mouse moves away)
+          event.target.isHover = true;
         });
         // on dragging stop
         bullet1.events.on("dragstop", event => {
@@ -4302,9 +4313,15 @@ class AmDumbbellChart extends React.PureComponent {
         bullet2.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
         // while dragging
         bullet2.events.on("drag", event => {
-          handleDrag(event);
           let dataItem = event.target.dataItem;
-          series1.dataItems.values[dataItem.index].openValueY = dataItem.valueY;
+          // convert coordinate to value
+          let value = valueAxis.yToValue(event.target.pixelY);
+          // set new value
+          dataItem.valueY = value;
+          // hide tooltip not to interrupt
+          event.target.hideTooltip(0);
+          // make bullet hovered (as it might hide if mouse moves away)
+          event.target.isHover = true;
         });
         // on dragging stop
         bullet2.events.on("dragstop", event => {
@@ -4322,8 +4339,10 @@ class AmDumbbellChart extends React.PureComponent {
           if(dataItem.bullets) {
             let itemBullet = dataItem.bullets.getKey(bullet2.uid);
             console.log("bullet2 poschanged", dataItem);
-            let point = dataItem.point;
-            itemBullet.minX = point.x;
+            //let point = dataItem.point;
+            //itemBullet.minX = point.x;
+            let column = dataItem.column;
+            itemBullet.minX = column.pixelX + column.pixelWidth / 2;
             itemBullet.maxX = itemBullet.minX;
             itemBullet.minY = 0;
             itemBullet.maxY = chart.seriesContainer.pixelHeight;
