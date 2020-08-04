@@ -10,13 +10,6 @@
 #' @param yValues a character matrix with two columns; each row corresponds to
 #'   a range area and provides the names of two columns of \code{data} to be
 #'   used as the limits of the range area
-#' @param yValueNames names of the variables on the y-axis,
-#' to appear in the legend; XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-#' \code{NULL} to use \code{yValues} as names, otherwise a named list of the
-#' form \code{list(yvalue1 = "ValueName1", yvalue2 = "ValueName2", ...)} where
-#' \code{yvalue1}, \code{yvalue2}, ... are the column names given in
-#' \code{yValues} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
-#' desired names to appear in the legend
 #' @param xLimits range of the x-axis, a vector of two values specifying
 #' the left and the right limits of the x-axis; \code{NULL} for default values
 #' @param yLimits range of the y-axis, a vector of two values specifying
@@ -150,7 +143,7 @@
 #' \code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
 #' like \code{"hsl(360,11,255)"}.
 #'
-#' @import htmlwidgets minpack.lm
+#' @import htmlwidgets
 #' @importFrom shiny validateCssUnit
 #' @importFrom lubridate is.Date is.POSIXt
 #' @export
@@ -262,7 +255,6 @@ amRangeAreaChart <- function(
   data2 = NULL,
   xValue,
   yValues,
-  yValueNames = NULL, # default
   xLimits = NULL,
   yLimits = NULL,
   expandX = 0,
@@ -313,7 +305,8 @@ amRangeAreaChart <- function(
     if(!"name" %in% names(settings)){
       settings[["name"]] <- paste0(yValues[i,], collapse = "-")
     }
-    return(settings)
+    settings[["color"]] <- validateColor(settings[["color"]])
+    settings
   })
 
   data_x <- data[[xValue]]
@@ -340,29 +333,7 @@ amRangeAreaChart <- function(
     yLimits <- yLimits + c(-pad, pad)
   }
 
-  if(is.null(yValueNames)){
-    yValueNames <- setNames(as.list(yValues), yValues)
-  }else if(is.list(yValueNames)){
-    if(!all(yValues %in% names(yValueNames))){
-      stop(
-        paste0(
-          "Invalid `yValueNames` list. ",
-          "It must be a named list giving a name for every column ",
-          "given in the `yValues` argument."
-        ),
-        call. = TRUE
-      )
-    }
-  }else{
-    stop(
-      paste0(
-        "Invalid `yValueNames` argument. ",
-        "It must be a named list giving a name for every column ",
-        "given in the `yValues` argument."
-      ),
-      call. = TRUE
-    )
-  }
+  yValueNames <- setNames(as.list(yValues), yValues)
 
   if(!is.null(data2) &&
      (!is.data.frame(data2) ||
@@ -490,16 +461,13 @@ amRangeAreaChart <- function(
     stop("Invalid `lineStyle` argument.", call. = TRUE)
   }
 
-  if(is.list(xAxis)){
-    if(is.list(xAxis[["title"]])){
-      xAxis[["title"]][["color"]] <- validateColor(xAxis[["title"]][["color"]])
-    }
-  }else if(is.null(xAxis)){
+  if(is.null(xAxis)){
     xAxis <- list(
-      title = list(
+      title = amText(
         text = xValue,
         fontSize = 20,
-        color = NULL
+        color = NULL,
+        fontWeight = "bold"
       ),
       labels = amAxisLabels(
         color = NULL,
@@ -515,10 +483,11 @@ amRangeAreaChart <- function(
     )
   }else if(is.character(xAxis)){
     xAxis <- list(
-      title = list(
+      title = amText(
         text = xAxis,
         fontSize = 20,
-        color = NULL
+        color = NULL,
+        fontWeight = "bold"
       ),
       labels = amAxisLabels(
         color = NULL,
@@ -534,10 +503,11 @@ amRangeAreaChart <- function(
     )
   }
   if(is.character(xAxis[["title"]])){
-    xAxis[["title"]] <- list(
+    xAxis[["title"]] <- amText(
       text = xAxis[["title"]],
       fontSize = 20,
-      color = NULL
+      color = NULL,
+      fontWeight = "bold"
     )
   }
   if(is.null(xAxis[["labels"]])){
@@ -553,17 +523,14 @@ amRangeAreaChart <- function(
     )
   }
 
-  if(is.list(yAxis)){
-    if(is.list(yAxis[["title"]])){
-      yAxis[["title"]][["color"]] <- validateColor(yAxis[["title"]][["color"]])
-    }
-  }else if(is.null(yAxis)){
+  if(is.null(yAxis)){
     yAxis <- list(
-      title = if(length(yValues) == 1L) {
-        list(
-          text = yValues,
+      title = if(nrow(yValues) == 1L) {
+        amText(
+          text = areas[[1L]][["name"]],
           fontSize = 20,
-          color = NULL
+          color = NULL,
+          fontWeight = "bold"
         )
       },
       labels = amAxisLabels(
@@ -576,10 +543,11 @@ amRangeAreaChart <- function(
     )
   }else if(is.character(yAxis)){
     yAxis <- list(
-      title = list(
+      title = amText(
         text = yAxis,
         fontSize = 20,
-        color = NULL
+        color = NULL,
+        fontWeight = "bold"
       ),
       labels = amAxisLabels(
         color = NULL,
@@ -591,10 +559,11 @@ amRangeAreaChart <- function(
     )
   }
   if(is.character(yAxis[["title"]])){
-    yAxis[["title"]] <- list(
+    yAxis[["title"]] <- amText(
       text = yAxis[["title"]],
       fontSize = 20,
-      color = NULL
+      color = NULL,
+      fontWeight = "bold"
     )
   }
   if(!isFALSE(yAxis[["labels"]]) && is.null(yAxis[["labels"]])){

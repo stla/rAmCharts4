@@ -19,8 +19,9 @@ string and have \code{"px"} appended}
 
 \item{expr}{an expression that generates a chart with
 \code{\link{amBarChart}}, \code{\link{amHorizontalBarChart}},
-\code{\link{amLineChart}}, \code{\link{amScatterChart}}, or
-\code{\link{amRangeAreaChart}}}
+\code{\link{amLineChart}}, \code{\link{amScatterChart}},
+\code{\link{amRangeAreaChart}}, \code{\link{amRadialBarChart}},
+or \code{\link{amDumbbellChart}},}
 
 \item{env}{the environment in which to evaluate \code{expr}}
 
@@ -33,6 +34,7 @@ within Shiny applications and interactive Rmd documents.
 }
 \examples{
 if(interactive()) {
+
 library(rAmCharts4)
 library(shiny)
 library(lubridate)
@@ -102,5 +104,6 @@ server <- function(input, output){
 }
 
 shinyApp(ui, server)
+
 }
 }

@@ -10,8 +10,9 @@
 #'   string and have \code{"px"} appended
 #' @param expr an expression that generates a chart with
 #'   \code{\link{amBarChart}}, \code{\link{amHorizontalBarChart}},
-#'   \code{\link{amLineChart}}, \code{\link{amScatterChart}}, or
-#'   \code{\link{amRangeAreaChart}}
+#'   \code{\link{amLineChart}}, \code{\link{amScatterChart}},
+#'   \code{\link{amRangeAreaChart}}, \code{\link{amRadialBarChart}},
+#'   or \code{\link{amDumbbellChart}},
 #' @param env the environment in which to evaluate \code{expr}
 #' @param quoted whether \code{expr} is a quoted expression
 #'
@@ -21,6 +22,7 @@
 #' @export
 #'
 #' @examples if(interactive()) {
+#'
 #' library(rAmCharts4)
 #' library(shiny)
 #' library(lubridate)
@@ -90,6 +92,7 @@
 #' }
 #'
 #' shinyApp(ui, server)
+#'
 #' }
 amChart4Output <- function(outputId, width = "100%", height = "400px"){
   htmlwidgets::shinyWidgetOutput(outputId, 'amChart4', width, height, package = 'rAmCharts4')

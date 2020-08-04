@@ -9,7 +9,6 @@ amRangeAreaChart(
   data2 = NULL,
   xValue,
   yValues,
-  yValueNames = NULL,
   xLimits = NULL,
   yLimits = NULL,
   expandX = 0,
@@ -54,14 +53,6 @@ given in \code{values} and it must have the same number of rows as
 \item{yValues}{a character matrix with two columns; each row corresponds to
 a range area and provides the names of two columns of \code{data} to be
 used as the limits of the range area}
-
-\item{yValueNames}{names of the variables on the y-axis,
-to appear in the legend; XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-\code{NULL} to use \code{yValues} as names, otherwise a named list of the
-form \code{list(yvalue1 = "ValueName1", yvalue2 = "ValueName2", ...)} where
-\code{yvalue1}, \code{yvalue2}, ... are the column names given in
-\code{yValues} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
-desired names to appear in the legend}
 
 \item{xLimits}{range of the x-axis, a vector of two values specifying
 the left and the right limits of the x-axis; \code{NULL} for default values}
