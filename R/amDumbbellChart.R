@@ -132,13 +132,58 @@
 #' chart is displayed in Shiny, in which case the id is given by the Shiny id
 #'
 #' @note A color can be given by the name of a R color, the name of a CSS
-#' color, e.g. \code{"transparent"} or \code{"fuchsia"}, an HEX code like
+#' color, e.g. \code{"olive"} or \code{"fuchsia"}, an HEX code like
 #' \code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
 #' like \code{"hsl(360,11,255)"}.
 #'
 #' @import htmlwidgets
 #' @importFrom shiny validateCssUnit
 #' @export
+#'
+#' @examples dat <- data.frame(
+#'   x = c("T0", "T1", "T2"),
+#'   y1 = c(7, 15, 10),
+#'   y2 = c(20, 25, 23),
+#'   z1 = c(5, 10, 5),
+#'   z2 = c(25, 20, 15)
+#' )
+#'
+#' amDumbbellChart(
+#'   width = "500px",
+#'   data = dat,
+#'   draggable = TRUE,
+#'   category = "x",
+#'   values = rbind(c("y1","y2"), c("z1","z2")),
+#'   seriesNames = c("Control", "Treatment"),
+#'   yLimits = c(0, 30),
+#'   segmentsStyle = list(
+#'     "Control" = amSegment(width = 2),
+#'     "Treatment" = amSegment(width = 2)
+#'   ),
+#'   bullets = list(
+#'     y1 = amTriangle(strokeWidth = 0),
+#'     y2 = amTriangle(rotation = 180, strokeWidth = 0),
+#'     z1 = amTriangle(strokeWidth = 0),
+#'     z2 = amTriangle(rotation = 180, strokeWidth = 0)
+#'   ),
+#'   tooltip = amTooltip("upper: {openValueY}\nlower: {valueY}", scale = 0.75),
+#'   xAxis = list(
+#'     title = amText(
+#'       "timepoint",
+#'       fontSize = 17, fontWeight = "bold", fontFamily = "Helvetica"
+#'     )
+#'   ),
+#'   yAxis = list(
+#'     title = amText(
+#'       "response",
+#'       fontSize = 17, fontWeight = "bold", fontFamily = "Helvetica"
+#'     ),
+#'     gridLines = amLine("silver", width = 1, opacity = 0.4)
+#'   ),
+#'   legend = amLegend(position = "right", itemsWidth = 15, itemsHeight = 15),
+#'   backgroundColor = "lightyellow",
+#'   theme = "dataviz"
+#' )
 amDumbbellChart <- function(
   data,
   data2 = NULL,
