@@ -4148,14 +4148,32 @@ class AmDumbbellChart extends React.PureComponent {
       markerTemplate.width = chartLegend.itemsWidth || 20;
       markerTemplate.height = chartLegend.itemsHeight || 20;
       chart.legend.itemContainers.template.events.on("over", function(ev) {
-        ev.target.dataItem.dataContext.columns.each(function(x) {
+        let dataItem = ev.target.dataItem;
+        dataItem.dataContext.columns.each(function(x) {
           x.column.isHover = true;
         })
+        let columns = dataItem.dataContext.columns,
+          ncols = columns.length;
+        for(let i = 0; i < ncols; ++i) {
+          let bullets = columns.getIndex(i).column.dataItem.bullets;
+          bullets.each(function(bid) {
+            bullets.getKey(bid).children.getIndex(0).isHover = true;
+          });
+        }
       });
       chart.legend.itemContainers.template.events.on("out", function(ev) {
-        ev.target.dataItem.dataContext.columns.each(function(x) {
+        let dataItem = ev.target.dataItem;
+        dataItem.dataContext.columns.each(function(x) {
           x.column.isHover = false;
         })
+        let columns = dataItem.dataContext.columns,
+          ncols = columns.length;
+        for(let i = 0; i < ncols; ++i) {
+          let bullets = columns.getIndex(i).column.dataItem.bullets;
+          bullets.each(function(bid) {
+            bullets.getKey(bid).children.getIndex(0).isHover = false;
+          });
+        }
       });
     }
 
