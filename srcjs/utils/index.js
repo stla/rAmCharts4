@@ -417,6 +417,75 @@ export const createAxis = function(
 };
 
 
+export const createCategoryAxis = function(
+  XY, am4charts, chart, category, axisSettings, cellWidth, theme
+){
+
+  let categoryAxis;
+
+  switch(XY) {
+    case "X": 
+      categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+      categoryAxis.paddingBottom = axisSettings.adjust || 0;
+      break;
+    case "Y": 
+      categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+      categoryAxis.paddingRight = axisSettings.adjust || 0;
+      break;  
+  }
+
+  categoryAxis.dataFields.category = category;
+
+  categoryAxis.renderer.minGridDistance = 15;
+
+  categoryAxis.renderer.cellStartLocation = 1 - cellWidth/100;
+  categoryAxis.renderer.cellEndLocation = cellWidth/100;
+
+  categoryAxis.cursorTooltipEnabled = false;
+
+  if(axisSettings.title && axisSettings.title.text !== "") {
+    categoryAxis.title.text = axisSettings.title.text || category;
+    categoryAxis.title.fontWeight = axisSettings.title.fontWeight || "bold";
+    categoryAxis.title.fontSize = axisSettings.title.fontSize || 20;
+    categoryAxis.title.fontFamily = axisSettings.title.fontFamily;
+    categoryAxis.title.fill =
+      axisSettings.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+  }
+
+  if(axisSettings.labels) {
+    let axisLabels = categoryAxis.renderer.labels.template;
+		axisLabels.fontSize = axisSettings.labels.fontSize || 17;
+		axisLabels.fontWeight = axisSettings.labels.fontWeight || "normal";
+		axisLabels.fontFamily = axisSettings.labels.fontFamily;
+		axisLabels.rotation = axisSettings.labels.rotation || 0;
+		if(axisLabels.rotation !== 0) {
+		  axisLabels.horizontalCenter = "right";
+		}
+		axisLabels.fill =
+      axisSettings.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+  }
+
+  if(axisSettings.gridLines) {
+    let axisGrid = categoryAxis.renderer.grid.template;
+    axisGrid.location = 0.5;
+    axisGrid.stroke =
+      axisSettings.gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
+    axisGrid.strokeOpacity = 
+      typeof axisSettings.gridLines.opacity === "number" ? 
+        axisSettings.gridLines.opacity : 0.2;
+    axisGrid.strokeWidth = 
+      typeof axisSettings.gridLines.width === "number" ?
+        axisSettings.gridLines.width : 1;
+    if(axisSettings.gridLines.dash) 
+      axisGrid.strokeDasharray = axisSettings.gridLines.dash;
+  } else {
+    categoryAxis.renderer.grid.template.disabled = true;
+  }
+
+  return categoryAxis;
+};
+
+
 export const Image = function(am4core, chart, settings) {
   let img = settings.image;
   img.position = settings.position;

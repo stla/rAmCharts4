@@ -124,7 +124,7 @@
 #'   on the y-axis respectively, and a field \code{modifier}, a list with two
 #'   possible fields, \code{x} and \code{y}, which defines modifiers for the
 #'   values displayed in the tooltips; a modifier is some JavaScript code
-#'   given a string, which performs a modification of a string named
+#'   given as a string, which performs a modification of a string named
 #'   \code{text}, e.g. \code{"text = '[font-style:italic]' + text + '[/]';"};
 #'   see the example for an example of \code{modifier}
 #' @param width the width of the chart, e.g. \code{"600px"} or \code{"80\%"};

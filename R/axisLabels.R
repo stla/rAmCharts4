@@ -2,7 +2,11 @@
 #' @description Create a list of settings for the labels of an axis.
 #'
 #' @param color color of the labels
-#' @param fontSize font size of the labels
+#' @param fontSize size of the labels
+#' @param fontWeight font weight of the labels, it can be \code{"normal"},
+#'   \code{"bold"}, \code{"bolder"}, \code{"lighter"}, or a number in
+#'   \code{seq(100, 900, by = 100)}
+#' @param fontFamily font family of the labels
 #' @param rotation rotation angle
 #' @param formatter this option defines the format of the axis labels;
 #'   this should be a
@@ -15,7 +19,7 @@
 #' @return A list of settings for the labels of an axis.
 #'
 #' @note A color can be given by the name of a R color, the name of a CSS
-#'   color, e.g. \code{"transparent"} or \code{"fuchsia"}, an HEX code like
+#'   color, e.g. \code{"silver"} or \code{"fuchsia"}, an HEX code like
 #'   \code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
 #'   like \code{"hsl(360,11,255)"}.
 #'
@@ -24,12 +28,19 @@
 amAxisLabels <- function(
   color = NULL,
   fontSize = 18,
+  fontWeight = "normal",
+  fontFamily = NULL,
   rotation = 0,
   formatter = NULL
 ){
   labels <- list(
     color = validateColor(color),
     fontSize = fontSize,
+    fontWeight = match.arg(
+      as.character(fontWeight),
+      c("normal", "bold", "bolder", "lighter", seq(100L, 900L, by = 100L))
+    ),
+    fontFamily = fontFamily,
     rotation = rotation,
     formatter = formatter
   )
@@ -42,12 +53,19 @@ amAxisLabels <- function(
 amAxisLabelsCircular <- function(
   color = NULL,
   fontSize = 14,
+  fontWeight = "normal",
+  fontFamily = NULL,
   radius = NULL,
   relativeRotation = NULL
 ){
   labels <- list(
     color = validateColor(color),
     fontSize = fontSize,
+    fontWeight = match.arg(
+      as.character(fontWeight),
+      c("normal", "bold", "bolder", "lighter", seq(100L, 900L, by = 100L))
+    ),
+    fontFamily = fontFamily,
     radius = radius,
     relativeRotation = relativeRotation
   )

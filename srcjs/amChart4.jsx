@@ -4097,8 +4097,11 @@ class AmDumbbellChart extends React.PureComponent {
 		}
 
 
-		/* ~~~~\  category axis  /~~~~ */
-		let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+    /* ~~~~\  category axis  /~~~~ */
+    let categoryAxis = utils.createCategoryAxis(
+      "X", am4charts, chart, category, xAxis, 80, theme
+    );
+/*		let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
 		categoryAxis.paddingBottom = xAxis.adjust || 0;
 		categoryAxis.renderer.grid.template.location = 0;
 		categoryAxis.renderer.cellStartLocation = 1 - 80/100;
@@ -4122,7 +4125,8 @@ class AmDumbbellChart extends React.PureComponent {
 		categoryAxis.dataFields.category = category;
 		categoryAxis.renderer.grid.template.disabled = true;
 		categoryAxis.renderer.minGridDistance = 50;
-    categoryAxis.cursorTooltipEnabled = false;
+    categoryAxis.cursorTooltipEnabled = false; 
+*/
 
 		/* ~~~~\  value axis  /~~~~ */
     let valueAxis = utils.createAxis(

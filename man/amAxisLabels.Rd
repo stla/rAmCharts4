@@ -5,11 +5,20 @@
 \alias{amAxisLabelsCircular}
 \title{Axis labels}
 \usage{
-amAxisLabels(color = NULL, fontSize = 18, rotation = 0, formatter = NULL)
+amAxisLabels(
+  color = NULL,
+  fontSize = 18,
+  fontWeight = "normal",
+  fontFamily = NULL,
+  rotation = 0,
+  formatter = NULL
+)
 
 amAxisLabelsCircular(
   color = NULL,
   fontSize = 14,
+  fontWeight = "normal",
+  fontFamily = NULL,
   radius = NULL,
   relativeRotation = NULL
 )
@@ -17,7 +26,13 @@ amAxisLabelsCircular(
 \arguments{
 \item{color}{color of the labels}
 
-\item{fontSize}{font size of the labels}
+\item{fontSize}{size of the labels}
+
+\item{fontWeight}{font weight of the labels, it can be \code{"normal"},
+\code{"bold"}, \code{"bolder"}, \code{"lighter"}, or a number in
+\code{seq(100, 900, by = 100)}}
+
+\item{fontFamily}{font family of the labels}
 
 \item{rotation}{rotation angle}
 
@@ -39,7 +54,7 @@ Create a list of settings for the labels of an axis.
 }
 \note{
 A color can be given by the name of a R color, the name of a CSS
-  color, e.g. \code{"transparent"} or \code{"fuchsia"}, an HEX code like
+  color, e.g. \code{"silver"} or \code{"fuchsia"}, an HEX code like
   \code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
   like \code{"hsl(360,11,255)"}.
 }

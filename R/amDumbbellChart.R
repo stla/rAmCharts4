@@ -138,6 +138,7 @@
 #'
 #' @import htmlwidgets
 #' @importFrom shiny validateCssUnit
+#' @importFrom reactR component reactMarkup
 #' @export
 #'
 #' @examples dat <- data.frame(
