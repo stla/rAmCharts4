@@ -68,7 +68,8 @@ it is used to format the values displayed in the cursor tooltips,
 the labels of the y-axis unless you specify
 your own formatter in the \code{labels} field of the list passed on to
 the \code{yAxis} option, and the values displayed in the tooltips unless
-you specify your own tooltip text (see XXXXXXXXXXXXX the first example for the way to set
+you specify your own tooltip text (see the first example of
+\code{\link{amBarChart}} for the way to set
 a number formatter in the tooltip text)}
 
 \item{chartTitle}{chart title, it can be \code{NULL} or \code{FALSE} for no
