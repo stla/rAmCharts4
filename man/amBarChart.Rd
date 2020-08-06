@@ -46,8 +46,8 @@ amBarChart(
 
 \item{data2}{\code{NULL} or a dataframe used to update the data with the
 button; its column names must include the column names of \code{data}
-given in \code{values} and it must have the same number of rows as
-\code{data}}
+given in \code{values}, it must have the same number of rows as
+\code{data} and the rows must be in the same order}
 
 \item{category}{name of the column of \code{data} to be used on the
 category axis}
@@ -60,12 +60,15 @@ value axis}
 form \code{list(value1 = "ValueName1", value2 = "ValueName2", ...)} where
 \code{value1}, \code{value2}, ... are the column names given in
 \code{values} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
-desired names to appear in the legend}
+desired names to appear in the legend; these names can also appear in
+the tooltips: they are substituted to the string \code{{name}} in
+the formatting string passed on to the tooltip (see the second example)}
 
 \item{showValues}{logical, whether to display the values on the chart}
 
 \item{yLimits}{range of the y-axis, a vector of two values specifying
-the lower and the upper limits of the y-axis; \code{NULL} for default values}
+the lower and the upper limits of the y-axis; \code{NULL} for default
+values}
 
 \item{expandY}{if \code{yLimits = NULL}, a percentage of the range of the
 y-axis used to expand this range}
@@ -104,8 +107,8 @@ dragging for each bar corresponding to a column given in \code{values}}
 single list of settings that will be applied to each series,
 or a just a string for the text to display in the tooltip}
 
-\item{columnStyle}{settings of the columns; \code{NULL} for default,
-otherwise a named list of the form
+\item{columnStyle}{settings of the columns (the bars); \code{NULL} for
+default, otherwise a named list of the form
 \code{list(value1 = settings1, value2 = settings2, ...)} where
 \code{settings1}, \code{settings2}, ... are lists created with
 \code{\link{amColumn}}; this can also be a
@@ -124,7 +127,11 @@ single list of settings that will be applied to each series}
 \item{alwaysShowBullets}{logical, whether to always show the bullets;
 if \code{FALSE}, the bullets are shown only on hovering a column}
 
-\item{backgroundColor}{a color for the chart background}
+\item{backgroundColor}{a color for the chart background; a color can be
+given by the name of a R color, the name of a CSS color, e.g.
+\code{"rebeccapurple"} or \code{"fuchsia"}, an HEX code like
+\code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
+like \code{"hsl(360,11,255)"}}
 
 \item{cellWidth}{cell width in percent; for a simple bar chart, this is the
 width of the columns; for a grouped bar chart, this is the width of the
@@ -212,12 +219,6 @@ chart is displayed in Shiny, in which case the id is given by the Shiny id}
 \description{
 Create a HTML widget displaying a bar chart.
 }
-\note{
-A color can be given by the name of a R color, the name of a CSS
-color, e.g. \code{"transparent"} or \code{"fuchsia"}, an HEX code like
-\code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
-like \code{"hsl(360,11,255)"}.
-}
 \examples{
 # a simple bar chart ####
 
@@ -249,7 +250,7 @@ amBarChart(
 # bar chart with individual images in the bullets ####
 
 dat <- data.frame(
-  language = c("python", "julia", "java"),
+  language = c("Python", "Julia", "Java"),
   users = c(10000, 2000, 5000),
   href = c(
     tinyIcon("python", "transparent"),
@@ -263,8 +264,10 @@ amBarChart(
   width = "700px",
   category = "language",
   values = "users",
+  valueNames = list(users = "#users"),
   showValues = FALSE,
   tooltip = amTooltip(
+    text = "{name}: [bold]valueY[/]",
     textColor = "white",
     backgroundColor = "#101010",
     borderColor = "silver"
