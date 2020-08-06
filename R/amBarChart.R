@@ -5,7 +5,7 @@
 #' @param data2 \code{NULL} or a dataframe used to update the data with the
 #'   button; its column names must include the column names of \code{data}
 #'   given in \code{values}, it must have the same number of rows as
-#'   \code{data} and the rows must be in the same order
+#'   \code{data} and its rows must be in the same order as those of \code{data}
 #' @param category name of the column of \code{data} to be used on the
 #'   category axis
 #' @param values name(s) of the column(s) of \code{data} to be used on the
@@ -310,12 +310,16 @@ amBarChart <- function(
     valueNames <- setNames(as.list(values), values)
   }else if(is.list(valueNames) || is.character(valueNames)){
     if(is.null(names(valueNames)) && length(valueNames) == length(values)){
+      warning(sprintf(
+        "The `valueNames` %s you provided is unnamed - setting automatic names",
+        ifelse(is.list(valueNames), "list", "vector")
+      ))
       valueNames <- setNames(as.list(valueNames), values)
     }else if(!all(values %in% names(valueNames))){
       stop(
         paste0(
           "Invalid `valueNames` argument. ",
-          "It must be a named list associating a name for every column ",
+          "It must be a named list associating a name to every column ",
           "given in the `values` argument."
         ),
         call. = TRUE
@@ -714,7 +718,7 @@ amBarChart <- function(
       data2 = data2,
       category = category,
       values = as.list(values),
-      valueNames = valueNames,
+      valueNames = as.list(valueNames),
       showValues = showValues,
       minValue = yLimits[1L],
       maxValue = yLimits[2L],

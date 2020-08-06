@@ -3,22 +3,24 @@
 #'
 #' @param data a dataframe
 #' @param data2 \code{NULL} or a dataframe used to update the data with the
-#' button; its column names must include the column names of \code{data}
-#' given in \code{values} and it must have the same number of rows as
-#' \code{data}
+#'   button; its column names must include the column names of \code{data}
+#'   given in \code{values}, it must have the same number of rows as
+#'   \code{data} and its rows must be in the same order as those of \code{data}
 #' @param category name of the column of \code{data} to be used on the
-#' category axis
+#'   category axis
 #' @param values name(s) of the column(s) of \code{data} to be used on the
-#' value axis
+#'   value axis
 #' @param valueNames names of the values variables, to appear in the legend;
-#' \code{NULL} to use \code{values} as names, otherwise a named list of the
-#' form \code{list(value1 = "ValueName1", value2 = "ValueName2", ...)} where
-#' \code{value1}, \code{value2}, ... are the column names given in
-#' \code{values} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
-#' desired names to appear in the legend
+#'   \code{NULL} to use \code{values} as names, otherwise a named list of the
+#'   form \code{list(value1 = "ValueName1", value2 = "ValueName2", ...)} where
+#'   \code{value1}, \code{value2}, ... are the column names given in
+#'   \code{values} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
+#'   desired names to appear in the legend; these names can also appear in
+#'   the tooltips: they are substituted to the string \code{{name}} in
+#'   the formatting string passed on to the tooltip (see the second example)
 #' @param showValues logical, whether to display the values on the chart
-#' @param xLimits range of the x-axis, a vector of two values specifying
-#' the left and the right limits of the x-axis; \code{NULL} for default values
+#' @param xLimits range of the x-axis, a vector of two values specifying the
+#'   left and the right limits of the x-axis; \code{NULL} for default values
 #' @param expandX if \code{xLimits = NULL}, a percentage of the range of the
 #'   x-axis used to expand this range
 #' @param valueFormatter a
@@ -29,21 +31,21 @@
 #'   your own formatter in the \code{labels} field of the list passed on to
 #'   the \code{xAxis} option, and the values displayed in the tooltips unless
 #'   you specify your own tooltip text (see the first example of
-#'   \code{\link{amBarChart}} for the way to set
-#'   a number formatter in the tooltip text)
+#'   \code{\link{amBarChart}} for the way to set a number formatter in the
+#'   tooltip text)
 #' @param chartTitle chart title, it can be \code{NULL} or \code{FALSE} for no
 #'   title, a character string,
 #'   a list of settings created with \code{\link{amText}}, or a list with two
 #'   fields: \code{text}, a list of settings created with \code{\link{amText}},
 #'   and \code{align}, can be \code{"left"}, \code{"right"} or \code{"center"}
 #' @param theme theme, \code{NULL} or one of \code{"dataviz"},
-#' \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
-#' \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
-#' \code{"microchart"}
+#'   \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
+#'   \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
+#'   \code{"microchart"}
 #' @param draggable \code{TRUE}/\code{FALSE} to enable/disable dragging of
-#' all bars, otherwise a named list of the form
-#' \code{list(value1 = TRUE, value2 = FALSE, ...)} to enable/disable the
-#' dragging for each bar corresponding to a column given in \code{values}
+#'   all bars, otherwise a named list of the form
+#'   \code{list(value1 = TRUE, value2 = FALSE, ...)} to enable/disable the
+#'   dragging for each bar corresponding to a column given in \code{values}
 #' @param tooltip settings of the tooltips; \code{NULL} for default,
 #'   \code{FALSE} for no tooltip, otherwise a named list of the form
 #'   \code{list(value1 = settings1, value2 = settings2, ...)} where
@@ -67,14 +69,18 @@
 #'   single list of settings that will be applied to each series
 #' @param alwaysShowBullets logical, whether to always show the bullets;
 #'   if \code{FALSE}, the bullets are shown only on hovering a column
-#' @param backgroundColor a color for the chart background
+#' @param backgroundColor a color for the chart background; a color can be
+#'   given by the name of a R color, the name of a CSS
+#'   color, e.g. \code{"aqua"} or \code{"indigo"}, an HEX code like
+#'   \code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
+#'   like \code{"hsl(360,11,255)"}
 #' @param cellWidth cell width in percent; for a simple bar chart, this is the
-#' width of the columns; for a grouped bar chart, this is the width of the
-#' clusters of columns; \code{NULL} for the default value
+#'   width of the columns; for a grouped bar chart, this is the width of the
+#'   clusters of columns; \code{NULL} for the default value
 #' @param columnWidth column width, a percentage of the cell width; set to 100
-#' for a simple bar chart and use \code{cellWidth} to control the width of the
-#' columns; for a grouped bar chart, this controls the spacing between the
-#' columns within a cluster of columns; \code{NULL} for the default value
+#'   for a simple bar chart and use \code{cellWidth} to control the width of the
+#'   columns; for a grouped bar chart, this controls the spacing between the
+#'   columns within a cluster of columns; \code{NULL} for the default value
 #' @param xAxis settings of the value axis given as a list, or just a string
 #'   for the axis title; the list of settings has five possible fields:
 #'   a field \code{title}, a list of settings for the axis title created
@@ -97,8 +103,7 @@
 #' @param scrollbarX logical, whether to add a scrollbar for the value axis
 #' @param scrollbarY logical, whether to add a scrollbar for the category axis
 #' @param legend \code{FALSE} for no legend, \code{TRUE} for a legend with
-#'   default settings, or a list of settings created with
-#'   \code{\link{amLegend}}
+#'   default settings, or a list of settings created with \code{\link{amLegend}}
 #' @param caption \code{NULL} or \code{FALSE} for no caption, a formatted
 #'   text created with \code{\link{amText}}, or a list with two fields:
 #'   \code{text}, a list created with \code{\link{amText}}, and \code{align},
@@ -125,20 +130,15 @@
 #'   given a string, which performs a modification of a string named
 #'   \code{text}, e.g. \code{modifier = "text = '>>>' + text;"}
 #' @param width the width of the chart, e.g. \code{"600px"} or \code{"80\%"};
-#' ignored if the chart is displayed in Shiny, in which case the width is
-#' given in \code{\link{amChart4Output}}
+#'   ignored if the chart is displayed in Shiny, in which case the width is
+#'   given in \code{\link{amChart4Output}}
 #' @param height the height of the chart, e.g. \code{"400px"};
-#' ignored if the chart is displayed in Shiny, in which case the height is
-#' given in \code{\link{amChart4Output}}
+#'   ignored if the chart is displayed in Shiny, in which case the height is
+#'   given in \code{\link{amChart4Output}}
 #' @param export logical, whether to enable the export menu
 #' @param chartId a HTML id for the chart
 #' @param elementId a HTML id for the container of the chart; ignored if the
-#' chart is displayed in Shiny, in which case the id is given by the Shiny id
-#'
-#' @note A color can be given by the name of a R color, the name of a CSS
-#' color, e.g. \code{"transparent"} or \code{"fuchsia"}, an HEX code like
-#' \code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
-#' like \code{"hsl(360,11,255)"}.
+#'   chart is displayed in Shiny, in which case the id is given by the Shiny id
 #'
 #' @import htmlwidgets
 #' @importFrom shiny validateCssUnit
@@ -187,6 +187,7 @@
 #'   values = c("income", "expenses"),
 #'   valueNames = list(income = "Income", expenses = "Expenses"),
 #'   tooltip = amTooltip(
+#'     text = "[bold]{name}:\n{valueX}[/]",
 #'     textColor = "white",
 #'     backgroundColor = "#101010",
 #'     borderColor = "silver"
@@ -258,12 +259,18 @@ amHorizontalBarChart <- function(
 
   if(is.null(valueNames)){
     valueNames <- setNames(as.list(values), values)
-  }else if(is.list(valueNames)){
-    if(!all(values %in% names(valueNames))){
+  }else if(is.list(valueNames) || is.character(valueNames)){
+    if(is.null(names(valueNames)) && length(valueNames) == length(values)){
+      warning(sprintf(
+        "The `valueNames` %s you provided is unnamed - setting automatic names",
+        ifelse(is.list(valueNames), "list", "vector")
+      ))
+      valueNames <- setNames(as.list(valueNames), values)
+    }else if(!all(values %in% names(valueNames))){
       stop(
         paste0(
-          "Invalid `valueNames` list. ",
-          "It must be a named list giving a name for every column ",
+          "Invalid `valueNames` argument. ",
+          "It must be a named list associating a name to every column ",
           "given in the `values` argument."
         ),
         call. = TRUE
@@ -600,7 +607,7 @@ amHorizontalBarChart <- function(
       data2 = data2,
       category = category,
       values = as.list(values),
-      valueNames = valueNames,
+      valueNames = as.list(valueNames),
       showValues = showValues,
       minValue = xLimits[1L],
       maxValue = xLimits[2L],

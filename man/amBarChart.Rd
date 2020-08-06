@@ -47,7 +47,7 @@ amBarChart(
 \item{data2}{\code{NULL} or a dataframe used to update the data with the
 button; its column names must include the column names of \code{data}
 given in \code{values}, it must have the same number of rows as
-\code{data} and the rows must be in the same order}
+\code{data} and its rows must be in the same order as those of \code{data}}
 
 \item{category}{name of the column of \code{data} to be used on the
 category axis}
