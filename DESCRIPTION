@@ -41,7 +41,8 @@ Imports:
     base64enc,
     xml2,
     stringr,
-    stats
+    stats,
+    grDevices
 Suggests:
     reshape2
 RoxygenNote: 7.1.1

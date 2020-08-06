@@ -21,6 +21,10 @@
 #' the left and the right limits of the x-axis; \code{NULL} for default values
 #' @param yLimits range of the y-axis, a vector of two values specifying
 #' the lower and the upper limits of the y-axis; \code{NULL} for default values
+#' @param expandX if \code{xLimits = NULL}, a percentage of the range of the
+#'   x-axis used to expand this range
+#' @param expandY if \code{yLimits = NULL}, a percentage of the range of the
+#'   y-axis used to expand this range
 #' @param Xformatter a
 #'   \href{https://www.amcharts.com/docs/v4/concepts/formatters/formatting-numbers/}{number formatting string}
 #'   if \code{xValue} is set to a numeric column of \code{data};

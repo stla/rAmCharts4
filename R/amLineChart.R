@@ -252,7 +252,7 @@
 #'                labels = amAxisLabels(fontSize = 17),
 #'                breaks = amAxisBreaks(
 #'                  values = 1:10,
-#'                  labels = sprintf("[bold \%s]\%d[/]", rainbow(10), 1:10))),
+#'                  labels = sprintf("[bold %s]%d[/]", rainbow(10), 1:10))),
 #'   yAxis = list(title = amText(text = "Value",
 #'                              fontSize = 21,
 #'                              color = "silver",

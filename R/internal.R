@@ -36,6 +36,8 @@ regex_hsl <- paste0("^hsl\\(",
 cssColors <- c("transparent", "aqua", "crimson", "fuchsia", "indigo", "lime",
                "olive", "rebeccapurple", "silver", "teal")
 
+#' @importFrom grDevices col2rgb rgb
+#' @noRd
 validateColor <- function(color){
   if(is.null(color)) return(NULL)
   if(grepl(regex_rgb, color) || grepl(regex_hsl, color) || color %in% cssColors){
