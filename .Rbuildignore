@@ -12,3 +12,4 @@
 ^inst/tests_rAmCharts4$
 ^inst/tests_html$
 ^TODO\.txt$
+^cran-comments\.md$

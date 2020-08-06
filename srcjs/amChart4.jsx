@@ -1410,6 +1410,11 @@ class AmLineChart extends React.PureComponent {
 
 
 		/* ~~~~\  x-axis  /~~~~ */
+    let XAxis = utils.createAxis(
+      "X", am4charts, am4core, chart, xAxis, 
+      minX, maxX, isDate, theme, cursor, xValue
+    );
+/*
     let XAxis, Xformatter;
     if(xAxis.labels && xAxis.labels.formatter) {
       Xformatter = xAxis.labels.formatter;
@@ -1521,6 +1526,7 @@ class AmLineChart extends React.PureComponent {
     } else {
       XAxis.cursorTooltipEnabled = false;
     }
+*/
 
     /* ~~~~\  y-axis  /~~~~ */
     let YAxis = utils.createAxis(
@@ -1633,7 +1639,6 @@ class AmLineChart extends React.PureComponent {
 
 		/* ~~~~\  function handling the dragstop event  /~~~~ */
 		function handleDragStop(event, value) {
-      console.log("bullet dragstop");
       handleDrag(event);
       let dataItem = event.target.dataItem;
       dataItem.component.isHover = false; // XXXX
@@ -1869,7 +1874,6 @@ class AmLineChart extends React.PureComponent {
       }
 
       /* ~~~~\  line template  /~~~~ */
-      console.log("series", series);
       let lineTemplate = series.segments.template;
       lineTemplate.interactionsEnabled = true;
       series.strokeWidth = lineStyle.width || 3;
@@ -2294,7 +2298,6 @@ class AmScatterChart extends React.PureComponent {
 
 		/* ~~~~\  function handling the dragstop event  /~~~~ */
 		function handleDragStop(event, value) {
-      console.log("bullet dragstop");
       handleDrag(event);
       let dataItem = event.target.dataItem;
       dataItem.component.isHover = false; // XXXX
@@ -2525,7 +2528,6 @@ class AmScatterChart extends React.PureComponent {
       /* ~~~~\ trend line /~~~~ */
       if(trendData && trendData[value]) {
         let trend = chart.series.push(new am4charts.LineSeries());
-        console.log("trend", trend);
         trend.zIndex = 10000;
         trend.name = yValueNames[value] + "_trend";
         trend.hiddenInLegend = true;
@@ -2833,7 +2835,6 @@ class AmRangeAreaChart extends React.PureComponent {
 //      image.align = img.align || "right";
       image.href = img.href;
 //      image.dx = image.width;
-      console.log("image", image);
     }
 
 
@@ -3002,7 +3003,6 @@ class AmRangeAreaChart extends React.PureComponent {
 
 		/* ~~~~\  function handling the dragstop event  /~~~~ */
 		function handleDragStop(event, value) {
-      console.log("bullet dragstop");
       handleDrag(event);
       let dataItem = event.target.dataItem;
       dataItem.component.isHover = false; // XXXX
@@ -3612,7 +3612,6 @@ class AmRadialBarChart extends React.PureComponent {
         }
       ),
         value = valueAxis.positionToValue(position);
-      console.log("value:", value);
 			// convert coordinate to value
 //			let value = valueAxis.yToValue(event.target.pixelY);
 			// set new value
@@ -4122,7 +4121,6 @@ class AmDumbbellChart extends React.PureComponent {
 
 		/* ~~~~\  function handling the drag event  /~~~~ */
 		function handleDrag(event) {
-      console.log("handleDrag event", event);
 			var dataItem = event.target.dataItem;
 			// convert coordinate to value
 			let value = valueAxis.yToValue(event.target.pixelY);
@@ -4140,7 +4138,6 @@ class AmDumbbellChart extends React.PureComponent {
 
 		/* ~~~~\  function handling the dragstop event  /~~~~ */
 		function handleDragStop(event, value, field) {
-      console.log("bullet dragstop");
       //handleDrag(event);
       let dataItem = event.target.dataItem;
       event.target.isHover = false;

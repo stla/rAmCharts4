@@ -137,7 +137,7 @@ export const Shape = function(am4core, chart, index, bullet, shapeConfig) {
 
 
 export const createGridLines =
-  function(am4core, Axis, breaks, lineconfig, labelsconfig, theme, isDate) {
+  function(Axis, breaks, lineconfig, labelsconfig, theme, isDate) {
 /*    if(labelsconfig && labelsconfig.formatter) {
       let formatter = labelsconfig.formatter;
       if(isDate) {
@@ -216,7 +216,7 @@ export const createGridLines =
         }
       } */
       //range.xx = Axis.formatLabel(values[i]);
-      console.log(range);
+      //console.log(range);
       if(lineconfig) {
         range.grid.stroke =
           lineconfig.color || (theme === "dark" ? "#ffffff" : "#000000");
@@ -356,7 +356,7 @@ export const createAxis = function(
       Axis.endLocation = 0.5; // ??
     }
     createGridLines(
-      am4core, Axis, axisSettings.breaks, axisSettings.gridLines, 
+      Axis, axisSettings.breaks, axisSettings.gridLines, 
       axisSettings.labels, theme, isDate
     );
   } else {
