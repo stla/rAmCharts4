@@ -533,3 +533,19 @@ export const exportMenuItems = [
     ]
   }
 ];
+
+
+export const makeButton = function(Button, settings) {
+  Button.label.text = settings.label.text;
+  Button.label.fill = settings.label.color || Button.label.fill;
+  Button.label.fontSize = settings.label.fontSize;
+  Button.label.fontWeight = settings.label.fontWeight;
+  Button.label.fontFamily = settings.label.fontFamily;
+  Button.background.fill = settings.color || Button.background.fill;
+  setTimeout(function() {
+    Button.dy = -Button.parent.innerHeight * (settings.position || 0.9);
+  }, 0);
+  Button.padding(5, 5, 5, 5);
+  Button.align = "right";
+  Button.marginRight = settings.marginRight;
+};
