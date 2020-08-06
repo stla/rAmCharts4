@@ -369,7 +369,7 @@ amLineChart(
   yLimits = c(-3, 3),
   Yformatter = "#.00",
   caption = amText(text = "[font-style:italic]try to drag the yellow line![/]",
-                  color = "yellow"),
+                   color = "yellow"),
   theme = "dark")
 
 
@@ -408,7 +408,7 @@ amLineChart(
     "[bold][font-style:italic]{dateX.value.formatDate('yyyy/MM/dd')}[/]",
     "\nvisits: {valueY}[/]"
   ),
-  caption = list(text = "Year 2018"),
+  caption = amText(text = "Year 2018"),
   theme = "material")
 
 

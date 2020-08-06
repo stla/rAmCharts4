@@ -526,23 +526,13 @@ amBarChart <- function(
     columnWidth <- max(10, min(columnWidth, 100))
   }
 
-  if(is.list(xAxis)){
-    if(is.list(xAxis[["title"]])){
-      xAxis[["title"]][["color"]] <- validateColor(xAxis[["title"]][["color"]])
-    }
-    # if(is.null(xAxis[["labels"]])){
-    #   xAxis[["labels"]] <- amAxisLabels(
-    #     color = NULL,
-    #     fontSize = 18,
-    #     rotation = 0
-    #   )
-    # }
-  }else if(is.null(xAxis)){
+  if(is.null(xAxis)){
     xAxis <- list(
-      title = list(
+      title = amText(
         text = category,
         fontSize = 20,
-        color = NULL
+        color = NULL,
+        fontWeight = "bold"
       ),
       labels = amAxisLabels(
         color = NULL,
@@ -552,10 +542,11 @@ amBarChart <- function(
     )
   }else if(is.character(xAxis)){
     xAxis <- list(
-      title = list(
+      title = amText(
         text = xAxis,
         fontSize = 20,
-        color = NULL
+        color = NULL,
+        fontWeight = "bold"
       ),
       labels = amAxisLabels(
         color = NULL,
@@ -563,11 +554,13 @@ amBarChart <- function(
         rotation = 0
       )
     )
-  }else if(is.character(xAxis[["title"]])){
-    xAxis[["title"]] <- list(
+  }
+  if(is.character(xAxis[["title"]])){
+    xAxis[["title"]] <- amText(
       text = xAxis[["title"]],
       fontSize = 20,
-      color = NULL
+      color = NULL,
+      fontWeight = "bold"
     )
   }
   if(is.null(xAxis[["labels"]])){
@@ -578,17 +571,14 @@ amBarChart <- function(
     )
   }
 
-  if(is.list(yAxis)){
-    if(is.list(yAxis[["title"]])){
-      yAxis[["title"]][["color"]] <- validateColor(yAxis[["title"]][["color"]])
-    }
-  }else if(is.null(yAxis)){
+  if(is.null(yAxis)){
     yAxis <- list(
       title = if(length(values) == 1L) {
-        list(
+        amText(
           text = values,
           fontSize = 20,
-          color = NULL
+          color = NULL,
+          fontWeight = "bold"
         )
       },
       labels = amAxisLabels(
@@ -601,10 +591,11 @@ amBarChart <- function(
     )
   }else if(is.character(yAxis)){
     yAxis <- list(
-      title = list(
+      title = amText(
         text = yAxis,
         fontSize = 20,
-        color = NULL
+        color = NULL,
+        fontWeight = "bold"
       ),
       labels = amAxisLabels(
         color = NULL,
@@ -616,10 +607,11 @@ amBarChart <- function(
     )
   }
   if(is.character(yAxis[["title"]])){
-    yAxis[["title"]] <- list(
+    yAxis[["title"]] <- amText(
       text = yAxis[["title"]],
       fontSize = 20,
-      color = NULL
+      color = NULL,
+      fontWeight = "bold"
     )
   }
   if(is.null(yAxis[["labels"]])){

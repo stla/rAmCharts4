@@ -12,7 +12,7 @@
 #'   \code{\link{amBarChart}}, \code{\link{amHorizontalBarChart}},
 #'   \code{\link{amLineChart}}, \code{\link{amScatterChart}},
 #'   \code{\link{amRangeAreaChart}}, \code{\link{amRadialBarChart}},
-#'   or \code{\link{amDumbbellChart}},
+#'   \code{\link{amDumbbellChart}}, or \code{\link{amHorizontalDumbbellChart}}
 #' @param env the environment in which to evaluate \code{expr}
 #' @param quoted whether \code{expr} is a quoted expression
 #'

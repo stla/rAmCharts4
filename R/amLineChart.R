@@ -272,7 +272,7 @@
 #'   yLimits = c(-3, 3),
 #'   Yformatter = "#.00",
 #'   caption = amText(text = "[font-style:italic]try to drag the yellow line![/]",
-#'                   color = "yellow"),
+#'                    color = "yellow"),
 #'   theme = "dark")
 #'
 #'
@@ -311,7 +311,7 @@
 #'     "[bold][font-style:italic]{dateX.value.formatDate('yyyy/MM/dd')}[/]",
 #'     "\nvisits: {valueY}[/]"
 #'   ),
-#'   caption = list(text = "Year 2018"),
+#'   caption = amText(text = "Year 2018"),
 #'   theme = "material")
 #'
 #'
@@ -850,16 +850,13 @@ amLineChart <- function(
     stop("Invalid `lineStyle` argument.", call. = TRUE)
   }
 
-  if(is.list(xAxis)){
-    if(is.list(xAxis[["title"]])){
-      xAxis[["title"]][["color"]] <- validateColor(xAxis[["title"]][["color"]])
-    }
-  }else if(is.null(xAxis)){
+  if(is.null(xAxis)){
     xAxis <- list(
-      title = list(
+      title = amText(
         text = xValue,
         fontSize = 20,
-        color = NULL
+        color = NULL,
+        fontWeight = "bold"
       ),
       labels = amAxisLabels(
         color = NULL,
@@ -875,10 +872,11 @@ amLineChart <- function(
     )
   }else if(is.character(xAxis)){
     xAxis <- list(
-      title = list(
+      title = amText(
         text = xAxis,
         fontSize = 20,
-        color = NULL
+        color = NULL,
+        fontWeight = "bold"
       ),
       labels = amAxisLabels(
         color = NULL,
@@ -894,10 +892,11 @@ amLineChart <- function(
     )
   }
   if(is.character(xAxis[["title"]])){
-    xAxis[["title"]] <- list(
+    xAxis[["title"]] <- amText(
       text = xAxis[["title"]],
       fontSize = 20,
-      color = NULL
+      color = NULL,
+      fontWeight = "bold"
     )
   }
   if(is.null(xAxis[["labels"]])){
@@ -913,17 +912,14 @@ amLineChart <- function(
     )
   }
 
-  if(is.list(yAxis)){
-    if(is.list(yAxis[["title"]])){
-      yAxis[["title"]][["color"]] <- validateColor(yAxis[["title"]][["color"]])
-    }
-  }else if(is.null(yAxis)){
+  if(is.null(yAxis)){
     yAxis <- list(
       title = if(length(yValues) == 1L) {
-        list(
+        amText(
           text = yValues,
           fontSize = 20,
-          color = NULL
+          color = NULL,
+          fontWeight = "bold"
         )
       },
       labels = amAxisLabels(
@@ -936,10 +932,11 @@ amLineChart <- function(
     )
   }else if(is.character(yAxis)){
     yAxis <- list(
-      title = list(
+      title = amText(
         text = yAxis,
         fontSize = 20,
-        color = NULL
+        color = NULL,
+        fontWeight = "bold"
       ),
       labels = amAxisLabels(
         color = NULL,
@@ -951,10 +948,11 @@ amLineChart <- function(
     )
   }
   if(is.character(yAxis[["title"]])){
-    yAxis[["title"]] <- list(
+    yAxis[["title"]] <- amText(
       text = yAxis[["title"]],
       fontSize = 20,
-      color = NULL
+      color = NULL,
+      fontWeight = "bold"
     )
   }
   if(!isFALSE(yAxis[["labels"]]) && is.null(yAxis[["labels"]])){
