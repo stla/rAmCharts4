@@ -18,7 +18,7 @@
 #'
 #' @name rAmCharts4-shiny
 #'
-#' @import htmlwidgets htmltools
+#' @import htmlwidgets
 #' @export
 #'
 #' @examples if(interactive()) {
@@ -72,10 +72,9 @@
 #'         text = "[bold font-size:22]Year 2018[/]",
 #'         color = "fuchsia"
 #'       ),
-#'       button = list(
-#'         text = "Reset data",
-#'         color = "black",
-#'         fill = "seashell",
+#'       button = amButton(
+#'         label = amText("Reset data", color = "black"),
+#'         color = "seashell",
 #'         position = 0.9
 #'       ),
 #'       theme = "dataviz")
@@ -95,7 +94,8 @@
 #'
 #' }
 amChart4Output <- function(outputId, width = "100%", height = "400px"){
-  htmlwidgets::shinyWidgetOutput(outputId, 'amChart4', width, height, package = 'rAmCharts4')
+  htmlwidgets::shinyWidgetOutput(
+    outputId, 'amChart4', width, height, package = 'rAmCharts4')
 }
 
 #' @rdname rAmCharts4-shiny

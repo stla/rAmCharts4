@@ -10,3 +10,6 @@
 #' @docType import
 NULL
 
+#' @import stats
+#' @noRd
+NULL

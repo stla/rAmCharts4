@@ -8,8 +8,7 @@
 ^yarn\.lock$
 ^\.Rhistory$
 ^man-roxygen$
-^\./inst/rAmCharts4_shiny\.gif$
-^\./inst/rAmCharts4_browsable\.gif$
+^\./inst/screenshots$
 ^\./inst/tests_rAmCharts4$
 ^\./inst/tests_html$
 ^TODO\.txt$

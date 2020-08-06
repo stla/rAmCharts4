@@ -40,7 +40,8 @@ Imports:
     tools,
     base64enc,
     xml2,
-    stringr
+    stringr,
+    stats
 Suggests:
     reshape2
 RoxygenNote: 7.1.1
