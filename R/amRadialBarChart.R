@@ -110,14 +110,7 @@
 #'   \code{"bottomleft"} or \code{"bottomright"}, the field \code{hjust}
 #'   defines the horizontal adjustment, and the field \code{vjust} defines
 #'   the vertical adjustment
-#' @param button \code{NULL} for the default, \code{FALSE} for no button,
-#' a single character string giving the button label,
-#' or settings of the button given as
-#' a list with these fields: \code{text} for the button label, \code{color} for
-#' the label color, \code{fill} for the button color, and \code{position}
-#' for the button position as a percentage (\code{0} for bottom,
-#' \code{1} for top); this button is used to replace the current data
-#' with \code{data2}
+#' @template buttonTemplate
 #' @param cursor option to add a cursor on the chart; \code{FALSE} for no
 #'   cursor, \code{TRUE} for a cursor with default settings for the tooltips,
 #'   or a list of settings created with \code{\link{amTooltip}} to
@@ -618,22 +611,13 @@ amRadialBarChart <- function(
 
   if(is.null(button)){
     button <- if(!is.null(data2))
-      list(
-        text = "Reset",
-        color = NULL,
-        fill = NULL,
-        position = 0.9
+      amButton(
+        label = "Reset"
       )
   }else if(is.character(button)){
-    button <- list(
-      text = button,
-      color = NULL,
-      fill = NULL,
-      position = 0.9
+    button <- amButton(
+      label = button
     )
-  }else if(is.list(button)){
-    button[["color"]] <- validateColor(button[["color"]])
-    button[["fill"]] <- validateColor(button[["fill"]])
   }
 
   if("tooltip" %in% class(cursor)){

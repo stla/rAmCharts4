@@ -192,13 +192,8 @@ defines the horizontal adjustment, and the field \code{vjust} defines
 the vertical adjustment}
 
 \item{button}{\code{NULL} for the default, \code{FALSE} for no button,
-a single character string giving the button label,
-or settings of the button given as
-a list with these fields: \code{text} for the button label, \code{color} for
-the label color, \code{fill} for the button color, and \code{position}
-for the button position as a percentage (\code{0} for bottom,
-\code{1} for top); this button is used to replace the current data
-with \code{data2}}
+or a list of settings created with \code{\link{amButton}}; this button is
+used to replace the current data with \code{data2}}
 
 \item{cursor}{option to add a cursor on the chart; \code{FALSE} for no
 cursor, \code{TRUE} for a cursor for both axes with default settings

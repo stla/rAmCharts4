@@ -198,18 +198,9 @@ class AmBarChart extends React.PureComponent {
 
 
 		/* ~~~~\  button  /~~~~ */
-		let button = this.props.button;
-		if(button) {
-  		let Button = chart.chartContainer.createChild(am4core.Button);
-      Button.label.text = button.text;
-      Button.label.fill = button.color || Button.label.fill;
-      Button.background.fill = button.fill || Button.background.fill;
-      setTimeout(function() {
-        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
-      }, 0);
-      Button.padding(5, 5, 5, 5);
-      Button.align = "right";
-      Button.marginRight = 15;
+		if(this.props.button) {
+      let Button = chart.chartContainer.createChild(am4core.Button);
+      utils.makeButton(Button, this.props.button);
       Button.events.on("hit", function() {
         for (let r = 0; r < data.length; ++r){
           for (let v = 0; v < values.length; ++v) {
@@ -793,21 +784,12 @@ class AmHorizontalBarChart extends React.PureComponent {
 
 
 		/* ~~~~\  button  /~~~~ */
-		let button = this.props.button;
-		if(button) {
-  		let Button = chart.chartContainer.createChild(am4core.Button);
-      Button.label.text = button.text;
-      Button.label.fill = button.color || Button.label.fill;
-      Button.background.fill = button.fill || Button.background.fill;
-      setTimeout(function() {
-        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
-      }, 0);
-      Button.padding(5, 5, 5, 5);
-      Button.align = "right";
-      Button.marginRight = 15;
+		if(this.props.button) {
+      let Button = chart.chartContainer.createChild(am4core.Button);
+      utils.makeButton(Button, this.props.button);
       Button.events.on("hit", function() {
-        for (let r = 0; r < data.length; ++r){
-          for (let v = 0; v < values.length; ++v) {
+        for(let r = 0; r < data.length; ++r){
+          for(let v = 0; v < values.length; ++v) {
             chart.data[r][values[v]] = data2[r][values[v]];
           }
         }
@@ -1344,18 +1326,9 @@ class AmLineChart extends React.PureComponent {
 
 
 		/* ~~~~\  button  /~~~~ */
-		let button = this.props.button;
-		if(button) {
-  		let Button = chart.chartContainer.createChild(am4core.Button);
-      Button.label.text = button.text;
-      Button.label.fill = button.color || Button.label.fill;
-      Button.background.fill = button.fill || Button.background.fill;
-      setTimeout(function() {
-        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
-      }, 0);
-      Button.padding(5, 5, 5, 5);
-      Button.align = "right";
-      Button.marginRight = 15;
+		if(this.props.button) {
+      let Button = chart.chartContainer.createChild(am4core.Button);
+      utils.makeButton(Button, this.props.button);
       Button.events.on("hit", function() {
         for(let r = 0; r < data.length; ++r){
           for(let v = 0; v < yValues.length; ++v) {
@@ -2158,18 +2131,9 @@ class AmScatterChart extends React.PureComponent {
 
 
 		/* ~~~~\  button  /~~~~ */
-		let button = this.props.button;
-		if(button) {
-  		let Button = chart.chartContainer.createChild(am4core.Button);
-      Button.label.text = button.text;
-      Button.label.fill = button.color || Button.label.fill;
-      Button.background.fill = button.fill || Button.background.fill;
-      setTimeout(function() {
-        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
-      }, 0);
-      Button.padding(5, 5, 5, 5);
-      Button.align = "right";
-      Button.marginRight = 15;
+		if(this.props.button) {
+      let Button = chart.chartContainer.createChild(am4core.Button);
+      utils.makeButton(Button, this.props.button);
       Button.events.on("hit", function() {
         for (let r = 0; r < data.length; ++r){
           for (let v = 0; v < yValues.length; ++v) {
@@ -2883,18 +2847,9 @@ class AmRangeAreaChart extends React.PureComponent {
 
 
 		/* ~~~~\  button  /~~~~ */
-		let button = this.props.button;
-		if(button) {
-  		let Button = chart.chartContainer.createChild(am4core.Button);
-      Button.label.text = button.text;
-      Button.label.fill = button.color || Button.label.fill;
-      Button.background.fill = button.fill || Button.background.fill;
-      setTimeout(function() {
-        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
-      }, 0);
-      Button.padding(5, 5, 5, 5);
-      Button.align = "right";
-      Button.marginRight = 15;
+		if(this.props.button) {
+      let Button = chart.chartContainer.createChild(am4core.Button);
+      utils.makeButton(Button, this.props.button);
       Button.events.on("hit", function() {
         for(let r = 0; r < data.length; ++r) {
           for(let v = 0; v < yValues.length; ++v) {
@@ -3559,18 +3514,9 @@ class AmRadialBarChart extends React.PureComponent {
 
 
 		/* ~~~~\  button  /~~~~ */
-		let button = this.props.button;
-		if(button) {
-  		let Button = chart.chartContainer.createChild(am4core.Button);
-      Button.label.text = button.text;
-      Button.label.fill = button.color || Button.label.fill;
-      Button.background.fill = button.fill || Button.background.fill;
-      setTimeout(function() {
-        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
-      }, 0);
-      Button.padding(5, 5, 5, 5);
-      Button.align = "right";
-      Button.marginRight = 15;
+		if(this.props.button) {
+      let Button = chart.chartContainer.createChild(am4core.Button);
+      utils.makeButton(Button, this.props.button);
       Button.events.on("hit", function() {
         for (let r = 0; r < data.length; ++r){
           for (let v = 0; v < values.length; ++v) {
@@ -4068,22 +4014,14 @@ class AmDumbbellChart extends React.PureComponent {
 
 
 		/* ~~~~\  button  /~~~~ */
-		let button = this.props.button;
-		if(button) {
-  		let Button = chart.chartContainer.createChild(am4core.Button);
-      Button.label.text = button.text;
-      Button.label.fill = button.color || Button.label.fill;
-      Button.background.fill = button.fill || Button.background.fill;
-      setTimeout(function() {
-        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
-      }, 0);
-      Button.padding(5, 5, 5, 5);
-      Button.align = "right";
-      Button.marginRight = 15;
+		if(this.props.button) {
+      let Button = chart.chartContainer.createChild(am4core.Button);
+      utils.makeButton(Button, this.props.button);
       Button.events.on("hit", function() {
-        for (let r = 0; r < data.length; ++r){
-          for (let v = 0; v < values.length; ++v) {
-            chart.data[r][values[v]] = data2[r][values[v]];
+        for(let r = 0; r < data.length; ++r) {
+          for(let v = 0; v < values.length; ++v) {
+            chart.data[r][values[v][0]] = data2[r][values[v][0]];
+            chart.data[r][values[v][1]] = data2[r][values[v][1]];
           }
         }
         chart.invalidateRawData();
@@ -4576,22 +4514,14 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
 
 
 		/* ~~~~\  button  /~~~~ */
-		let button = this.props.button;
-		if(button) {
-  		let Button = chart.chartContainer.createChild(am4core.Button);
-      Button.label.text = button.text;
-      Button.label.fill = button.color || Button.label.fill;
-      Button.background.fill = button.fill || Button.background.fill;
-      setTimeout(function() {
-        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
-      }, 0);
-      Button.padding(5, 5, 5, 5);
-      Button.align = "right";
-      Button.marginRight = 15;
+		if(this.props.button) {
+      let Button = chart.chartContainer.createChild(am4core.Button);
+      utils.makeButton(Button, this.props.button);
       Button.events.on("hit", function() {
-        for (let r = 0; r < data.length; ++r){
-          for (let v = 0; v < values.length; ++v) {
-            chart.data[r][values[v]] = data2[r][values[v]];
+        for(let r = 0; r < data.length; ++r) {
+          for(let v = 0; v < values.length; ++v) {
+            chart.data[r][values[v][0]] = data2[r][values[v][0]];
+            chart.data[r][values[v][1]] = data2[r][values[v][1]];
           }
         }
         chart.invalidateRawData();

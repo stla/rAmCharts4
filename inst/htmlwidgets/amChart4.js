@@ -120302,19 +120302,9 @@ class AmBarChart extends React.PureComponent {
     /* ~~~~\  button  /~~~~ */
 
 
-    var button = this.props.button;
-
-    if (button) {
+    if (this.props.button) {
       var Button = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Button"]);
-      Button.label.text = button.text;
-      Button.label.fill = button.color || Button.label.fill;
-      Button.background.fill = button.fill || Button.background.fill;
-      setTimeout(function () {
-        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
-      }, 0);
-      Button.padding(5, 5, 5, 5);
-      Button.align = "right";
-      Button.marginRight = 15;
+      _utils__WEBPACK_IMPORTED_MODULE_13__["makeButton"](Button, this.props.button);
       Button.events.on("hit", function () {
         for (var r = 0; r < data.length; ++r) {
           for (var v = 0; v < values.length; ++v) {
@@ -120916,19 +120906,9 @@ class AmHorizontalBarChart extends React.PureComponent {
     /* ~~~~\  button  /~~~~ */
 
 
-    var button = this.props.button;
-
-    if (button) {
+    if (this.props.button) {
       var Button = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Button"]);
-      Button.label.text = button.text;
-      Button.label.fill = button.color || Button.label.fill;
-      Button.background.fill = button.fill || Button.background.fill;
-      setTimeout(function () {
-        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
-      }, 0);
-      Button.padding(5, 5, 5, 5);
-      Button.align = "right";
-      Button.marginRight = 15;
+      _utils__WEBPACK_IMPORTED_MODULE_13__["makeButton"](Button, this.props.button);
       Button.events.on("hit", function () {
         for (var r = 0; r < data.length; ++r) {
           for (var v = 0; v < values.length; ++v) {
@@ -121143,7 +121123,7 @@ class AmHorizontalBarChart extends React.PureComponent {
 
 
       var columnTemplate = series.columns.template;
-      columnTemplate.width = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](columnWidth);
+      columnTemplate.height = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](columnWidth);
       columnTemplate.fill = columnStyle.color || chart.colors.getIndex(index);
       columnTemplate.stroke = columnStyle.strokeColor || _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](columnTemplate.fill).lighten(-0.5);
       columnTemplate.strokeOpacity = 1;
@@ -121473,19 +121453,9 @@ class AmLineChart extends React.PureComponent {
     /* ~~~~\  button  /~~~~ */
 
 
-    var button = this.props.button;
-
-    if (button) {
+    if (this.props.button) {
       var Button = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Button"]);
-      Button.label.text = button.text;
-      Button.label.fill = button.color || Button.label.fill;
-      Button.background.fill = button.fill || Button.background.fill;
-      setTimeout(function () {
-        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
-      }, 0);
-      Button.padding(5, 5, 5, 5);
-      Button.align = "right";
-      Button.marginRight = 15;
+      _utils__WEBPACK_IMPORTED_MODULE_13__["makeButton"](Button, this.props.button);
       Button.events.on("hit", function () {
         for (var r = 0; r < data.length; ++r) {
           for (var v = 0; v < yValues.length; ++v) {
@@ -122314,19 +122284,9 @@ class AmScatterChart extends React.PureComponent {
     /* ~~~~\  button  /~~~~ */
 
 
-    var button = this.props.button;
-
-    if (button) {
+    if (this.props.button) {
       var Button = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Button"]);
-      Button.label.text = button.text;
-      Button.label.fill = button.color || Button.label.fill;
-      Button.background.fill = button.fill || Button.background.fill;
-      setTimeout(function () {
-        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
-      }, 0);
-      Button.padding(5, 5, 5, 5);
-      Button.align = "right";
-      Button.marginRight = 15;
+      _utils__WEBPACK_IMPORTED_MODULE_13__["makeButton"](Button, this.props.button);
       Button.events.on("hit", function () {
         for (var r = 0; r < data.length; ++r) {
           for (var v = 0; v < yValues.length; ++v) {
@@ -123065,19 +123025,9 @@ class AmRangeAreaChart extends React.PureComponent {
     /* ~~~~\  button  /~~~~ */
 
 
-    var button = this.props.button;
-
-    if (button) {
+    if (this.props.button) {
       var Button = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Button"]);
-      Button.label.text = button.text;
-      Button.label.fill = button.color || Button.label.fill;
-      Button.background.fill = button.fill || Button.background.fill;
-      setTimeout(function () {
-        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
-      }, 0);
-      Button.padding(5, 5, 5, 5);
-      Button.align = "right";
-      Button.marginRight = 15;
+      _utils__WEBPACK_IMPORTED_MODULE_13__["makeButton"](Button, this.props.button);
       Button.events.on("hit", function () {
         for (var r = 0; r < data.length; ++r) {
           for (var v = 0; v < yValues.length; ++v) {
@@ -123737,19 +123687,9 @@ class AmRadialBarChart extends React.PureComponent {
     /* ~~~~\  button  /~~~~ */
 
 
-    var button = this.props.button;
-
-    if (button) {
+    if (this.props.button) {
       var Button = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Button"]);
-      Button.label.text = button.text;
-      Button.label.fill = button.color || Button.label.fill;
-      Button.background.fill = button.fill || Button.background.fill;
-      setTimeout(function () {
-        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
-      }, 0);
-      Button.padding(5, 5, 5, 5);
-      Button.align = "right";
-      Button.marginRight = 15;
+      _utils__WEBPACK_IMPORTED_MODULE_13__["makeButton"](Button, this.props.button);
       Button.events.on("hit", function () {
         for (var r = 0; r < data.length; ++r) {
           for (var v = 0; v < values.length; ++v) {
@@ -124254,23 +124194,14 @@ class AmDumbbellChart extends React.PureComponent {
     /* ~~~~\  button  /~~~~ */
 
 
-    var button = this.props.button;
-
-    if (button) {
+    if (this.props.button) {
       var Button = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Button"]);
-      Button.label.text = button.text;
-      Button.label.fill = button.color || Button.label.fill;
-      Button.background.fill = button.fill || Button.background.fill;
-      setTimeout(function () {
-        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
-      }, 0);
-      Button.padding(5, 5, 5, 5);
-      Button.align = "right";
-      Button.marginRight = 15;
+      _utils__WEBPACK_IMPORTED_MODULE_13__["makeButton"](Button, this.props.button);
       Button.events.on("hit", function () {
         for (var r = 0; r < data.length; ++r) {
           for (var v = 0; v < values.length; ++v) {
-            chart.data[r][values[v]] = data2[r][values[v]];
+            chart.data[r][values[v][0]] = data2[r][values[v][0]];
+            chart.data[r][values[v][1]] = data2[r][values[v][1]];
           }
         }
 
@@ -124771,23 +124702,14 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
     /* ~~~~\  button  /~~~~ */
 
 
-    var button = this.props.button;
-
-    if (button) {
+    if (this.props.button) {
       var Button = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Button"]);
-      Button.label.text = button.text;
-      Button.label.fill = button.color || Button.label.fill;
-      Button.background.fill = button.fill || Button.background.fill;
-      setTimeout(function () {
-        Button.dy = -Button.parent.innerHeight * (button.position || 0.9);
-      }, 0);
-      Button.padding(5, 5, 5, 5);
-      Button.align = "right";
-      Button.marginRight = 15;
+      _utils__WEBPACK_IMPORTED_MODULE_13__["makeButton"](Button, this.props.button);
       Button.events.on("hit", function () {
         for (var r = 0; r < data.length; ++r) {
           for (var v = 0; v < values.length; ++v) {
-            chart.data[r][values[v]] = data2[r][values[v]];
+            chart.data[r][values[v][0]] = data2[r][values[v][0]];
+            chart.data[r][values[v][1]] = data2[r][values[v][1]];
           }
         }
 
@@ -125090,7 +125012,7 @@ Object(reactR__WEBPACK_IMPORTED_MODULE_0__["reactWidget"])('amChart4', 'output',
 /*!******************************!*\
   !*** ./srcjs/utils/index.js ***!
   \******************************/
-/*! exports provided: toUTCtime, toDate, subset, isLightColor, Tooltip, Shape, createGridLines, createAxis, createCategoryAxis, Image, exportMenuItems */
+/*! exports provided: toUTCtime, toDate, subset, isLightColor, Tooltip, Shape, createGridLines, createAxis, createCategoryAxis, Image, exportMenuItems, makeButton */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -125106,6 +125028,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createCategoryAxis", function() { return createCategoryAxis; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Image", function() { return Image; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "exportMenuItems", function() { return exportMenuItems; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "makeButton", function() { return makeButton; });
 /* jshint esversion: 6 */
 var toUTCtime = function toUTCtime(string) {
   var ymd = string.split("-");
@@ -125612,6 +125535,20 @@ var exportMenuItems = [{
     "type": "print"
   }]
 }];
+var makeButton = function makeButton(Button, settings) {
+  Button.label.text = settings.label.text;
+  Button.label.fill = settings.label.color || Button.label.fill;
+  Button.label.fontSize = settings.label.fontSize;
+  Button.label.fontWeight = settings.label.fontWeight;
+  Button.label.fontFamily = settings.label.fontFamily;
+  Button.background.fill = settings.color || Button.background.fill;
+  setTimeout(function () {
+    Button.dy = -Button.parent.innerHeight * (settings.position || 0.9);
+  }, 0);
+  Button.padding(5, 5, 5, 5);
+  Button.align = "right";
+  Button.marginRight = settings.marginRight;
+};
 
 /***/ }),
 
