@@ -41,8 +41,8 @@ amDumbbellChart(
 
 \item{data2}{\code{NULL} or a dataframe used to update the data with the
 button; its column names must include the column names of \code{data}
-given in \code{values} and it must have the same number of rows as
-\code{data}}
+given in \code{values}, it must have the same number of rows as
+\code{data} and its rows must be in the same order as those of \code{data}}
 
 \item{category}{name of the column of \code{data} to be used for the
 category axis}
@@ -112,7 +112,11 @@ otherwise a named list of the form
 \code{\link{amRectangle}}; this can also be a
 single list of settings that will be applied to each series}
 
-\item{backgroundColor}{a color for the chart background}
+\item{backgroundColor}{a color for the chart background; it can be
+given by the name of a R color, the name of a CSS color, e.g.
+\code{"lime"} or \code{"olive"}, an HEX code like
+\code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
+like \code{"hsl(360,11,255)"}}
 
 \item{xAxis}{settings of the category axis given as a list, or just a string
 for the axis title; the list of settings has four possible fields:
@@ -193,12 +197,6 @@ chart is displayed in Shiny, in which case the id is given by the Shiny id}
 }
 \description{
 Create a HTML widget displaying a Dumbbell chart.
-}
-\note{
-A color can be given by the name of a R color, the name of a CSS
-color, e.g. \code{"olive"} or \code{"fuchsia"}, an HEX code like
-\code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
-like \code{"hsl(360,11,255)"}.
 }
 \examples{
 dat <- data.frame(
