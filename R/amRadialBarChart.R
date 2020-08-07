@@ -3,19 +3,22 @@
 #'
 #' @param data a dataframe
 #' @param data2 \code{NULL} or a dataframe used to update the data with the
-#' button; its column names must include the column names of \code{data}
-#' given in \code{values} and it must have the same number of rows as
-#' \code{data}
+#'   button; its column names must include the column names of \code{data}
+#'   given in \code{values}, it must have the same number of rows as
+#'   \code{data} and its rows must be in the same order as those of \code{data}
 #' @param category name of the column of \code{data} to be used on the
-#' category axis
+#'   category axis
 #' @param values name(s) of the column(s) of \code{data} to be used on the
-#' value axis
+#'   value axis
 #' @param valueNames names of the values variables, to appear in the legend;
 #'   \code{NULL} to use \code{values} as names, otherwise a named list of the
 #'   form \code{list(value1 = "ValueName1", value2 = "ValueName2", ...)} where
 #'   \code{value1}, \code{value2}, ... are the column names given in
 #'   \code{values} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
-#'   desired names to appear in the legend
+#'   desired names to appear in the legend; these names can also appear in
+#'   the tooltips: they are substituted to the string \code{{name}} in
+#'   the formatting string passed on to the tooltip (see the second example of
+#'   \code{\link{amBarChart}})
 #' @param showValues logical, whether to display the values on the chart
 #' @param innerRadius inner radius of the chart, a percentage (between 0 and
 #'   100 theoretically, but in practice it should be between 30 and 70)
@@ -67,7 +70,11 @@
 #'   single list of settings that will be applied to each series
 #' @param alwaysShowBullets logical, whether to always show the bullets;
 #'   if \code{FALSE}, the bullets are shown only on hovering a column
-#' @param backgroundColor a color for the chart background
+#' @param backgroundColor a color for the chart background; a color can be
+#'   given by the name of a R color, the name of a CSS color, e.g.
+#'   \code{"lime"} or \code{"fuchsia"}, an HEX code like
+#'   \code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
+#'   like \code{"hsl(360,11,255)"}
 #' @param cellWidth cell width in percent; for a simple bar chart, this is the
 #' width of the columns; for a grouped bar chart, this is the width of the
 #' clusters of columns; \code{NULL} for the default value
@@ -133,11 +140,6 @@
 #' @param chartId a HTML id for the chart
 #' @param elementId a HTML id for the container of the chart; ignored if the
 #' chart is displayed in Shiny, in which case the id is given by the Shiny id
-#'
-#' @note A color can be given by the name of a R color, the name of a CSS
-#' color, e.g. \code{"transparent"} or \code{"fuchsia"}, an HEX code like
-#' \code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
-#' like \code{"hsl(360,11,255)"}.
 #'
 #' @import htmlwidgets
 #' @importFrom shiny validateCssUnit
@@ -273,12 +275,18 @@ amRadialBarChart <- function(
 
   if(is.null(valueNames)){
     valueNames <- setNames(as.list(values), values)
-  }else if(is.list(valueNames)){
-    if(!all(values %in% names(valueNames))){
+  }else if(is.list(valueNames) || is.character(valueNames)){
+    if(is.null(names(valueNames)) && length(valueNames) == length(values)){
+      warning(sprintf(
+        "The `valueNames` %s you provided is unnamed - setting automatic names",
+        ifelse(is.list(valueNames), "list", "vector")
+      ))
+      valueNames <- setNames(as.list(valueNames), values)
+    }else if(!all(values %in% names(valueNames))){
       stop(
         paste0(
-          "Invalid `valueNames` list. ",
-          "It must be a named list giving a name for every column ",
+          "Invalid `valueNames` argument. ",
+          "It must be a named list associating a name to every column ",
           "given in the `values` argument."
         ),
         call. = TRUE
@@ -392,7 +400,6 @@ amRadialBarChart <- function(
         setNames(
           rep(list(
             amTooltip(
-              #              text = "[bold]{name}:\n{valueY}[/]",
               text = tooltipText,
               auto = FALSE
             )
@@ -665,7 +672,7 @@ amRadialBarChart <- function(
       data2 = data2,
       category = category,
       values = as.list(values),
-      valueNames = valueNames,
+      valueNames = as.list(valueNames),
       showValues = showValues,
       innerRadius = innerRadius,
       minValue = yLimits[1L],

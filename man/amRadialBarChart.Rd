@@ -46,8 +46,8 @@ amRadialBarChart(
 
 \item{data2}{\code{NULL} or a dataframe used to update the data with the
 button; its column names must include the column names of \code{data}
-given in \code{values} and it must have the same number of rows as
-\code{data}}
+given in \code{values}, it must have the same number of rows as
+\code{data} and its rows must be in the same order as those of \code{data}}
 
 \item{category}{name of the column of \code{data} to be used on the
 category axis}
@@ -60,7 +60,10 @@ value axis}
 form \code{list(value1 = "ValueName1", value2 = "ValueName2", ...)} where
 \code{value1}, \code{value2}, ... are the column names given in
 \code{values} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
-desired names to appear in the legend}
+desired names to appear in the legend; these names can also appear in
+the tooltips: they are substituted to the string \code{{name}} in
+the formatting string passed on to the tooltip (see the second example of
+\code{\link{amBarChart}})}
 
 \item{showValues}{logical, whether to display the values on the chart}
 
@@ -125,7 +128,11 @@ single list of settings that will be applied to each series}
 \item{alwaysShowBullets}{logical, whether to always show the bullets;
 if \code{FALSE}, the bullets are shown only on hovering a column}
 
-\item{backgroundColor}{a color for the chart background}
+\item{backgroundColor}{a color for the chart background; a color can be
+given by the name of a R color, the name of a CSS color, e.g.
+\code{"lime"} or \code{"fuchsia"}, an HEX code like
+\code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
+like \code{"hsl(360,11,255)"}}
 
 \item{cellWidth}{cell width in percent; for a simple bar chart, this is the
 width of the columns; for a grouped bar chart, this is the width of the
@@ -212,12 +219,6 @@ chart is displayed in Shiny, in which case the id is given by the Shiny id}
 }
 \description{
 Create a HTML widget displaying a radial bar chart.
-}
-\note{
-A color can be given by the name of a R color, the name of a CSS
-color, e.g. \code{"transparent"} or \code{"fuchsia"}, an HEX code like
-\code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
-like \code{"hsl(360,11,255)"}.
 }
 \examples{
 # a grouped radial bar chart ####
