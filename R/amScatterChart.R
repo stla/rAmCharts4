@@ -3,13 +3,13 @@
 #'
 #' @param data a dataframe
 #' @param data2 \code{NULL} or a dataframe used to update the data with the
-#' button; its column names must include the column names of \code{data}
-#' given in \code{values} and it must have the same number of rows as
-#' \code{data}
-#' @param xValue name of the column of \code{data} to be used on the
-#' x-axis
+#'   button; its column names must include the column names of \code{data}
+#'   given in \code{yValues} as well as the column name given in \code{xValue};
+#'   moreover it must have the same number of rows as \code{data} and its rows
+#'   must be in the same order as those of \code{data}
+#' @param xValue name of the column of \code{data} to be used on the x-axis
 #' @param yValues name(s) of the column(s) of \code{data} to be used on the
-#' y-axis
+#'   y-axis
 #' @param yValueNames names of the variables on the y-axis,
 #' to appear in the legend;
 #' \code{NULL} to use \code{yValues} as names, otherwise a named list of the
@@ -100,13 +100,13 @@
 #'   fields: \code{text}, a list of settings created with \code{\link{amText}},
 #'   and \code{align}, can be \code{"left"}, \code{"right"} or \code{"center"}
 #' @param theme theme, \code{NULL} or one of \code{"dataviz"},
-#' \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
-#' \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
-#' \code{"microchart"}
+#'   \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
+#'   \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
+#'   \code{"microchart"}
 #' @param draggable \code{TRUE}/\code{FALSE} to enable/disable dragging of
 #' all lines, otherwise a named list of the form
 #' \code{list(yvalue1 = TRUE, yvalue2 = FALSE, ...)} to enable/disable the
-#' dragging for each bar corresponding to a column given in \code{yValues}
+#' dragging for each series corresponding to a column given in \code{yValues}
 #' @param tooltip settings of the tooltips; \code{NULL} for default,
 #'   \code{FALSE} for no tooltip, otherwise a named list of the form
 #'   \code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
@@ -121,7 +121,11 @@
 #' \code{\link{amCircle}}, \code{\link{amTriangle}} or
 #' \code{\link{amRectangle}}; this can also be a
 #' single list of settings that will be applied to each series
-#' @param backgroundColor a color for the chart background
+#' @param backgroundColor a color for the chart background; it can be given by
+#'   the name of a R color, the name of a CSS
+#'   color, e.g. \code{"aqua"} or \code{"indigo"}, an HEX code like
+#'   \code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
+#'   like \code{"hsl(360,11,255)"}
 #' @template axesTemplate
 #' @param scrollbarX logical, whether to add a scrollbar for the x-axis
 #' @param scrollbarY logical, whether to add a scrollbar for the y-axis
@@ -168,11 +172,6 @@
 #' @param chartId a HTML id for the chart
 #' @param elementId a HTML id for the container of the chart; ignored if the
 #' chart is displayed in Shiny, in which case the id is given by the Shiny id
-#'
-#' @note A color can be given by the name of a R color, the name of a CSS
-#' color, e.g. \code{"transparent"} or \code{"fuchsia"}, an HEX code like
-#' \code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
-#' like \code{"hsl(360,11,255)"}.
 #'
 #' @import htmlwidgets
 #' @importFrom shiny validateCssUnit
@@ -278,7 +277,7 @@
 #'   theme = "dark")
 #'
 #'
-#' # scatter chart with trend lines
+#' # scatter chart with trend lines ####
 #'
 #' Asym = 5; R0 = 1; lrc = -3/4
 #' x <- seq(-.3, 5, len = 101)
@@ -385,12 +384,18 @@ amScatterChart <- function(
 
   if(is.null(yValueNames)){
     yValueNames <- setNames(as.list(yValues), yValues)
-  }else if(is.list(yValueNames)){
-    if(!all(yValues %in% names(yValueNames))){
+  }else if(is.list(yValueNames) || is.character(yValueNames)){
+    if(is.null(names(yValueNames)) && length(yValueNames) == length(yValues)){
+      warning(sprintf(
+        "The `yValueNames` %s you provided is unnamed - setting automatic names",
+        ifelse(is.list(yValueNames), "list", "vector")
+      ))
+      yValueNames <- setNames(as.list(yValueNames), yValues)
+    }else if(!all(yValues %in% names(yValueNames))){
       stop(
         paste0(
-          "Invalid `yValueNames` list. ",
-          "It must be a named list giving a name for every column ",
+          "Invalid `yValueNames` argument. ",
+          "It must be a named list associating a name to every column ",
           "given in the `yValues` argument."
         ),
         call. = TRUE
@@ -400,7 +405,7 @@ amScatterChart <- function(
     stop(
       paste0(
         "Invalid `yValueNames` argument. ",
-        "It must be a named list giving a name for every column ",
+        "It must be a named list associating a name to every column ",
         "given in the `yValues` argument."
       ),
       call. = TRUE
@@ -951,7 +956,7 @@ amScatterChart <- function(
       xValue = xValue,
       isDate = isDate,
       yValues = as.list(yValues),
-      yValueNames = yValueNames,
+      yValueNames = as.list(yValueNames),
       minX = xLimits[1L],
       maxX = xLimits[2L],
       minY = yLimits[1L],
