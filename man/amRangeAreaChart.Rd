@@ -9,6 +9,7 @@ amRangeAreaChart(
   data2 = NULL,
   xValue,
   yValues,
+  areas = NULL,
   xLimits = NULL,
   yLimits = NULL,
   expandX = 0,
@@ -22,7 +23,6 @@ amRangeAreaChart(
   bullets = NULL,
   alwaysShowBullets = FALSE,
   lineStyle = NULL,
-  areas = NULL,
   backgroundColor = NULL,
   xAxis = NULL,
   yAxis = NULL,
@@ -45,8 +45,8 @@ amRangeAreaChart(
 
 \item{data2}{\code{NULL} or a dataframe used to update the data with the
 button; its column names must include the column names of \code{data}
-given in \code{values} and it must have the same number of rows as
-\code{data}}
+given in \code{yValues}, it must have the same number of rows as
+\code{data} and its rows must be in the same order as those of \code{data}}
 
 \item{xValue}{name of the column of \code{data} to be used on the x-axis}
 
@@ -54,11 +54,18 @@ given in \code{values} and it must have the same number of rows as
 a range area and provides the names of two columns of \code{data} to be
 used as the limits of the range area}
 
+\item{areas}{an unnamed list of list of settings for the range areas; the
+n-th inner list of settings corresponds to the n-th row of the
+\code{yValues} matrix; each list of settings has three possible fields:
+\code{name} for the legend label, \code{color} for the color of the range
+area, and \code{opacity} for the opacity of the range area, a number
+between 0 and 1}
+
 \item{xLimits}{range of the x-axis, a vector of two values specifying
-the left and the right limits of the x-axis; \code{NULL} for default values}
+the left and right limits of the x-axis; \code{NULL} for default values}
 
 \item{yLimits}{range of the y-axis, a vector of two values specifying
-the lower and the upper limits of the y-axis; \code{NULL} for default values}
+the lower and upper limits of the y-axis; \code{NULL} for default values}
 
 \item{expandX}{if \code{xLimits = NULL}, a percentage of the range of the
 x-axis used to expand this range}
@@ -106,7 +113,7 @@ and \code{align}, can be \code{"left"}, \code{"right"} or \code{"center"}}
 \item{draggable}{\code{TRUE}/\code{FALSE} to enable/disable dragging of
 all lines, otherwise a named list of the form
 \code{list(yvalue1 = TRUE, yvalue2 = FALSE, ...)} to enable/disable the
-dragging for each bar corresponding to a column given in \code{yValues}}
+dragging for each series corresponding to a column given in \code{yValues}}
 
 \item{tooltip}{settings of the tooltips; \code{NULL} for default,
 \code{FALSE} for no tooltip, otherwise a named list of the form
@@ -133,13 +140,6 @@ otherwise a named list of the form
 \code{settings1}, \code{settings2}, ... are lists created with
 \code{\link{amLine}}; this can also be a
 single list of settings that will be applied to each line}
-
-\item{areas}{an unnamed list of list of settings for the range areas; the
-n-th inner list of settings corresponds to the n-th row of the
-\code{yValues} matrix; each list of settings has three possible fields:
-\code{name} for the legend label, \code{color} for the color of the range
-area, and \code{opacity} for the opacity of the range area, a number
-between 0 and 1}
 
 \item{backgroundColor}{a color for the chart background}
 
@@ -233,7 +233,7 @@ Create a HTML widget displaying a range area chart.
 }
 \note{
 A color can be given by the name of a R color, the name of a CSS
-color, e.g. \code{"transparent"} or \code{"fuchsia"}, an HEX code like
+color, e.g. \code{"crimson"} or \code{"silver"}, an HEX code like
 \code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
 like \code{"hsl(360,11,255)"}.
 }

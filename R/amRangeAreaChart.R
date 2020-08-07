@@ -3,17 +3,23 @@
 #'
 #' @param data a dataframe
 #' @param data2 \code{NULL} or a dataframe used to update the data with the
-#' button; its column names must include the column names of \code{data}
-#' given in \code{values} and it must have the same number of rows as
-#' \code{data}
+#'   button; its column names must include the column names of \code{data}
+#'   given in \code{yValues}, it must have the same number of rows as
+#'   \code{data} and its rows must be in the same order as those of \code{data}
 #' @param xValue name of the column of \code{data} to be used on the x-axis
 #' @param yValues a character matrix with two columns; each row corresponds to
 #'   a range area and provides the names of two columns of \code{data} to be
 #'   used as the limits of the range area
+#' @param areas an unnamed list of list of settings for the range areas; the
+#'   n-th inner list of settings corresponds to the n-th row of the
+#'   \code{yValues} matrix; each list of settings has three possible fields:
+#'   \code{name} for the legend label, \code{color} for the color of the range
+#'   area, and \code{opacity} for the opacity of the range area, a number
+#'   between 0 and 1
 #' @param xLimits range of the x-axis, a vector of two values specifying
-#' the left and the right limits of the x-axis; \code{NULL} for default values
+#'   the left and right limits of the x-axis; \code{NULL} for default values
 #' @param yLimits range of the y-axis, a vector of two values specifying
-#' the lower and the upper limits of the y-axis; \code{NULL} for default values
+#'   the lower and upper limits of the y-axis; \code{NULL} for default values
 #' @param expandX if \code{xLimits = NULL}, a percentage of the range of the
 #'   x-axis used to expand this range
 #' @param expandY if \code{yLimits = NULL}, a percentage of the range of the
@@ -52,9 +58,9 @@
 #' \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
 #' \code{"microchart"}
 #' @param draggable \code{TRUE}/\code{FALSE} to enable/disable dragging of
-#' all lines, otherwise a named list of the form
-#' \code{list(yvalue1 = TRUE, yvalue2 = FALSE, ...)} to enable/disable the
-#' dragging for each bar corresponding to a column given in \code{yValues}
+#'   all lines, otherwise a named list of the form
+#'   \code{list(yvalue1 = TRUE, yvalue2 = FALSE, ...)} to enable/disable the
+#'   dragging for each series corresponding to a column given in \code{yValues}
 #' @param tooltip settings of the tooltips; \code{NULL} for default,
 #'   \code{FALSE} for no tooltip, otherwise a named list of the form
 #'   \code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
@@ -77,12 +83,6 @@
 #'   \code{settings1}, \code{settings2}, ... are lists created with
 #'   \code{\link{amLine}}; this can also be a
 #'   single list of settings that will be applied to each line
-#' @param areas an unnamed list of list of settings for the range areas; the
-#'   n-th inner list of settings corresponds to the n-th row of the
-#'   \code{yValues} matrix; each list of settings has three possible fields:
-#'   \code{name} for the legend label, \code{color} for the color of the range
-#'   area, and \code{opacity} for the opacity of the range area, a number
-#'   between 0 and 1
 #' @param backgroundColor a color for the chart background
 #' @template axesTemplate
 #' @param scrollbarX logical, whether to add a scrollbar for the x-axis
@@ -132,7 +132,7 @@
 #' chart is displayed in Shiny, in which case the id is given by the Shiny id
 #'
 #' @note A color can be given by the name of a R color, the name of a CSS
-#' color, e.g. \code{"transparent"} or \code{"fuchsia"}, an HEX code like
+#' color, e.g. \code{"crimson"} or \code{"silver"}, an HEX code like
 #' \code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
 #' like \code{"hsl(360,11,255)"}.
 #'
@@ -248,6 +248,7 @@ amRangeAreaChart <- function(
   data2 = NULL,
   xValue,
   yValues,
+  areas = NULL, # default
   xLimits = NULL,
   yLimits = NULL,
   expandX = 0,
@@ -261,7 +262,6 @@ amRangeAreaChart <- function(
   bullets = NULL, # default
   alwaysShowBullets = FALSE,
   lineStyle = NULL, # default
-  areas = NULL, # default
   backgroundColor = NULL,
   xAxis = NULL, # default
   yAxis = NULL, # default
@@ -359,7 +359,7 @@ amRangeAreaChart <- function(
         paste0(
           "Invalid `draggable` argument. ",
           "It must be a named list associating `TRUE` or `FALSE` ",
-          "for every column given in the `yValues` argument, ",
+          "to every column given in the `yValues` argument, ",
           "or just `TRUE` or `FALSE`."
         ),
         call. = TRUE
@@ -373,7 +373,7 @@ amRangeAreaChart <- function(
         paste0(
           "Invalid `draggable` list. ",
           "It must be a named list associating `TRUE` or `FALSE` ",
-          "for every column given in the `yValues` argument, ",
+          "to every column given in the `yValues` argument, ",
           "or just `TRUE` or `FALSE`."
         ),
         call. = TRUE
@@ -384,7 +384,7 @@ amRangeAreaChart <- function(
       paste0(
         "Invalid `draggable` argument. ",
         "It must be a named list associating `TRUE` or `FALSE` ",
-        "for every column given in the `yValues` argument, ",
+        "to every column given in the `yValues` argument, ",
         "or just `TRUE` or `FALSE`."
       ),
       call. = TRUE
