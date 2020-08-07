@@ -4,7 +4,6 @@ module.exports = {
     mode: 'development',
     entry: path.join(__dirname, 'srcjs', 'amChart4.jsx'),
     output: {
-        path: path.join(__dirname, 'inst', 'www', '${package}', 'amChart4'),
         path: path.join(__dirname, 'inst/htmlwidgets'),
         filename: 'amChart4.js'
     },
@@ -44,7 +43,7 @@ module.exports = {
       }
     ],
     stats: {
-        colors: true
+      colors: true
     },
     devtool: 'source-map'
 };

@@ -292,7 +292,7 @@ amRangeAreaChart <- function(
 
   if(length(names(areas))){
     areas <- list(areas)
-  }else if(is.null(aeras)){
+  }else if(is.null(areas)){
     areas <- rep(list(list()), nrow(yValues))
   }
   areas <- lapply(seq_along(areas), function(i){

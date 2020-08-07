@@ -121544,123 +121544,122 @@ class AmLineChart extends React.PureComponent {
     /* ~~~~\  x-axis  /~~~~ */
 
 
-    var XAxis, Xformatter;
-
-    if (xAxis.labels && xAxis.labels.formatter) {
-      Xformatter = xAxis.labels.formatter;
-    }
-
-    if (isDate) {
-      XAxis = chart.xAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["DateAxis"]());
-      XAxis.dataFields.dateX = xValue;
-
-      if (Xformatter) {
-        XAxis.dateFormats.setKey("day", Xformatter.day[0]);
-
-        if (Xformatter.day[1]) {
-          XAxis.periodChangeDateFormats.setKey("day", Xformatter.day[1]);
+    var XAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("X", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, xAxis, minX, maxX, isDate, theme, cursor, xValue);
+    /*
+        let XAxis, Xformatter;
+        if(xAxis.labels && xAxis.labels.formatter) {
+          Xformatter = xAxis.labels.formatter;
         }
-
-        XAxis.dateFormats.setKey("week", Xformatter.week[0]);
-
-        if (Xformatter.week[1]) {
-          XAxis.periodChangeDateFormats.setKey("week", Xformatter.week[1]);
+    		if(isDate) {
+          XAxis = chart.xAxes.push(new am4charts.DateAxis());
+          XAxis.dataFields.dateX = xValue;
+          if(Xformatter) {
+            XAxis.dateFormats.setKey("day", Xformatter.day[0]);
+            if(Xformatter.day[1]) {
+              XAxis.periodChangeDateFormats.setKey("day", Xformatter.day[1]);
+            }
+            XAxis.dateFormats.setKey("week", Xformatter.week[0]);
+            if(Xformatter.week[1]) {
+              XAxis.periodChangeDateFormats.setKey("week", Xformatter.week[1]);
+            }
+            XAxis.dateFormats.setKey("month", Xformatter.month[0]);
+            if(Xformatter.month[1]) {
+              XAxis.periodChangeDateFormats.setKey("month", Xformatter.month[1]);
+            }
+          }
+    		} else {
+          XAxis = chart.xAxes.push(new am4charts.ValueAxis());
+          XAxis.dataFields.valueX = xValue;
+          if(Xformatter) {
+            XAxis.numberFormatter = new am4core.NumberFormatter();
+            XAxis.numberFormatter.numberFormat = Xformatter;
+            XAxis.adjustLabelPrecision = false;
+          }
         }
-
-        XAxis.dateFormats.setKey("month", Xformatter.month[0]);
-
-        if (Xformatter.month[1]) {
-          XAxis.periodChangeDateFormats.setKey("month", Xformatter.month[1]);
+    		if(xAxis) {
+          XAxis.paddingBottom = xAxis.adjust || 0;
+    		}
+    		XAxis.strictMinMax = true;
+    		XAxis.min = minX;
+    		XAxis.max = maxX;
+    		if(xAxis && xAxis.title && xAxis.title.text !== "") {
+      		XAxis.title.text = xAxis.title.text || xValue;
+      		XAxis.title.fontWeight = "bold";
+      		XAxis.title.fontSize = xAxis.title.fontSize || 20;
+      		XAxis.title.fill =
+      		  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
         }
-      }
-    } else {
-      XAxis = chart.xAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]());
-      XAxis.dataFields.valueX = xValue;
+    
+        let xBreaksType; 
+        if(xAxis.breaks) { 
+          xBreaksType = 
+            typeof xAxis.breaks === "number" ? "interval" : 
+            (Array.isArray(xAxis.breaks) ? "timeInterval" : 
+            "breaks");
+        }
+    
+        if(xAxis.gridLines) {
+          if(xBreaksType === "interval")
+            XAxis.renderer.minGridDistance = xAxis.breaks;
+          XAxis.renderer.grid.template.stroke =
+            xAxis.gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
+          XAxis.renderer.grid.template.strokeOpacity = 
+            xAxis.gridLines.opacity || 0.2;
+          XAxis.renderer.grid.template.strokeWidth = 
+            xAxis.gridLines.width || 1;
+          if(xAxis.gridLines.dash) {
+            XAxis.renderer.grid.template.strokeDasharray = 
+              xAxis.gridLines.dash;
+          }
+        } else {
+          XAxis.renderer.grid.template.disabled = true;
+        }
+        if(xBreaksType === "breaks") {
+          XAxis.renderer.grid.template.disabled = true;
+          XAxis.renderer.labels.template.disabled = true;
+          if(isDate) {
+            XAxis.renderer.minGridDistance = 10;
+            XAxis.startLocation = 0.5; // ??
+            XAxis.endLocation = 0.5; // ??
+          }
+          utils.createGridLines(
+            am4core, XAxis, xAxis.breaks, xAxis.gridLines, 
+            xAxis.labels, theme, isDate
+          );
+        } else {
+          if(xBreaksType === "timeInterval") {
+            XAxis.gridIntervals.setAll(xAxis.breaks);
+            XAxis.renderer.grid.template.location = 0.5;
+            XAxis.renderer.labels.template.location = 0.5;
+            XAxis.startLocation = 0.5; // ??
+            XAxis.endLocation = 0.5; // ??
+          }
+          let xAxisLabels = XAxis.renderer.labels.template;
+          xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
+          xAxisLabels.rotation = xAxis.labels.rotation || 0;
+          if(xAxisLabels.rotation !== 0) {
+            xAxisLabels.horizontalCenter = "right";
+          }
+          xAxisLabels.fill =
+            xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+        }
+        if(cursor &&
+          (cursor === true || !cursor.axes || ["x","xy"].indexOf(cursor.axes)) > -1)
+        {
+          if(cursor.tooltip)
+            XAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+          if(cursor.extraTooltipPrecision)
+            XAxis.extraTooltipPrecision = cursor.extraTooltipPrecision.x;
+          if(cursor.renderer && cursor.renderer.x)
+            XAxis.adapter.add("getTooltipText", cursor.renderer.x);
+          if(cursor.dateFormat)
+            XAxis.tooltipDateFormat = cursor.dateFormat;
+        } else {
+          XAxis.cursorTooltipEnabled = false;
+        }
+    */
 
-      if (Xformatter) {
-        XAxis.numberFormatter = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["NumberFormatter"]();
-        XAxis.numberFormatter.numberFormat = Xformatter;
-        XAxis.adjustLabelPrecision = false;
-      }
-    }
-
-    if (xAxis) {
-      XAxis.paddingBottom = xAxis.adjust || 0;
-    }
-
-    XAxis.strictMinMax = true;
-    XAxis.min = minX;
-    XAxis.max = maxX;
-
-    if (xAxis && xAxis.title && xAxis.title.text !== "") {
-      XAxis.title.text = xAxis.title.text || xValue;
-      XAxis.title.fontWeight = "bold";
-      XAxis.title.fontSize = xAxis.title.fontSize || 20;
-      XAxis.title.fill = xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
-    }
-
-    var xBreaksType;
-
-    if (xAxis.breaks) {
-      xBreaksType = typeof xAxis.breaks === "number" ? "interval" : Array.isArray(xAxis.breaks) ? "timeInterval" : "breaks";
-    }
-
-    if (xAxis.gridLines) {
-      if (xBreaksType === "interval") XAxis.renderer.minGridDistance = xAxis.breaks;
-      XAxis.renderer.grid.template.stroke = xAxis.gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
-      XAxis.renderer.grid.template.strokeOpacity = xAxis.gridLines.opacity || 0.2;
-      XAxis.renderer.grid.template.strokeWidth = xAxis.gridLines.width || 1;
-
-      if (xAxis.gridLines.dash) {
-        XAxis.renderer.grid.template.strokeDasharray = xAxis.gridLines.dash;
-      }
-    } else {
-      XAxis.renderer.grid.template.disabled = true;
-    }
-
-    if (xBreaksType === "breaks") {
-      XAxis.renderer.grid.template.disabled = true;
-      XAxis.renderer.labels.template.disabled = true;
-
-      if (isDate) {
-        XAxis.renderer.minGridDistance = 10;
-        XAxis.startLocation = 0.5; // ??
-
-        XAxis.endLocation = 0.5; // ??
-      }
-
-      _utils__WEBPACK_IMPORTED_MODULE_13__["createGridLines"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, XAxis, xAxis.breaks, xAxis.gridLines, xAxis.labels, theme, isDate);
-    } else {
-      if (xBreaksType === "timeInterval") {
-        XAxis.gridIntervals.setAll(xAxis.breaks);
-        XAxis.renderer.grid.template.location = 0.5;
-        XAxis.renderer.labels.template.location = 0.5;
-        XAxis.startLocation = 0.5; // ??
-
-        XAxis.endLocation = 0.5; // ??
-      }
-
-      var xAxisLabels = XAxis.renderer.labels.template;
-      xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
-      xAxisLabels.rotation = xAxis.labels.rotation || 0;
-
-      if (xAxisLabels.rotation !== 0) {
-        xAxisLabels.horizontalCenter = "right";
-      }
-
-      xAxisLabels.fill = xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
-    }
-
-    if (cursor && (cursor === true || !cursor.axes || ["x", "xy"].indexOf(cursor.axes)) > -1) {
-      if (cursor.tooltip) XAxis.tooltip = _utils__WEBPACK_IMPORTED_MODULE_13__["Tooltip"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, 0, cursor.tooltip);
-      if (cursor.extraTooltipPrecision) XAxis.extraTooltipPrecision = cursor.extraTooltipPrecision.x;
-      if (cursor.renderer && cursor.renderer.x) XAxis.adapter.add("getTooltipText", cursor.renderer.x);
-      if (cursor.dateFormat) XAxis.tooltipDateFormat = cursor.dateFormat;
-    } else {
-      XAxis.cursorTooltipEnabled = false;
-    }
     /* ~~~~\  y-axis  /~~~~ */
-
 
     var YAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("Y", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, yAxis, minY, maxY, false, theme, cursor);
     /*		let YAxis = chart.yAxes.push(new am4charts.ValueAxis());
@@ -125156,7 +125155,7 @@ var Shape = function Shape(am4core, chart, index, bullet, shapeConfig) {
 
   return shape;
 };
-var createGridLines = function createGridLines(am4core, Axis, breaks, lineconfig, labelsconfig, theme, isDate) {
+var createGridLines = function createGridLines(Axis, breaks, lineconfig, labelsconfig, theme, isDate) {
   /*    if(labelsconfig && labelsconfig.formatter) {
         let formatter = labelsconfig.formatter;
         if(isDate) {
@@ -125233,9 +125232,8 @@ var createGridLines = function createGridLines(am4core, Axis, breaks, lineconfig
             }
           } */
     //range.xx = Axis.formatLabel(values[i]);
+    //console.log(range);
 
-
-    console.log(range);
 
     if (lineconfig) {
       range.grid.stroke = lineconfig.color || (theme === "dark" ? "#ffffff" : "#000000");
@@ -125375,7 +125373,7 @@ var createAxis = function createAxis(XY, am4charts, am4core, chart, axisSettings
       Axis.endLocation = 0.5; // ??
     }
 
-    createGridLines(am4core, Axis, axisSettings.breaks, axisSettings.gridLines, axisSettings.labels, theme, isDate);
+    createGridLines(Axis, axisSettings.breaks, axisSettings.gridLines, axisSettings.labels, theme, isDate);
   } else {
     if (BreaksType === "timeInterval") {
       Axis.gridIntervals.setAll(axisSettings.breaks);
