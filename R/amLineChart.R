@@ -3,24 +3,23 @@
 #'
 #' @param data a dataframe
 #' @param data2 \code{NULL} or a dataframe used to update the data with the
-#' button; its column names must include the column names of \code{data}
-#' given in \code{values} and it must have the same number of rows as
-#' \code{data}
-#' @param xValue name of the column of \code{data} to be used on the
-#' x-axis
+#'   button; its column names must include the column names of \code{data}
+#'   given in \code{yValues} as well as the column name given in \code{xValue};
+#'   moreover it must have the same number of rows as \code{data} and its rows
+#'   must be in the same order as those of \code{data}
+#' @param xValue name of the column of \code{data} to be used on the x-axis
 #' @param yValues name(s) of the column(s) of \code{data} to be used on the
-#' y-axis
-#' @param yValueNames names of the variables on the y-axis,
-#' to appear in the legend;
-#' \code{NULL} to use \code{yValues} as names, otherwise a named list of the
-#' form \code{list(yvalue1 = "ValueName1", yvalue2 = "ValueName2", ...)} where
-#' \code{yvalue1}, \code{yvalue2}, ... are the column names given in
-#' \code{yValues} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
-#' desired names to appear in the legend
-#' @param xLimits range of the x-axis, a vector of two values specifying
-#' the left and the right limits of the x-axis; \code{NULL} for default values
-#' @param yLimits range of the y-axis, a vector of two values specifying
-#' the lower and the upper limits of the y-axis; \code{NULL} for default values
+#'   y-axis
+#' @param yValueNames names of the variables on the y-axis, to appear in the
+#'   legend; \code{NULL} to use \code{yValues} as names, otherwise a named list
+#'   of the form \code{list(yvalue1 = "ValueName1", yvalue2 = "ValueName2", ...)}
+#'   where \code{yvalue1}, \code{yvalue2}, ... are the column names given in
+#'   \code{yValues} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
+#'   desired names to appear in the legend
+#' @param xLimits range of the x-axis, a vector of two values specifying the
+#'   left and right limits of the x-axis; \code{NULL} for default values
+#' @param yLimits range of the y-axis, a vector of two values specifying the
+#'   lower and the upper limits of the y-axis; \code{NULL} for default values
 #' @param expandX if \code{xLimits = NULL}, a percentage of the range of the
 #'   x-axis used to expand this range
 #' @param expandY if \code{yLimits = NULL}, a percentage of the range of the
@@ -47,8 +46,8 @@
 #'   your own formatter in the \code{labels} field of the list passed on to
 #'   the \code{yAxis} option, and the values displayed in the tooltips unless
 #'   you specify your own tooltip text (see the first example of
-#'   \code{\link{amBarChart}} for the way to set
-#'   a number formatter in the tooltip text)
+#'   \code{\link{amBarChart}} for the way to set a number formatter in the
+#'   tooltip text)
 #' @param trend option to request trend lines and to set their settings;
 #'   \code{FALSE} for no trend line, otherwise a named list of the form
 #'   \code{list(yvalue1 = trend1, yvalue2 = trend2, ...)} where
@@ -100,13 +99,13 @@
 #'   fields: \code{text}, a list of settings created with \code{\link{amText}},
 #'   and \code{align}, can be \code{"left"}, \code{"right"} or \code{"center"}
 #' @param theme theme, \code{NULL} or one of \code{"dataviz"},
-#' \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
-#' \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
-#' \code{"microchart"}
+#'   \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
+#'   \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
+#'   \code{"microchart"}
 #' @param draggable \code{TRUE}/\code{FALSE} to enable/disable dragging of
-#' all lines, otherwise a named list of the form
-#' \code{list(yvalue1 = TRUE, yvalue2 = FALSE, ...)} to enable/disable the
-#' dragging for each bar corresponding to a column given in \code{yValues}
+#'   all lines, otherwise a named list of the form
+#'   \code{list(yvalue1 = TRUE, yvalue2 = FALSE, ...)} to enable/disable the
+#'   dragging for each series corresponding to a column given in \code{yValues}
 #' @param tooltip settings of the tooltips; \code{NULL} for default,
 #'   \code{FALSE} for no tooltip, otherwise a named list of the form
 #'   \code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
@@ -129,7 +128,11 @@
 #'   \code{settings1}, \code{settings2}, ... are lists created with
 #'   \code{\link{amLine}}; this can also be a
 #'   single list of settings that will be applied to each line
-#' @param backgroundColor a color for the chart background
+#' @param backgroundColor a color for the chart background; it can be given by
+#'   the name of a R color, the name of a CSS
+#'   color, e.g. \code{"teal"} or \code{"fuchsia"}, an HEX code like
+#'   \code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
+#'   like \code{"hsl(360,11,255)"}
 #' @template axesTemplate
 #' @param scrollbarX logical, whether to add a scrollbar for the x-axis
 #' @param scrollbarY logical, whether to add a scrollbar for the y-axis
@@ -167,27 +170,22 @@
 #'   \code{text}, e.g. \code{"text = '[font-style:italic]' + text + '[/]';"};
 #'   see the first example for an example of \code{modifier}
 #' @param width the width of the chart, e.g. \code{"600px"} or \code{"80\%"};
-#' ignored if the chart is displayed in Shiny, in which case the width is
-#' given in \code{\link{amChart4Output}}
+#'   ignored if the chart is displayed in Shiny, in which case the width is
+#'   given in \code{\link{amChart4Output}}
 #' @param height the height of the chart, e.g. \code{"400px"};
-#' ignored if the chart is displayed in Shiny, in which case the height is
-#' given in \code{\link{amChart4Output}}
+#'   ignored if the chart is displayed in Shiny, in which case the height is
+#'   given in \code{\link{amChart4Output}}
 #' @param export logical, whether to enable the export menu
 #' @param chartId a HTML id for the chart
 #' @param elementId a HTML id for the container of the chart; ignored if the
-#' chart is displayed in Shiny, in which case the id is given by the Shiny id
-#'
-#' @note A color can be given by the name of a R color, the name of a CSS
-#' color, e.g. \code{"transparent"} or \code{"fuchsia"}, an HEX code like
-#' \code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
-#' like \code{"hsl(360,11,255)"}.
+#'   chart is displayed in Shiny, in which case the id is given by the Shiny id
 #'
 #' @import htmlwidgets minpack.lm
 #' @importFrom shiny validateCssUnit
 #' @importFrom lubridate is.Date is.POSIXt
 #' @export
 #'
-#' @examples # a line chart with numeric x-axis ####
+#' @examples # a line chart with a numeric x-axis ####
 #'
 #' set.seed(666)
 #' dat <- data.frame(
@@ -269,7 +267,7 @@
 #'   theme = "dark")
 #'
 #'
-#' # line chart with date x-axis ####
+#' # line chart with a date x-axis ####
 #'
 #' library(lubridate)
 #'
@@ -409,12 +407,18 @@ amLineChart <- function(
 
   if(is.null(yValueNames)){
     yValueNames <- setNames(as.list(yValues), yValues)
-  }else if(is.list(yValueNames)){
-    if(!all(yValues %in% names(yValueNames))){
+  }else if(is.list(yValueNames) || is.character(yValueNames)){
+    if(is.null(names(yValueNames)) && length(yValueNames) == length(yValues)){
+      warning(sprintf(
+        "The `yValueNames` %s you provided is unnamed - setting automatic names",
+        ifelse(is.list(yValueNames), "list", "vector")
+      ))
+      yValueNames <- setNames(as.list(yValueNames), yValues)
+    }else if(!all(yValues %in% names(yValueNames))){
       stop(
         paste0(
-          "Invalid `yValueNames` list. ",
-          "It must be a named list giving a name for every column ",
+          "Invalid `yValueNames` argument. ",
+          "It must be a named list associating a name to every column ",
           "given in the `yValues` argument."
         ),
         call. = TRUE
@@ -424,7 +428,7 @@ amLineChart <- function(
     stop(
       paste0(
         "Invalid `yValueNames` argument. ",
-        "It must be a named list giving a name for every column ",
+        "It must be a named list associating a name to every column ",
         "given in the `yValues` argument."
       ),
       call. = TRUE
@@ -1057,7 +1061,7 @@ amLineChart <- function(
       xValue = xValue,
       isDate = isDate,
       yValues = as.list(yValues),
-      yValueNames = yValueNames,
+      yValueNames = as.list(yValueNames),
       minX = xLimits[1L],
       maxX = xLimits[2L],
       minY = yLimits[1L],

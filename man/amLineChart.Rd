@@ -46,28 +46,27 @@ amLineChart(
 
 \item{data2}{\code{NULL} or a dataframe used to update the data with the
 button; its column names must include the column names of \code{data}
-given in \code{values} and it must have the same number of rows as
-\code{data}}
+given in \code{yValues} as well as the column name given in \code{xValue};
+moreover it must have the same number of rows as \code{data} and its rows
+must be in the same order as those of \code{data}}
 
-\item{xValue}{name of the column of \code{data} to be used on the
-x-axis}
+\item{xValue}{name of the column of \code{data} to be used on the x-axis}
 
 \item{yValues}{name(s) of the column(s) of \code{data} to be used on the
 y-axis}
 
-\item{yValueNames}{names of the variables on the y-axis,
-to appear in the legend;
-\code{NULL} to use \code{yValues} as names, otherwise a named list of the
-form \code{list(yvalue1 = "ValueName1", yvalue2 = "ValueName2", ...)} where
-\code{yvalue1}, \code{yvalue2}, ... are the column names given in
+\item{yValueNames}{names of the variables on the y-axis, to appear in the
+legend; \code{NULL} to use \code{yValues} as names, otherwise a named list
+of the form \code{list(yvalue1 = "ValueName1", yvalue2 = "ValueName2", ...)}
+where \code{yvalue1}, \code{yvalue2}, ... are the column names given in
 \code{yValues} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
 desired names to appear in the legend}
 
-\item{xLimits}{range of the x-axis, a vector of two values specifying
-the left and the right limits of the x-axis; \code{NULL} for default values}
+\item{xLimits}{range of the x-axis, a vector of two values specifying the
+left and right limits of the x-axis; \code{NULL} for default values}
 
-\item{yLimits}{range of the y-axis, a vector of two values specifying
-the lower and the upper limits of the y-axis; \code{NULL} for default values}
+\item{yLimits}{range of the y-axis, a vector of two values specifying the
+lower and the upper limits of the y-axis; \code{NULL} for default values}
 
 \item{expandX}{if \code{xLimits = NULL}, a percentage of the range of the
 x-axis used to expand this range}
@@ -98,8 +97,8 @@ it is used to format the values displayed in the cursor tooltips if
 your own formatter in the \code{labels} field of the list passed on to
 the \code{yAxis} option, and the values displayed in the tooltips unless
 you specify your own tooltip text (see the first example of
-\code{\link{amBarChart}} for the way to set
-a number formatter in the tooltip text)}
+\code{\link{amBarChart}} for the way to set a number formatter in the
+tooltip text)}
 
 \item{trend}{option to request trend lines and to set their settings;
 \code{FALSE} for no trend line, otherwise a named list of the form
@@ -161,7 +160,7 @@ and \code{align}, can be \code{"left"}, \code{"right"} or \code{"center"}}
 \item{draggable}{\code{TRUE}/\code{FALSE} to enable/disable dragging of
 all lines, otherwise a named list of the form
 \code{list(yvalue1 = TRUE, yvalue2 = FALSE, ...)} to enable/disable the
-dragging for each bar corresponding to a column given in \code{yValues}}
+dragging for each series corresponding to a column given in \code{yValues}}
 
 \item{tooltip}{settings of the tooltips; \code{NULL} for default,
 \code{FALSE} for no tooltip, otherwise a named list of the form
@@ -189,7 +188,11 @@ otherwise a named list of the form
 \code{\link{amLine}}; this can also be a
 single list of settings that will be applied to each line}
 
-\item{backgroundColor}{a color for the chart background}
+\item{backgroundColor}{a color for the chart background; it can be given by
+the name of a R color, the name of a CSS
+color, e.g. \code{"teal"} or \code{"fuchsia"}, an HEX code like
+\code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
+like \code{"hsl(360,11,255)"}}
 
 \item{xAxis}{settings of the x-axis given as a list, or just a string
 for the axis title; the list of settings has five possible fields:
@@ -279,14 +282,8 @@ chart is displayed in Shiny, in which case the id is given by the Shiny id}
 \description{
 Create a HTML widget displaying a line chart.
 }
-\note{
-A color can be given by the name of a R color, the name of a CSS
-color, e.g. \code{"transparent"} or \code{"fuchsia"}, an HEX code like
-\code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
-like \code{"hsl(360,11,255)"}.
-}
 \examples{
-# a line chart with numeric x-axis ####
+# a line chart with a numeric x-axis ####
 
 set.seed(666)
 dat <- data.frame(
@@ -368,7 +365,7 @@ amLineChart(
   theme = "dark")
 
 
-# line chart with date x-axis ####
+# line chart with a date x-axis ####
 
 library(lubridate)
 
