@@ -33,8 +33,6 @@ the \code{rAmCharts4} widgets
 within Shiny applications and interactive Rmd documents.
 }
 \examples{
-if(interactive()) {
-
 library(rAmCharts4)
 library(shiny)
 library(lubridate)
@@ -48,8 +46,14 @@ ui <- fluidPage(
     ),
     column(
       width = 4,
-      verbatimTextOutput("chartData"),
-      verbatimTextOutput("chartChange")
+      tags$fieldset(
+        tags$legend("Chart data"),
+        verbatimTextOutput("chartData"),
+      ),
+      tags$fieldset(
+        tags$legend("Change"),
+        verbatimTextOutput("chartChange")
+      )
     )
   )
 )
@@ -70,10 +74,16 @@ server <- function(input, output){
       xValue = "date",
       yValues = "visits",
       draggable = TRUE,
-      chartTitle = amText(text = "Number of visits", color = "crimson"),
+      chartTitle = amText(
+        text = "Number of visits",
+        color = "crimson",
+        fontWeight = "bold",
+        fontFamily = "cursive"
+      ),
       xAxis = list(
         title = "Date",
-        labels = amAxisLabels(rotation = -45)
+        labels = amAxisLabels(rotation = -45),
+        breaks = amAxisBreaks(timeInterval = "1 month")
       ),
       yAxis = "Visits",
       yLimits = c(0, 35),
@@ -87,7 +97,7 @@ server <- function(input, output){
       button = amButton(
         label = amText("Reset data", color = "black"),
         color = "seashell",
-        position = 0.9
+        position = 0.95
       ),
       theme = "dataviz")
   })
@@ -102,7 +112,7 @@ server <- function(input, output){
 
 }
 
-shinyApp(ui, server)
-
+if(interactive()) {
+  shinyApp(ui, server)
 }
 }

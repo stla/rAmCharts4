@@ -21,9 +21,7 @@
 #' @import htmlwidgets
 #' @export
 #'
-#' @examples if(interactive()) {
-#'
-#' library(rAmCharts4)
+#' @examples library(rAmCharts4)
 #' library(shiny)
 #' library(lubridate)
 #'
@@ -36,8 +34,14 @@
 #'     ),
 #'     column(
 #'       width = 4,
-#'       verbatimTextOutput("chartData"),
-#'       verbatimTextOutput("chartChange")
+#'       tags$fieldset(
+#'         tags$legend("Chart data"),
+#'         verbatimTextOutput("chartData"),
+#'       ),
+#'       tags$fieldset(
+#'         tags$legend("Change"),
+#'         verbatimTextOutput("chartChange")
+#'       )
 #'     )
 #'   )
 #' )
@@ -58,10 +62,16 @@
 #'       xValue = "date",
 #'       yValues = "visits",
 #'       draggable = TRUE,
-#'       chartTitle = amText(text = "Number of visits", color = "crimson"),
+#'       chartTitle = amText(
+#'         text = "Number of visits",
+#'         color = "crimson",
+#'         fontWeight = "bold",
+#'         fontFamily = "cursive"
+#'       ),
 #'       xAxis = list(
 #'         title = "Date",
-#'         labels = amAxisLabels(rotation = -45)
+#'         labels = amAxisLabels(rotation = -45),
+#'         breaks = amAxisBreaks(timeInterval = "1 month")
 #'       ),
 #'       yAxis = "Visits",
 #'       yLimits = c(0, 35),
@@ -75,7 +85,7 @@
 #'       button = amButton(
 #'         label = amText("Reset data", color = "black"),
 #'         color = "seashell",
-#'         position = 0.9
+#'         position = 0.95
 #'       ),
 #'       theme = "dataviz")
 #'   })
@@ -90,8 +100,8 @@
 #'
 #' }
 #'
-#' shinyApp(ui, server)
-#'
+#' if(interactive()) {
+#'   shinyApp(ui, server)
 #' }
 amChart4Output <- function(outputId, width = "100%", height = "400px"){
   htmlwidgets::shinyWidgetOutput(
