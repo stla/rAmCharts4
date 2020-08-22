@@ -13,3 +13,4 @@
 ^inst/tests_html$
 ^TODO\.txt$
 ^cran-comments\.md$
+^CRAN-RELEASE$
