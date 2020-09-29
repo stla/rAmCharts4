@@ -4,8 +4,10 @@
 #' @param score a number between \code{minScore} and \code{maxScore}
 #' @param minScore minimal score
 #' @param maxScore maximal score
-#' @param gradingData data for the gauge, a dataframe with four columns:
-#'   \code{title}, \code{color}, \code{lowScore}, and \code{highScore}
+#' @param gradingData data for the gauge, a dataframe with three required
+#'   columns: \code{title}, \code{lowScore}, and \code{highScore}, and an
+#'   optional column \code{color}; if the column \code{color} is not present,
+#'   then the colors will be derived from the theme
 #' @param chartTitle chart title, it can be \code{NULL} or \code{FALSE} for no
 #'   title, a character string,
 #'   a list of settings created with \code{\link{amText}}, or a list with two
@@ -74,13 +76,15 @@ amGaugeChart <- function(
 ) {
 
   if(!all(is.element(
-    c("title", "color", "lowScore", "highScore"), names(gradingData))
+    c("title", "lowScore", "highScore"), names(gradingData))
   )){
     stop("Invalid `gradingData` argument.", call. = TRUE)
   }
 
-  gradingData[["color"]] <-
-    vapply(gradingData[["color"]], validateColor, FUN.VALUE = character(1L))
+  if("color" %in% names(gradingData)){
+    gradingData[["color"]] <-
+      vapply(gradingData[["color"]], validateColor, FUN.VALUE = character(1L))
+  }
 
   if(is.character(chartTitle)){
     chartTitle <- list(
