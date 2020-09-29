@@ -1,7 +1,6 @@
 Package: rAmCharts4
 Title: Interface to the JavaScript Library 'amCharts 4' 
-Date: 2020-08-24
-Version: 0.1.0
+Version: 1.0.0
 Authors@R: c(
     person(given = "Stéphane",
            family = "Laurent",
@@ -23,7 +22,7 @@ Authors@R: c(
            comment = "'regression-js' library (https://github.com/Tom-Alexander/regression-js)")
     )
 Maintainer: Stéphane Laurent <laurent_step@outlook.fr>
-Description: Creates JavaScript charts. The charts can be included in 'Shiny' apps and R markdown documents, or viewed from the R console and 'RStudio' viewer. Based on the JavaScript library 'amCharts 4' and the R packages 'htmlwidgets' and 'reactR'. Currently available types of chart are: vertical and horizontal bar chart, radial bar chart, vertical and horizontal Dumbbell chart, line chart, scatter chart, and range area chart.
+Description: Creates JavaScript charts. The charts can be included in 'Shiny' apps and R markdown documents, or viewed from the R console and 'RStudio' viewer. Based on the JavaScript library 'amCharts 4' and the R packages 'htmlwidgets' and 'reactR'. Currently available types of chart are: vertical and horizontal bar chart, radial bar chart, vertical and horizontal Dumbbell chart, line chart, scatter chart, range area chart, and gauge chart.
 URL: https://github.com/stla/rAmCharts4
 BugReports: https://github.com/stla/rAmCharts4/issues
 License: GPL-3 
