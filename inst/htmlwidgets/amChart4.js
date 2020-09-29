@@ -125022,6 +125022,9 @@ class AmGaugeChart extends React.PureComponent {
         minScore = this.props.minScore,
         maxScore = this.props.maxScore,
         gradingData = this.props.gradingData,
+        innerRadius = this.props.innerRadius,
+        labelsRadius = this.props.labelsRadius,
+        axisLabelsRadius = this.props.axisLabelsRadius,
         tooltips = this.props.tooltip,
         chartId = this.props.chartId,
         shinyId = this.props.shinyId;
@@ -125076,7 +125079,7 @@ class AmGaugeChart extends React.PureComponent {
     }
 
     var chart = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["create"](this.props.chartId, _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["GaugeChart"]);
-    var nparts = gradingData.title.length;
+    var nparts = gradingData.label.length;
 
     if (gradingData.color) {
       for (var i = 0; i < nparts; i++) {
@@ -125100,7 +125103,7 @@ class AmGaugeChart extends React.PureComponent {
     var chartBackgroundColor = this.props.backgroundColor || chart.background.fill;
     chart.background.fill = chartBackgroundColor;
     chart.fontSize = 11;
-    chart.innerRadius = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](80);
+    chart.innerRadius = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](innerRadius);
     chart.resizable = true;
     /* ~~~~\  Enable export  /~~~~ */
 
@@ -125150,7 +125153,7 @@ class AmGaugeChart extends React.PureComponent {
     axis.min = minScore;
     axis.max = maxScore;
     axis.strictMinMax = true;
-    axis.renderer.radius = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](80);
+    axis.renderer.radius = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](innerRadius);
     axis.renderer.inside = true;
     axis.renderer.line.strokeOpacity = 0.1;
     axis.renderer.ticks.template.disabled = false;
@@ -125158,7 +125161,7 @@ class AmGaugeChart extends React.PureComponent {
     axis.renderer.ticks.template.strokeWidth = 0.5;
     axis.renderer.ticks.template.length = 5;
     axis.renderer.grid.template.disabled = true;
-    axis.renderer.labels.template.radius = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](15);
+    axis.renderer.labels.template.radius = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](axisLabelsRadius);
     axis.renderer.labels.template.fontSize = "0.9em";
     /* ~~~~\  axis for ranges  /~~~~ */
 
@@ -125186,10 +125189,10 @@ class AmGaugeChart extends React.PureComponent {
       range.grid.strokeOpacity = 0;
       range.stroke = grading.color.lighten(-0.1);
       range.label.inside = true;
-      range.label.text = grading.title;
+      range.label.text = grading.label;
       range.label.fill = grading.color.alternative;
       range.label.location = 0.5;
-      range.label.radius = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](10);
+      range.label.radius = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](labelsRadius);
       range.label.paddingBottom = -5; // ~half font size
 
       range.label.fontSize = "0.9em";
@@ -125208,7 +125211,7 @@ class AmGaugeChart extends React.PureComponent {
 
     label.text = data.score.toFixed(1); //label.text = "{score}";
 
-    label.fill = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](matchingGrade.color);
+    label.fill = matchingGrade.color;
     /* ~~~~\  label 2  /~~~~ */
 
     var label2 = chart.radarContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Label"]);
@@ -125216,8 +125219,8 @@ class AmGaugeChart extends React.PureComponent {
     label2.fontSize = "2em";
     label2.horizontalCenter = "middle";
     label2.verticalCenter = "bottom";
-    label2.text = matchingGrade.title;
-    label2.fill = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](matchingGrade.color);
+    label2.text = matchingGrade.label;
+    label2.fill = matchingGrade.color;
     /* ~~~~\  hand  /~~~~ */
 
     var hand = chart.hands.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ClockHand"]());
@@ -125232,10 +125235,10 @@ class AmGaugeChart extends React.PureComponent {
       label.text = axis2.positionToValue(hand.currentPosition).toFixed(1);
       var value = axis.positionToValue(hand.currentPosition);
       var matchingGrade = lookUpGrade(value, data.gradingData);
-      label2.text = matchingGrade.title;
-      label2.fill = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](matchingGrade.color);
-      label2.stroke = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](matchingGrade.color);
-      label.fill = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](matchingGrade.color);
+      label2.text = matchingGrade.label;
+      label2.fill = matchingGrade.color;
+      label2.stroke = matchingGrade.color;
+      label.fill = matchingGrade.color;
     });
 
     if (window.Shiny) {

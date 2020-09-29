@@ -4834,6 +4834,9 @@ class AmGaugeChart extends React.PureComponent {
       minScore = this.props.minScore,
       maxScore = this.props.maxScore,
       gradingData = this.props.gradingData,
+      innerRadius = this.props.innerRadius,
+      labelsRadius = this.props.labelsRadius,
+      axisLabelsRadius = this.props.axisLabelsRadius,
       tooltips = this.props.tooltip,
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
@@ -4880,7 +4883,7 @@ class AmGaugeChart extends React.PureComponent {
 
     let chart = am4core.create(this.props.chartId, am4charts.GaugeChart);
 
-    let nparts = gradingData.title.length;
+    let nparts = gradingData.label.length;
     if(gradingData.color) {
       for(let i = 0; i < nparts; i++) {
         gradingData.color[i] = am4core.color(gradingData.color[i]);
@@ -4903,7 +4906,7 @@ class AmGaugeChart extends React.PureComponent {
     chart.background.fill = chartBackgroundColor;
 
     chart.fontSize = 11;
-    chart.innerRadius = am4core.percent(80);
+    chart.innerRadius = am4core.percent(innerRadius);
     chart.resizable = true;
 
 
@@ -4954,7 +4957,7 @@ class AmGaugeChart extends React.PureComponent {
     axis.min = minScore;
     axis.max = maxScore;
     axis.strictMinMax = true;
-    axis.renderer.radius = am4core.percent(80);
+    axis.renderer.radius = am4core.percent(innerRadius);
     axis.renderer.inside = true;
     axis.renderer.line.strokeOpacity = 0.1;
     axis.renderer.ticks.template.disabled = false;
@@ -4962,7 +4965,7 @@ class AmGaugeChart extends React.PureComponent {
     axis.renderer.ticks.template.strokeWidth = 0.5;
     axis.renderer.ticks.template.length = 5;
     axis.renderer.grid.template.disabled = true;
-    axis.renderer.labels.template.radius = am4core.percent(15);
+    axis.renderer.labels.template.radius = am4core.percent(axisLabelsRadius);
     axis.renderer.labels.template.fontSize = "0.9em";
 
 
@@ -4993,10 +4996,10 @@ class AmGaugeChart extends React.PureComponent {
       range.grid.strokeOpacity = 0;
       range.stroke = grading.color.lighten(-0.1);
       range.label.inside = true;
-      range.label.text = grading.title;
+      range.label.text = grading.label;
       range.label.fill = grading.color.alternative;
       range.label.location = 0.5;
-      range.label.radius = am4core.percent(10);
+      range.label.radius = am4core.percent(labelsRadius); 
       range.label.paddingBottom = -5; // ~half font size
       range.label.fontSize = "0.9em";
     }
@@ -5015,7 +5018,7 @@ class AmGaugeChart extends React.PureComponent {
     //label.dataItem = data;
     label.text = data.score.toFixed(1);
     //label.text = "{score}";
-    label.fill = am4core.color(matchingGrade.color);
+    label.fill = matchingGrade.color;
     
 
     /* ~~~~\  label 2  /~~~~ */    
@@ -5024,8 +5027,8 @@ class AmGaugeChart extends React.PureComponent {
     label2.fontSize = "2em";
     label2.horizontalCenter = "middle";
     label2.verticalCenter = "bottom";
-    label2.text = matchingGrade.title;
-    label2.fill = am4core.color(matchingGrade.color);
+    label2.text = matchingGrade.label;
+    label2.fill = matchingGrade.color;
     
     
     /* ~~~~\  hand  /~~~~ */    
@@ -5042,10 +5045,10 @@ class AmGaugeChart extends React.PureComponent {
       label.text = axis2.positionToValue(hand.currentPosition).toFixed(1);
       let value = axis.positionToValue(hand.currentPosition);
       let matchingGrade = lookUpGrade(value, data.gradingData);
-      label2.text = matchingGrade.title;
-      label2.fill = am4core.color(matchingGrade.color);
-      label2.stroke = am4core.color(matchingGrade.color);  
-      label.fill = am4core.color(matchingGrade.color);
+      label2.text = matchingGrade.label;
+      label2.fill = matchingGrade.color;
+      label2.stroke = matchingGrade.color;  
+      label.fill = matchingGrade.color;
     })
 
     if(window.Shiny) {

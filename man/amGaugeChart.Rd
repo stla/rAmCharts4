@@ -9,6 +9,9 @@ amGaugeChart(
   minScore,
   maxScore,
   gradingData,
+  innerRadius = 70,
+  labelsRadius = (100 - innerRadius)/2,
+  axisLabelsRadius = 20,
   chartTitle = NULL,
   theme = NULL,
   tooltip = NULL,
@@ -30,9 +33,18 @@ amGaugeChart(
 \item{maxScore}{maximal score}
 
 \item{gradingData}{data for the gauge, a dataframe with three required
-columns: \code{title}, \code{lowScore}, and \code{highScore}, and an
+columns: \code{label}, \code{lowScore}, and \code{highScore}, and an
 optional column \code{color}; if the column \code{color} is not present,
 then the colors will be derived from the theme}
+
+\item{innerRadius}{inner radius of the gauge given as a percentage,
+between \code{0} (the gauge has no width) and \code{100} (the gauge is
+a semi-disk)}
+
+\item{labelsRadius}{radius for the labels given as a percentage; use the
+default value to get centered labels}
+
+\item{axisLabelsRadius}{radius for the axis labels given as a percentage}
 
 \item{chartTitle}{chart title, it can be \code{NULL} or \code{FALSE} for no
 title, a character string,
@@ -95,7 +107,7 @@ Create a HTML widget displaying a gauge chart.
 library(rAmCharts4)
 
 gradingData <- data.frame(
-  title = c("Slow", "Moderate", "Fast"),
+  label = c("Slow", "Moderate", "Fast"),
   color = c("blue", "green", "red"),
   lowScore = c(0, 100/3, 200/3),
   highScore = c(100/3, 200/3, 100)

@@ -5,9 +5,15 @@
 #' @param minScore minimal score
 #' @param maxScore maximal score
 #' @param gradingData data for the gauge, a dataframe with three required
-#'   columns: \code{title}, \code{lowScore}, and \code{highScore}, and an
+#'   columns: \code{label}, \code{lowScore}, and \code{highScore}, and an
 #'   optional column \code{color}; if the column \code{color} is not present,
 #'   then the colors will be derived from the theme
+#' @param innerRadius inner radius of the gauge given as a percentage,
+#'   between \code{0} (the gauge has no width) and \code{100} (the gauge is
+#'   a semi-disk)
+#' @param labelsRadius radius for the labels given as a percentage; use the
+#'   default value to get centered labels
+#' @param axisLabelsRadius radius for the axis labels given as a percentage
 #' @param chartTitle chart title, it can be \code{NULL} or \code{FALSE} for no
 #'   title, a character string,
 #'   a list of settings created with \code{\link{amText}}, or a list with two
@@ -59,7 +65,7 @@
 #' @examples library(rAmCharts4)
 #'
 #' gradingData <- data.frame(
-#'   title = c("Slow", "Moderate", "Fast"),
+#'   label = c("Slow", "Moderate", "Fast"),
 #'   color = c("blue", "green", "red"),
 #'   lowScore = c(0, 100/3, 200/3),
 #'   highScore = c(100/3, 200/3, 100)
@@ -73,6 +79,9 @@ amGaugeChart <- function(
   minScore,
   maxScore,
   gradingData,
+  innerRadius = 70,
+  labelsRadius = (100-innerRadius)/2,
+  axisLabelsRadius = 20,
   chartTitle = NULL,
   theme = NULL,
   tooltip = NULL, # default
@@ -87,7 +96,7 @@ amGaugeChart <- function(
 ) {
 
   if(!all(is.element(
-    c("title", "lowScore", "highScore"), names(gradingData))
+    c("label", "lowScore", "highScore"), names(gradingData))
   )){
     stop("Invalid `gradingData` argument.", call. = TRUE)
   }
@@ -152,6 +161,7 @@ amGaugeChart <- function(
   }
 
   # describe a React component to send to the browser for rendering.
+  innerRadius <- max(min(innerRadius, 100), 0)
   component <- reactR::component(
     "AmGaugeChart",
     list(
@@ -159,6 +169,9 @@ amGaugeChart <- function(
       minScore = minScore,
       maxScore = maxScore,
       gradingData = gradingData,
+      innerRadius = innerRadius,
+      labelsRadius = max(min(labelsRadius, 100), 0),
+      axisLabelsRadius = max(min(axisLabelsRadius, 100), 0),
       chartTitle = chartTitle,
       theme = theme,
       tooltip = tooltip,

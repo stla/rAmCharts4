@@ -129,7 +129,7 @@ renderAmChart4 <- function(expr, env = parent.frame(), quoted = FALSE) {
 #' library(shiny)
 #'
 #' gradingData <- data.frame(
-#'   title = c("Slow", "Moderate", "Fast"),
+#'   label = c("Slow", "Moderate", "Fast"),
 #'   lowScore = c(0, 100/3, 200/3),
 #'   highScore = c(100/3, 200/3, 100)
 #' )
