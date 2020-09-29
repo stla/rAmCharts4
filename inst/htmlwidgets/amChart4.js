@@ -121771,7 +121771,6 @@ class AmLineChart extends React.PureComponent {
 
 
     function handleDragStop(event, value) {
-      console.log("bullet dragstop");
       handleDrag(event);
       var dataItem = event.target.dataItem;
       dataItem.component.isHover = false; // XXXX
@@ -122020,7 +122019,6 @@ class AmLineChart extends React.PureComponent {
       /* ~~~~\  line template  /~~~~ */
 
 
-      console.log("series", series);
       var lineTemplate = series.segments.template;
       lineTemplate.interactionsEnabled = true;
       series.strokeWidth = lineStyle.width || 3;
@@ -122449,7 +122447,6 @@ class AmScatterChart extends React.PureComponent {
 
 
     function handleDragStop(event, value) {
-      console.log("bullet dragstop");
       handleDrag(event);
       var dataItem = event.target.dataItem;
       dataItem.component.isHover = false; // XXXX
@@ -122694,7 +122691,6 @@ class AmScatterChart extends React.PureComponent {
 
       if (trendData && trendData[value]) {
         var trend = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LineSeries"]());
-        console.log("trend", trend);
         trend.zIndex = 10000;
         trend.name = yValueNames[value] + "_trend";
         trend.hiddenInLegend = true;
@@ -123008,8 +123004,6 @@ class AmRangeAreaChart extends React.PureComponent {
       //      image.align = img.align || "right";
 
       image.href = img.href; //      image.dx = image.width;
-
-      console.log("image", image);
     }
     /* ~~~~\  scrollbars  /~~~~ */
 
@@ -123171,7 +123165,6 @@ class AmRangeAreaChart extends React.PureComponent {
 
 
     function handleDragStop(event, value) {
-      console.log("bullet dragstop");
       handleDrag(event);
       var dataItem = event.target.dataItem;
       dataItem.component.isHover = false; // XXXX
@@ -123776,8 +123769,7 @@ class AmRadialBarChart extends React.PureComponent {
         x: event.target.pixelX,
         y: event.target.pixelY
       }),
-          value = valueAxis.positionToValue(position);
-      console.log("value:", value); // convert coordinate to value
+          value = valueAxis.positionToValue(position); // convert coordinate to value
       //			let value = valueAxis.yToValue(event.target.pixelY);
       // set new value
 
@@ -124306,7 +124298,6 @@ class AmDumbbellChart extends React.PureComponent {
 
 
     function handleDrag(event) {
-      console.log("handleDrag event", event);
       var dataItem = event.target.dataItem; // convert coordinate to value
 
       var value = valueAxis.yToValue(event.target.pixelY); // set new value
@@ -124324,8 +124315,7 @@ class AmDumbbellChart extends React.PureComponent {
 
 
     function handleDragStop(event, value, field) {
-      console.log("bullet dragstop"); //handleDrag(event);
-
+      //handleDrag(event);
       var dataItem = event.target.dataItem;
       event.target.isHover = false;
       var newValue = dataItem.values[field].value;
@@ -124991,6 +124981,254 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
   }
 
 }
+/* COMPONENT: GAUGE CHART */
+
+
+class AmGaugeChart extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.style = this.style.bind(this);
+    this.lookupGrade = this.lookUpGrade.bind(this);
+  }
+
+  style() {
+    if (window.Shiny && !window.FlexDashboard) {
+      return {
+        width: "100%",
+        height: "100%"
+      };
+    } else {
+      return {
+        width: this.props.width,
+        height: this.props.height
+      };
+    }
+  }
+
+  lookUpGrade(lookupScore, grades) {
+    for (var i = 0; i < grades.length; i++) {
+      var x = grades[i];
+
+      if (x.lowScore < lookupScore && x.highScore >= lookupScore) {
+        return x;
+      }
+    }
+
+    return null;
+  }
+
+  componentDidMount() {
+    var theme = this.props.theme,
+        score = this.props.score,
+        minScore = this.props.minScore,
+        maxScore = this.props.maxScore,
+        gradingData = HTMLWidgets.dataframeToD3(this.props.gradingData),
+        data = {
+      score: score,
+      gradingData: gradingData
+    },
+        tooltips = this.props.tooltip,
+        chartId = this.props.chartId,
+        shinyId = this.props.shinyId;
+
+    if (window.Shiny) {
+      if (shinyId === undefined) {
+        shinyId = $(document.getElementById(chartId)).parent().attr("id");
+      }
+
+      Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+    }
+
+    switch (theme) {
+      case "dark":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_dark__WEBPACK_IMPORTED_MODULE_4__["default"]);
+        break;
+
+      case "dataviz":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_dataviz__WEBPACK_IMPORTED_MODULE_5__["default"]);
+        break;
+
+      case "frozen":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_frozen__WEBPACK_IMPORTED_MODULE_6__["default"]);
+        break;
+
+      case "kelly":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_kelly__WEBPACK_IMPORTED_MODULE_7__["default"]);
+        break;
+
+      case "material":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_material__WEBPACK_IMPORTED_MODULE_8__["default"]);
+        break;
+
+      case "microchart":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_microchart__WEBPACK_IMPORTED_MODULE_9__["default"]);
+        break;
+
+      case "moonrisekingdom":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_moonrisekingdom__WEBPACK_IMPORTED_MODULE_10__["default"]);
+        break;
+
+      case "patterns":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_patterns__WEBPACK_IMPORTED_MODULE_11__["default"]);
+        break;
+
+      case "spiritedaway":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_spiritedaway__WEBPACK_IMPORTED_MODULE_12__["default"]);
+        break;
+    }
+
+    var chart;
+    chart = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["create"](this.props.chartId, _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["GaugeChart"]);
+    chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
+
+    chart.padding(50, 40, 0, 10);
+    var chartBackgroundColor = this.props.backgroundColor || chart.background.fill;
+    chart.background.fill = chartBackgroundColor;
+    chart.fontSize = 11;
+    chart.innerRadius = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](80);
+    chart.resizable = true;
+    /* ~~~~\  Enable export  /~~~~ */
+
+    if (this.props.export) {
+      chart.exporting.menu = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["ExportMenu"]();
+      chart.exporting.menu.items = _utils__WEBPACK_IMPORTED_MODULE_13__["exportMenuItems"];
+    }
+    /* ~~~~\  title  /~~~~ */
+
+
+    var chartTitle = this.props.chartTitle;
+
+    if (chartTitle) {
+      var title = chart.titles.create();
+      title.text = chartTitle.text.text;
+      title.fill = chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.fontFamily = chartTitle.text.fontFamily;
+      title.align = chartTitle.align || "left";
+      title.dy = -30;
+    }
+    /* ~~~~\  caption  /~~~~ */
+
+
+    var chartCaption = this.props.caption;
+
+    if (chartCaption) {
+      var caption = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Label"]);
+      caption.text = chartCaption.text.text;
+      caption.fill = chartCaption.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.fontSize = chartCaption.text.fontSize;
+      caption.fontWeight = chartCaption.text.fontWeight;
+      caption.fontFamily = chartCaption.text.fontFamily;
+      caption.align = chartCaption.align || "right";
+    }
+    /* ~~~~\  image  /~~~~ */
+
+
+    if (this.props.image) {
+      _utils__WEBPACK_IMPORTED_MODULE_13__["Image"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, this.props.image);
+    }
+    /* ~~~~\  normal axis  /~~~~ */
+
+
+    var axis = chart.xAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]());
+    axis.min = minScore;
+    axis.max = maxScore;
+    axis.strictMinMax = true;
+    axis.renderer.radius = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](80);
+    axis.renderer.inside = true;
+    axis.renderer.line.strokeOpacity = 0.1;
+    axis.renderer.ticks.template.disabled = false;
+    axis.renderer.ticks.template.strokeOpacity = 1;
+    axis.renderer.ticks.template.strokeWidth = 0.5;
+    axis.renderer.ticks.template.length = 5;
+    axis.renderer.grid.template.disabled = true;
+    axis.renderer.labels.template.radius = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](15);
+    axis.renderer.labels.template.fontSize = "0.9em";
+    /* ~~~~\  axis for ranges  /~~~~ */
+
+    var axis2 = chart.xAxes.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ValueAxis"]());
+    axis2.min = minScore;
+    axis2.max = maxScore;
+    axis2.strictMinMax = true;
+    axis2.renderer.labels.template.disabled = true;
+    axis2.renderer.ticks.template.disabled = true;
+    axis2.renderer.grid.template.disabled = false;
+    axis2.renderer.grid.template.opacity = 0.5;
+    axis2.renderer.labels.template.bent = true;
+    axis2.renderer.labels.template.fill = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"]("#000");
+    axis2.renderer.labels.template.fontWeight = "bold";
+    axis2.renderer.labels.template.fillOpacity = 1;
+    /* ~~~~\  ranges  /~~~~ */
+
+    for (var grading of data.gradingData) {
+      var range = axis2.axisRanges.create();
+      range.axisFill.fill = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](grading.color);
+      range.axisFill.fillOpacity = 0.8;
+      range.axisFill.zIndex = -1;
+      range.value = grading.lowScore > minScore ? grading.lowScore : minScore;
+      range.endValue = grading.highScore < maxScore ? grading.highScore : maxScore;
+      range.grid.strokeOpacity = 0;
+      range.stroke = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](grading.color).lighten(-0.1);
+      range.label.inside = true;
+      range.label.text = grading.title;
+      range.label.location = 0.5;
+      range.label.radius = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](10);
+      range.label.paddingBottom = -5; // ~half font size
+
+      range.label.fontSize = "0.9em";
+    }
+
+    var matchingGrade = this.lookUpGrade(data.score, data.gradingData);
+    /* ~~~~\  label 1  /~~~~ */
+
+    var label = chart.radarContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Label"]);
+    label.isMeasured = false;
+    label.fontSize = "6em";
+    label.x = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](50);
+    label.paddingBottom = 15;
+    label.horizontalCenter = "middle";
+    label.verticalCenter = "bottom"; //label.dataItem = data;
+
+    label.text = data.score.toFixed(1); //label.text = "{score}";
+
+    label.fill = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](matchingGrade.color);
+    /* ~~~~\  label 2  /~~~~ */
+
+    var label2 = chart.radarContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Label"]);
+    label2.isMeasured = false;
+    label2.fontSize = "2em";
+    label2.horizontalCenter = "middle";
+    label2.verticalCenter = "bottom";
+    label2.text = matchingGrade.title;
+    label2.fill = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](matchingGrade.color);
+    /* ~~~~\  hand  /~~~~ */
+
+    var hand = chart.hands.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ClockHand"]());
+    hand.axis = axis2;
+    hand.innerRadius = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](55);
+    hand.startWidth = 8;
+    hand.pin.disabled = true;
+    hand.value = data.score;
+    hand.fill = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"]("#444");
+    hand.stroke = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"]("#000");
+    this.chart = chart;
+  }
+
+  componentWillUnmount() {
+    if (this.chart) {
+      this.chart.dispose();
+    }
+  }
+
+  render() {
+    return /*#__PURE__*/React.createElement("div", {
+      id: this.props.chartId,
+      style: this.style()
+    });
+  }
+
+}
 /* CREATE WIDGETS */
 
 
@@ -125002,7 +125240,8 @@ Object(reactR__WEBPACK_IMPORTED_MODULE_0__["reactWidget"])('amChart4', 'output',
   AmRangeAreaChart: AmRangeAreaChart,
   AmRadialBarChart: AmRadialBarChart,
   AmDumbbellChart: AmDumbbellChart,
-  AmHorizontalDumbbellChart: AmHorizontalDumbbellChart
+  AmHorizontalDumbbellChart: AmHorizontalDumbbellChart,
+  AmGaugeChart: AmGaugeChart
 }, {});
 
 /***/ }),

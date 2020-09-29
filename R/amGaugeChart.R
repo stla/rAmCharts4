@@ -101,38 +101,6 @@ amGaugeChart <- function(
   }
 
   if(!isFALSE(tooltip)){
-    tooltipText <- sprintf(ifelse(
-      isDate,
-      paste0(
-        "[bold][font-style:italic]{dateX.value.formatDate('%s')}:[/] ",
-        "{valueY.value.formatNumber('%s')}[/]"
-      ),
-      paste0(
-        "[bold]({valueX.value.formatNumber('%s')}, ",
-        "{valueY.value.formatNumber('%s')})[/]"
-      )
-    ), Xformatter, Yformatter)
-    if(is.null(tooltip)){
-      tooltip <-
-        setNames(
-          rep(list(amTooltip(text = tooltipText, auto = FALSE)), length(yValues)),
-          yValues
-        )
-    }else if("tooltip" %in% class(tooltip)){
-      tooltip <- setNames(rep(list(tooltip), length(yValues)), yValues)
-    }else if(is.list(tooltip)){
-      if(any(!yValues %in% names(tooltip))){
-        stop("Invalid `tooltip` list.", call. = TRUE)
-      }
-    }else if(is.character(tooltip)){
-      tooltip <-
-        setNames(
-          rep(list(amTooltip(text = tooltip, auto = FALSE)), length(yValues)),
-          yValues
-        )
-    }else{
-      stop("Invalid `tooltip` argument.", call. = TRUE)
-    }
   }
 
   if(!(is.null(image) || isFALSE(image))){

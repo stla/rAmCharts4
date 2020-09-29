@@ -4806,7 +4806,7 @@ class AmGaugeChart extends React.PureComponent {
   constructor(props) {
     super(props);
     this.style = this.style.bind(this);
-    this.lookupGrade = this.lookupGrade.bind(this);
+    this.lookupGrade = this.lookUpGrade.bind(this);
   }
 
   style() {
@@ -4830,7 +4830,6 @@ class AmGaugeChart extends React.PureComponent {
   componentDidMount() {
 
     let theme = this.props.theme,
-      chartLegend = this.props.legend,
       score = this.props.score,
       minScore = this.props.minScore,
       maxScore = this.props.maxScore,
@@ -4969,7 +4968,7 @@ class AmGaugeChart extends React.PureComponent {
     axis2.renderer.labels.template.bent = true;
     axis2.renderer.labels.template.fill = am4core.color("#000");
     axis2.renderer.labels.template.fontWeight = "bold";
-    axis2.renderer.labels.template.fillOpacity = 0.3;
+    axis2.renderer.labels.template.fillOpacity = 1;
 
 
     /* ~~~~\  ranges  /~~~~ */
@@ -4991,7 +4990,7 @@ class AmGaugeChart extends React.PureComponent {
       range.label.fontSize = "0.9em";
     }
     
-    let matchingGrade = lookUpGrade(data.score, data.gradingData);
+    let matchingGrade = this.lookUpGrade(data.score, data.gradingData);
     
 
     /* ~~~~\  label 1  /~~~~ */    
