@@ -6,6 +6,8 @@
 
 ![](https://raw.githubusercontent.com/stla/rAmCharts4/master/inst/screenshots/rAmCharts4_browsable2.png)
 
+![](https://raw.githubusercontent.com/stla/rAmCharts4/master/inst/screenshots/rAmCharts4_gauge.gif)
+
 ___
 
 # __Copies of license agreements__
