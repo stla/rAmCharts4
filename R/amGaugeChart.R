@@ -1,0 +1,201 @@
+#' HTML widget displaying a gauge chart
+#' @description Create a HTML widget displaying a gauge chart.
+#'
+#' @param score a number between \code{minScore} and \code{maxScore}
+#' @param minScore minimal score
+#' @param maxScore maximal score
+#' @param gradingData data for the gauge, a dataframe with four columns:
+#'   \code{title}, \code{color}, \code{lowScore}, and \code{highScore}
+#' @param chartTitle chart title, it can be \code{NULL} or \code{FALSE} for no
+#'   title, a character string,
+#'   a list of settings created with \code{\link{amText}}, or a list with two
+#'   fields: \code{text}, a list of settings created with \code{\link{amText}},
+#'   and \code{align}, can be \code{"left"}, \code{"right"} or \code{"center"}
+#' @param theme theme, \code{NULL} or one of \code{"dataviz"},
+#'   \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
+#'   \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
+#'   \code{"microchart"}
+#' @param tooltip settings of the tooltips; \code{NULL} for default,
+#'   \code{FALSE} for no tooltip, otherwise a named list of the form
+#'   \code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
+#'   \code{settings1}, \code{settings2}, ... are lists created with
+#'   \code{\link{amTooltip}}; this can also be a
+#'   single list of settings that will be applied to each series,
+#'   or a just a string for the text to display in the tooltip
+#' @param backgroundColor a color for the chart background; it can be given by
+#'   the name of a R color, the name of a CSS
+#'   color, e.g. \code{"aqua"} or \code{"indigo"}, an HEX code like
+#'   \code{"#ff009a"}, a RGB code like \code{"rgb(255,100,39)"}, or a HSL code
+#'   like \code{"hsl(360,11,255)"}
+#' @param caption \code{NULL} or \code{FALSE} for no caption, a formatted
+#'   text created with \code{\link{amText}}, or a list with two fields:
+#'   \code{text}, a list created with \code{\link{amText}}, and \code{align},
+#'   can be \code{"left"}, \code{"right"} or \code{"center"}
+#' @param image option to include an image at a corner of the chart;
+#'   \code{NULL} or \code{FALSE} for no image, otherwise a named list with four
+#'   possible fields: the field \code{image} (required) is a list created with
+#'   \code{\link{amImage}},
+#'   the field \code{position} can be \code{"topleft"}, \code{"topright"},
+#'   \code{"bottomleft"} or \code{"bottomright"}, the field \code{hjust}
+#'   defines the horizontal adjustment, and the field \code{vjust} defines
+#'   the vertical adjustment
+#' @param width the width of the chart, e.g. \code{"600px"} or \code{"80\%"};
+#'   ignored if the chart is displayed in Shiny, in which case the width is
+#'   given in \code{\link{amChart4Output}}
+#' @param height the height of the chart, e.g. \code{"400px"};
+#'   ignored if the chart is displayed in Shiny, in which case the height is
+#'   given in \code{\link{amChart4Output}}
+#' @param export logical, whether to enable the export menu
+#' @param chartId a HTML id for the chart
+#' @param elementId a HTML id for the container of the chart; ignored if the
+#'   chart is displayed in Shiny, in which case the id is given by the Shiny id
+#'
+#' @import htmlwidgets
+#' @importFrom shiny validateCssUnit
+#' @export
+#'
+#' @examples # iris data: petal widths ####
+amGaugeChart <- function(
+  score,
+  minScore,
+  maxScore,
+  gradingData,
+  chartTitle = NULL,
+  theme = NULL,
+  tooltip = NULL, # default
+  backgroundColor = NULL,
+  caption = NULL,
+  image = NULL,
+  width = NULL,
+  height = NULL,
+  export = FALSE,
+  chartId = NULL,
+  elementId = NULL
+) {
+
+  if(!all(is.element(
+    c("title", "color", "lowScore", "highScore"), names(gradingData))
+  )){
+    stop("Invalid `gradingData` argument.", call. = TRUE)
+  }
+
+  gradingData[["color"]] <-
+    vapply(gradingData[["color"]], validateColor, FUN.VALUE = character(1L))
+
+  if(is.character(chartTitle)){
+    chartTitle <- list(
+      text = amText(
+        text = chartTitle, color = NULL, fontSize = 22,
+        fontWeight = "bold", fontFamily = "Tahoma"
+      ),
+      align = "left"
+    )
+  }else if("text" %in% class(chartTitle)){
+    chartTitle <- list(text = chartTitle, align = "left")
+  }
+
+  if(is.character(caption)){
+    caption <- list(text = amText(caption), align = "right")
+  }else if("text" %in% class(caption)){
+    caption <- list(text = caption, align = "right")
+  }
+
+  if(!isFALSE(tooltip)){
+    tooltipText <- sprintf(ifelse(
+      isDate,
+      paste0(
+        "[bold][font-style:italic]{dateX.value.formatDate('%s')}:[/] ",
+        "{valueY.value.formatNumber('%s')}[/]"
+      ),
+      paste0(
+        "[bold]({valueX.value.formatNumber('%s')}, ",
+        "{valueY.value.formatNumber('%s')})[/]"
+      )
+    ), Xformatter, Yformatter)
+    if(is.null(tooltip)){
+      tooltip <-
+        setNames(
+          rep(list(amTooltip(text = tooltipText, auto = FALSE)), length(yValues)),
+          yValues
+        )
+    }else if("tooltip" %in% class(tooltip)){
+      tooltip <- setNames(rep(list(tooltip), length(yValues)), yValues)
+    }else if(is.list(tooltip)){
+      if(any(!yValues %in% names(tooltip))){
+        stop("Invalid `tooltip` list.", call. = TRUE)
+      }
+    }else if(is.character(tooltip)){
+      tooltip <-
+        setNames(
+          rep(list(amTooltip(text = tooltip, auto = FALSE)), length(yValues)),
+          yValues
+        )
+    }else{
+      stop("Invalid `tooltip` argument.", call. = TRUE)
+    }
+  }
+
+  if(!(is.null(image) || isFALSE(image))){
+    if(!is.list(image)){
+      if(!"image" %in% class(image)){
+        stop("Invalid `image` argument.", call. = TRUE)
+      }else{
+        image <- list(image = image)
+      }
+    }else{
+      if(!"image" %in% names(image) || !"image" %in% class(image[["image"]])){
+        stop("Invalid `image` argument.", call. = TRUE)
+      }
+    }
+  }
+
+  if(is.null(width)){
+    width <- "100%"
+  }else{
+    width <- shiny::validateCssUnit(width)
+  }
+
+  height <- shiny::validateCssUnit(height)
+  if(is.null(height)){
+    if(grepl("^\\d", width) && !grepl("%$", width)){
+      height <- sprintf("calc(%s * 9 / 16)", width)
+    }else{
+      height <- "400px"
+    }
+  }
+
+  if(is.null(chartId)){
+    chartId <- paste0("gaugechart-", randomString(15))
+  }
+
+  # describe a React component to send to the browser for rendering.
+  component <- reactR::component(
+    "AmGaugeChart",
+    list(
+      score = score,
+      minScore = minScore,
+      maxScore = maxScore,
+      gradingData = gradingData,
+      chartTitle = chartTitle,
+      theme = theme,
+      tooltip = tooltip,
+      backgroundColor = validateColor(backgroundColor),
+      caption = caption,
+      image = image,
+      width = width,
+      height = height,
+      export = export,
+      chartId = chartId,
+      shinyId = elementId
+    )
+  )
+  # create widget
+  htmlwidgets::createWidget(
+    name = 'amChart4',
+    reactR::reactMarkup(component),
+    width = "auto",
+    height = "auto",
+    package = 'rAmCharts4',
+    elementId = elementId
+  )
+}
