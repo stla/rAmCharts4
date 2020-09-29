@@ -1,8 +1,7 @@
 #' Shiny bindings for using \code{rAmCharts4} in Shiny
 #'
-#' @description Output and render functions for using
-#' the \code{rAmCharts4} widgets
-#' within Shiny applications and interactive Rmd documents.
+#' @description Output and render functions for using the \code{rAmCharts4}
+#'   widgets within Shiny applications and interactive Rmd documents.
 #'
 #' @param outputId output variable to read from
 #' @param width,height must be a valid CSS unit (like \code{"100\%"},
@@ -12,7 +11,8 @@
 #'   \code{\link{amBarChart}}, \code{\link{amHorizontalBarChart}},
 #'   \code{\link{amLineChart}}, \code{\link{amScatterChart}},
 #'   \code{\link{amRangeAreaChart}}, \code{\link{amRadialBarChart}},
-#'   \code{\link{amDumbbellChart}}, or \code{\link{amHorizontalDumbbellChart}}
+#'   \code{\link{amDumbbellChart}}, \code{\link{amHorizontalDumbbellChart}},
+#'   or \code{\link{amGaugeChart}}
 #' @param env the environment in which to evaluate \code{expr}
 #' @param quoted whether \code{expr} is a quoted expression
 #'
@@ -115,3 +115,18 @@ renderAmChart4 <- function(expr, env = parent.frame(), quoted = FALSE) {
   htmlwidgets::shinyRenderWidget(expr, amChart4Output, env, quoted = TRUE)
 }
 
+
+#' Update the score of a gauge chart
+#' @description Update the score of a gauge chart in a Shiny app
+#'
+#' @param session the Shiny \code{session} object
+#' @param outputId the output id passed on to \code{\link{amChart4Output}}
+#' @param score new value of the score
+#'
+#' @export
+#'
+#' @examples # ####
+updateAmGaugeChart <- function(session, outputId, score){
+  stopifnot(is.numeric(score) && length(score) == 1L)
+  session$sendCustomMessage(paste0(outputId, "gauge"), score)
+}

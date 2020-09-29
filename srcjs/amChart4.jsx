@@ -4801,12 +4801,22 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
 
 /* COMPONENT: GAUGE CHART */
 
+function lookUpGrade(lookupScore, grades) {
+  for(let i = 0; i < grades.length; i++) {
+    let x = grades[i];
+    if(x.lowScore < lookupScore && x.highScore >= lookupScore) {
+      return x;
+    }
+  }
+  return null;
+}
+
+
 class AmGaugeChart extends React.PureComponent {
 
   constructor(props) {
     super(props);
     this.style = this.style.bind(this);
-    this.lookupGrade = this.lookUpGrade.bind(this);
   }
 
   style() {
@@ -4815,16 +4825,6 @@ class AmGaugeChart extends React.PureComponent {
     } else {
       return {width: this.props.width, height: this.props.height};
     }
-  }
-
-  lookUpGrade(lookupScore, grades) {
-    for(let i = 0; i < grades.length; i++) {
-      let x = grades[i];
-      if(x.lowScore < lookupScore && x.highScore >= lookupScore) {
-        return x;
-      }
-    }
-    return null;
   }
 
   componentDidMount() {
@@ -4848,9 +4848,10 @@ class AmGaugeChart extends React.PureComponent {
       if(shinyId === undefined) {
         shinyId = $(document.getElementById(chartId)).parent().attr("id");
       }
-      Shiny.setInputValue(
+/*       Shiny.setInputValue(
         shinyId + ":rAmCharts4.dataframe", dataCopy
       );
+ */    
     }
 
     switch(theme) {
@@ -4990,7 +4991,7 @@ class AmGaugeChart extends React.PureComponent {
       range.label.fontSize = "0.9em";
     }
     
-    let matchingGrade = this.lookUpGrade(data.score, data.gradingData);
+    let matchingGrade = lookUpGrade(data.score, data.gradingData);
     
 
     /* ~~~~\  label 1  /~~~~ */    
@@ -5027,7 +5028,24 @@ class AmGaugeChart extends React.PureComponent {
     hand.fill = am4core.color("#444");
     hand.stroke = am4core.color("#000");
 
+    hand.events.on("positionchanged", function() {
+      label.text = axis2.positionToValue(hand.currentPosition).toFixed(1);
+      let value = axis.positionToValue(hand.currentPosition);
+      let matchingGrade = lookUpGrade(value, data.gradingData);
+      label2.text = matchingGrade.title;
+      label2.fill = am4core.color(matchingGrade.color);
+      label2.stroke = am4core.color(matchingGrade.color);  
+      label.fill = am4core.color(matchingGrade.color);
+    })
 
+    if(window.Shiny) {
+      Shiny.addCustomMessageHandler(
+        shinyId + "gauge",
+        function(score) {
+          hand.showValue(score, 1000, am4core.ease.cubicOut);
+        }
+      );
+    }
 
     this.chart = chart;
 

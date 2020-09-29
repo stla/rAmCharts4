@@ -21,16 +21,16 @@ string and have \code{"px"} appended}
 \code{\link{amBarChart}}, \code{\link{amHorizontalBarChart}},
 \code{\link{amLineChart}}, \code{\link{amScatterChart}},
 \code{\link{amRangeAreaChart}}, \code{\link{amRadialBarChart}},
-\code{\link{amDumbbellChart}}, or \code{\link{amHorizontalDumbbellChart}}}
+\code{\link{amDumbbellChart}}, \code{\link{amHorizontalDumbbellChart}},
+or \code{\link{amGaugeChart}}}
 
 \item{env}{the environment in which to evaluate \code{expr}}
 
 \item{quoted}{whether \code{expr} is a quoted expression}
 }
 \description{
-Output and render functions for using
-the \code{rAmCharts4} widgets
-within Shiny applications and interactive Rmd documents.
+Output and render functions for using the \code{rAmCharts4}
+  widgets within Shiny applications and interactive Rmd documents.
 }
 \examples{
 library(rAmCharts4)

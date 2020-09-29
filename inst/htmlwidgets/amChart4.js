@@ -124984,11 +124984,22 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
 /* COMPONENT: GAUGE CHART */
 
 
+function lookUpGrade(lookupScore, grades) {
+  for (var i = 0; i < grades.length; i++) {
+    var x = grades[i];
+
+    if (x.lowScore < lookupScore && x.highScore >= lookupScore) {
+      return x;
+    }
+  }
+
+  return null;
+}
+
 class AmGaugeChart extends React.PureComponent {
   constructor(props) {
     super(props);
     this.style = this.style.bind(this);
-    this.lookupGrade = this.lookUpGrade.bind(this);
   }
 
   style() {
@@ -125003,18 +125014,6 @@ class AmGaugeChart extends React.PureComponent {
         height: this.props.height
       };
     }
-  }
-
-  lookUpGrade(lookupScore, grades) {
-    for (var i = 0; i < grades.length; i++) {
-      var x = grades[i];
-
-      if (x.lowScore < lookupScore && x.highScore >= lookupScore) {
-        return x;
-      }
-    }
-
-    return null;
   }
 
   componentDidMount() {
@@ -125035,8 +125034,11 @@ class AmGaugeChart extends React.PureComponent {
       if (shinyId === undefined) {
         shinyId = $(document.getElementById(chartId)).parent().attr("id");
       }
+      /*       Shiny.setInputValue(
+              shinyId + ":rAmCharts4.dataframe", dataCopy
+            );
+       */
 
-      Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
     }
 
     switch (theme) {
@@ -125179,7 +125181,7 @@ class AmGaugeChart extends React.PureComponent {
       range.label.fontSize = "0.9em";
     }
 
-    var matchingGrade = this.lookUpGrade(data.score, data.gradingData);
+    var matchingGrade = lookUpGrade(data.score, data.gradingData);
     /* ~~~~\  label 1  /~~~~ */
 
     var label = chart.radarContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Label"]);
@@ -125212,6 +125214,22 @@ class AmGaugeChart extends React.PureComponent {
     hand.value = data.score;
     hand.fill = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"]("#444");
     hand.stroke = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"]("#000");
+    hand.events.on("positionchanged", function () {
+      label.text = axis2.positionToValue(hand.currentPosition).toFixed(1);
+      var value = axis.positionToValue(hand.currentPosition);
+      var matchingGrade = lookUpGrade(value, data.gradingData);
+      label2.text = matchingGrade.title;
+      label2.fill = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](matchingGrade.color);
+      label2.stroke = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](matchingGrade.color);
+      label.fill = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](matchingGrade.color);
+    });
+
+    if (window.Shiny) {
+      Shiny.addCustomMessageHandler(shinyId + "gauge", function (score) {
+        hand.showValue(score, 1000, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["ease"].cubicOut);
+      });
+    }
+
     this.chart = chart;
   }
 
