@@ -18,6 +18,8 @@ amGaugeChart(
   axisLabelsFont = amFont(fontSize = "1.2em"),
   scoreFont = amFont(fontSize = "6em"),
   scoreLabelFont = amFont(fontSize = "2em"),
+  hand = amHand(innerRadius = 55, width = 8, color = "slategray", strokeColor =
+    "black"),
   chartTitle = NULL,
   theme = NULL,
   tooltip = NULL,
@@ -71,6 +73,9 @@ created with \code{\link{amFont}}}
 
 \item{scoreLabelFont}{a list of settings for the font of the score label
 created with \code{\link{amFont}}}
+
+\item{hand}{a list of settings for the hand of the gauge created with
+\code{\link{amHand}}}
 
 \item{chartTitle}{chart title, it can be \code{NULL} or \code{FALSE} for no
 title, a character string,

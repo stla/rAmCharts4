@@ -4843,6 +4843,7 @@ class AmGaugeChart extends React.PureComponent {
       axisLabelsFont = this.props.axisLabelsFont,
       scoreFont = this.props.scoreFont,
       scoreLabelFont = this.props.scoreLabelFont,
+      hand = this.props.hand,
       tooltips = this.props.tooltip,
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
@@ -5047,19 +5048,19 @@ class AmGaugeChart extends React.PureComponent {
     
     
     /* ~~~~\  hand  /~~~~ */    
-    let hand = chart.hands.push(new am4charts.ClockHand());
-    hand.axis = axis2;
-    hand.innerRadius = am4core.percent(55);
-    hand.startWidth = 8;
-    hand.pin.disabled = true;
-    hand.value = data.score;
-    hand.fill = am4core.color("#444");
-    hand.stroke = am4core.color("#000");
+    let clockHand = chart.hands.push(new am4charts.ClockHand());
+    clockHand.axis = axis2;
+    clockHand.innerRadius = am4core.percent(hand.innerRadius);
+    clockHand.startWidth = hand.width;
+    clockHand.pin.disabled = true;
+    clockHand.value = data.score;
+    clockHand.fill = am4core.color(hand.color);
+    clockHand.stroke = am4core.color(hand.strokeColor);
 
-    hand.events.on("positionchanged", function() {
-      label.text = 
-        axis2.positionToValue(hand.currentPosition).toFixed(scorePrecision);
-      let value = axis.positionToValue(hand.currentPosition);
+    clockHand.events.on("positionchanged", function() {
+      let position = clockHand.currentPosition;
+      label.text = axis2.positionToValue(position).toFixed(scorePrecision);
+      let value = axis.positionToValue(position);
       let matchingGrade = lookUpGrade(value, data.gradingData);
       label2.text = matchingGrade.label;
       label2.fill = matchingGrade.color;
@@ -5071,7 +5072,7 @@ class AmGaugeChart extends React.PureComponent {
       Shiny.addCustomMessageHandler(
         shinyId + "gauge",
         function(score) {
-          hand.showValue(score, 1000, am4core.ease.cubicOut);
+          clockHand.showValue(score, 1000, am4core.ease.cubicOut);
         }
       );
     }
