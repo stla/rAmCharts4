@@ -4798,6 +4798,260 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
 }
 
 
+
+/* COMPONENT: GAUGE CHART */
+
+class AmGaugeChart extends React.PureComponent {
+
+  constructor(props) {
+    super(props);
+    this.style = this.style.bind(this);
+    this.lookupGrade = this.lookupGrade.bind(this);
+  }
+
+  style() {
+    if(window.Shiny && !window.FlexDashboard) {
+      return {width: "100%", height: "100%"};
+    } else {
+      return {width: this.props.width, height: this.props.height};
+    }
+  }
+
+  lookUpGrade(lookupScore, grades) {
+    for(let i = 0; i < grades.length; i++) {
+      let x = grades[i];
+      if(x.lowScore < lookupScore && x.highScore >= lookupScore) {
+        return x;
+      }
+    }
+    return null;
+  }
+
+  componentDidMount() {
+
+    let theme = this.props.theme,
+      chartLegend = this.props.legend,
+      score = this.props.score,
+      minScore = this.props.minScore,
+      maxScore = this.props.maxScore,
+      gradingData = HTMLWidgets.dataframeToD3(
+        this.props.gradingData
+      ),
+      data = {
+        score: score,
+        gradingData: gradingData
+      },
+      tooltips = this.props.tooltip,
+      chartId = this.props.chartId,
+      shinyId = this.props.shinyId;
+
+    if(window.Shiny) {
+      if(shinyId === undefined) {
+        shinyId = $(document.getElementById(chartId)).parent().attr("id");
+      }
+      Shiny.setInputValue(
+        shinyId + ":rAmCharts4.dataframe", dataCopy
+      );
+    }
+
+    switch(theme) {
+      case "dark":
+        am4core.useTheme(am4themes_dark);
+        break;
+      case "dataviz":
+        am4core.useTheme(am4themes_dataviz);
+        break;
+      case "frozen":
+        am4core.useTheme(am4themes_frozen);
+        break;
+      case "kelly":
+        am4core.useTheme(am4themes_kelly);
+        break;
+      case "material":
+        am4core.useTheme(am4themes_material);
+        break;
+      case "microchart":
+        am4core.useTheme(am4themes_microchart);
+        break;
+      case "moonrisekingdom":
+        am4core.useTheme(am4themes_moonrisekingdom);
+        break;
+      case "patterns":
+        am4core.useTheme(am4themes_patterns);
+        break;
+      case "spiritedaway":
+        am4core.useTheme(am4themes_spiritedaway);
+        break;
+    }
+
+    let chart;
+    chart = am4core.create(this.props.chartId, am4charts.GaugeChart);
+
+    chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
+    chart.padding(50, 40, 0, 10);
+    let chartBackgroundColor =
+      this.props.backgroundColor || chart.background.fill;
+    chart.background.fill = chartBackgroundColor;
+
+    chart.fontSize = 11;
+    chart.innerRadius = am4core.percent(80);
+    chart.resizable = true;
+
+
+    /* ~~~~\  Enable export  /~~~~ */
+    if(this.props.export) {
+      chart.exporting.menu = new am4core.ExportMenu();
+      chart.exporting.menu.items = utils.exportMenuItems;
+    }
+
+
+		/* ~~~~\  title  /~~~~ */
+		let chartTitle = this.props.chartTitle;
+		if(chartTitle) {
+      let title = chart.titles.create();
+			title.text = chartTitle.text.text;
+			title.fill =
+			  chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+			title.fontSize = chartTitle.text.fontSize || 22;
+			title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.fontFamily = chartTitle.text.fontFamily;
+      title.align = chartTitle.align || "left";
+      title.dy = -30;
+		}
+
+
+    /* ~~~~\  caption  /~~~~ */
+    let chartCaption = this.props.caption;
+    if(chartCaption) {
+      let caption = chart.chartContainer.createChild(am4core.Label);
+      caption.text = chartCaption.text.text;
+      caption.fill =
+        chartCaption.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.fontSize = chartCaption.text.fontSize;
+      caption.fontWeight = chartCaption.text.fontWeight;
+      caption.fontFamily = chartCaption.text.fontFamily;
+      caption.align = chartCaption.align || "right";
+    }
+
+
+    /* ~~~~\  image  /~~~~ */
+    if(this.props.image) {
+      utils.Image(am4core, chart, this.props.image);
+    }
+
+
+    /* ~~~~\  normal axis  /~~~~ */
+    let axis = chart.xAxes.push(new am4charts.ValueAxis());
+    axis.min = minScore;
+    axis.max = maxScore;
+    axis.strictMinMax = true;
+    axis.renderer.radius = am4core.percent(80);
+    axis.renderer.inside = true;
+    axis.renderer.line.strokeOpacity = 0.1;
+    axis.renderer.ticks.template.disabled = false;
+    axis.renderer.ticks.template.strokeOpacity = 1;
+    axis.renderer.ticks.template.strokeWidth = 0.5;
+    axis.renderer.ticks.template.length = 5;
+    axis.renderer.grid.template.disabled = true;
+    axis.renderer.labels.template.radius = am4core.percent(15);
+    axis.renderer.labels.template.fontSize = "0.9em";
+
+
+    /* ~~~~\  axis for ranges  /~~~~ */
+    let axis2 = chart.xAxes.push(new am4charts.ValueAxis());
+    axis2.min = minScore;
+    axis2.max = maxScore;
+    axis2.strictMinMax = true;
+    axis2.renderer.labels.template.disabled = true;
+    axis2.renderer.ticks.template.disabled = true;
+    axis2.renderer.grid.template.disabled = false;
+    axis2.renderer.grid.template.opacity = 0.5;
+    axis2.renderer.labels.template.bent = true;
+    axis2.renderer.labels.template.fill = am4core.color("#000");
+    axis2.renderer.labels.template.fontWeight = "bold";
+    axis2.renderer.labels.template.fillOpacity = 0.3;
+
+
+    /* ~~~~\  ranges  /~~~~ */
+    for(let grading of data.gradingData) {
+      let range = axis2.axisRanges.create();
+      range.axisFill.fill = am4core.color(grading.color);
+      range.axisFill.fillOpacity = 0.8;
+      range.axisFill.zIndex = -1;
+      range.value = grading.lowScore > minScore ? grading.lowScore : minScore;
+      range.endValue = 
+        grading.highScore < maxScore ? grading.highScore : maxScore;
+      range.grid.strokeOpacity = 0;
+      range.stroke = am4core.color(grading.color).lighten(-0.1);
+      range.label.inside = true;
+      range.label.text = grading.title;
+      range.label.location = 0.5;
+      range.label.radius = am4core.percent(10);
+      range.label.paddingBottom = -5; // ~half font size
+      range.label.fontSize = "0.9em";
+    }
+    
+    let matchingGrade = lookUpGrade(data.score, data.gradingData);
+    
+
+    /* ~~~~\  label 1  /~~~~ */    
+    let label = chart.radarContainer.createChild(am4core.Label);
+    label.isMeasured = false;
+    label.fontSize = "6em";
+    label.x = am4core.percent(50);
+    label.paddingBottom = 15;
+    label.horizontalCenter = "middle";
+    label.verticalCenter = "bottom";
+    //label.dataItem = data;
+    label.text = data.score.toFixed(1);
+    //label.text = "{score}";
+    label.fill = am4core.color(matchingGrade.color);
+    
+
+    /* ~~~~\  label 2  /~~~~ */    
+    let label2 = chart.radarContainer.createChild(am4core.Label);
+    label2.isMeasured = false;
+    label2.fontSize = "2em";
+    label2.horizontalCenter = "middle";
+    label2.verticalCenter = "bottom";
+    label2.text = matchingGrade.title;
+    label2.fill = am4core.color(matchingGrade.color);
+    
+    
+    /* ~~~~\  hand  /~~~~ */    
+    let hand = chart.hands.push(new am4charts.ClockHand());
+    hand.axis = axis2;
+    hand.innerRadius = am4core.percent(55);
+    hand.startWidth = 8;
+    hand.pin.disabled = true;
+    hand.value = data.score;
+    hand.fill = am4core.color("#444");
+    hand.stroke = am4core.color("#000");
+
+
+
+    this.chart = chart;
+
+  }
+
+  componentWillUnmount() {
+    if(this.chart) {
+      this.chart.dispose();
+    }
+  }
+
+  render() {
+    return (
+      <div
+        id = {this.props.chartId}
+        style = {this.style()}
+      ></div>
+    );
+  }
+}
+
+
+
 /* CREATE WIDGETS */
 
 reactWidget(
@@ -4811,7 +5065,8 @@ reactWidget(
     AmRangeAreaChart: AmRangeAreaChart,
     AmRadialBarChart: AmRadialBarChart,
     AmDumbbellChart: AmDumbbellChart,
-    AmHorizontalDumbbellChart: AmHorizontalDumbbellChart
+    AmHorizontalDumbbellChart: AmHorizontalDumbbellChart,
+    AmGaugeChart: AmGaugeChart
   },
   {}
 );
