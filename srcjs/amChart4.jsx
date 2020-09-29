@@ -4837,6 +4837,11 @@ class AmGaugeChart extends React.PureComponent {
       innerRadius = this.props.innerRadius,
       labelsRadius = this.props.labelsRadius,
       axisLabelsRadius = this.props.axisLabelsRadius,
+      chartFontSize = this.props.chartFontSize,
+      labelsFont = this.props.labelsFont,
+      axisLabelsFont = this.props.axisLabelsFont,
+      scoreFont = this.props.scoreFont,
+      scoreLabelFont = this.props.scoreLabelFont,
       tooltips = this.props.tooltip,
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
@@ -4905,7 +4910,7 @@ class AmGaugeChart extends React.PureComponent {
       this.props.backgroundColor || chart.background.fill;
     chart.background.fill = chartBackgroundColor;
 
-    chart.fontSize = 11;
+    chart.fontSize = chartFontSize;
     chart.innerRadius = am4core.percent(innerRadius);
     chart.resizable = true;
 
@@ -4966,7 +4971,7 @@ class AmGaugeChart extends React.PureComponent {
     axis.renderer.ticks.template.length = 5;
     axis.renderer.grid.template.disabled = true;
     axis.renderer.labels.template.radius = am4core.percent(axisLabelsRadius);
-    axis.renderer.labels.template.fontSize = "0.9em";
+    axis.renderer.labels.template.fontSize = axisLabelsFont.fontSize;
 
 
     /* ~~~~\  axis for ranges  /~~~~ */
@@ -4980,7 +4985,9 @@ class AmGaugeChart extends React.PureComponent {
     axis2.renderer.grid.template.opacity = 0.5;
     axis2.renderer.labels.template.bent = true;
 //    axis2.renderer.labels.template.fill = am4core.color("#000");
-    axis2.renderer.labels.template.fontWeight = "bold";
+    axis2.renderer.labels.template.fontSize = labelsFont.fontSize;
+    axis2.renderer.labels.template.fontWeight = labelsFont.fontWeight;
+    axis2.renderer.labels.template.fontFamily = labelsFont.fontFamily;
     axis2.renderer.labels.template.fillOpacity = 1;
 
 
@@ -5001,7 +5008,7 @@ class AmGaugeChart extends React.PureComponent {
       range.label.location = 0.5;
       range.label.radius = am4core.percent(labelsRadius); 
       range.label.paddingBottom = -5; // ~half font size
-      range.label.fontSize = "0.9em";
+//      range.label.fontSize = labelsFont.fontSize;
     }
     
     let matchingGrade = lookUpGrade(data.score, data.gradingData);
@@ -5010,13 +5017,15 @@ class AmGaugeChart extends React.PureComponent {
     /* ~~~~\  label 1  /~~~~ */    
     let label = chart.radarContainer.createChild(am4core.Label);
     label.isMeasured = false;
-    label.fontSize = "6em";
+    label.fontSize = scoreFont.fontSize;
+    label.fontFamily = scoreFont.fontFamily;
+    label.fontWeight = scoreFont.fontWeight;
     label.x = am4core.percent(50);
     label.paddingBottom = 15;
     label.horizontalCenter = "middle";
     label.verticalCenter = "bottom";
     //label.dataItem = data;
-    label.text = data.score.toFixed(1);
+    label.text = data.score.toFixed(1); // TODO: ndecimals
     //label.text = "{score}";
     label.fill = matchingGrade.color;
     
@@ -5024,7 +5033,9 @@ class AmGaugeChart extends React.PureComponent {
     /* ~~~~\  label 2  /~~~~ */    
     let label2 = chart.radarContainer.createChild(am4core.Label);
     label2.isMeasured = false;
-    label2.fontSize = "2em";
+    label2.fontSize = scoreLabelFont.fontSize;
+    label2.fontWeight = scoreLabelFont.fontWeight;
+    label2.fontFamily = scoreLabelFont.fontFamily;
     label2.horizontalCenter = "middle";
     label2.verticalCenter = "bottom";
     label2.text = matchingGrade.label;

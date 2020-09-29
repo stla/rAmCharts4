@@ -14,6 +14,18 @@
 #' @param labelsRadius radius for the labels given as a percentage; use the
 #'   default value to get centered labels
 #' @param axisLabelsRadius radius for the axis labels given as a percentage
+#' @param chartFontSize reference font size, either a valid CSS measurement,
+#'   like \code{"12px"}, or a numeric value, the font size in pixels; this
+#'   font size has an effect only if you use the relative CSS unit \code{em}
+#'   for other font sizes
+#' @param labelsFont a list of settings for the font of the labels created with
+#'   \code{\link{amFont}}
+#' @param axisLabelsFont a list of settings for the font of the axis labels
+#'   created with \code{\link{amFont}}
+#' @param scoreFont a list of settings for the font of the score created with
+#'   \code{\link{amFont}}
+#' @param scoreLabelFont a list of settings for the font of the score label
+#'   created with \code{\link{amFont}}
 #' @param chartTitle chart title, it can be \code{NULL} or \code{FALSE} for no
 #'   title, a character string,
 #'   a list of settings created with \code{\link{amText}}, or a list with two
@@ -59,7 +71,7 @@
 #'   chart is displayed in Shiny, in which case the id is given by the Shiny id
 #'
 #' @import htmlwidgets
-#' @importFrom shiny validateCssUnit
+#' @importFrom htmltools validateCssUnit
 #' @export
 #'
 #' @examples library(rAmCharts4)
@@ -81,7 +93,12 @@ amGaugeChart <- function(
   gradingData,
   innerRadius = 70,
   labelsRadius = (100-innerRadius)/2,
-  axisLabelsRadius = 20,
+  axisLabelsRadius = 18,
+  chartFontSize = "11px",
+  labelsFont = amFont(fontSize = "0.9em", fontWeight = "bold"),
+  axisLabelsFont = amFont(fontSize = "0.9em"),
+  scoreFont = amFont(fontSize = "6em"),
+  scoreLabelFont = amFont(fontSize = "2em"),
   chartTitle = NULL,
   theme = NULL,
   tooltip = NULL, # default
@@ -172,6 +189,11 @@ amGaugeChart <- function(
       innerRadius = innerRadius,
       labelsRadius = max(min(labelsRadius, 100), 0),
       axisLabelsRadius = max(min(axisLabelsRadius, 100), 0),
+      chartFontSize = validateCssUnit(chartFontSize),
+      labelsFont = labelsFont,
+      axisLabelsFont = axisLabelsFont,
+      scoreFont = scoreFont,
+      scoreLabelFont = scoreLabelFont,
       chartTitle = chartTitle,
       theme = theme,
       tooltip = tooltip,

@@ -11,7 +11,12 @@ amGaugeChart(
   gradingData,
   innerRadius = 70,
   labelsRadius = (100 - innerRadius)/2,
-  axisLabelsRadius = 20,
+  axisLabelsRadius = 18,
+  chartFontSize = "11px",
+  labelsFont = amFont(fontSize = "0.9em", fontWeight = "bold"),
+  axisLabelsFont = amFont(fontSize = "0.9em"),
+  scoreFont = amFont(fontSize = "6em"),
+  scoreLabelFont = amFont(fontSize = "2em"),
   chartTitle = NULL,
   theme = NULL,
   tooltip = NULL,
@@ -45,6 +50,23 @@ a semi-disk)}
 default value to get centered labels}
 
 \item{axisLabelsRadius}{radius for the axis labels given as a percentage}
+
+\item{chartFontSize}{reference font size, either a valid CSS measurement,
+like \code{"12px"}, or a numeric value, the font size in pixels; this
+font size has an effect only if you use the relative CSS unit \code{em}
+for other font sizes}
+
+\item{labelsFont}{a list of settings for the font of the labels created with
+\code{\link{amFont}}}
+
+\item{axisLabelsFont}{a list of settings for the font of the axis labels
+created with \code{\link{amFont}}}
+
+\item{scoreFont}{a list of settings for the font of the score created with
+\code{\link{amFont}}}
+
+\item{scoreLabelFont}{a list of settings for the font of the score label
+created with \code{\link{amFont}}}
 
 \item{chartTitle}{chart title, it can be \code{NULL} or \code{FALSE} for no
 title, a character string,
