@@ -50,3 +50,7 @@ validateColor <- function(color){
 `%||%` <- function(x, y){
   if(is.null(x)) y else x
 }
+
+isPositiveInteger <- function(x){
+  is.numeric(x) && (length(x) == 1L) && (floor(x) == x)
+}

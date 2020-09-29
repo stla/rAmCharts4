@@ -4,6 +4,8 @@
 #' @param score a number between \code{minScore} and \code{maxScore}
 #' @param minScore minimal score
 #' @param maxScore maximal score
+#' @param scorePrecision an integer, the number of decimals of the score
+#'   to be displayed
 #' @param gradingData data for the gauge, a dataframe with three required
 #'   columns: \code{label}, \code{lowScore}, and \code{highScore}, and an
 #'   optional column \code{color}; if the column \code{color} is not present,
@@ -90,6 +92,7 @@ amGaugeChart <- function(
   score,
   minScore,
   maxScore,
+  scorePrecision = 0,
   gradingData,
   innerRadius = 70,
   labelsRadius = (100-innerRadius)/2,
@@ -111,6 +114,8 @@ amGaugeChart <- function(
   chartId = NULL,
   elementId = NULL
 ) {
+
+  stopifnot(isPositiveInteger(scorePrecision))
 
   if(!all(is.element(
     c("label", "lowScore", "highScore"), names(gradingData))
@@ -190,6 +195,7 @@ amGaugeChart <- function(
       score = score,
       minScore = minScore,
       maxScore = maxScore,
+      scorePrecision = scorePrecision,
       gradingData = gradingData,
       innerRadius = innerRadius,
       labelsRadius = max(min(labelsRadius, 100), 0),

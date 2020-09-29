@@ -4833,6 +4833,7 @@ class AmGaugeChart extends React.PureComponent {
       score = this.props.score,
       minScore = this.props.minScore,
       maxScore = this.props.maxScore,
+      scorePrecision = this.props.scorePrecision,
       gradingData = this.props.gradingData,
       innerRadius = this.props.innerRadius,
       labelsRadius = this.props.labelsRadius,
@@ -5012,10 +5013,12 @@ class AmGaugeChart extends React.PureComponent {
 //    range.label.fontSize = labelsFont.fontSize;
     }
     
+
+    /* ~~~~\  matching grade  /~~~~ */
     let matchingGrade = lookUpGrade(data.score, data.gradingData);
     
 
-    /* ~~~~\  label 1  /~~~~ */    
+    /* ~~~~\  score label  /~~~~ */    
     let label = chart.radarContainer.createChild(am4core.Label);
     label.isMeasured = false;
     label.fontSize = scoreFont.fontSize;
@@ -5026,12 +5029,12 @@ class AmGaugeChart extends React.PureComponent {
     label.horizontalCenter = "middle";
     label.verticalCenter = "bottom";
     //label.dataItem = data;
-    label.text = data.score.toFixed(1); // TODO: ndecimals
+    label.text = data.score.toFixed(scorePrecision);
     //label.text = "{score}";
     label.fill = matchingGrade.color;
     
 
-    /* ~~~~\  label 2  /~~~~ */    
+    /* ~~~~\  score range label  /~~~~ */    
     let label2 = chart.radarContainer.createChild(am4core.Label);
     label2.isMeasured = false;
     label2.fontSize = scoreLabelFont.fontSize;
@@ -5054,7 +5057,8 @@ class AmGaugeChart extends React.PureComponent {
     hand.stroke = am4core.color("#000");
 
     hand.events.on("positionchanged", function() {
-      label.text = axis2.positionToValue(hand.currentPosition).toFixed(1);
+      label.text = 
+        axis2.positionToValue(hand.currentPosition).toFixed(scorePrecision);
       let value = axis.positionToValue(hand.currentPosition);
       let matchingGrade = lookUpGrade(value, data.gradingData);
       label2.text = matchingGrade.label;

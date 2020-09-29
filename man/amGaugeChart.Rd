@@ -8,6 +8,7 @@ amGaugeChart(
   score,
   minScore,
   maxScore,
+  scorePrecision = 0,
   gradingData,
   innerRadius = 70,
   labelsRadius = (100 - innerRadius)/2,
@@ -36,6 +37,9 @@ amGaugeChart(
 \item{minScore}{minimal score}
 
 \item{maxScore}{maximal score}
+
+\item{scorePrecision}{an integer, the number of decimals of the score
+to be displayed}
 
 \item{gradingData}{data for the gauge, a dataframe with three required
 columns: \code{label}, \code{lowScore}, and \code{highScore}, and an
