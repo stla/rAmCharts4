@@ -1,7 +1,8 @@
 #' HTML widget displaying a gauge chart
 #' @description Create a HTML widget displaying a gauge chart.
 #'
-#' @param score a number between \code{minScore} and \code{maxScore}
+#' @param score gauge value, a number between \code{minScore} and
+#'   \code{maxScore}
 #' @param minScore minimal score
 #' @param maxScore maximal score
 #' @param scorePrecision an integer, the number of decimals of the score
@@ -42,13 +43,6 @@
 #'   \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
 #'   \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
 #'   \code{"microchart"}
-#' @param tooltip settings of the tooltips; \code{NULL} for default,
-#'   \code{FALSE} for no tooltip, otherwise a named list of the form
-#'   \code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
-#'   \code{settings1}, \code{settings2}, ... are lists created with
-#'   \code{\link{amTooltip}}; this can also be a
-#'   single list of settings that will be applied to each series,
-#'   or a just a string for the text to display in the tooltip
 #' @param backgroundColor a color for the chart background; it can be given by
 #'   the name of a R color, the name of a CSS
 #'   color, e.g. \code{"aqua"} or \code{"indigo"}, an HEX code like
@@ -113,7 +107,6 @@ amGaugeChart <- function(
   gridLines = FALSE,
   chartTitle = NULL,
   theme = NULL,
-  tooltip = NULL, # default
   backgroundColor = NULL,
   caption = NULL,
   image = NULL,
@@ -124,6 +117,8 @@ amGaugeChart <- function(
   elementId = NULL
 ) {
 
+  stopifnot(minScore <= score && score <= maxScore)
+
   stopifnot(isPositiveInteger(scorePrecision))
 
   if(!all(is.element(
@@ -132,12 +127,15 @@ amGaugeChart <- function(
     stop("Invalid `gradingData` argument.", call. = TRUE)
   }
 
+  stopifnot(all(gradingData[["lowScore"]] < gradingData[["highScore"]]))
+
   if("color" %in% names(gradingData)){
     gradingData[["color"]] <-
       vapply(gradingData[["color"]], validateColor, FUN.VALUE = character(1L))
   }
 
   stopifnot(is.numeric(chartFontSize) && chartFontSize > 0)
+
   if(!grepl("(px$|em$)", labelsFont[["fontSize"]])){
     stop("Invalid `labelsFont` argument.")
   }
@@ -160,9 +158,6 @@ amGaugeChart <- function(
     caption <- list(text = caption, align = "right")
   }
 
-  if(!isFALSE(tooltip)){
-  }
-
   if(!(is.null(image) || isFALSE(image))){
     if(!is.list(image)){
       if(!"image" %in% class(image)){
@@ -180,10 +175,10 @@ amGaugeChart <- function(
   if(is.null(width)){
     width <- "100%"
   }else{
-    width <- shiny::validateCssUnit(width)
+    width <- validateCssUnit(width)
   }
 
-  height <- shiny::validateCssUnit(height)
+  height <- validateCssUnit(height)
   if(is.null(height)){
     if(grepl("^\\d", width) && !grepl("%$", width)){
       height <- sprintf("calc(%s * 9 / 16)", width)
@@ -218,7 +213,6 @@ amGaugeChart <- function(
       gridLines = gridLines,
       chartTitle = chartTitle,
       theme = theme,
-      tooltip = tooltip,
       backgroundColor = validateColor(backgroundColor),
       caption = caption,
       image = image,
@@ -231,11 +225,11 @@ amGaugeChart <- function(
   )
   # create widget
   htmlwidgets::createWidget(
-    name = 'amChart4',
+    name = "amChart4",
     reactR::reactMarkup(component),
     width = "auto",
     height = "auto",
-    package = 'rAmCharts4',
+    package = "rAmCharts4",
     elementId = elementId
   )
 }

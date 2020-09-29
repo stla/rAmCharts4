@@ -4845,7 +4845,6 @@ class AmGaugeChart extends React.PureComponent {
       scoreLabelFont = this.props.scoreLabelFont,
       hand = this.props.hand,
       gridLines = this.props.gridLines,
-      tooltips = this.props.tooltip,
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
@@ -4853,10 +4852,6 @@ class AmGaugeChart extends React.PureComponent {
       if(shinyId === undefined) {
         shinyId = $(document.getElementById(chartId)).parent().attr("id");
       }
-/*       Shiny.setInputValue(
-        shinyId + ":rAmCharts4.dataframe", dataCopy
-      );
- */    
     }
 
     switch(theme) {
@@ -4982,7 +4977,7 @@ class AmGaugeChart extends React.PureComponent {
     axis2.min = minScore;
     axis2.max = maxScore;
     axis2.strictMinMax = true;
-    axis2.renderer.labels.template.disabled = true; // ????????
+    axis2.renderer.labels.template.disabled = true; // ???????? strange
     axis2.renderer.ticks.template.disabled = true;
     if(gridLines) {
       axis2.renderer.grid.template.disabled = false;

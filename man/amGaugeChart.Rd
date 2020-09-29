@@ -23,7 +23,6 @@ amGaugeChart(
   gridLines = FALSE,
   chartTitle = NULL,
   theme = NULL,
-  tooltip = NULL,
   backgroundColor = NULL,
   caption = NULL,
   image = NULL,
@@ -35,7 +34,8 @@ amGaugeChart(
 )
 }
 \arguments{
-\item{score}{a number between \code{minScore} and \code{maxScore}}
+\item{score}{gauge value, a number between \code{minScore} and
+\code{maxScore}}
 
 \item{minScore}{minimal score}
 
@@ -92,14 +92,6 @@ and \code{align}, can be \code{"left"}, \code{"right"} or \code{"center"}}
 \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
 \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
 \code{"microchart"}}
-
-\item{tooltip}{settings of the tooltips; \code{NULL} for default,
-\code{FALSE} for no tooltip, otherwise a named list of the form
-\code{list(yvalue1 = settings1, yvalue2 = settings2, ...)} where
-\code{settings1}, \code{settings2}, ... are lists created with
-\code{\link{amTooltip}}; this can also be a
-single list of settings that will be applied to each series,
-or a just a string for the text to display in the tooltip}
 
 \item{backgroundColor}{a color for the chart background; it can be given by
 the name of a R color, the name of a CSS
