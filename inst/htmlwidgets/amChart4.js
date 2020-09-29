@@ -125021,11 +125021,7 @@ class AmGaugeChart extends React.PureComponent {
         score = this.props.score,
         minScore = this.props.minScore,
         maxScore = this.props.maxScore,
-        gradingData = HTMLWidgets.dataframeToD3(this.props.gradingData),
-        data = {
-      score: score,
-      gradingData: gradingData
-    },
+        gradingData = this.props.gradingData,
         tooltips = this.props.tooltip,
         chartId = this.props.chartId,
         shinyId = this.props.shinyId;
@@ -125079,8 +125075,25 @@ class AmGaugeChart extends React.PureComponent {
         break;
     }
 
-    var chart;
-    chart = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["create"](this.props.chartId, _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["GaugeChart"]);
+    var chart = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["create"](this.props.chartId, _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["GaugeChart"]);
+    var nparts = gradingData.title.length;
+
+    if (gradingData.color) {
+      for (var i = 0; i < nparts; i++) {
+        gradingData.color[i] = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](gradingData.color[i]);
+      }
+    } else {
+      gradingData.color = new Array(nparts);
+
+      for (var _i5 = 0; _i5 < nparts; _i5++) {
+        gradingData.color[_i5] = chart.colors.getIndex(_i5);
+      }
+    }
+
+    var data = {
+      score: score,
+      gradingData: HTMLWidgets.dataframeToD3(gradingData)
+    };
     chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
 
     chart.padding(50, 40, 0, 10);
@@ -125157,23 +125170,24 @@ class AmGaugeChart extends React.PureComponent {
     axis2.renderer.ticks.template.disabled = true;
     axis2.renderer.grid.template.disabled = false;
     axis2.renderer.grid.template.opacity = 0.5;
-    axis2.renderer.labels.template.bent = true;
-    axis2.renderer.labels.template.fill = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"]("#000");
+    axis2.renderer.labels.template.bent = true; //    axis2.renderer.labels.template.fill = am4core.color("#000");
+
     axis2.renderer.labels.template.fontWeight = "bold";
     axis2.renderer.labels.template.fillOpacity = 1;
     /* ~~~~\  ranges  /~~~~ */
 
     for (var grading of data.gradingData) {
       var range = axis2.axisRanges.create();
-      range.axisFill.fill = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](grading.color);
+      range.axisFill.fill = grading.color;
       range.axisFill.fillOpacity = 0.8;
       range.axisFill.zIndex = -1;
       range.value = grading.lowScore > minScore ? grading.lowScore : minScore;
       range.endValue = grading.highScore < maxScore ? grading.highScore : maxScore;
       range.grid.strokeOpacity = 0;
-      range.stroke = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](grading.color).lighten(-0.1);
+      range.stroke = grading.color.lighten(-0.1);
       range.label.inside = true;
       range.label.text = grading.title;
+      range.label.fill = grading.color.alternative;
       range.label.location = 0.5;
       range.label.radius = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](10);
       range.label.paddingBottom = -5; // ~half font size

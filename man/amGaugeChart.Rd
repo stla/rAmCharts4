@@ -29,8 +29,10 @@ amGaugeChart(
 
 \item{maxScore}{maximal score}
 
-\item{gradingData}{data for the gauge, a dataframe with four columns:
-\code{title}, \code{color}, \code{lowScore}, and \code{highScore}}
+\item{gradingData}{data for the gauge, a dataframe with three required
+columns: \code{title}, \code{lowScore}, and \code{highScore}, and an
+optional column \code{color}; if the column \code{color} is not present,
+then the colors will be derived from the theme}
 
 \item{chartTitle}{chart title, it can be \code{NULL} or \code{FALSE} for no
 title, a character string,
@@ -90,5 +92,16 @@ chart is displayed in Shiny, in which case the id is given by the Shiny id}
 Create a HTML widget displaying a gauge chart.
 }
 \examples{
-# iris data: petal widths ####
+library(rAmCharts4)
+
+gradingData <- data.frame(
+  title = c("Slow", "Moderate", "Fast"),
+  color = c("blue", "green", "red"),
+  lowScore = c(0, 100/3, 200/3),
+  highScore = c(100/3, 200/3, 100)
+)
+
+amGaugeChart(
+  score = 40, minScore = 0, maxScore = 100, gradingData = gradingData
+)
 }

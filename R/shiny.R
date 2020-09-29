@@ -125,7 +125,48 @@ renderAmChart4 <- function(expr, env = parent.frame(), quoted = FALSE) {
 #'
 #' @export
 #'
-#' @examples # ####
+#' @examples library(rAmCharts4)
+#' library(shiny)
+#'
+#' gradingData <- data.frame(
+#'   title = c("Slow", "Moderate", "Fast"),
+#'   lowScore = c(0, 100/3, 200/3),
+#'   highScore = c(100/3, 200/3, 100)
+#' )
+#'
+#'
+#' ui <- fluidPage(
+#'   sidebarLayout(
+#'     sidebarPanel(
+#'       sliderInput(
+#'         "slider", "Score", min = 0, max = 100, value = 30
+#'       )
+#'     ),
+#'     mainPanel(
+#'       amChart4Output("gauge", height = "500px")
+#'     )
+#'   )
+#' )
+#'
+#' server <- function(input, output, session){
+#'
+#'   output[["gauge"]] <- renderAmChart4({
+#'     amGaugeChart(
+#'       score = isolate(input[["slider"]]),
+#'       minScore = 0, maxScore = 100, gradingData = gradingData,
+#'       theme = "dataviz"
+#'     )
+#'   })
+#'
+#'   observeEvent(input[["slider"]], {
+#'     updateAmGaugeChart(session, "gauge", score = input[["slider"]])
+#'   })
+#'
+#' }
+#'
+#' if(interactive()){
+#'   shinyApp(ui, server)
+#' }
 updateAmGaugeChart <- function(session, outputId, score){
   stopifnot(is.numeric(score) && length(score) == 1L)
   session$sendCustomMessage(paste0(outputId, "gauge"), score)

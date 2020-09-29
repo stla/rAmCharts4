@@ -56,7 +56,18 @@
 #' @importFrom shiny validateCssUnit
 #' @export
 #'
-#' @examples # iris data: petal widths ####
+#' @examples library(rAmCharts4)
+#'
+#' gradingData <- data.frame(
+#'   title = c("Slow", "Moderate", "Fast"),
+#'   color = c("blue", "green", "red"),
+#'   lowScore = c(0, 100/3, 200/3),
+#'   highScore = c(100/3, 200/3, 100)
+#' )
+#'
+#' amGaugeChart(
+#'   score = 40, minScore = 0, maxScore = 100, gradingData = gradingData
+#' )
 amGaugeChart <- function(
   score,
   minScore,
