@@ -18,8 +18,9 @@ amGaugeChart(
   axisLabelsFont = amFont(fontSize = "1.2em"),
   scoreFont = amFont(fontSize = "6em"),
   scoreLabelFont = amFont(fontSize = "2em"),
-  hand = amHand(innerRadius = 55, width = 8, color = "slategray", strokeColor =
+  hand = amHand(innerRadius = 45, width = 8, color = "slategray", strokeColor =
     "black"),
+  gridLines = FALSE,
   chartTitle = NULL,
   theme = NULL,
   tooltip = NULL,
@@ -76,6 +77,10 @@ created with \code{\link{amFont}}}
 
 \item{hand}{a list of settings for the hand of the gauge created with
 \code{\link{amHand}}}
+
+\item{gridLines}{a list of settings for the grid lines created with
+\code{\link{amLine}}, or a logical value: \code{FALSE} for no grid lines,
+\code{TRUE} for default grid lines}
 
 \item{chartTitle}{chart title, it can be \code{NULL} or \code{FALSE} for no
 title, a character string,

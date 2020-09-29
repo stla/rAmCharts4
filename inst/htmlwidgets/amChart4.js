@@ -125969,6 +125969,8 @@ class AmGaugeChart extends React.PureComponent {
         axisLabelsFont = this.props.axisLabelsFont,
         scoreFont = this.props.scoreFont,
         scoreLabelFont = this.props.scoreLabelFont,
+        hand = this.props.hand,
+        gridLines = this.props.gridLines,
         tooltips = this.props.tooltip,
         chartId = this.props.chartId,
         shinyId = this.props.shinyId;
@@ -126113,10 +126115,21 @@ class AmGaugeChart extends React.PureComponent {
     axis2.min = minScore;
     axis2.max = maxScore;
     axis2.strictMinMax = true;
-    axis2.renderer.labels.template.disabled = true;
+    axis2.renderer.labels.template.disabled = true; // ????????
+
     axis2.renderer.ticks.template.disabled = true;
-    axis2.renderer.grid.template.disabled = false;
-    axis2.renderer.grid.template.opacity = 0.5;
+
+    if (gridLines) {
+      axis2.renderer.grid.template.disabled = false;
+      axis2.renderer.grid.template.stroke = gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
+      axis2.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.6;
+      axis2.renderer.grid.template.strokeWidth = gridLines.width || 1;
+      axis2.renderer.grid.template.strokeDasharray = gridLines.dash || "3,3";
+    } else {
+      axis2.renderer.grid.template.disabled = true;
+    } //    axis2.renderer.grid.template.opacity = 0.5;
+
+
     axis2.renderer.labels.template.bent = true; //    axis2.renderer.labels.template.fill = am4core.color("#000");
 
     axis2.renderer.labels.template.fontSize = labelsFont.fontSize;
@@ -126173,17 +126186,18 @@ class AmGaugeChart extends React.PureComponent {
     label2.fill = matchingGrade.color;
     /* ~~~~\  hand  /~~~~ */
 
-    var hand = chart.hands.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ClockHand"]());
-    hand.axis = axis2;
-    hand.innerRadius = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](55);
-    hand.startWidth = 8;
-    hand.pin.disabled = true;
-    hand.value = data.score;
-    hand.fill = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"]("#444");
-    hand.stroke = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"]("#000");
-    hand.events.on("positionchanged", function () {
-      label.text = axis2.positionToValue(hand.currentPosition).toFixed(scorePrecision);
-      var value = axis.positionToValue(hand.currentPosition);
+    var clockHand = chart.hands.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ClockHand"]());
+    clockHand.axis = axis2;
+    clockHand.innerRadius = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](hand.innerRadius);
+    clockHand.startWidth = hand.width;
+    clockHand.pin.disabled = true;
+    clockHand.value = data.score;
+    clockHand.fill = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](hand.color);
+    clockHand.stroke = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](hand.strokeColor);
+    clockHand.events.on("positionchanged", function () {
+      var position = clockHand.currentPosition;
+      label.text = axis2.positionToValue(position).toFixed(scorePrecision);
+      var value = axis.positionToValue(position);
       var matchingGrade = lookUpGrade(value, data.gradingData);
       label2.text = matchingGrade.label;
       label2.fill = matchingGrade.color;
@@ -126193,7 +126207,7 @@ class AmGaugeChart extends React.PureComponent {
 
     if (window.Shiny) {
       Shiny.addCustomMessageHandler(shinyId + "gauge", function (score) {
-        hand.showValue(score, 1000, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["ease"].cubicOut);
+        clockHand.showValue(score, 1000, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["ease"].cubicOut);
       });
     }
 

@@ -30,6 +30,9 @@
 #'   created with \code{\link{amFont}}
 #' @param hand a list of settings for the hand of the gauge created with
 #'   \code{\link{amHand}}
+#' @param gridLines a list of settings for the grid lines created with
+#'   \code{\link{amLine}}, or a logical value: \code{FALSE} for no grid lines,
+#'   \code{TRUE} for default grid lines
 #' @param chartTitle chart title, it can be \code{NULL} or \code{FALSE} for no
 #'   title, a character string,
 #'   a list of settings created with \code{\link{amText}}, or a list with two
@@ -107,6 +110,7 @@ amGaugeChart <- function(
   hand = amHand(
     innerRadius = 45, width = 8, color = "slategray", strokeColor = "black"
   ),
+  gridLines = FALSE,
   chartTitle = NULL,
   theme = NULL,
   tooltip = NULL, # default
@@ -211,6 +215,7 @@ amGaugeChart <- function(
       scoreFont = scoreFont,
       scoreLabelFont = scoreLabelFont,
       hand = hand,
+      gridLines = gridLines,
       chartTitle = chartTitle,
       theme = theme,
       tooltip = tooltip,
