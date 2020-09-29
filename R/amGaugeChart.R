@@ -14,12 +14,12 @@
 #' @param labelsRadius radius for the labels given as a percentage; use the
 #'   default value to get centered labels
 #' @param axisLabelsRadius radius for the axis labels given as a percentage
-#' @param chartFontSize reference font size, either a valid CSS measurement,
-#'   like \code{"12px"}, or a numeric value, the font size in pixels; this
-#'   font size has an effect only if you use the relative CSS unit \code{em}
-#'   for other font sizes
+#' @param chartFontSize reference font size, a numeric value, the font size in
+#'   pixels; this font size has an effect only if you use the relative CSS unit
+#'   \code{em} for other font sizes
 #' @param labelsFont a list of settings for the font of the labels created with
-#'   \code{\link{amFont}}
+#'   \code{\link{amFont}}, but the font size must be given in pixels or in
+#'   \code{em} CSS units (no other units are accepted)
 #' @param axisLabelsFont a list of settings for the font of the axis labels
 #'   created with \code{\link{amFont}}
 #' @param scoreFont a list of settings for the font of the score created with
@@ -93,10 +93,10 @@ amGaugeChart <- function(
   gradingData,
   innerRadius = 70,
   labelsRadius = (100-innerRadius)/2,
-  axisLabelsRadius = 18,
-  chartFontSize = "11px",
-  labelsFont = amFont(fontSize = "0.9em", fontWeight = "bold"),
-  axisLabelsFont = amFont(fontSize = "0.9em"),
+  axisLabelsRadius = 19,
+  chartFontSize = 11,
+  labelsFont = amFont(fontSize = "2em", fontWeight = "bold"),
+  axisLabelsFont = amFont(fontSize = "1.2em"),
   scoreFont = amFont(fontSize = "6em"),
   scoreLabelFont = amFont(fontSize = "2em"),
   chartTitle = NULL,
@@ -121,6 +121,11 @@ amGaugeChart <- function(
   if("color" %in% names(gradingData)){
     gradingData[["color"]] <-
       vapply(gradingData[["color"]], validateColor, FUN.VALUE = character(1L))
+  }
+
+  stopifnot(is.numeric(chartFontSize) && chartFontSize > 0)
+  if(!grepl("(px$|em$)", labelsFont[["fontSize"]])){
+    stop("Invalid `labelsFont` argument.")
   }
 
   if(is.character(chartTitle)){
@@ -189,7 +194,7 @@ amGaugeChart <- function(
       innerRadius = innerRadius,
       labelsRadius = max(min(labelsRadius, 100), 0),
       axisLabelsRadius = max(min(axisLabelsRadius, 100), 0),
-      chartFontSize = validateCssUnit(chartFontSize),
+      chartFontSize = chartFontSize,
       labelsFont = labelsFont,
       axisLabelsFont = axisLabelsFont,
       scoreFont = scoreFont,

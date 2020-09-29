@@ -549,3 +549,15 @@ export const makeButton = function(Button, settings) {
   Button.align = "right";
   Button.marginRight = settings.marginRight;
 };
+
+export const fontSizeToPixels = function(referenceFontSize, fontSize) {
+  // referenceFontSize: number (pixels)
+  // fontSize: string (size in px or em)
+  let value = parseFloat(fontSize);
+  let unit = fontSize.split(value)[1];
+  if(unit === "px") {
+    return value;
+  } else {
+    return referenceFontSize * value;
+  }
+};

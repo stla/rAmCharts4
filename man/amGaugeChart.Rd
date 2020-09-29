@@ -11,10 +11,10 @@ amGaugeChart(
   gradingData,
   innerRadius = 70,
   labelsRadius = (100 - innerRadius)/2,
-  axisLabelsRadius = 18,
-  chartFontSize = "11px",
-  labelsFont = amFont(fontSize = "0.9em", fontWeight = "bold"),
-  axisLabelsFont = amFont(fontSize = "0.9em"),
+  axisLabelsRadius = 19,
+  chartFontSize = 11,
+  labelsFont = amFont(fontSize = "2em", fontWeight = "bold"),
+  axisLabelsFont = amFont(fontSize = "1.2em"),
   scoreFont = amFont(fontSize = "6em"),
   scoreLabelFont = amFont(fontSize = "2em"),
   chartTitle = NULL,
@@ -51,13 +51,13 @@ default value to get centered labels}
 
 \item{axisLabelsRadius}{radius for the axis labels given as a percentage}
 
-\item{chartFontSize}{reference font size, either a valid CSS measurement,
-like \code{"12px"}, or a numeric value, the font size in pixels; this
-font size has an effect only if you use the relative CSS unit \code{em}
-for other font sizes}
+\item{chartFontSize}{reference font size, a numeric value, the font size in
+pixels; this font size has an effect only if you use the relative CSS unit
+\code{em} for other font sizes}
 
 \item{labelsFont}{a list of settings for the font of the labels created with
-\code{\link{amFont}}}
+\code{\link{amFont}}, but the font size must be given in pixels or in
+\code{em} CSS units (no other units are accepted)}
 
 \item{axisLabelsFont}{a list of settings for the font of the axis labels
 created with \code{\link{amFont}}}

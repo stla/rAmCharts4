@@ -5007,8 +5007,9 @@ class AmGaugeChart extends React.PureComponent {
       range.label.fill = grading.color.alternative;
       range.label.location = 0.5;
       range.label.radius = am4core.percent(labelsRadius); 
-      range.label.paddingBottom = -5; // ~half font size
-//      range.label.fontSize = labelsFont.fontSize;
+      range.label.paddingBottom = 
+        -utils.fontSizeToPixels(chartFontSize, labelsFont.fontSize) / 2; 
+//    range.label.fontSize = labelsFont.fontSize;
     }
     
     let matchingGrade = lookUpGrade(data.score, data.gradingData);
