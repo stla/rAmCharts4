@@ -131,6 +131,10 @@ chart is displayed in Shiny, in which case the id is given by the Shiny id}
 \description{
 Create a HTML widget displaying a gauge chart.
 }
+\note{
+In Shiny, you can change the score of a gauge chart with the help of
+  \code{\link{updateAmGaugeChart}}.
+}
 \examples{
 library(rAmCharts4)
 

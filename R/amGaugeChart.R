@@ -71,6 +71,9 @@
 #' @param elementId a HTML id for the container of the chart; ignored if the
 #'   chart is displayed in Shiny, in which case the id is given by the Shiny id
 #'
+#' @note In Shiny, you can change the score of a gauge chart with the help of
+#'   \code{\link{updateAmGaugeChart}}.
+#'
 #' @import htmlwidgets
 #' @importFrom htmltools validateCssUnit
 #' @export
