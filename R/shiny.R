@@ -123,7 +123,8 @@ renderAmChart4 <- function(expr, env = parent.frame(), quoted = FALSE) {
 #' @param outputId the output id passed on to \code{\link{amChart4Output}}
 #' @param data new data; if it is not valid, then nothing will happen (in order
 #'   to be valid it must have the same structure as the data passed on to
-#'   \code{\link{amBarChart}})
+#'   \code{\link{amBarChart}}); in this case check the JavaScript console, it
+#'   will report the encountered issue
 #'
 #' @export
 #'

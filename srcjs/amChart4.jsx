@@ -224,25 +224,40 @@ class AmBarChart extends React.PureComponent {
       Shiny.addCustomMessageHandler(
         shinyId + "bar",
         function(newdata) {
-          if(!am4core.isObject(newdata)) {
+          /*if(!am4core.isObject(newdata)) { useless, there's a check in R
             return null;
-          }
+          }*/
+          let tail = " is missing in the data you supplied!";
+          // check that the received data has the 'category' column
           if(!newdata.hasOwnProperty(category)){
+            console.warn(
+              `updateAmBarChart: column "${category}"` + tail
+            );
             return null;
           } 
           // check that the received data has the necessary categories
           let ok = true, i = 0;
           while(ok && i < categories.length) {
             ok = newdata[category].indexOf(categories[i]) > -1;
+            if(!ok) {
+              console.warn(
+                `updateAmBarChart: category "${categories[i]}"` + tail
+              );
+            }
             i++;
           }
           if(!ok) {
             return null;
           }
-          // check that the received data has the necessary values
+          // check that the received data has the necessary 'values' columns
           i = 0;
           while(ok && i < values.length) {
             ok = newdata.hasOwnProperty(values[i]);
+            if(!ok) {
+              console.warn(
+                `updateAmBarChart: column "${values[i]}"` + tail
+              );  
+            }
             i++;
           }
           if(!ok) {
