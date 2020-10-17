@@ -1,6 +1,6 @@
 # rAmCharts4 1.0.0.9000 (2020-10-xx)
 
-* New function `updateAmBarChart`
+* New function `updateAmBarChart`, to update the data of a bar chart in Shiny.
 
 
 # rAmCharts4 1.0.0 (2020-10-01)
