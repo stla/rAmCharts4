@@ -116,6 +116,82 @@ renderAmChart4 <- function(expr, env = parent.frame(), quoted = FALSE) {
 }
 
 
+#' Update the data of a bar chart
+#' @description Update the data of a bar chart in a Shiny app
+#'
+#' @param session the Shiny \code{session} object
+#' @param outputId the output id passed on to \code{\link{amChart4Output}}
+#' @param data new data; if it is not valid, then nothing will happen (in order
+#'   to be valid it must have the same structure as the data passed on to
+#'   \code{\link{amBarChart}})
+#'
+#' @export
+#'
+#' @examples library(rAmCharts4)
+#' library(shiny)
+#'
+#' ui <- fluidPage(
+#'   br(),
+#'   actionButton("update", "Update", class = "btn-primary"),
+#'   br(), br(),
+#'   amChart4Output("barchart", width = "650px", height = "470px")
+#' )
+#'
+#' server <- function(input, output, session){
+#'
+#'   set.seed(666)
+#'   dat <- data.frame(
+#'     country = c("USA", "China", "Japan", "Germany", "UK", "France"),
+#'     visits = c(3025, 1882, 1809, 1322, 1122, 1114),
+#'     income = rpois(6, 25),
+#'     expenses = rpois(6, 20)
+#'   )
+#'   newdat <- data.frame(
+#'     country = c("USA", "China", "Japan", "Germany", "UK", "France"),
+#'     income = rpois(6, 25),
+#'     expenses = rpois(6, 20)
+#'   )
+#'
+#'   output[["barchart"]] <- renderAmChart4({
+#'     amBarChart(
+#'       data = dat,
+#'       category = "country",
+#'       values = c("income", "expenses"),
+#'       valueNames = list(income = "Income", expenses = "Expenses"),
+#'       draggable = TRUE,
+#'       backgroundColor = "#30303d",
+#'       columnStyle = list(
+#'         income = amColumn(
+#'           color = "darkmagenta", strokeColor = "#cccccc", strokeWidth = 2
+#'         ),
+#'         expenses = amColumn(
+#'           color = "darkred", strokeColor = "#cccccc", strokeWidth = 2
+#'         )
+#'       ),
+#'       chartTitle = list(text = "Income and expenses per country"),
+#'       xAxis = "Country",
+#'       yAxis = "Income and expenses",
+#'       yLimits = c(0, 41),
+#'       valueFormatter = "#.#",
+#'       caption = "Year 2018",
+#'       theme = "dark")
+#'   })
+#'
+#'   observeEvent(input[["update"]], {
+#'     updateAmBarChart(session, "barchart", newdat)
+#'   })
+#'
+#' }
+#'
+#' if(interactive()){
+#'   shinyApp(ui, server)
+#' }
+updateAmBarChart <- function(session, outputId, data){
+  stopifnot(is.data.frame(data))
+  session$sendCustomMessage(paste0(outputId, "bar"), data)
+}
+
+
 #' Update the score of a gauge chart
 #' @description Update the score of a gauge chart in a Shiny app
 #'

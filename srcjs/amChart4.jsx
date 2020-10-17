@@ -43,6 +43,7 @@ class AmBarChart extends React.PureComponent {
       threeD = this.props.threeD, 
       chartLegend = this.props.legend,
       category = this.props.category,
+      categories = this.props.data[category],
       values = this.props.values,
       minValue = this.props.minValue,
       maxValue = this.props.maxValue,
@@ -216,6 +217,52 @@ class AmBarChart extends React.PureComponent {
         }
       });
 		}
+
+
+    /* ~~~~\  Shiny message handler for bar chart  /~~~~ */
+    if(window.Shiny) {
+      Shiny.addCustomMessageHandler(
+        shinyId + "bar",
+        function(newdata) {
+          if(!am4core.isObject(newdata)) {
+            return null;
+          }
+          if(!newdata.hasOwnProperty(category)){
+            return null;
+          } 
+          // check that the received data has the necessary categories
+          let ok = true, i = 0;
+          while(ok && i < categories.length) {
+            ok = newdata[category].indexOf(categories[i]) > -1;
+            i++;
+          }
+          if(!ok) {
+            return null;
+          }
+          // check that the received data has the necessary values
+          i = 0;
+          while(ok && i < values.length) {
+            ok = newdata.hasOwnProperty(values[i]);
+            i++;
+          }
+          if(!ok) {
+            return null;
+          }
+          // update chart data
+          let tnewdata = HTMLWidgets.dataframeToD3(newdata);
+          for (let r = 0; r < data.length; ++r){
+            for (let v = 0; v < values.length; ++v) {
+              chart.data[r][values[v]] = tnewdata[r][values[v]];
+            }
+          }
+          chart.invalidateRawData();
+          Shiny.setInputValue(
+            shinyId + ":rAmCharts4.dataframe", tnewdata
+          );
+          Shiny.setInputValue(shinyId + "_change", null);
+        }
+      );
+    }
 
 
 		/* ~~~~\  category axis  /~~~~ */
