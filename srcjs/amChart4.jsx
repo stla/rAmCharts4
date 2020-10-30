@@ -4245,6 +4245,7 @@ class AmDumbbellChart extends React.PureComponent {
     categoryAxis.cursorTooltipEnabled = false; 
 */
 
+
 		/* ~~~~\  value axis  /~~~~ */
     let valueAxis = utils.createAxis(
       "Y", am4charts, am4core, chart, yAxis, 
@@ -5284,11 +5285,383 @@ class AmGaugeChart extends React.PureComponent {
 
 
 
+/* COMPONENT: VERTICAL STACKED BAR CHART */
+
+class AmStackedBarChart extends React.PureComponent {
+
+  constructor(props) {
+    super(props);
+    this.style = this.style.bind(this);
+  }
+
+  style() {
+    if(window.Shiny && !window.FlexDashboard) {
+      return {width: "100%", height: "100%"};
+    } else {
+      return {width: this.props.width, height: this.props.height};
+    }
+  }
+
+  componentDidMount() {
+
+    let theme = this.props.theme,
+      threeD = this.props.threeD, 
+      chartLegend = this.props.legend,
+      category = this.props.category,
+      categories = this.props.data[category],
+      Series = this.props.series,
+      minValue = this.props.minValue,
+      maxValue = this.props.maxValue,
+      data = HTMLWidgets.dataframeToD3(
+        this.props.data
+      ),
+      dataCopy = HTMLWidgets.dataframeToD3(
+        utils.subset(this.props.data, [category].concat(Series))
+      ),
+      data2 = this.props.data2 ?
+        HTMLWidgets.dataframeToD3(utils.subset(this.props.data2, Series)) :
+        null,
+      SeriesNames = this.props.seriesNames,
+      cellWidth = this.props.cellWidth,
+      columnWidth = this.props.columnWidth,
+      xAxis = this.props.xAxis,
+      yAxis = this.props.yAxis,
+      tooltips = this.props.tooltip,
+      valueFormatter = this.props.valueFormatter,
+      cursor = this.props.cursor,
+      chartId = this.props.chartId,
+      shinyId = this.props.shinyId;
+
+    if(window.Shiny) {
+      if(shinyId === undefined) {
+        shinyId = $(document.getElementById(chartId)).parent().attr("id");
+      }
+      Shiny.setInputValue(
+        shinyId + ":rAmCharts4.dataframe", dataCopy
+      );
+    }
+
+    switch(theme) {
+      case "dark":
+        am4core.useTheme(am4themes_dark);
+        break;
+      case "dataviz":
+        am4core.useTheme(am4themes_dataviz);
+        break;
+      case "frozen":
+        am4core.useTheme(am4themes_frozen);
+        break;
+      case "kelly":
+        am4core.useTheme(am4themes_kelly);
+        break;
+      case "material":
+        am4core.useTheme(am4themes_material);
+        break;
+      case "microchart":
+        am4core.useTheme(am4themes_microchart);
+        break;
+      case "moonrisekingdom":
+        am4core.useTheme(am4themes_moonrisekingdom);
+        break;
+      case "patterns":
+        am4core.useTheme(am4themes_patterns);
+        break;
+      case "spiritedaway":
+        am4core.useTheme(am4themes_spiritedaway);
+        break;
+    }
+
+    let chart;
+    if(threeD) {
+      chart = am4core.create(this.props.chartId, am4charts.XYChart3D);
+    } else {
+      chart = am4core.create(this.props.chartId, am4charts.XYChart);
+    }
+
+    chart.data = data;
+
+    chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
+    chart.padding(50, 40, 0, 10);
+    let chartBackgroundColor =
+      this.props.backgroundColor || chart.background.fill;
+    chart.background.fill = chartBackgroundColor;
+
+
+    /* ~~~~\  Enable export  /~~~~ */
+    if(this.props.export) {
+      chart.exporting.menu = new am4core.ExportMenu();
+      chart.exporting.menu.items = utils.exportMenuItems;
+    }
+
+
+		/* ~~~~\  title  /~~~~ */
+		let chartTitle = this.props.chartTitle;
+		if(chartTitle) {
+      let title = chart.titles.create();
+			title.text = chartTitle.text.text;
+			title.fill =
+			  chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+			title.fontSize = chartTitle.text.fontSize || 22;
+			title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.fontFamily = chartTitle.text.fontFamily;
+      title.align = chartTitle.align || "left";
+      title.dy = -30;
+		}
+
+
+    /* ~~~~\  caption  /~~~~ */
+    let chartCaption = this.props.caption;
+    if(chartCaption) {
+      let caption = chart.chartContainer.createChild(am4core.Label);
+      caption.text = chartCaption.text.text;
+      caption.fill =
+        chartCaption.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.fontSize = chartCaption.text.fontSize;
+      caption.fontWeight = chartCaption.text.fontWeight;
+      caption.fontFamily = chartCaption.text.fontFamily;
+      caption.align = chartCaption.align || "right";
+    }
+
+
+    /* ~~~~\  image  /~~~~ */
+    if(this.props.image) {
+      utils.Image(am4core, chart, this.props.image);
+    }
+
+
+    /* ~~~~\  scrollbars  /~~~~ */
+    if(this.props.scrollbarX) {
+      chart.scrollbarX = new am4core.Scrollbar();
+    }
+    if(this.props.scrollbarY) {
+      chart.scrollbarY = new am4core.Scrollbar();
+    }
+
+
+		/* ~~~~\  button  /~~~~ */
+		if(this.props.button) {
+      let Button = chart.chartContainer.createChild(am4core.Button);
+      utils.makeButton(Button, this.props.button);
+      Button.events.on("hit", function() {
+        for (let r = 0; r < data.length; ++r){
+          for (let v = 0; v < Series.length; ++v) {
+            chart.data[r][Series[v]] = data2[r][Series[v]];
+          }
+        }
+        chart.invalidateRawData();
+        if(window.Shiny) {
+          Shiny.setInputValue(
+            shinyId + ":rAmCharts4.dataframe", chart.data
+          );
+          Shiny.setInputValue(shinyId + "_change", null);
+        }
+      });
+		}
+
+
+    /* ~~~~\  Shiny message handler for stacked bar chart  /~~~~ */
+    if(window.Shiny) {
+      Shiny.addCustomMessageHandler(
+        shinyId + "bar",
+        function(newdata) {
+          let tail = " is missing in the data you supplied!";
+          // check that the received data has the 'category' column
+          if(!newdata.hasOwnProperty(category)){
+            console.warn(
+              `updateAmBarChart: column "${category}"` + tail
+            );
+            return null;
+          } 
+          // check that the received data has the necessary categories
+          let ok = true, i = 0;
+          while(ok && i < categories.length) {
+            ok = newdata[category].indexOf(categories[i]) > -1;
+            if(!ok) {
+              console.warn(
+                `updateAmBarChart: category "${categories[i]}"` + tail
+              );
+            }
+            i++;
+          }
+          if(!ok) {
+            return null;
+          }
+          // check that the received data has the necessary 'Series' columns
+          i = 0;
+          while(ok && i < Series.length) {
+            ok = newdata.hasOwnProperty(Series[i]);
+            if(!ok) {
+              console.warn(
+                `updateAmBarChart: column "${Series[i]}"` + tail
+              );  
+            }
+            i++;
+          }
+          if(!ok) {
+            return null;
+          }
+          // update chart data
+          let tnewdata = HTMLWidgets.dataframeToD3(newdata);
+          for (let r = 0; r < data.length; ++r){
+            for (let v = 0; v < Series.length; ++v) {
+              chart.data[r][Series[v]] = tnewdata[r][Series[v]];
+            }
+          }
+          chart.invalidateRawData();
+          Shiny.setInputValue(
+            shinyId + ":rAmCharts4.dataframe", tnewdata
+          );
+          Shiny.setInputValue(shinyId + "_change", null);
+        }
+      );
+    }
+
+
+		/* ~~~~\  category axis  /~~~~ */
+    let categoryAxis = utils.createCategoryAxis(
+      "X", am4charts, chart, category, xAxis, 80, theme
+    );
+
+    
+		/* ~~~~\  value axis  /~~~~ */
+    let valueAxis = utils.createAxis(
+      "Y", am4charts, am4core, chart, yAxis, 
+      minValue, maxValue, false, theme, cursor
+    );
+
+
+		/* ~~~~\ cursor /~~~~ */
+		if(cursor) {
+      chart.cursor = new am4charts.XYCursor();
+      chart.cursor.yAxis = valueAxis;
+      chart.cursor.lineX.disabled = true;
+    }
+
+
+    /* ~~~~\  legend  /~~~~ */
+    if(chartLegend) {
+      chart.legend = new am4charts.Legend();
+      chart.legend.position = chartLegend.position || "bottom";
+      chart.legend.useDefaultMarker = false;
+      let markerTemplate = chart.legend.markers.template;
+      markerTemplate.width = chartLegend.itemsWidth || 20;
+      markerTemplate.height = chartLegend.itemsHeight || 20;
+      // markerTemplate.strokeWidth = 1;
+      // markerTemplate.strokeOpacity = 1;
+      chart.legend.itemContainers.template.events.on("over", function(ev) {
+        ev.target.dataItem.dataContext.columns.each(function(x) {
+          x.column.isHover = true;
+        })
+      });
+      chart.legend.itemContainers.template.events.on("out", function(ev) {
+        ev.target.dataItem.dataContext.columns.each(function(x) {
+          x.column.isHover = false;
+        })
+      });
+    }
+
+
+		Series.forEach(function(Serie, index){
+
+      let series;
+      if(threeD) {
+        series = chart.series.push(new am4charts.ColumnSeries3D());
+      } else {
+        series = chart.series.push(new am4charts.ColumnSeries());
+      }
+      series.dataFields.categoryX = category;
+      series.dataFields.valueY = Serie;
+      series.name = SeriesNames[Serie];
+      series.sequencedInterpolation = true;
+      series.defaultState.interpolationDuration = 1500;
+
+
+
+      /* ~~~~\  column template  /~~~~ */
+      let columnTemplate = series.columns.template;
+      columnTemplate.width = am4core.percent(columnWidth);
+      /* ~~~~\  tooltip  /~~~~ */
+      if(tooltips) {
+        columnTemplate.tooltipText = tooltips[value].text;
+        let tooltip = utils.Tooltip(am4core, chart, index, tooltips[Serie]);
+        tooltip.pointerOrientation = "vertical";
+        tooltip.dy = 0;
+        tooltip.adapter.add("rotation", (x, target) => {
+          if(target.dataItem) {
+            if(target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip.label.adapter.add("verticalCenter", (x, target) => {
+          if(target.dataItem) {
+            if(target.dataItem.valueY >= 0) {
+              return "none";
+            } else {
+              return "bottom";
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip.label.adapter.add("rotation", (x, target) => {
+          if(target.dataItem) {
+            if(target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        columnTemplate.tooltip = tooltip;
+        columnTemplate.adapter.add("tooltipY", (x, target) => {
+          if(target.dataItem.valueY > 0) {
+            return 0;
+          } else {
+            return -valueAxis.valueToPoint(maxValue - target.dataItem.valueY).y;
+          }
+        });
+      }
+      // columns hover state
+      let columnHoverState = columnTemplate.column.states.create("hover");
+      // you can change any property on hover state and it will be animated
+      columnHoverState.properties.fillOpacity = 1;
+    });
+
+    this.chart = chart;
+
+  }
+
+  componentWillUnmount() {
+    if (this.chart) {
+      this.chart.dispose();
+    }
+  }
+
+  render() {
+    return (
+      <div
+        id = {this.props.chartId}
+        style = {this.style()}
+      ></div>
+    );
+  }
+}
+
+
+
+
 /* CREATE WIDGETS */
 
 reactWidget(
-  'amChart4',
-  'output',
+  "amChart4",
+  "output",
   {
     AmBarChart: AmBarChart,
     AmHorizontalBarChart: AmHorizontalBarChart,
@@ -5298,7 +5671,8 @@ reactWidget(
     AmRadialBarChart: AmRadialBarChart,
     AmDumbbellChart: AmDumbbellChart,
     AmHorizontalDumbbellChart: AmHorizontalDumbbellChart,
-    AmGaugeChart: AmGaugeChart
+    AmGaugeChart: AmGaugeChart,
+    AmStackedBarChart: AmStackedBarChart
   },
   {}
 );
