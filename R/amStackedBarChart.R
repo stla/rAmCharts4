@@ -4,17 +4,19 @@
 #' @param data a dataframe
 #' @param data2 \code{NULL} or a dataframe used to update the data with the
 #'   button; its column names must include the column names of \code{data}
-#'   given in \code{values}, it must have the same number of rows as
+#'   given in \code{series}, it must have the same number of rows as
 #'   \code{data} and its rows must be in the same order as those of \code{data}
 #' @param category name of the column of \code{data} to be used on the
 #'   category axis
-#' @param series names of the columns of \code{data} to be used on the
-#'   value axis
-#' @param seriesNames names of the series variables, to appear in the legend;
-#'   \code{NULL} to use \code{series} as names, otherwise a named list of the
+#' @param stacks a list of stacks; a stack is a character vector of the form
+#'   \code{c("series3", "series1", "series2")}, and the first element of a
+#'   stack corresponds to the bottom of the column
+#' @param seriesNames names of the series variables (the variables which appear
+#'   in the stacks), to appear in the legend; \code{NULL} to use the variables
+#'   given in \code{stacks} as names, otherwise a named list of the
 #'   form \code{list(series1 = "SeriesName1", series2 = "SeriesName2", ...)}
 #'   where \code{series1}, \code{series2}, ... are the column names given in
-#'   \code{series} and \code{"SeriesName1"}, \code{"SeriesName2"}, ... are the
+#'   \code{stacks} and \code{"SeriesName1"}, \code{"SeriesName2"}, ... are the
 #'   desired names to appear in the legend; these names can also appear in
 #'   the tooltips: XXXXXXXXXXX they are substituted to the string \code{{name}} in
 #'   the formatting string passed on to the tooltip (see the second example)
@@ -42,7 +44,7 @@
 #'   \code{"microchart"}
 #' @param tooltip settings of the tooltips; \code{NULL} for default,
 #'   \code{FALSE} for no tooltip, otherwise a named list of the form
-#'   \code{list(value1 = settings1, value2 = settings2, ...)} where
+#'   \code{list(series1 = settings1, series2 = settings2, ...)} where
 #'   \code{settings1}, \code{settings2}, ... are lists created with
 #'   \code{\link{amTooltip}}; this can also be a
 #'   single list of settings that will be applied to each series,
@@ -122,6 +124,7 @@
 #' @import htmlwidgets
 #' @importFrom shiny validateCssUnit
 #' @importFrom reactR component reactMarkup
+#' @importFrom stats setNames
 #' @export
 #'
 #' @examples # xxx ####
@@ -158,25 +161,39 @@ amStackedBarChart <- function(
   elementId = NULL
 ) {
 
+  series <- do.call(append, stacks)
+
+  stacks <- setNames(as.list(
+    t(do.call(append, lapply(lengths(stacks), function(stacklength){
+      out <- rep(FALSE, stacklength)
+      out[1L] <- TRUE
+      out
+    })))
+  ), series)
+
   if(!all(series %in% names(data))){
     stop("Invalid `series` argument.", call. = TRUE)
   }
 
-  if(is.null(valueNames)){
-    valueNames <- setNames(as.list(values), values)
-  }else if(is.list(valueNames) || is.character(valueNames)){
-    if(is.null(names(valueNames)) && length(valueNames) == length(values)){
+  if(!(category %in% names(data))){
+    stop("Invalid `category` argument: not found in data.", call. = TRUE)
+  }
+
+  if(is.null(seriesNames)){
+    seriesNames <- setNames(as.list(series), series)
+  }else if(is.list(seriesNames) || is.character(seriesNames)){
+    if(is.null(names(seriesNames)) && length(seriesNames) == length(series)){
       warning(sprintf(
-        "The `valueNames` %s you provided is unnamed - setting automatic names",
-        ifelse(is.list(valueNames), "list", "vector")
+        "The `seriesNames` %s you provided is unnamed - setting automatic names",
+        ifelse(is.list(seriesNames), "list", "vector")
       ))
-      valueNames <- setNames(as.list(valueNames), values)
-    }else if(!all(values %in% names(valueNames))){
+      seriesNames <- setNames(as.list(seriesNames), series)
+    }else if(!all(series %in% names(seriesNames))){
       stop(
         paste0(
-          "Invalid `valueNames` argument. ",
+          "Invalid `seriesNames` argument. ",
           "It must be a named list associating a name to every column ",
-          "given in the `values` argument."
+          "given in the `series` argument."
         ),
         call. = TRUE
       )
@@ -184,9 +201,9 @@ amStackedBarChart <- function(
   }else{
     stop(
       paste0(
-        "Invalid `valueNames` argument. ",
+        "Invalid `seriesNames` argument. ",
         "It must be a named list giving a name for every column ",
-        "given in the `values` argument."
+        "given in the `series` argument."
       ),
       call. = TRUE
     )
@@ -195,12 +212,12 @@ amStackedBarChart <- function(
   if(!is.null(data2) &&
      (!is.data.frame(data2) ||
       nrow(data2) != nrow(data) ||
-      !all(values %in% names(data2)))){
+      !all(series %in% names(data2)))){
     stop("Invalid `data2` argument.", call. = TRUE)
   }
 
   if(is.null(yLimits)){
-    yLimits <- range(pretty(do.call(c, data[values])))
+    yLimits <- range(pretty(do.call(c, data[series])))
     pad <- diff(yLimits) * expandY/100
     yLimits <- yLimits + c(-pad, pad)
   }
@@ -237,15 +254,15 @@ amStackedBarChart <- function(
               text = tooltipText,
               auto = FALSE
             )
-          ), length(values)),
-          values
+          ), length(series)),
+          series
         )
     }else if("tooltip" %in% class(tooltip)){
       if(tooltip[["text"]] == "_missing")
         tooltip[["text"]] <- tooltipText
-      tooltip <- setNames(rep(list(tooltip), length(values)), values)
+      tooltip <- setNames(rep(list(tooltip), length(series)), series)
     }else if(is.list(tooltip)){
-      if(any(!values %in% names(tooltip))){
+      if(any(!series %in% names(tooltip))){
         stop("Invalid `tooltip` list.", call. = TRUE)
       }
       tooltip <- lapply(tooltip, function(settings){
@@ -256,8 +273,8 @@ amStackedBarChart <- function(
     }else if(is.character(tooltip)){
       tooltip <-
         setNames(
-          rep(list(amTooltip(text = tooltip, auto = FALSE)), length(values)),
-          values
+          rep(list(amTooltip(text = tooltip, auto = FALSE)), length(series)),
+          series
         )
     }else{
       stop("Invalid `tooltip` argument.", call. = TRUE)
@@ -271,7 +288,7 @@ amStackedBarChart <- function(
   }
 
   if(is.null(columnWidth)){
-    columnWidth <- ifelse(length(values) == 1L, 100, 90)
+    columnWidth <- ifelse(length(series) == 1L, 100, 90)
   }else{
     columnWidth <- max(10, min(columnWidth, 100))
   }
@@ -323,9 +340,9 @@ amStackedBarChart <- function(
 
   if(is.null(yAxis)){
     yAxis <- list(
-      title = if(length(values) == 1L) {
+      title = if(length(series) == 1L) {
         amText(
-          text = values,
+          text = series,
           fontSize = 20,
           color = NULL,
           fontWeight = "bold"
@@ -453,8 +470,8 @@ amStackedBarChart <- function(
       data = data,
       data2 = data2,
       category = category,
-      series = as.list(series),
       seriesNames = as.list(seriesNames),
+      stacks = stacks,
       minValue = yLimits[1L],
       maxValue = yLimits[2L],
       valueFormatter = valueFormatter,

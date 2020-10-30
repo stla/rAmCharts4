@@ -5309,7 +5309,8 @@ class AmStackedBarChart extends React.PureComponent {
       chartLegend = this.props.legend,
       category = this.props.category,
       categories = this.props.data[category],
-      Series = this.props.series,
+      stacks = this.series.stacks,
+      Series = Object.keys(stacks),
       minValue = this.props.minValue,
       maxValue = this.props.maxValue,
       data = HTMLWidgets.dataframeToD3(
@@ -5519,7 +5520,7 @@ class AmStackedBarChart extends React.PureComponent {
 
 		/* ~~~~\  category axis  /~~~~ */
     let categoryAxis = utils.createCategoryAxis(
-      "X", am4charts, chart, category, xAxis, 80, theme
+      "X", am4charts, chart, category, xAxis, cellWidth, theme
     );
 
     
@@ -5572,10 +5573,9 @@ class AmStackedBarChart extends React.PureComponent {
       series.dataFields.categoryX = category;
       series.dataFields.valueY = Serie;
       series.name = SeriesNames[Serie];
+      series.stacked = stacks[Serie];
       series.sequencedInterpolation = true;
       series.defaultState.interpolationDuration = 1500;
-
-
 
       /* ~~~~\  column template  /~~~~ */
       let columnTemplate = series.columns.template;
