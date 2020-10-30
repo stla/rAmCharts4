@@ -18,8 +18,8 @@
 #'   where \code{series1}, \code{series2}, ... are the column names given in
 #'   \code{stacks} and \code{"SeriesName1"}, \code{"SeriesName2"}, ... are the
 #'   desired names to appear in the legend; these names can also appear in
-#'   the tooltips: XXXXXXXXXXX they are substituted to the string \code{{name}} in
-#'   the formatting string passed on to the tooltip (see the second example)
+#'   the tooltips: they are substituted to the string \code{{name}} in
+#'   the formatting string passed on to the tooltip
 #' @param yLimits range of the y-axis, a vector of two values specifying
 #'   the lower and the upper limits of the y-axis; \code{NULL} for default
 #'   values
@@ -31,8 +31,7 @@
 #'   \code{cursor = TRUE}, the labels of the y-axis unless you specify
 #'   your own formatter in the \code{labels} field of the list passed on to
 #'   the \code{yAxis} option, and the values displayed in the tooltips unless
-#'   you specify your own tooltip text (see XXXXXXXXXXXXXX the first example for the way to set
-#'   a number formatter in the tooltip text)
+#'   you specify your own tooltip text
 #' @param chartTitle chart title, it can be \code{NULL} or \code{FALSE} for no
 #'   title, a character string,
 #'   a list of settings created with \code{\link{amText}}, or a list with two
@@ -127,7 +126,61 @@
 #' @importFrom stats setNames
 #' @export
 #'
-#' @examples # xxx ####
+#' @examples library(rAmCharts4)
+#'
+#' dat <- data.frame(
+#'   year     = c("2004", "2005", "2006"),
+#'   europe   = c(10, 15, 20),
+#'   asia     = c( 9, 10, 13),
+#'   africa   = c( 5,  6,  8),
+#'   meast    = c( 7,  8, 12),
+#'   namerica = c(12, 15, 19),
+#'   samerica = c(10, 16, 14)
+#' )
+#'
+#' dat2 <- data.frame(
+#'   year     = c("2004", "2005", "2006"),
+#'   europe   = c( 7, 12, 16),
+#'   asia     = c( 8, 13, 10),
+#'   africa   = c( 7,  7, 10),
+#'   meast    = c( 8,  6, 14),
+#'   namerica = c(10, 17, 17),
+#'   samerica = c(12, 18, 17)
+#' )
+#'
+#' stacks <- list(
+#'   c("europe", "namerica"),
+#'   c("asia", "africa", "meast", "samerica")
+#' )
+#'
+#' seriesNames <- list(
+#'   europe = "Europe",
+#'   namerica = "North America",
+#'   asia = "Asia",
+#'   africa = "Africa",
+#'   meast = "Middle East",
+#'   samerica = "South America"
+#' )
+#'
+#' amStackedBarChart(
+#'   dat,
+#'   data2 = dat2,
+#'   category = "year",
+#'   stacks = stacks,
+#'   seriesNames = seriesNames,
+#'   yLimits = c(0, 60),
+#'   chartTitle = amText(
+#'     "Stacked bar chart",
+#'     fontFamily = "Trebuchet MS",
+#'     fontSize = 30,
+#'     fontWeight = "bold"
+#'   ),
+#'   xAxis = "Year",
+#'   yAxis = "A quantity...",
+#'   theme = "kelly",
+#'   button = amButton("Update", position = 1),
+#'   height = 450
+#' )
 amStackedBarChart <- function(
   data,
   data2 = NULL,
