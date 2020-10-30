@@ -132,7 +132,7 @@ amStackedBarChart <- function(
   data,
   data2 = NULL,
   category,
-  series,
+  stacks,
   seriesNames = NULL, # default
   yLimits = NULL,
   expandY = 5,
@@ -140,7 +140,6 @@ amStackedBarChart <- function(
   chartTitle = NULL,
   theme = NULL,
   tooltip = NULL, # default
-  columnStyle = NULL, # default
   threeD = FALSE,
   backgroundColor = NULL,
   cellWidth = NULL, # default
@@ -163,16 +162,28 @@ amStackedBarChart <- function(
 
   series <- do.call(append, stacks)
 
+  if(is.null(yLimits)){
+    dats <- lapply(stacks, function(stack){
+      as.matrix(data[stack])
+    })
+    sums <- do.call(append, lapply(dats, function(dat){
+      apply(dat, 1L, sum)
+    }))
+    yLimits <- c(0, max(pretty(sums)))
+    pad <- diff(yLimits) * expandY/100
+    yLimits <- yLimits + c(0, pad)
+  }
+
   stacks <- setNames(as.list(
     t(do.call(append, lapply(lengths(stacks), function(stacklength){
-      out <- rep(FALSE, stacklength)
-      out[1L] <- TRUE
+      out <- rep(TRUE, stacklength)
+      out[1L] <- FALSE
       out
     })))
   ), series)
 
   if(!all(series %in% names(data))){
-    stop("Invalid `series` argument.", call. = TRUE)
+    stop("Invalid `stacks` argument.", call. = TRUE)
   }
 
   if(!(category %in% names(data))){
@@ -193,7 +204,7 @@ amStackedBarChart <- function(
         paste0(
           "Invalid `seriesNames` argument. ",
           "It must be a named list associating a name to every column ",
-          "given in the `series` argument."
+          "given in the `stacks` argument."
         ),
         call. = TRUE
       )
@@ -203,7 +214,7 @@ amStackedBarChart <- function(
       paste0(
         "Invalid `seriesNames` argument. ",
         "It must be a named list giving a name for every column ",
-        "given in the `series` argument."
+        "given in the `stacks` argument."
       ),
       call. = TRUE
     )
@@ -214,12 +225,6 @@ amStackedBarChart <- function(
       nrow(data2) != nrow(data) ||
       !all(series %in% names(data2)))){
     stop("Invalid `data2` argument.", call. = TRUE)
-  }
-
-  if(is.null(yLimits)){
-    yLimits <- range(pretty(do.call(c, data[series])))
-    pad <- diff(yLimits) * expandY/100
-    yLimits <- yLimits + c(-pad, pad)
   }
 
   if(is.character(chartTitle)){

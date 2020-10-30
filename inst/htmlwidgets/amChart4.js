@@ -12276,8 +12276,20 @@ function (_super) {
           }
         }
 
-        series.startIndex = startIndex;
-        series.endIndex = endIndex;
+        if (series.max(_this) < minZoomed) {
+          series.startIndex = series.dataItems.length;
+          series.endIndex = series.dataItems.length;
+          series.outOfRange = true;
+        } else if (series.min(_this) > maxZoomed) {
+          series.startIndex = 0;
+          series.endIndex = 0;
+          series.outOfRange = true;
+        } else {
+          series.outOfRange = false;
+          series.startIndex = startIndex;
+          series.endIndex = endIndex;
+        } //	console.log(series.name, startIndex, endIndex);
+
 
         if (!dataSetChanged && series.dataRangeInvalid) {
           series.validateDataRange();
@@ -12464,6 +12476,7 @@ function (_super) {
                     date: roundedDate,
                     value: newDataItem.values[vkey].value
                   }).value;
+                  newDataItem.values[vkey].workingValue = newDataItem.values[vkey].value;
                 });
               }
 
@@ -12607,6 +12620,7 @@ function (_super) {
               date: roundedDate,
               value: newDataItem.values[vkey].value
             }).value;
+            newDataItem.values[vkey].workingValue = newDataItem.values[vkey].value;
           });
         }
       });
@@ -13750,7 +13764,7 @@ function (_super) {
     }
 
     var dataItemsByAxis = series.dataItemsByAxis.getKey(this.uid);
-    var dataItem = dataItemsByAxis.getKey(date.getTime().toString()); // todo:  alternatively we can find closiest here
+    var dataItem = dataItemsByAxis.getKey(date.getTime() + series.currentDataSetId); // todo:  alternatively we can find closiest here
 
     if (!dataItem && findNearest) {
       var key_1;
@@ -15640,6 +15654,15 @@ function (_super) {
       }
     }
   };
+
+  ValueAxis.prototype.fixSmallStep = function (step) {
+    if (1 + step == 1) {
+      step *= 2;
+      return this.fixSmallStep(step);
+    }
+
+    return step;
+  };
   /**
    * Validates Axis elements.
    *
@@ -15674,6 +15697,7 @@ function (_super) {
       var maxZoomed = this._maxZoomed + this._step;
       this.resetIterators();
       var dataItemsIterator_1 = this._dataItemsIterator;
+      this._step = this.fixSmallStep(this._step);
       var i = 0;
       var precisionChanged = this._prevStepDecimalPlaces != this._stepDecimalPlaces;
       this._prevStepDecimalPlaces = this._stepDecimalPlaces;
@@ -16841,7 +16865,7 @@ function (_super) {
     var selectionMax;
     var allHidden = true;
     _core_utils_Iterator__WEBPACK_IMPORTED_MODULE_7__["each"](this.series.iterator(), function (series) {
-      if (!series.ignoreMinMax && !series.isHidden) {
+      if (!series.ignoreMinMax && !series.isHidden && !series.outOfRange) {
         if (series.visible && !series.isHiding) {
           allHidden = false;
         }
@@ -16871,7 +16895,7 @@ function (_super) {
           var maxValue = _core_utils_Math__WEBPACK_IMPORTED_MODULE_6__["max"](range.value, range.endValue);
 
           if (minValue < selectionMax) {
-            selectionMax = minValue;
+            selectionMin = minValue;
           }
 
           if (maxValue > selectionMax) {
@@ -17512,6 +17536,9 @@ function (_super) {
      * you do not add a scrollbar in the same direction as synced axes. For
      * example, if you have vertical synced axes, do not add `scrollbarY` on
      * your chart. It will create anomalies when used.
+     *
+     * IMPORTANT #4: `syncWithAxis` is not compatible with `XYCursor` if it has
+     * its `behavior` set to either `zoomY` or `zoomXY`.
      *
      * @since 4.8.1
      * @param  axis  Target axis
@@ -30830,7 +30857,7 @@ function (_super) {
 
   LineSeriesSegment.prototype.drawSegment = function (points, closePoints, smoothnessX, smoothnessY) {
     if (!this.disabled) {
-      if (points.length > 0 && closePoints.length > 0) {
+      if (points.length > 0 && closePoints.length > 0 && _core_utils_Type__WEBPACK_IMPORTED_MODULE_6__["isNumber"](points[0].x) && _core_utils_Type__WEBPACK_IMPORTED_MODULE_6__["isNumber"](points[0].y)) {
         // first moveTo helps to avoid Chrome straight line in the mask bug.
         var path = _core_rendering_Path__WEBPACK_IMPORTED_MODULE_4__["moveTo"]({
           x: points[0].x - 0.2,
@@ -32990,7 +33017,12 @@ function (_super) {
     defaultState.properties.shiftRadius = 0;
     slice.togglable = true;
     slice.events.on("toggled", function (event) {
-      event.target.hideTooltip();
+      event.target.hideTooltip(); // The following takes care of removing hover on subsequent click of
+      // a slice
+
+      if (event.target.interactions.lastHitPointer && event.target.interactions.lastHitPointer.touch && !event.target.isActive) {
+        event.target.isHover = false;
+      }
     });
     var activeState = slice.states.create("active");
     activeState.properties.shiftRadius = 0.10;
@@ -37979,6 +38011,11 @@ function (_super) {
     _this._maxxX = 100000;
     _this._maxxY = 100000;
     _this._propertiesChanged = false;
+    /**
+     * @ignore
+     */
+
+    _this.outOfRange = false;
     _this.className = "XYSeries";
     _this.isMeasured = false;
     _this.groupFields.valueX = "close";
@@ -38713,31 +38750,34 @@ function (_super) {
       this._dataSetChanged = true;
       var dataItems = this.dataItems;
       this.resetExtremes();
-      var xAxis = this.xAxis;
-      var yAxis = this.yAxis;
-      this._prevStartIndex = undefined;
-      this._prevEndIndex = undefined;
-      this._startIndex = undefined;
-      this._endIndex = undefined;
 
-      if (!this.appeared) {
-        this.processValues(false); // this will slow down!
-      }
+      if (dataItems && dataItems.length > 0) {
+        var xAxis = this.xAxis;
+        var yAxis = this.yAxis;
+        this._prevStartIndex = undefined;
+        this._prevEndIndex = undefined;
+        this._startIndex = undefined;
+        this._endIndex = undefined;
 
-      if (xAxis instanceof _axes_DateAxis__WEBPACK_IMPORTED_MODULE_8__["DateAxis"] && xAxis == this.baseAxis) {
-        this._tmin.setKey(xAxis.uid, dataItems.getIndex(0).dateX.getTime());
+        if (!this.appeared) {
+          this.processValues(false); // this will slow down!
+        }
 
-        this._tmax.setKey(xAxis.uid, dataItems.getIndex(dataItems.length - 1).dateX.getTime());
+        if (xAxis instanceof _axes_DateAxis__WEBPACK_IMPORTED_MODULE_8__["DateAxis"] && xAxis == this.baseAxis) {
+          this._tmin.setKey(xAxis.uid, dataItems.getIndex(0).dateX.getTime());
 
-        this.dispatch("extremeschanged");
-      }
+          this._tmax.setKey(xAxis.uid, dataItems.getIndex(dataItems.length - 1).dateX.getTime());
 
-      if (yAxis instanceof _axes_DateAxis__WEBPACK_IMPORTED_MODULE_8__["DateAxis"] && yAxis == this.baseAxis) {
-        this._tmin.setKey(yAxis.uid, dataItems.getIndex(0).dateY.getTime());
+          this.dispatch("extremeschanged");
+        }
 
-        this._tmax.setKey(yAxis.uid, dataItems.getIndex(dataItems.length - 1).dateY.getTime());
+        if (yAxis instanceof _axes_DateAxis__WEBPACK_IMPORTED_MODULE_8__["DateAxis"] && yAxis == this.baseAxis) {
+          this._tmin.setKey(yAxis.uid, dataItems.getIndex(0).dateY.getTime());
 
-        this.dispatch("extremeschanged");
+          this._tmax.setKey(yAxis.uid, dataItems.getIndex(dataItems.length - 1).dateY.getTime());
+
+          this.dispatch("extremeschanged");
+        }
       }
     }
 
@@ -47030,7 +47070,9 @@ function (_super) {
 
   XYChart.prototype.hideObjectTooltip = function (sprites) {
     _core_utils_Iterator__WEBPACK_IMPORTED_MODULE_17__["each"](sprites.iterator(), function (sprite) {
-      sprite.hideTooltip(0);
+      if (sprite.cursorTooltipEnabled) {
+        sprite.hideTooltip(0);
+      }
     });
   };
   /**
@@ -56704,7 +56746,7 @@ function (_super) {
 
 
   Sprite.prototype.invalidate = function () {
-    if (this.disabled || this._isTemplate) {
+    if (this.disabled || this._isTemplate || this.__disabled) {
       return;
     } // We no longer reset this on each invalidate, so that they are applied
     // only once, and do not overwrite user-defined settings
@@ -59382,6 +59424,10 @@ function (_super) {
         this._internalDisabled = value;
         this._updateDisabled = true;
         this.invalidatePosition(); // better use this instead of invalidate()
+
+        if (!value) {
+          this.invalidate();
+        }
       }
     },
     enumerable: true,
@@ -59757,7 +59803,14 @@ function (_super) {
       var dataContext = dataItem.dataContext;
 
       if (!_utils_Type__WEBPACK_IMPORTED_MODULE_30__["hasValue"](value) && dataContext) {
-        value = this.getTagValueFromObject(parts, dataItem.dataContext); // scond data context level sometimes exist (tree map)
+        value = this.getTagValueFromObject(parts, dataItem.dataContext); // Maybe it's a literal dot-separated name of the key in dataContext?
+
+        if (!_utils_Type__WEBPACK_IMPORTED_MODULE_30__["hasValue"](value)) {
+          value = this.getTagValueFromObject([{
+            prop: tagName
+          }], dataContext);
+        } // scond data context level sometimes exist (tree map)
+
 
         if (!_utils_Type__WEBPACK_IMPORTED_MODULE_30__["hasValue"](value) && dataContext.dataContext) {
           value = this.getTagValueFromObject(parts, dataContext.dataContext);
@@ -60210,7 +60263,7 @@ function (_super) {
 
 
     if (title) {
-      if (labelledByIds.length) {
+      if (labelledByIds.length || this.showSystemTooltip) {
         var titleElement = this.titleElement;
         var titleId = this.uid + "-title";
 
@@ -67044,7 +67097,7 @@ function () {
    * @see {@link https://docs.npmjs.com/misc/semver}
    */
 
-  System.VERSION = "4.10.4";
+  System.VERSION = "4.10.9";
   return System;
 }();
 
@@ -68057,7 +68110,9 @@ function (_super) {
      *   // ...
      *   "dataSource": {
      *     "url": "http://www.myweb.com/data.json",
-     *     "parser": "JSONParser"
+     *     "parser": {
+     *       "type": "JSONParser"
+     *     }
      *   },
      *   // ...
      * }
@@ -71693,8 +71748,17 @@ function (_super) {
     _utils_Utils__WEBPACK_IMPORTED_MODULE_7__["used"](this.pixelPaddingLeft);
     _utils_Utils__WEBPACK_IMPORTED_MODULE_7__["used"](this.pixelPaddingRight);
     _utils_Utils__WEBPACK_IMPORTED_MODULE_7__["used"](this.pixelPaddingTop);
-    _utils_Utils__WEBPACK_IMPORTED_MODULE_7__["used"](this.pixelPaddingBottom); // Process each line
+    _utils_Utils__WEBPACK_IMPORTED_MODULE_7__["used"](this.pixelPaddingBottom);
+
+    if (this.rtl) {
+      group.attr({
+        "direction": "rtl"
+      });
+    } else {
+      group.removeAttr("direction");
+    } // Process each line
     //$iter.each(group.children.backwards().iterator(), (element) => {
+
 
     for (var i = children.length - 1; i >= 0; i--) {
       // Align horizontally
@@ -71782,18 +71846,32 @@ function (_super) {
         "overflow": "hidden"
       });
     } // Add RTL?
+    // This has now been moved to this.alignSVGText()
+    // if (this.rtl) {
+    // 	element.attr({
+    // 		"direction": "rtl",
+    // 		//"unicode-bidi": "bidi-override"
+    // 	});
+    // }
 
-
-    if (this.rtl) {
-      element.attr({
-        "direction": "rtl"
-      });
-    }
 
     return element;
   };
 
   Object.defineProperty(Label.prototype, "rtl", {
+    /**
+     * @return RTL?
+     */
+    get: function get() {
+      if (_utils_Type__WEBPACK_IMPORTED_MODULE_8__["hasValue"](this._rtl)) {
+        return this._rtl;
+      } else if (this._topParent) {
+        return this._topParent.rtl;
+      }
+
+      return false;
+    },
+
     /**
      * An RTL (right-to-left) setting.
      *
@@ -71807,18 +71885,11 @@ function (_super) {
      */
     set: function set(value) {
       value = _utils_Type__WEBPACK_IMPORTED_MODULE_8__["toBoolean"](value);
+      this._rtl = value;
 
       if (this.element) {
-        if (value) {
-          this.element.attr({
-            "direction": "rtl"
-          });
-        } else {
-          this.element.removeAttr("direction");
-        }
+        this.alignSVGText();
       }
-
-      this._rtl = value;
     },
     enumerable: true,
     configurable: true
@@ -78042,11 +78113,7 @@ function (_super) {
      * @return [description]
      */
     get: function get() {
-      if (this.radius > 0) {
-        return _utils_Math__WEBPACK_IMPORTED_MODULE_4__["sin"](this.middleAngle);
-      } else {
-        return _utils_Math__WEBPACK_IMPORTED_MODULE_4__["sin"](this.middleAngle);
-      }
+      return _utils_Math__WEBPACK_IMPORTED_MODULE_4__["sin"](this.middleAngle);
     },
     enumerable: true,
     configurable: true
@@ -79082,9 +79149,14 @@ function (_super) {
     var textH = label.measuredHeight;
     var pointerLength = this.background.pointerLength;
     var textX;
-    var textY; // try to handle if text is wider than br
+    var textY;
 
-    if (this.fixDoc && textW > boundingRect.width) {
+    if (this.ignoreBounds) {
+      boundingRect = undefined;
+    } // try to handle if text is wider than br
+
+
+    if (boundingRect && this.fixDoc && textW > boundingRect.width) {
       // TODO maybe this isn't needed ?
       _utils_Utils__WEBPACK_IMPORTED_MODULE_10__["spritePointToDocument"]({
         x: boundingRect.x,
@@ -79111,7 +79183,7 @@ function (_super) {
       textY = -textH / 2;
 
       if (pointerOrientation == "horizontal") {
-        if (x > boundingRect.x + boundingRect.width / 2) {
+        if (boundingRect && x > boundingRect.x + boundingRect.width / 2) {
           textX = -textW / 2 - pointerLength;
         } else {
           textX = textW / 2 + pointerLength;
@@ -79123,10 +79195,12 @@ function (_super) {
       }
     } // vertical pointer
     else {
-        textX = _utils_Math__WEBPACK_IMPORTED_MODULE_8__["fitToRange"](0, boundingRect.x - x + textW / 2, boundingRect.x - x + boundingRect.width - textW / 2);
+        if (boundingRect) {
+          textX = _utils_Math__WEBPACK_IMPORTED_MODULE_8__["fitToRange"](0, boundingRect.x - x + textW / 2, boundingRect.x - x + boundingRect.width - textW / 2);
+        }
 
         if (pointerOrientation == "vertical") {
-          if (y > boundingRect.y + textH + pointerLength) {
+          if (boundingRect && y > boundingRect.y + textH + pointerLength) {
             textY = -textH - pointerLength;
             this._verticalOrientation = "up";
           } else {
@@ -79142,7 +79216,10 @@ function (_super) {
         }
       }
 
-    textY = _utils_Math__WEBPACK_IMPORTED_MODULE_8__["fitToRange"](textY, boundingRect.y - y, boundingRect.y + boundingRect.height - textH - y);
+    if (boundingRect) {
+      textY = _utils_Math__WEBPACK_IMPORTED_MODULE_8__["fitToRange"](textY, boundingRect.y - y, boundingRect.y + boundingRect.height - textH - y);
+    }
+
     label.x = textX;
     label.y = textY;
     this.drawBackground();
@@ -79305,6 +79382,31 @@ function (_super) {
     this.setBounds(rect);
   };
 
+  Object.defineProperty(Tooltip.prototype, "ignoreBounds", {
+    /**
+     * @return Ignore chart bounds?
+     */
+    get: function get() {
+      return this.getPropertyValue("ignoreBounds");
+    },
+
+    /**
+     * Normally, a tooltip's position will be adjusted so it always fits into
+     * chart's coundaries.
+     *
+     * Setting this to `false` will disable such checks and will allow tooltip
+     * to "bleed over" the edge of the chart.
+     *
+     * @default false
+     * @since 4.10.8
+     * @param  value  Ignore chart bounds?
+     */
+    set: function set(value) {
+      this.setPropertyValue("ignoreBounds", value);
+    },
+    enumerable: true,
+    configurable: true
+  });
   Object.defineProperty(Tooltip.prototype, "verticalOrientation", {
     /**
      * If tooltipOrientation is vertical, it can be drawn below or above point.
@@ -81869,6 +81971,7 @@ function (_super) {
             if (!_a.sent()) return [3
             /*break*/
             , 10];
+            canvas = void 0;
             _a.label = 3;
 
           case 3:
@@ -81908,6 +82011,11 @@ function (_super) {
             e_4 = _a.sent();
             console.error(e_4.message + "\n" + e_4.stack);
             _utils_Log__WEBPACK_IMPORTED_MODULE_20__["warn"]("Simple export failed, falling back to advanced export");
+
+            if (canvas) {
+              this.disposeCanvas(canvas);
+            }
+
             return [4
             /*yield*/
             , this.getImageAdvanced(type, options, includeExtras)];
@@ -82954,7 +83062,7 @@ function (_super) {
     }
 
     return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
-      var prehidden, width, height, font, fontSize, svg, charset, uri;
+      var prehidden, width, height, font, fontSize, scale, pixelRatio, svg, charset, uri;
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
         switch (_a.label) {
           case 0:
@@ -82962,6 +83070,10 @@ function (_super) {
 
             if (!prehidden) {
               this.hideNonExportableSprites();
+            }
+
+            if (!_utils_Type__WEBPACK_IMPORTED_MODULE_19__["hasValue"](options)) {
+              options = this.getFormatOptions("svg");
             } // Wait for required elements to be ready before proceeding
 
 
@@ -82973,8 +83085,15 @@ function (_super) {
             // Wait for required elements to be ready before proceeding
             _a.sent();
 
-            width = this.sprite.pixelWidth, height = this.sprite.pixelHeight, font = _utils_DOM__WEBPACK_IMPORTED_MODULE_15__["findFont"](this.sprite.dom), fontSize = _utils_DOM__WEBPACK_IMPORTED_MODULE_15__["findFontSize"](this.sprite.dom);
-            svg = this.normalizeSVG(this.serializeElement(this.sprite.paper.defs) + this.serializeElement(this.sprite.dom), options, width, height, 1, font, fontSize);
+            width = this.sprite.pixelWidth;
+            height = this.sprite.pixelHeight;
+            font = _utils_DOM__WEBPACK_IMPORTED_MODULE_15__["findFont"](this.sprite.dom);
+            fontSize = _utils_DOM__WEBPACK_IMPORTED_MODULE_15__["findFontSize"](this.sprite.dom);
+            scale = options.scale || 1;
+            pixelRatio = this.getPixelRatio(options); // Check if scale needs to be updated as per min/max dimensions
+
+            scale = this.getAdjustedScale(width * pixelRatio, height * pixelRatio, scale, options);
+            svg = this.normalizeSVG(this.serializeElement(this.sprite.paper.defs) + this.serializeElement(this.sprite.dom), options, width, height, scale, font, fontSize);
             charset = this.adapter.apply("charset", {
               charset: "charset=utf-8",
               type: "svg",
@@ -83518,6 +83637,10 @@ function (_super) {
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
         switch (_a.label) {
           case 0:
+            if (!_utils_Type__WEBPACK_IMPORTED_MODULE_19__["hasValue"](options)) {
+              options = this.getFormatOptions("xlsx");
+            }
+
             return [4
             /*yield*/
             , this.xlsx];
@@ -83696,6 +83819,10 @@ function (_super) {
       var _this = this;
 
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
+        if (!_utils_Type__WEBPACK_IMPORTED_MODULE_19__["hasValue"](options)) {
+          options = this.getFormatOptions("csv");
+        }
+
         csv = "";
         dataFields = this.adapter.apply("formatDataFields", {
           dataFields: this.dataFields,
@@ -83865,6 +83992,10 @@ function (_super) {
       var _this = this;
 
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
+        if (!_utils_Type__WEBPACK_IMPORTED_MODULE_19__["hasValue"](options)) {
+          options = this.getFormatOptions("html");
+        }
+
         html = "<table>";
 
         if (options.tableClass) {
@@ -84051,6 +84182,10 @@ function (_super) {
       var _this = this;
 
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
+        if (!_utils_Type__WEBPACK_IMPORTED_MODULE_19__["hasValue"](options)) {
+          options = this.getFormatOptions("json");
+        }
+
         dataFields = this.adapter.apply("formatDataFields", {
           dataFields: this.dataFields,
           format: "csv"
@@ -84506,6 +84641,7 @@ function (_super) {
         img = new Image();
         img.src = data;
         img.style.maxWidth = "100%";
+        img.style.height = "auto";
 
         if (title) {
           iframe.contentWindow.document.title = title;
@@ -87215,6 +87351,19 @@ function (_super) {
     branch.element.style.display = "";
   };
 
+  Object.defineProperty(ExportMenu.prototype, "element", {
+    /**
+     * The main element o fthe menu - usually `<ul>`.
+     *
+     * @since 4.10.6
+     * @return Menu element
+     */
+    get: function get() {
+      return this._element;
+    },
+    enumerable: true,
+    configurable: true
+  });
   return ExportMenu;
 }(_utils_Validatable__WEBPACK_IMPORTED_MODULE_7__["Validatable"]);
 
@@ -91093,7 +91242,6 @@ function (_super) {
      */
 
     _this.hitOptions = {
-      //"holdTime": 1000,
       "doubleHitTime": 300,
       //"delayFirstHit": false,
       "hitTolerance": 10,
@@ -92312,7 +92460,7 @@ function (_super) {
       io.isHover = false;
       this.overObjects.removeValue(io); // Invoke event
 
-      if (io.events.isEnabled("out") && !_System__WEBPACK_IMPORTED_MODULE_11__["system"].isPaused) {
+      if (io.events.isEnabled("out") && !_System__WEBPACK_IMPORTED_MODULE_11__["system"].isPaused && !io.isDisposed()) {
         var imev = {
           type: "out",
           target: io,
@@ -120600,7 +120748,7 @@ var _extendStatics = function extendStatics(d, b) {
     d.__proto__ = b;
   } || function (d, b) {
     for (var p in b) {
-      if (b.hasOwnProperty(p)) d[p] = b[p];
+      if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
     }
   };
 
@@ -120804,13 +120952,21 @@ function __generator(thisArg, body) {
     };
   }
 }
-function __createBinding(o, m, k, k2) {
+var __createBinding = Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  Object.defineProperty(o, k2, {
+    enumerable: true,
+    get: function get() {
+      return m[k];
+    }
+  });
+} : function (o, m, k, k2) {
   if (k2 === undefined) k2 = k;
   o[k2] = m[k];
-}
-function __exportStar(m, exports) {
+};
+function __exportStar(m, o) {
   for (var p in m) {
-    if (p !== "default" && !exports.hasOwnProperty(p)) exports[p] = m[p];
+    if (p !== "default" && !Object.prototype.hasOwnProperty.call(o, p)) __createBinding(o, m, p);
   }
 }
 function __values(o) {
@@ -120974,13 +121130,25 @@ function __makeTemplateObject(cooked, raw) {
   return cooked;
 }
 ;
+
+var __setModuleDefault = Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+};
+
 function __importStar(mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
   if (mod != null) for (var k in mod) {
-    if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
   }
-  result.default = mod;
+
+  __setModuleDefault(result, mod);
+
   return result;
 }
 function __importDefault(mod) {
@@ -126411,10 +126579,379 @@ class AmGaugeChart extends React.PureComponent {
   }
 
 }
+/* COMPONENT: VERTICAL STACKED BAR CHART */
+
+
+class AmStackedBarChart extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.style = this.style.bind(this);
+  }
+
+  style() {
+    if (window.Shiny && !window.FlexDashboard) {
+      return {
+        width: "100%",
+        height: "100%"
+      };
+    } else {
+      return {
+        width: this.props.width,
+        height: this.props.height
+      };
+    }
+  }
+
+  componentDidMount() {
+    var theme = this.props.theme,
+        threeD = this.props.threeD,
+        chartLegend = this.props.legend,
+        category = this.props.category,
+        categories = this.props.data[category],
+        stacks = this.props.stacks,
+        Series = Object.keys(stacks),
+        minValue = this.props.minValue,
+        maxValue = this.props.maxValue,
+        data = HTMLWidgets.dataframeToD3(this.props.data),
+        dataCopy = HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [category].concat(Series))),
+        data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, Series)) : null,
+        SeriesNames = this.props.seriesNames,
+        cellWidth = this.props.cellWidth,
+        columnWidth = this.props.columnWidth,
+        xAxis = this.props.xAxis,
+        yAxis = this.props.yAxis,
+        tooltips = this.props.tooltip,
+        valueFormatter = this.props.valueFormatter,
+        cursor = this.props.cursor,
+        chartId = this.props.chartId,
+        shinyId = this.props.shinyId;
+
+    if (window.Shiny) {
+      if (shinyId === undefined) {
+        shinyId = $(document.getElementById(chartId)).parent().attr("id");
+      }
+
+      Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+    }
+
+    switch (theme) {
+      case "dark":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_dark__WEBPACK_IMPORTED_MODULE_4__["default"]);
+        break;
+
+      case "dataviz":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_dataviz__WEBPACK_IMPORTED_MODULE_5__["default"]);
+        break;
+
+      case "frozen":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_frozen__WEBPACK_IMPORTED_MODULE_6__["default"]);
+        break;
+
+      case "kelly":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_kelly__WEBPACK_IMPORTED_MODULE_7__["default"]);
+        break;
+
+      case "material":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_material__WEBPACK_IMPORTED_MODULE_8__["default"]);
+        break;
+
+      case "microchart":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_microchart__WEBPACK_IMPORTED_MODULE_9__["default"]);
+        break;
+
+      case "moonrisekingdom":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_moonrisekingdom__WEBPACK_IMPORTED_MODULE_10__["default"]);
+        break;
+
+      case "patterns":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_patterns__WEBPACK_IMPORTED_MODULE_11__["default"]);
+        break;
+
+      case "spiritedaway":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_spiritedaway__WEBPACK_IMPORTED_MODULE_12__["default"]);
+        break;
+    }
+
+    var chart;
+
+    if (threeD) {
+      chart = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["create"](this.props.chartId, _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYChart3D"]);
+    } else {
+      chart = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["create"](this.props.chartId, _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYChart"]);
+    }
+
+    chart.data = data;
+    chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
+
+    chart.padding(50, 40, 0, 10);
+    var chartBackgroundColor = this.props.backgroundColor || chart.background.fill;
+    chart.background.fill = chartBackgroundColor;
+    /* ~~~~\  Enable export  /~~~~ */
+
+    if (this.props.export) {
+      chart.exporting.menu = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["ExportMenu"]();
+      chart.exporting.menu.items = _utils__WEBPACK_IMPORTED_MODULE_13__["exportMenuItems"];
+    }
+    /* ~~~~\  title  /~~~~ */
+
+
+    var chartTitle = this.props.chartTitle;
+
+    if (chartTitle) {
+      var title = chart.titles.create();
+      title.text = chartTitle.text.text;
+      title.fill = chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.fontFamily = chartTitle.text.fontFamily;
+      title.align = chartTitle.align || "left";
+      title.dy = -30;
+    }
+    /* ~~~~\  caption  /~~~~ */
+
+
+    var chartCaption = this.props.caption;
+
+    if (chartCaption) {
+      var caption = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Label"]);
+      caption.text = chartCaption.text.text;
+      caption.fill = chartCaption.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.fontSize = chartCaption.text.fontSize;
+      caption.fontWeight = chartCaption.text.fontWeight;
+      caption.fontFamily = chartCaption.text.fontFamily;
+      caption.align = chartCaption.align || "right";
+    }
+    /* ~~~~\  image  /~~~~ */
+
+
+    if (this.props.image) {
+      _utils__WEBPACK_IMPORTED_MODULE_13__["Image"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, this.props.image);
+    }
+    /* ~~~~\  scrollbars  /~~~~ */
+
+
+    if (this.props.scrollbarX) {
+      chart.scrollbarX = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Scrollbar"]();
+    }
+
+    if (this.props.scrollbarY) {
+      chart.scrollbarY = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Scrollbar"]();
+    }
+    /* ~~~~\  button  /~~~~ */
+
+
+    if (this.props.button) {
+      var Button = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Button"]);
+      _utils__WEBPACK_IMPORTED_MODULE_13__["makeButton"](Button, this.props.button);
+      Button.events.on("hit", function () {
+        for (var r = 0; r < data.length; ++r) {
+          for (var v = 0; v < Series.length; ++v) {
+            chart.data[r][Series[v]] = data2[r][Series[v]];
+          }
+        }
+
+        chart.invalidateRawData();
+
+        if (window.Shiny) {
+          Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", chart.data);
+          Shiny.setInputValue(shinyId + "_change", null);
+        }
+      });
+    }
+    /* ~~~~\  Shiny message handler for stacked bar chart  /~~~~ */
+
+
+    if (window.Shiny) {
+      Shiny.addCustomMessageHandler(shinyId + "bar", function (newdata) {
+        var tail = " is missing in the data you supplied!"; // check that the received data has the 'category' column
+
+        if (!newdata.hasOwnProperty(category)) {
+          console.warn("updateAmBarChart: column \"".concat(category, "\"") + tail);
+          return null;
+        } // check that the received data has the necessary categories
+
+
+        var ok = true,
+            i = 0;
+
+        while (ok && i < categories.length) {
+          ok = newdata[category].indexOf(categories[i]) > -1;
+
+          if (!ok) {
+            console.warn("updateAmBarChart: category \"".concat(categories[i], "\"") + tail);
+          }
+
+          i++;
+        }
+
+        if (!ok) {
+          return null;
+        } // check that the received data has the necessary 'Series' columns
+
+
+        i = 0;
+
+        while (ok && i < Series.length) {
+          ok = newdata.hasOwnProperty(Series[i]);
+
+          if (!ok) {
+            console.warn("updateAmBarChart: column \"".concat(Series[i], "\"") + tail);
+          }
+
+          i++;
+        }
+
+        if (!ok) {
+          return null;
+        } // update chart data
+
+
+        var tnewdata = HTMLWidgets.dataframeToD3(newdata);
+
+        for (var r = 0; r < data.length; ++r) {
+          for (var v = 0; v < Series.length; ++v) {
+            chart.data[r][Series[v]] = tnewdata[r][Series[v]];
+          }
+        }
+
+        chart.invalidateRawData();
+        Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", tnewdata);
+        Shiny.setInputValue(shinyId + "_change", null);
+      });
+    }
+    /* ~~~~\  category axis  /~~~~ */
+
+
+    var categoryAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createCategoryAxis"]("X", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, chart, category, xAxis, cellWidth, theme);
+    /* ~~~~\  value axis  /~~~~ */
+
+    var valueAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("Y", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, yAxis, minValue, maxValue, false, theme, cursor);
+    /* ~~~~\ cursor /~~~~ */
+
+    if (cursor) {
+      chart.cursor = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYCursor"]();
+      chart.cursor.yAxis = valueAxis;
+      chart.cursor.lineX.disabled = true;
+    }
+    /* ~~~~\  legend  /~~~~ */
+
+
+    if (chartLegend) {
+      chart.legend = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Legend"]();
+      chart.legend.position = chartLegend.position || "bottom";
+      chart.legend.useDefaultMarker = false;
+      var markerTemplate = chart.legend.markers.template;
+      markerTemplate.width = chartLegend.itemsWidth || 20;
+      markerTemplate.height = chartLegend.itemsHeight || 20; // markerTemplate.strokeWidth = 1;
+      // markerTemplate.strokeOpacity = 1;
+
+      chart.legend.itemContainers.template.events.on("over", function (ev) {
+        ev.target.dataItem.dataContext.columns.each(function (x) {
+          x.column.isHover = true;
+        });
+      });
+      chart.legend.itemContainers.template.events.on("out", function (ev) {
+        ev.target.dataItem.dataContext.columns.each(function (x) {
+          x.column.isHover = false;
+        });
+      });
+    }
+
+    Series.forEach(function (Serie, index) {
+      var series;
+
+      if (threeD) {
+        series = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ColumnSeries3D"]());
+      } else {
+        series = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ColumnSeries"]());
+      }
+
+      series.dataFields.categoryX = category;
+      series.dataFields.valueY = Serie;
+      series.name = SeriesNames[Serie];
+      series.stacked = stacks[Serie];
+      series.sequencedInterpolation = true;
+      series.defaultState.interpolationDuration = 1500;
+      /* ~~~~\  column template  /~~~~ */
+
+      var columnTemplate = series.columns.template;
+      columnTemplate.width = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](columnWidth);
+      /* ~~~~\  tooltip  /~~~~ */
+
+      if (tooltips) {
+        columnTemplate.tooltipText = tooltips[Serie].text;
+        var tooltip = _utils__WEBPACK_IMPORTED_MODULE_13__["Tooltip"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, index, tooltips[Serie]);
+        tooltip.pointerOrientation = "vertical";
+        tooltip.dy = 0;
+        tooltip.adapter.add("rotation", (x, target) => {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip.label.adapter.add("verticalCenter", (x, target) => {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
+              return "none";
+            } else {
+              return "bottom";
+            }
+          } else {
+            return x;
+          }
+        });
+        tooltip.label.adapter.add("rotation", (x, target) => {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
+              return 0;
+            } else {
+              return 180;
+            }
+          } else {
+            return x;
+          }
+        });
+        columnTemplate.tooltip = tooltip;
+        columnTemplate.adapter.add("tooltipY", (x, target) => {
+          if (target.dataItem.valueY > 0) {
+            return 0;
+          } else {
+            return -valueAxis.valueToPoint(maxValue - target.dataItem.valueY).y;
+          }
+        });
+      } // columns hover state
+
+
+      var columnHoverState = columnTemplate.column.states.create("hover"); // you can change any property on hover state and it will be animated
+
+      columnHoverState.properties.fillOpacity = 1;
+    });
+    this.chart = chart;
+  }
+
+  componentWillUnmount() {
+    if (this.chart) {
+      this.chart.dispose();
+    }
+  }
+
+  render() {
+    return /*#__PURE__*/React.createElement("div", {
+      id: this.props.chartId,
+      style: this.style()
+    });
+  }
+
+}
 /* CREATE WIDGETS */
 
 
-Object(reactR__WEBPACK_IMPORTED_MODULE_0__["reactWidget"])('amChart4', 'output', {
+Object(reactR__WEBPACK_IMPORTED_MODULE_0__["reactWidget"])("amChart4", "output", {
   AmBarChart: AmBarChart,
   AmHorizontalBarChart: AmHorizontalBarChart,
   AmLineChart: AmLineChart,
@@ -126423,7 +126960,8 @@ Object(reactR__WEBPACK_IMPORTED_MODULE_0__["reactWidget"])('amChart4', 'output',
   AmRadialBarChart: AmRadialBarChart,
   AmDumbbellChart: AmDumbbellChart,
   AmHorizontalDumbbellChart: AmHorizontalDumbbellChart,
-  AmGaugeChart: AmGaugeChart
+  AmGaugeChart: AmGaugeChart,
+  AmStackedBarChart: AmStackedBarChart
 }, {});
 
 /***/ }),

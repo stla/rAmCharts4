@@ -5309,7 +5309,7 @@ class AmStackedBarChart extends React.PureComponent {
       chartLegend = this.props.legend,
       category = this.props.category,
       categories = this.props.data[category],
-      stacks = this.series.stacks,
+      stacks = this.props.stacks,
       Series = Object.keys(stacks),
       minValue = this.props.minValue,
       maxValue = this.props.maxValue,
@@ -5582,7 +5582,7 @@ class AmStackedBarChart extends React.PureComponent {
       columnTemplate.width = am4core.percent(columnWidth);
       /* ~~~~\  tooltip  /~~~~ */
       if(tooltips) {
-        columnTemplate.tooltipText = tooltips[value].text;
+        columnTemplate.tooltipText = tooltips[Serie].text;
         let tooltip = utils.Tooltip(am4core, chart, index, tooltips[Serie]);
         tooltip.pointerOrientation = "vertical";
         tooltip.dy = 0;
