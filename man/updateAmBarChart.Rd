@@ -13,11 +13,13 @@ updateAmBarChart(session, outputId, data)
 
 \item{data}{new data; if it is not valid, then nothing will happen (in order
 to be valid it must have the same structure as the data passed on to
-\code{\link{amBarChart}}); in this case check the JavaScript console, it
-will report the encountered issue}
+\code{\link{amBarChart}} / \code{\link{amHorizontalBarChart}} /
+\code{\link{amRadialBarChart}}); in this case check the JavaScript
+console, it will report the encountered issue}
 }
 \description{
-Update the data of a bar chart in a Shiny app
+Update the data of a bar chart in a Shiny app (vertical,
+  horizontal, or radial bar chart).
 }
 \examples{
 library(rAmCharts4)

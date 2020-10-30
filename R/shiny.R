@@ -117,14 +117,16 @@ renderAmChart4 <- function(expr, env = parent.frame(), quoted = FALSE) {
 
 
 #' Update the data of a bar chart
-#' @description Update the data of a bar chart in a Shiny app
+#' @description Update the data of a bar chart in a Shiny app (vertical,
+#'   horizontal, or radial bar chart).
 #'
 #' @param session the Shiny \code{session} object
 #' @param outputId the output id passed on to \code{\link{amChart4Output}}
 #' @param data new data; if it is not valid, then nothing will happen (in order
 #'   to be valid it must have the same structure as the data passed on to
-#'   \code{\link{amBarChart}}); in this case check the JavaScript console, it
-#'   will report the encountered issue
+#'   \code{\link{amBarChart}} / \code{\link{amHorizontalBarChart}} /
+#'   \code{\link{amRadialBarChart}}); in this case check the JavaScript
+#'   console, it will report the encountered issue
 #'
 #' @export
 #'

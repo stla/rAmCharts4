@@ -710,6 +710,7 @@ class AmHorizontalBarChart extends React.PureComponent {
       threeD = this.props.threeD,
       chartLegend = this.props.legend,
       category = this.props.category,
+      categories = this.props.data[category],
       values = this.props.values,
       data = HTMLWidgets.dataframeToD3(
         this.props.data
@@ -864,6 +865,64 @@ class AmHorizontalBarChart extends React.PureComponent {
         }
       });
 		}
+
+
+    /* ~~~~\  Shiny message handler for horizontal bar chart  /~~~~ */
+    if(window.Shiny) {
+      Shiny.addCustomMessageHandler(
+        shinyId + "bar",
+        function(newdata) {
+          let tail = " is missing in the data you supplied!";
+          // check that the received data has the 'category' column
+          if(!newdata.hasOwnProperty(category)){
+            console.warn(
+              `updateAmBarChart: column "${category}"` + tail
+            );
+            return null;
+          } 
+          // check that the received data has the necessary categories
+          let ok = true, i = 0;
+          while(ok && i < categories.length) {
+            ok = newdata[category].indexOf(categories[i]) > -1;
+            if(!ok) {
+              console.warn(
+                `updateAmBarChart: category "${categories[i]}"` + tail
+              );
+            }
+            i++;
+          }
+          if(!ok) {
+            return null;
+          }
+          // check that the received data has the necessary 'values' columns
+          i = 0;
+          while(ok && i < values.length) {
+            ok = newdata.hasOwnProperty(values[i]);
+            if(!ok) {
+              console.warn(
+                `updateAmBarChart: column "${values[i]}"` + tail
+              );  
+            }
+            i++;
+          }
+          if(!ok) {
+            return null;
+          }
+          // update chart data
+          let tnewdata = HTMLWidgets.dataframeToD3(newdata);
+          for (let r = 0; r < data.length; ++r){
+            for (let v = 0; v < values.length; ++v) {
+              chart.data[r][values[v]] = tnewdata[r][values[v]];
+            }
+          }
+          chart.invalidateRawData();
+          Shiny.setInputValue(
+            shinyId + ":rAmCharts4.dataframe", tnewdata
+          );
+          Shiny.setInputValue(shinyId + "_change", null);
+        }
+      );
+    }
 
 
 		/* ~~~~\  category axis  /~~~~ */
@@ -3439,6 +3498,7 @@ class AmRadialBarChart extends React.PureComponent {
     let theme = this.props.theme,
       chartLegend = this.props.legend,
       category = this.props.category,
+      categories = this.props.data[category],
       values = this.props.values,
       minValue = this.props.minValue,
       maxValue = this.props.maxValue,
@@ -3596,7 +3656,65 @@ class AmRadialBarChart extends React.PureComponent {
 		}
 
 
-		/* ~~~~\  category axis  /~~~~ */
+    /* ~~~~\  Shiny message handler for radial bar chart  /~~~~ */
+    if(window.Shiny) {
+      Shiny.addCustomMessageHandler(
+        shinyId + "bar",
+        function(newdata) {
+          let tail = " is missing in the data you supplied!";
+          // check that the received data has the 'category' column
+          if(!newdata.hasOwnProperty(category)){
+            console.warn(
+              `updateAmBarChart: column "${category}"` + tail
+            );
+            return null;
+          } 
+          // check that the received data has the necessary categories
+          let ok = true, i = 0;
+          while(ok && i < categories.length) {
+            ok = newdata[category].indexOf(categories[i]) > -1;
+            if(!ok) {
+              console.warn(
+                `updateAmBarChart: category "${categories[i]}"` + tail
+              );
+            }
+            i++;
+          }
+          if(!ok) {
+            return null;
+          }
+          // check that the received data has the necessary 'values' columns
+          i = 0;
+          while(ok && i < values.length) {
+            ok = newdata.hasOwnProperty(values[i]);
+            if(!ok) {
+              console.warn(
+                `updateAmBarChart: column "${values[i]}"` + tail
+              );  
+            }
+            i++;
+          }
+          if(!ok) {
+            return null;
+          }
+          // update chart data
+          let tnewdata = HTMLWidgets.dataframeToD3(newdata);
+          for (let r = 0; r < data.length; ++r){
+            for (let v = 0; v < values.length; ++v) {
+              chart.data[r][values[v]] = tnewdata[r][values[v]];
+            }
+          }
+          chart.invalidateRawData();
+          Shiny.setInputValue(
+            shinyId + ":rAmCharts4.dataframe", tnewdata
+          );
+          Shiny.setInputValue(shinyId + "_change", null);
+        }
+      );
+    }
+
+
+    /* ~~~~\  category axis  /~~~~ */
 		let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
 		categoryAxis.paddingBottom = xAxis.adjust || 0;
 		categoryAxis.renderer.grid.template.location = 0;
