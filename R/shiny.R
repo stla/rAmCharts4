@@ -189,6 +189,88 @@ renderAmChart4 <- function(expr, env = parent.frame(), quoted = FALSE) {
 #' if(interactive()){
 #'   shinyApp(ui, server)
 #' }
+#'
+#'
+#' # Survival probabilities ####
+#' library(shiny)
+#' library(rAmCharts4)
+#'
+#' probs <- c(control = 30, treatment = 75) # initial probabilities
+#'
+#' ui <- fluidPage(
+#'   br(),
+#'   sidebarLayout(
+#'     sidebarPanel(
+#'       wellPanel(
+#'         tags$fieldset(
+#'           tags$legend("Survival probability"),
+#'           sliderInput(
+#'             "control",
+#'             "Control group",
+#'             min = 0, max = 100, value = probs[["control"]], step = 1
+#'           ),
+#'           sliderInput(
+#'             "treatment",
+#'             "Treatment group",
+#'             min = 0, max = 100, value = probs[["treatment"]], step = 1
+#'           )
+#'         )
+#'       )
+#'     ),
+#'     mainPanel(
+#'       amChart4Output("barchart", width = "500px", height = "400px")
+#'     )
+#'   )
+#' )
+#'
+#' server <- function(input, output, session){
+#'
+#'   dat <- data.frame(
+#'     group = c("Control", "Treatment"),
+#'     alive = c(probs[["control"]], probs[["treatment"]]),
+#'     dead  = 100 - c(probs[["control"]], probs[["treatment"]])
+#'   )
+#'   stacks <- list(
+#'     c("alive", "dead")
+#'   )
+#'   seriesNames <- list(
+#'     alive = "Alive",
+#'     dead  = "Dead"
+#'   )
+#'
+#'   output[["barchart"]] <- renderAmChart4({
+#'     amStackedBarChart(
+#'       dat,
+#'       category = "group",
+#'       stacks = stacks,
+#'       seriesNames = seriesNames,
+#'       yLimits = c(0, 100),
+#'       chartTitle = amText(
+#'         "Survival probabilities",
+#'         fontFamily = "Trebuchet MS",
+#'         fontSize = 30,
+#'         fontWeight = "bold"
+#'       ),
+#'       xAxis = "Group",
+#'       yAxis = "Probability",
+#'       theme = "dataviz"
+#'     )
+#'   })
+#'
+#'   observeEvent(list(input[["control"]], input[["treatment"]]), {
+#'     newdat <- data.frame(
+#'       group = c("Control", "Treatment"),
+#'       alive = c(input[["control"]], input[["treatment"]]),
+#'       dead  = 100 - c(input[["control"]], input[["treatment"]])
+#'     )
+#'     updateAmBarChart(session, "barchart", newdat)
+#'   })
+#'
+#' }
+#'
+#' if(interactive()){
+#'   shinyApp(ui, server)
+#' }
 updateAmBarChart <- function(session, outputId, data){
   stopifnot(is.data.frame(data))
   session$sendCustomMessage(paste0(outputId, "bar"), data)

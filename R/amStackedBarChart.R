@@ -213,13 +213,13 @@ amStackedBarChart <- function(
   elementId = NULL
 ) {
 
-  series <- do.call(append, stacks)
+  series <- do.call(c, stacks)
 
   if(is.null(yLimits)){
     dats <- lapply(stacks, function(stack){
       as.matrix(data[stack])
     })
-    sums <- do.call(append, lapply(dats, function(dat){
+    sums <- do.call(c, lapply(dats, function(dat){
       apply(dat, 1L, sum)
     }))
     yLimits <- c(0, max(pretty(sums)))
@@ -228,7 +228,7 @@ amStackedBarChart <- function(
   }
 
   stacks <- setNames(as.list(
-    t(do.call(append, lapply(lengths(stacks), function(stacklength){
+    t(do.call(c, lapply(lengths(stacks), function(stacklength){
       out <- rep(TRUE, stacklength)
       out[1L] <- FALSE
       out
