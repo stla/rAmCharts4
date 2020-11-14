@@ -20,6 +20,10 @@
 #'   desired names to appear in the legend; these names can also appear in
 #'   the tooltips: they are substituted to the string \code{{name}} in
 #'   the formatting string passed on to the tooltip
+#' @param colors colors of the bars; \code{NULL} for automatic colors based on
+#'   the theme, otherwise a named list of the form
+#'   \code{list(series1 = Color1, series2 = Color2, ...)} where \code{series1},
+#'   \code{series2}, ... are the column names given in \code{stacks}
 #' @param yLimits range of the y-axis, a vector of two values specifying
 #'   the lower and the upper limits of the y-axis; \code{NULL} for default
 #'   values
@@ -187,6 +191,7 @@ amStackedBarChart <- function(
   category,
   stacks,
   seriesNames = NULL, # default
+  colors = NULL,
   yLimits = NULL,
   expandY = 5,
   valueFormatter = "#.",
@@ -214,6 +219,13 @@ amStackedBarChart <- function(
 ) {
 
   series <- do.call(c, stacks)
+
+  if(!is.null(colors)){
+    if(!all(series %in% names(colors))){
+      stop("Invalid `colors` argument.", call. = TRUE)
+    }
+    colors <- lapply(colors, validateColor)
+  }
 
   if(is.null(yLimits)){
     dats <- lapply(stacks, function(stack){
@@ -310,7 +322,7 @@ amStackedBarChart <- function(
             amTooltip(
               #              text = "[bold]{name}:\n{valueY}[/]",
               text = tooltipText,
-              auto = FALSE
+              auto = !is.null(colors)
             )
           ), length(series)),
           series
@@ -529,6 +541,7 @@ amStackedBarChart <- function(
       data2 = data2,
       category = category,
       seriesNames = as.list(seriesNames),
+      colors = colors,
       stacks = stacks,
       minValue = yLimits[1L],
       maxValue = yLimits[2L],

@@ -126616,6 +126616,7 @@ class AmStackedBarChart extends React.PureComponent {
         dataCopy = HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [category].concat(Series))),
         data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, Series)) : null,
         SeriesNames = this.props.seriesNames,
+        colors = this.props.colors,
         cellWidth = this.props.cellWidth,
         columnWidth = this.props.columnWidth,
         xAxis = this.props.xAxis,
@@ -126876,7 +126877,12 @@ class AmStackedBarChart extends React.PureComponent {
 
       var columnTemplate = series.columns.template;
       columnTemplate.width = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](columnWidth);
+
+      if (colors) {
+        columnTemplate.fill = colors[Serie];
+      }
       /* ~~~~\  tooltip  /~~~~ */
+
 
       if (tooltips) {
         columnTemplate.tooltipText = tooltips[Serie].text;

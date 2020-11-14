@@ -5323,6 +5323,7 @@ class AmStackedBarChart extends React.PureComponent {
         HTMLWidgets.dataframeToD3(utils.subset(this.props.data2, Series)) :
         null,
       SeriesNames = this.props.seriesNames,
+      colors = this.props.colors,
       cellWidth = this.props.cellWidth,
       columnWidth = this.props.columnWidth,
       xAxis = this.props.xAxis,
@@ -5580,6 +5581,9 @@ class AmStackedBarChart extends React.PureComponent {
       /* ~~~~\  column template  /~~~~ */
       let columnTemplate = series.columns.template;
       columnTemplate.width = am4core.percent(columnWidth);
+      if(colors) {
+        columnTemplate.fill = colors[Serie];
+      }
       /* ~~~~\  tooltip  /~~~~ */
       if(tooltips) {
         columnTemplate.tooltipText = tooltips[Serie].text;

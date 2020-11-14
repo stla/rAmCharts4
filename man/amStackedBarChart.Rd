@@ -10,6 +10,7 @@ amStackedBarChart(
   category,
   stacks,
   seriesNames = NULL,
+  colors = NULL,
   yLimits = NULL,
   expandY = 5,
   valueFormatter = "#.",
@@ -60,6 +61,11 @@ where \code{series1}, \code{series2}, ... are the column names given in
 desired names to appear in the legend; these names can also appear in
 the tooltips: they are substituted to the string \code{{name}} in
 the formatting string passed on to the tooltip}
+
+\item{colors}{colors of the bars; \code{NULL} for automatic colors based on
+the theme, otherwise a named list of the form
+\code{list(series1 = Color1, series2 = Color2, ...)} where \code{series1},
+\code{series2}, ... are the column names given in \code{stacks}}
 
 \item{yLimits}{range of the y-axis, a vector of two values specifying
 the lower and the upper limits of the y-axis; \code{NULL} for default
