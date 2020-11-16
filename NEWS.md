@@ -1,6 +1,8 @@
 # rAmCharts4 1.1.0.9000 (2020-11-xx)
 
 * New option `colors` in `amStackedBarChart`, to set the colors of the bars.
+* Possibility to add horizontal lines or vertical lines to the charts (options 
+`hline` and `vline`).
 
 
 # rAmCharts4 1.1.0 (2020-10-30)

@@ -24,6 +24,10 @@
 #'   the theme, otherwise a named list of the form
 #'   \code{list(series1 = Color1, series2 = Color2, ...)} where \code{series1},
 #'   \code{series2}, ... are the column names given in \code{stacks}
+#' @param hline an optional horizontal line to add to the chart; it must be a
+#'   named list of the form \code{list(value = h, line = settings)} where
+#'   \code{h} is the "intercept" and \code{settings} is a list of settings
+#'   created with \code{\link{amLine}}
 #' @param yLimits range of the y-axis, a vector of two values specifying
 #'   the lower and the upper limits of the y-axis; \code{NULL} for default
 #'   values
@@ -192,6 +196,7 @@ amStackedBarChart <- function(
   stacks,
   seriesNames = NULL, # default
   colors = NULL,
+  hline = NULL,
   yLimits = NULL,
   expandY = 5,
   valueFormatter = "#.",
@@ -533,6 +538,14 @@ amStackedBarChart <- function(
     chartId <- paste0("barchart-", randomString(15))
   }
 
+  if(!is.null(hline)){
+    if(any(!is.element(c("value", "line"), names(hline)))){
+      stop(
+        "Invalid `hline` argument."
+      )
+    }
+  }
+
   # describe a React component to send to the browser for rendering.
   component <- reactR::component(
     "AmStackedBarChart",
@@ -545,6 +558,7 @@ amStackedBarChart <- function(
       stacks = stacks,
       minValue = yLimits[1L],
       maxValue = yLimits[2L],
+      hline = hline,
       valueFormatter = valueFormatter,
       chartTitle = chartTitle,
       theme = theme,

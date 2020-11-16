@@ -121255,6 +121255,7 @@ class AmBarChart extends React.PureComponent {
         values = this.props.values,
         minValue = this.props.minValue,
         maxValue = this.props.maxValue,
+        hline = this.props.hline,
         data = HTMLWidgets.dataframeToD3(this.props.data),
         dataCopy = HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [category].concat(values))),
         data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, values)) : null,
@@ -121580,7 +121581,18 @@ class AmBarChart extends React.PureComponent {
         }
         */
 
-    /* ~~~~\ cursor /~~~~ */
+    /* ~~~~\  horizontal line  /~~~~ */
+
+    if (hline) {
+      var range = valueAxis.axisRanges.create();
+      range.value = hline.value;
+      range.grid.stroke = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](hline.line.color);
+      range.grid.strokeWidth = hline.line.width;
+      range.grid.strokeOpacity = hline.line.opacity;
+      range.grid.strokeDasharray = hline.line.dash;
+    }
+    /* ~~~~\  cursor  /~~~~ */
+
 
     if (cursor) {
       chart.cursor = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYCursor"]();
@@ -121941,6 +121953,7 @@ class AmHorizontalBarChart extends React.PureComponent {
         category = this.props.category,
         categories = this.props.data[category],
         values = this.props.values,
+        vline = this.props.vline,
         data = HTMLWidgets.dataframeToD3(this.props.data),
         dataCopy = HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [category].concat(values))),
         data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, values)) : null,
@@ -122186,7 +122199,18 @@ class AmHorizontalBarChart extends React.PureComponent {
     /* ~~~~\  value axis  /~~~~ */
 
     var valueAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("X", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, xAxis, minValue, maxValue, false, theme, cursor);
-    /* ~~~~\ cursor /~~~~ */
+    /* ~~~~\  vertical line  /~~~~ */
+
+    if (vline) {
+      var range = valueAxis.axisRanges.create();
+      range.value = vline.value;
+      range.grid.stroke = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](vline.line.color);
+      range.grid.strokeWidth = vline.line.width;
+      range.grid.strokeOpacity = vline.line.opacity;
+      range.grid.strokeDasharray = vline.line.dash;
+    }
+    /* ~~~~\  cursor  /~~~~ */
+
 
     if (cursor) {
       chart.cursor = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYCursor"]();
@@ -122531,6 +122555,8 @@ class AmLineChart extends React.PureComponent {
         yValues = this.props.yValues,
         data = this.props.data,
         data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, [xValue].concat(yValues))) : null,
+        hline = this.props.hline,
+        vline = this.props.vline,
         trendData0 = this.props.trendData,
         trendStyles = this.props.trendStyle,
         trendJS = this.props.trendJS,
@@ -122938,7 +122964,30 @@ class AmLineChart extends React.PureComponent {
     } else {
       YAxis.cursorTooltipEnabled = false;
     }
-    /* ~~~~\ cursor /~~~~ */
+    /* ~~~~\  horizontal line  /~~~~ */
+
+
+    if (hline) {
+      var range = YAxis.axisRanges.create();
+      range.value = hline.value;
+      range.grid.stroke = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](hline.line.color);
+      range.grid.strokeWidth = hline.line.width;
+      range.grid.strokeOpacity = hline.line.opacity;
+      range.grid.strokeDasharray = hline.line.dash;
+    }
+    /* ~~~~\  vertical line  /~~~~ */
+
+
+    if (vline) {
+      var _range = XAxis.axisRanges.create();
+
+      _range.value = vline.value;
+      _range.grid.stroke = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](vline.line.color);
+      _range.grid.strokeWidth = vline.line.width;
+      _range.grid.strokeOpacity = vline.line.opacity;
+      _range.grid.strokeDasharray = vline.line.dash;
+    }
+    /* ~~~~\  cursor  /~~~~ */
 
 
     if (cursor) {
@@ -123362,6 +123411,8 @@ class AmScatterChart extends React.PureComponent {
         yValues = this.props.yValues,
         data = this.props.data,
         data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, [xValue].concat(yValues))) : null,
+        hline = this.props.hline,
+        vline = this.props.vline,
         trendData0 = this.props.trendData,
         trendStyles = this.props.trendStyle,
         trendJS = this.props.trendJS,
@@ -123609,7 +123660,30 @@ class AmScatterChart extends React.PureComponent {
     /* ~~~~\  y-axis  /~~~~ */
 
     var YAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("Y", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, yAxis, minY, maxY, false, theme, cursor);
-    /* ~~~~\ cursor /~~~~ */
+    /* ~~~~\  horizontal line  /~~~~ */
+
+    if (hline) {
+      var range = YAxis.axisRanges.create();
+      range.value = hline.value;
+      range.grid.stroke = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](hline.line.color);
+      range.grid.strokeWidth = hline.line.width;
+      range.grid.strokeOpacity = hline.line.opacity;
+      range.grid.strokeDasharray = hline.line.dash;
+    }
+    /* ~~~~\  vertical line  /~~~~ */
+
+
+    if (vline) {
+      var _range2 = XAxis.axisRanges.create();
+
+      _range2.value = vline.value;
+      _range2.grid.stroke = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](vline.line.color);
+      _range2.grid.strokeWidth = vline.line.width;
+      _range2.grid.strokeOpacity = vline.line.opacity;
+      _range2.grid.strokeDasharray = vline.line.dash;
+    }
+    /* ~~~~\  cursor  /~~~~ */
+
 
     if (cursor) {
       chart.cursor = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYCursor"]();
@@ -124039,6 +124113,8 @@ class AmRangeAreaChart extends React.PureComponent {
         chartLegend = this.props.legend,
         xValue = this.props.xValue,
         yValues = this.props.yValues,
+        hline = this.props.hline,
+        vline = this.props.vline,
         data = this.props.data,
         data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, yValues.flat())) : null,
         yValueNames = this.props.yValueNames,
@@ -124285,7 +124361,30 @@ class AmRangeAreaChart extends React.PureComponent {
     /* ~~~~\  y-axis  /~~~~ */
 
     var YAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("Y", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, yAxis, minY, maxY, false, theme, cursor);
-    /* ~~~~\ cursor /~~~~ */
+    /* ~~~~\  vertical line  /~~~~ */
+
+    if (vline) {
+      var range = XAxis.axisRanges.create();
+      range.value = vline.value;
+      range.grid.stroke = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](vline.line.color);
+      range.grid.strokeWidth = vline.line.width;
+      range.grid.strokeOpacity = vline.line.opacity;
+      range.grid.strokeDasharray = vline.line.dash;
+    }
+    /* ~~~~\  horizontal line  /~~~~ */
+
+
+    if (hline) {
+      var _range3 = YAxis.axisRanges.create();
+
+      _range3.value = hline.value;
+      _range3.grid.stroke = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](hline.line.color);
+      _range3.grid.strokeWidth = hline.line.width;
+      _range3.grid.strokeOpacity = hline.line.opacity;
+      _range3.grid.strokeDasharray = hline.line.dash;
+    }
+    /* ~~~~\  cursor  /~~~~ */
+
 
     if (cursor) {
       chart.cursor = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYCursor"]();
@@ -125359,6 +125458,7 @@ class AmDumbbellChart extends React.PureComponent {
         data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, values.flat())) : null,
         valueNames = this.props.valueNames,
         seriesNames = this.props.seriesNames,
+        hline = this.props.hline,
         xAxis = this.props.xAxis,
         yAxis = this.props.yAxis,
         draggable = this.props.draggable,
@@ -125533,7 +125633,18 @@ class AmDumbbellChart extends React.PureComponent {
     /* ~~~~\  value axis  /~~~~ */
 
     var valueAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("Y", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, yAxis, minValue, maxValue, false, theme, cursor);
-    /* ~~~~\ cursor /~~~~ */
+    /* ~~~~\  horizontal line  /~~~~ */
+
+    if (hline) {
+      var range = valueAxis.axisRanges.create();
+      range.value = hline.value;
+      range.grid.stroke = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](hline.line.color);
+      range.grid.strokeWidth = hline.line.width;
+      range.grid.strokeOpacity = hline.line.opacity;
+      range.grid.strokeDasharray = hline.line.dash;
+    }
+    /* ~~~~\  cursor  /~~~~ */
+
 
     if (cursor) {
       chart.cursor = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYCursor"]();
@@ -125860,6 +125971,7 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
         values = this.props.values,
         minValue = this.props.minValue,
         maxValue = this.props.maxValue,
+        vline = this.props.vline,
         data = HTMLWidgets.dataframeToD3(this.props.data),
         dataCopy = HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [category].concat(values.flat()))),
         data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, values.flat())) : null,
@@ -126012,7 +126124,18 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
     /* ~~~~\  value axis  /~~~~ */
 
     var valueAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("X", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, xAxis, minValue, maxValue, false, theme, cursor);
-    /* ~~~~\ cursor /~~~~ */
+    /* ~~~~\  vertical line  /~~~~ */
+
+    if (vline) {
+      var range = valueAxis.axisRanges.create();
+      range.value = vline.value;
+      range.grid.stroke = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](vline.line.color);
+      range.grid.strokeWidth = vline.line.width;
+      range.grid.strokeOpacity = vline.line.opacity;
+      range.grid.strokeDasharray = vline.line.dash;
+    }
+    /* ~~~~\  cursor  /~~~~ */
+
 
     if (cursor) {
       chart.cursor = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYCursor"]();
@@ -126612,6 +126735,7 @@ class AmStackedBarChart extends React.PureComponent {
         Series = Object.keys(stacks),
         minValue = this.props.minValue,
         maxValue = this.props.maxValue,
+        hline = this.props.hline,
         data = HTMLWidgets.dataframeToD3(this.props.data),
         dataCopy = HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data, [category].concat(Series))),
         data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(_utils__WEBPACK_IMPORTED_MODULE_13__["subset"](this.props.data2, Series)) : null,
@@ -126827,7 +126951,18 @@ class AmStackedBarChart extends React.PureComponent {
     /* ~~~~\  value axis  /~~~~ */
 
     var valueAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("Y", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, yAxis, minValue, maxValue, false, theme, cursor);
-    /* ~~~~\ cursor /~~~~ */
+    /* ~~~~\  horizontal line  /~~~~ */
+
+    if (hline) {
+      var range = valueAxis.axisRanges.create();
+      range.value = hline.value;
+      range.grid.stroke = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](hline.line.color);
+      range.grid.strokeWidth = hline.line.width;
+      range.grid.strokeOpacity = hline.line.opacity;
+      range.grid.strokeDasharray = hline.line.dash;
+    }
+    /* ~~~~\  cursor  /~~~~ */
+
 
     if (cursor) {
       chart.cursor = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYCursor"]();

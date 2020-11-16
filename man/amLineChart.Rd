@@ -10,6 +10,8 @@ amLineChart(
   xValue,
   yValues,
   yValueNames = NULL,
+  hline = NULL,
+  vline = NULL,
   xLimits = NULL,
   yLimits = NULL,
   expandX = 0,
@@ -61,6 +63,16 @@ of the form \code{list(yvalue1 = "ValueName1", yvalue2 = "ValueName2", ...)}
 where \code{yvalue1}, \code{yvalue2}, ... are the column names given in
 \code{yValues} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
 desired names to appear in the legend}
+
+\item{hline}{an optional horizontal line to add to the chart; it must be a
+named list of the form \code{list(value = h, line = settings)} where
+\code{h} is the "intercept" and \code{settings} is a list of settings
+created with \code{\link{amLine}}}
+
+\item{vline}{an optional vertical line to add to the chart; it must be a
+named list of the form \code{list(value = v, line = settings)} where
+\code{v} is the "intercept" and \code{settings} is a list of settings
+created with \code{\link{amLine}}}
 
 \item{xLimits}{range of the x-axis, a vector of two values specifying the
 left and right limits of the x-axis; \code{NULL} for default values}

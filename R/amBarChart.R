@@ -19,6 +19,10 @@
 #'   the tooltips: they are substituted to the string \code{{name}} in
 #'   the formatting string passed on to the tooltip (see the second example)
 #' @param showValues logical, whether to display the values on the chart
+#' @param hline an optional horizontal line to add to the chart; it must be a
+#'   named list of the form \code{list(value = h, line = settings)} where
+#'   \code{h} is the "intercept" and \code{settings} is a list of settings
+#'   created with \code{\link{amLine}}
 #' @param yLimits range of the y-axis, a vector of two values specifying
 #'   the lower and the upper limits of the y-axis; \code{NULL} for default
 #'   values
@@ -272,6 +276,7 @@ amBarChart <- function(
   values,
   valueNames = NULL, # default
   showValues = TRUE,
+  hline = hline,
   yLimits = NULL,
   expandY = 5,
   valueFormatter = "#.",
@@ -710,6 +715,14 @@ amBarChart <- function(
     chartId <- paste0("barchart-", randomString(15))
   }
 
+  if(!is.null(hline)){
+    if(any(!is.element(c("value", "line"), names(hline)))){
+      stop(
+        "Invalid `hline` argument."
+      )
+    }
+  }
+
   # describe a React component to send to the browser for rendering.
   component <- reactR::component(
     "AmBarChart",
@@ -722,6 +735,7 @@ amBarChart <- function(
       showValues = showValues,
       minValue = yLimits[1L],
       maxValue = yLimits[2L],
+      hline = hline,
       valueFormatter = valueFormatter,
       chartTitle = chartTitle,
       theme = theme,

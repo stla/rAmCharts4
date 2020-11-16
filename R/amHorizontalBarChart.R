@@ -19,6 +19,10 @@
 #'   the tooltips: they are substituted to the string \code{{name}} in
 #'   the formatting string passed on to the tooltip (see the second example)
 #' @param showValues logical, whether to display the values on the chart
+#' @param vline an optional vertical line to add to the chart; it must be a
+#'   named list of the form \code{list(value = v, line = settings)} where
+#'   \code{v} is the "intercept" and \code{settings} is a list of settings
+#'   created with \code{\link{amLine}}
 #' @param xLimits range of the x-axis, a vector of two values specifying the
 #'   left and the right limits of the x-axis; \code{NULL} for default values
 #' @param expandX if \code{xLimits = NULL}, a percentage of the range of the
@@ -223,6 +227,7 @@ amHorizontalBarChart <- function(
   values,
   valueNames = NULL, # default
   showValues = TRUE,
+  vline = NULL,
   xLimits = NULL,
   expandX = 5,
   valueFormatter = "#.",
@@ -599,6 +604,14 @@ amHorizontalBarChart <- function(
     chartId <- paste0("horizontalbarchart-", randomString(15))
   }
 
+  if(!is.null(vline)){
+    if(any(!is.element(c("value", "line"), names(vline)))){
+      stop(
+        "Invalid `vline` argument."
+      )
+    }
+  }
+
   # describe a React component to send to the browser for rendering.
   component <- reactR::component(
     "AmHorizontalBarChart",
@@ -611,6 +624,7 @@ amHorizontalBarChart <- function(
       showValues = showValues,
       minValue = xLimits[1L],
       maxValue = xLimits[2L],
+      vline = vline,
       valueFormatter = valueFormatter,
       chartTitle = chartTitle,
       theme = theme,

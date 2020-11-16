@@ -11,6 +11,7 @@ amHorizontalBarChart(
   values,
   valueNames = NULL,
   showValues = TRUE,
+  vline = NULL,
   xLimits = NULL,
   expandX = 5,
   valueFormatter = "#.",
@@ -65,6 +66,11 @@ the tooltips: they are substituted to the string \code{{name}} in
 the formatting string passed on to the tooltip (see the second example)}
 
 \item{showValues}{logical, whether to display the values on the chart}
+
+\item{vline}{an optional vertical line to add to the chart; it must be a
+named list of the form \code{list(value = v, line = settings)} where
+\code{v} is the "intercept" and \code{settings} is a list of settings
+created with \code{\link{amLine}}}
 
 \item{xLimits}{range of the x-axis, a vector of two values specifying the
 left and the right limits of the x-axis; \code{NULL} for default values}

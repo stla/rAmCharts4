@@ -15,6 +15,10 @@
 #'   to appear in the legend; its length must equal the number of rows of the
 #'   \code{values} matrix: the n-th component corresponds to the n-th row of
 #'   the \code{values} matrix
+#' @param vline an optional vertical line to add to the chart; it must be a
+#'   named list of the form \code{list(value = v, line = settings)} where
+#'   \code{v} is the "intercept" and \code{settings} is a list of settings
+#'   created with \code{\link{amLine}}
 #' @param xLimits range of the x-axis, a vector of two values specifying
 #' the left and right limits of the x-axis; \code{NULL} for default values
 #' @param expandX if \code{xLimits = NULL}, a percentage of the range of the
@@ -176,6 +180,7 @@ amHorizontalDumbbellChart <- function(
   category,
   values,
   seriesNames = NULL,
+  vline = NULL,
   xLimits = NULL,
   expandX = 5,
   valueFormatter = "#.",
@@ -540,6 +545,14 @@ amHorizontalDumbbellChart <- function(
     chartId <- paste0("horizontaldumbbellchart-", randomString(15))
   }
 
+  if(!is.null(vline)){
+    if(any(!is.element(c("value", "line"), names(vline)))){
+      stop(
+        "Invalid `vline` argument."
+      )
+    }
+  }
+
   # describe a React component to send to the browser for rendering.
   component <- reactR::component(
     "AmHorizontalDumbbellChart",
@@ -552,6 +565,7 @@ amHorizontalDumbbellChart <- function(
       seriesNames = as.list(seriesNames),
       minValue = xLimits[1L],
       maxValue = xLimits[2L],
+      vline = vline,
       valueFormatter = valueFormatter,
       chartTitle = chartTitle,
       theme = theme,

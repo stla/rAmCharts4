@@ -10,6 +10,7 @@ amHorizontalDumbbellChart(
   category,
   values,
   seriesNames = NULL,
+  vline = NULL,
   xLimits = NULL,
   expandX = 5,
   valueFormatter = "#.",
@@ -55,6 +56,11 @@ used as the limits of the segments}
 to appear in the legend; its length must equal the number of rows of the
 \code{values} matrix: the n-th component corresponds to the n-th row of
 the \code{values} matrix}
+
+\item{vline}{an optional vertical line to add to the chart; it must be a
+named list of the form \code{list(value = v, line = settings)} where
+\code{v} is the "intercept" and \code{settings} is a list of settings
+created with \code{\link{amLine}}}
 
 \item{xLimits}{range of the x-axis, a vector of two values specifying
 the left and right limits of the x-axis; \code{NULL} for default values}

@@ -11,6 +11,7 @@ amStackedBarChart(
   stacks,
   seriesNames = NULL,
   colors = NULL,
+  hline = NULL,
   yLimits = NULL,
   expandY = 5,
   valueFormatter = "#.",
@@ -66,6 +67,11 @@ the formatting string passed on to the tooltip}
 the theme, otherwise a named list of the form
 \code{list(series1 = Color1, series2 = Color2, ...)} where \code{series1},
 \code{series2}, ... are the column names given in \code{stacks}}
+
+\item{hline}{an optional horizontal line to add to the chart; it must be a
+named list of the form \code{list(value = h, line = settings)} where
+\code{h} is the "intercept" and \code{settings} is a list of settings
+created with \code{\link{amLine}}}
 
 \item{yLimits}{range of the y-axis, a vector of two values specifying
 the lower and the upper limits of the y-axis; \code{NULL} for default

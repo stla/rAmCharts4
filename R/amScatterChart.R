@@ -17,6 +17,14 @@
 #' \code{yvalue1}, \code{yvalue2}, ... are the column names given in
 #' \code{yValues} and \code{"ValueName1"}, \code{"ValueName2"}, ... are the
 #' desired names to appear in the legend
+#' @param hline an optional horizontal line to add to the chart; it must be a
+#'   named list of the form \code{list(value = h, line = settings)} where
+#'   \code{h} is the "intercept" and \code{settings} is a list of settings
+#'   created with \code{\link{amLine}}
+#' @param vline an optional vertical line to add to the chart; it must be a
+#'   named list of the form \code{list(value = v, line = settings)} where
+#'   \code{v} is the "intercept" and \code{settings} is a list of settings
+#'   created with \code{\link{amLine}}
 #' @param xLimits range of the x-axis, a vector of two values specifying
 #' the left and the right limits of the x-axis; \code{NULL} for default values
 #' @param yLimits range of the y-axis, a vector of two values specifying
@@ -327,6 +335,8 @@ amScatterChart <- function(
   xValue,
   yValues,
   yValueNames = NULL, # default
+  hline = NULL,
+  vline = NULL,
   xLimits = NULL,
   yLimits = NULL,
   expandX = 0,
@@ -943,6 +953,22 @@ amScatterChart <- function(
     chartId <- paste0("scatterchart-", randomString(15))
   }
 
+  if(!is.null(hline)){
+    if(any(!is.element(c("value", "line"), names(hline)))){
+      stop(
+        "Invalid `hline` argument."
+      )
+    }
+  }
+
+  if(!is.null(vline)){
+    if(any(!is.element(c("value", "line"), names(vline)))){
+      stop(
+        "Invalid `vline` argument."
+      )
+    }
+  }
+
   # describe a React component to send to the browser for rendering.
   component <- reactR::component(
     "AmScatterChart",
@@ -961,6 +987,8 @@ amScatterChart <- function(
       maxX = xLimits[2L],
       minY = yLimits[1L],
       maxY = yLimits[2L],
+      hline = hline,
+      vline = vline,
       chartTitle = chartTitle,
       theme = theme,
       draggable = draggable,

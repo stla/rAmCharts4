@@ -47,6 +47,7 @@ class AmBarChart extends React.PureComponent {
       values = this.props.values,
       minValue = this.props.minValue,
       maxValue = this.props.maxValue,
+      hline = this.props.hline,
       data = HTMLWidgets.dataframeToD3(
         this.props.data
       ),
@@ -369,7 +370,18 @@ class AmBarChart extends React.PureComponent {
     */
 
 
-		/* ~~~~\ cursor /~~~~ */
+    /* ~~~~\  horizontal line  /~~~~ */
+    if(hline) {
+      let range = valueAxis.axisRanges.create();
+      range.value = hline.value;
+      range.grid.stroke = am4core.color(hline.line.color);
+      range.grid.strokeWidth = hline.line.width;
+      range.grid.strokeOpacity = hline.line.opacity;
+      range.grid.strokeDasharray = hline.line.dash;
+    }
+
+
+		/* ~~~~\  cursor  /~~~~ */
 		if(cursor) {
       chart.cursor = new am4charts.XYCursor();
       chart.cursor.yAxis = valueAxis;
@@ -712,6 +724,7 @@ class AmHorizontalBarChart extends React.PureComponent {
       category = this.props.category,
       categories = this.props.data[category],
       values = this.props.values,
+      vline = this.props.vline,
       data = HTMLWidgets.dataframeToD3(
         this.props.data
       ),
@@ -957,7 +970,18 @@ class AmHorizontalBarChart extends React.PureComponent {
     );
 
 
-		/* ~~~~\ cursor /~~~~ */
+    /* ~~~~\  vertical line  /~~~~ */
+    if(vline) {
+      let range = valueAxis.axisRanges.create();
+      range.value = vline.value;
+      range.grid.stroke = am4core.color(vline.line.color);
+      range.grid.strokeWidth = vline.line.width;
+      range.grid.strokeOpacity = vline.line.opacity;
+      range.grid.strokeDasharray = vline.line.dash;
+    }
+
+
+		/* ~~~~\  cursor  /~~~~ */
 		if(cursor) {
       chart.cursor = new am4charts.XYCursor();
       chart.cursor.xAxis = valueAxis;
@@ -1294,6 +1318,8 @@ class AmLineChart extends React.PureComponent {
         HTMLWidgets.dataframeToD3(
           utils.subset(this.props.data2, [xValue].concat(yValues))
         ) : null,
+      hline = this.props.hline,
+      vline = this.props.vline,
       trendData0 = this.props.trendData,
       trendStyles = this.props.trendStyle,
       trendJS = this.props.trendJS,
@@ -1700,9 +1726,31 @@ class AmLineChart extends React.PureComponent {
     } else {
       YAxis.cursorTooltipEnabled = false;
     }
-    
 
-		/* ~~~~\ cursor /~~~~ */
+
+    /* ~~~~\  horizontal line  /~~~~ */
+    if(hline) {
+      let range = YAxis.axisRanges.create();
+      range.value = hline.value;
+      range.grid.stroke = am4core.color(hline.line.color);
+      range.grid.strokeWidth = hline.line.width;
+      range.grid.strokeOpacity = hline.line.opacity;
+      range.grid.strokeDasharray = hline.line.dash;
+    }
+
+
+    /* ~~~~\  vertical line  /~~~~ */
+    if(vline) {
+      let range = XAxis.axisRanges.create();
+      range.value = vline.value;
+      range.grid.stroke = am4core.color(vline.line.color);
+      range.grid.strokeWidth = vline.line.width;
+      range.grid.strokeOpacity = vline.line.opacity;
+      range.grid.strokeDasharray = vline.line.dash;
+    }    
+
+
+		/* ~~~~\  cursor  /~~~~ */
 		if(cursor) {
       chart.cursor = new am4charts.XYCursor();
       switch(cursor.axes) {
@@ -2106,6 +2154,8 @@ class AmScatterChart extends React.PureComponent {
         HTMLWidgets.dataframeToD3(
           utils.subset(this.props.data2, [xValue].concat(yValues))
         ) : null,
+      hline = this.props.hline,
+      vline = this.props.vline,
       trendData0 = this.props.trendData,
       trendStyles = this.props.trendStyle,
       trendJS = this.props.trendJS,
@@ -2350,7 +2400,29 @@ class AmScatterChart extends React.PureComponent {
     );
 
 
-		/* ~~~~\ cursor /~~~~ */
+    /* ~~~~\  horizontal line  /~~~~ */
+    if(hline) {
+      let range = YAxis.axisRanges.create();
+      range.value = hline.value;
+      range.grid.stroke = am4core.color(hline.line.color);
+      range.grid.strokeWidth = hline.line.width;
+      range.grid.strokeOpacity = hline.line.opacity;
+      range.grid.strokeDasharray = hline.line.dash;
+    }
+
+
+    /* ~~~~\  vertical line  /~~~~ */
+    if(vline) {
+      let range = XAxis.axisRanges.create();
+      range.value = vline.value;
+      range.grid.stroke = am4core.color(vline.line.color);
+      range.grid.strokeWidth = vline.line.width;
+      range.grid.strokeOpacity = vline.line.opacity;
+      range.grid.strokeDasharray = vline.line.dash;
+    }
+    
+
+		/* ~~~~\  cursor  /~~~~ */
 		if(cursor) {
       chart.cursor = new am4charts.XYCursor();
       switch(cursor.axes) {
@@ -2760,6 +2832,8 @@ class AmRangeAreaChart extends React.PureComponent {
       chartLegend = this.props.legend,
       xValue = this.props.xValue,
       yValues = this.props.yValues,
+      hline = this.props.hline,
+      vline = this.props.vline,
       data = this.props.data,
       data2 = this.props.data2 ?
         HTMLWidgets.dataframeToD3(
@@ -3013,7 +3087,29 @@ class AmRangeAreaChart extends React.PureComponent {
     );
 
 
-		/* ~~~~\ cursor /~~~~ */
+    /* ~~~~\  vertical line  /~~~~ */
+    if(vline) {
+      let range = XAxis.axisRanges.create();
+      range.value = vline.value;
+      range.grid.stroke = am4core.color(vline.line.color);
+      range.grid.strokeWidth = vline.line.width;
+      range.grid.strokeOpacity = vline.line.opacity;
+      range.grid.strokeDasharray = vline.line.dash;
+    }
+
+
+    /* ~~~~\  horizontal line  /~~~~ */
+    if(hline) {
+      let range = YAxis.axisRanges.create();
+      range.value = hline.value;
+      range.grid.stroke = am4core.color(hline.line.color);
+      range.grid.strokeWidth = hline.line.width;
+      range.grid.strokeOpacity = hline.line.opacity;
+      range.grid.strokeDasharray = hline.line.dash;
+    }
+
+
+		/* ~~~~\  cursor  /~~~~ */
 		if(cursor) {
       chart.cursor = new am4charts.XYCursor();
       switch(cursor.axes) {
@@ -4578,6 +4674,7 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
       values = this.props.values,
       minValue = this.props.minValue,
       maxValue = this.props.maxValue,
+      vline = this.props.vline,
       data = HTMLWidgets.dataframeToD3(
         this.props.data
       ),
@@ -4737,7 +4834,18 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
     );
 
 
-		/* ~~~~\ cursor /~~~~ */
+    /* ~~~~\  vertical line  /~~~~ */
+    if(vline) {
+      let range = valueAxis.axisRanges.create();
+      range.value = vline.value;
+      range.grid.stroke = am4core.color(vline.line.color);
+      range.grid.strokeWidth = vline.line.width;
+      range.grid.strokeOpacity = vline.line.opacity;
+      range.grid.strokeDasharray = vline.line.dash;
+    }
+
+
+		/* ~~~~\  cursor  /~~~~ */
 		if(cursor) {
       chart.cursor = new am4charts.XYCursor();
       chart.cursor.xAxis = valueAxis;
@@ -5325,6 +5433,7 @@ class AmStackedBarChart extends React.PureComponent {
       Series = Object.keys(stacks),
       minValue = this.props.minValue,
       maxValue = this.props.maxValue,
+      hline = this.props.hline,
       data = HTMLWidgets.dataframeToD3(
         this.props.data
       ),
@@ -5544,7 +5653,18 @@ class AmStackedBarChart extends React.PureComponent {
     );
 
 
-		/* ~~~~\ cursor /~~~~ */
+    /* ~~~~\  horizontal line  /~~~~ */
+    if(hline) {
+      let range = valueAxis.axisRanges.create();
+      range.value = hline.value;
+      range.grid.stroke = am4core.color(hline.line.color);
+      range.grid.strokeWidth = hline.line.width;
+      range.grid.strokeOpacity = hline.line.opacity;
+      range.grid.strokeDasharray = hline.line.dash;
+    }
+
+
+		/* ~~~~\  cursor  /~~~~ */
 		if(cursor) {
       chart.cursor = new am4charts.XYCursor();
       chart.cursor.yAxis = valueAxis;
