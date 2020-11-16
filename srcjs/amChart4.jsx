@@ -4078,6 +4078,7 @@ class AmDumbbellChart extends React.PureComponent {
         null,
       valueNames = this.props.valueNames,
       seriesNames = this.props.seriesNames,
+      hline = this.props.hline,
       xAxis = this.props.xAxis,
       yAxis = this.props.yAxis,
       draggable = this.props.draggable,
@@ -4253,7 +4254,18 @@ class AmDumbbellChart extends React.PureComponent {
     );
 
 
-		/* ~~~~\ cursor /~~~~ */
+    /* ~~~~\  horizontal line  /~~~~ */
+    if(hline) {
+      let range = valueAxis.axisRanges.create();
+      range.value = hline.value;
+      range.grid.stroke = am4core.color(hline.line.color);
+      range.grid.strokeWidth = hline.line.width;
+      range.grid.strokeOpacity = hline.line.opacity;
+      range.grid.strokeDasharray = hline.line.dash;
+    }
+
+
+		/* ~~~~\  cursor  /~~~~ */
 		if(cursor) {
       chart.cursor = new am4charts.XYCursor();
       chart.cursor.yAxis = valueAxis;
