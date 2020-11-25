@@ -54,3 +54,33 @@ validateColor <- function(color){
 isPositiveInteger <- function(x){
   is.numeric(x) && (length(x) == 1L) && (floor(x) == x)
 }
+
+#' @importFrom stats setNames boxplot.stats
+#' @noRd
+boxplotsData <- function(dat, category, value){
+  # five numbers data
+  bxpDataList <- tapply(
+    dat[[value]], dat[[category]], boxplot.stats, do.conf = FALSE
+  )
+  fiveNumbersData <- setNames(cbind(
+    names(bxpDataList),
+    as.data.frame(t(vapply(bxpDataList, `[[`, numeric(5L), i = "stats")))
+  ), c(category, 'whiskerLwr', "hingeLwr", "median", "hingeUpr", "whiskerUpr"))
+
+  # outliers data
+  splittedData <- lapply(split(dat, dat[[category]], drop = TRUE), `[[`, value)
+  outliersIndices <- lapply(bxpDataList, `[[`, "out")
+  outliers <- mapply(
+    function(x, indices) x[indices],
+    splittedData, outliersIndices, SIMPLIFY = FALSE
+  )
+  outliersData <- do.call(
+    rbind,
+    lapply(names(Filter(length, outliers)), function(ctgry){
+      setNames(data.frame(ctgry, outliers[[ctgry]]), c(category, "outlier"))
+    })
+  )
+
+  # return
+  list(fiveNumbersData = fiveNumbersData, outliersData = outliersData)
+}
