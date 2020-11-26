@@ -30,17 +30,17 @@ class AmBarChart extends React.PureComponent {
   }
 
   style() {
-    if(window.Shiny && !window.FlexDashboard) {
-      return {width: "100%", height: "100%"};
+    if (window.Shiny && !window.FlexDashboard) {
+      return { width: "100%", height: "100%" };
     } else {
-      return {width: this.props.width, height: this.props.height};
+      return { width: this.props.width, height: this.props.height };
     }
   }
 
   componentDidMount() {
 
     let theme = this.props.theme,
-      threeD = this.props.threeD, 
+      threeD = this.props.threeD,
       chartLegend = this.props.legend,
       category = this.props.category,
       categories = this.props.data[category],
@@ -73,8 +73,8 @@ class AmBarChart extends React.PureComponent {
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
-    if(window.Shiny) {
-      if(shinyId === undefined) {
+    if (window.Shiny) {
+      if (shinyId === undefined) {
         shinyId = $(document.getElementById(chartId)).parent().attr("id");
       }
       Shiny.setInputValue(
@@ -82,7 +82,7 @@ class AmBarChart extends React.PureComponent {
       );
     }
 
-    switch(theme) {
+    switch (theme) {
       case "dark":
         am4core.useTheme(am4themes_dark);
         break;
@@ -113,7 +113,7 @@ class AmBarChart extends React.PureComponent {
     }
 
     let chart;
-    if(threeD) {
+    if (threeD) {
       chart = am4core.create(this.props.chartId, am4charts.XYChart3D);
     } else {
       chart = am4core.create(this.props.chartId, am4charts.XYChart);
@@ -130,49 +130,49 @@ class AmBarChart extends React.PureComponent {
 
 
     /* ~~~~\  Enable export  /~~~~ */
-    if(this.props.export) {
+    if (this.props.export) {
       chart.exporting.menu = new am4core.ExportMenu();
       chart.exporting.menu.items = utils.exportMenuItems;
     }
 
 
-/* 		 ~~~~\  title  /~~~~ 
-		let chartTitle = this.props.chartTitle;
-		if(chartTitle) {
-      //let title = chart.plotContainer.createChild(am4core.Label);
-      let title = chart.titles.create();
-			title.text = chartTitle.text;
-			title.fill =
-			  chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
-			title.fontSize = chartTitle.fontSize || 22;
-			title.fontWeight = "bold";
-			title.fontFamily = "Tahoma";
-			//title.y = this.props.scrollbarX ? -56 : -42;
-			//title.x = -45;
-			//title.horizontalCenter = "left";
-			//title.zIndex = 100;
-			//title.fillOpacity = 1;
-		}
- */
+    /* 		 ~~~~\  title  /~~~~ 
+        let chartTitle = this.props.chartTitle;
+        if(chartTitle) {
+          //let title = chart.plotContainer.createChild(am4core.Label);
+          let title = chart.titles.create();
+          title.text = chartTitle.text;
+          title.fill =
+            chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
+          title.fontSize = chartTitle.fontSize || 22;
+          title.fontWeight = "bold";
+          title.fontFamily = "Tahoma";
+          //title.y = this.props.scrollbarX ? -56 : -42;
+          //title.x = -45;
+          //title.horizontalCenter = "left";
+          //title.zIndex = 100;
+          //title.fillOpacity = 1;
+        }
+     */
 
-		/* ~~~~\  title  /~~~~ */
-		let chartTitle = this.props.chartTitle;
-		if(chartTitle) {
+    /* ~~~~\  title  /~~~~ */
+    let chartTitle = this.props.chartTitle;
+    if (chartTitle) {
       let title = chart.titles.create();
-			title.text = chartTitle.text.text;
-			title.fill =
-			  chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
-			title.fontSize = chartTitle.text.fontSize || 22;
-			title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.text = chartTitle.text.text;
+      title.fill =
+        chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
       title.fontFamily = chartTitle.text.fontFamily;
       title.align = chartTitle.align || "left";
       title.dy = -30;
-		}
+    }
 
 
     /* ~~~~\  caption  /~~~~ */
     let chartCaption = this.props.caption;
-    if(chartCaption) {
+    if (chartCaption) {
       let caption = chart.chartContainer.createChild(am4core.Label);
       caption.text = chartCaption.text.text;
       caption.fill =
@@ -185,88 +185,88 @@ class AmBarChart extends React.PureComponent {
 
 
     /* ~~~~\  image  /~~~~ */
-    if(this.props.image) {
+    if (this.props.image) {
       utils.Image(am4core, chart, this.props.image);
     }
 
 
     /* ~~~~\  scrollbars  /~~~~ */
-    if(this.props.scrollbarX) {
+    if (this.props.scrollbarX) {
       chart.scrollbarX = new am4core.Scrollbar();
     }
-    if(this.props.scrollbarY) {
+    if (this.props.scrollbarY) {
       chart.scrollbarY = new am4core.Scrollbar();
     }
 
 
-		/* ~~~~\  button  /~~~~ */
-		if(this.props.button) {
+    /* ~~~~\  button  /~~~~ */
+    if (this.props.button) {
       let Button = chart.chartContainer.createChild(am4core.Button);
       utils.makeButton(Button, this.props.button);
-      Button.events.on("hit", function() {
-        for (let r = 0; r < data.length; ++r){
+      Button.events.on("hit", function () {
+        for (let r = 0; r < data.length; ++r) {
           for (let v = 0; v < values.length; ++v) {
             chart.data[r][values[v]] = data2[r][values[v]];
           }
         }
         chart.invalidateRawData();
-        if(window.Shiny) {
+        if (window.Shiny) {
           Shiny.setInputValue(
             shinyId + ":rAmCharts4.dataframe", chart.data
           );
           Shiny.setInputValue(shinyId + "_change", null);
         }
       });
-		}
+    }
 
 
     /* ~~~~\  Shiny message handler for bar chart  /~~~~ */
-    if(window.Shiny) {
+    if (window.Shiny) {
       Shiny.addCustomMessageHandler(
         shinyId + "bar",
-        function(newdata) {
+        function (newdata) {
           /*if(!am4core.isObject(newdata)) { useless, there's a check in R
             return null;
           }*/
           let tail = " is missing in the data you supplied!";
           // check that the received data has the 'category' column
-          if(!newdata.hasOwnProperty(category)){
+          if (!newdata.hasOwnProperty(category)) {
             console.warn(
               `updateAmBarChart: column "${category}"` + tail
             );
             return null;
-          } 
+          }
           // check that the received data has the necessary categories
           let ok = true, i = 0;
-          while(ok && i < categories.length) {
+          while (ok && i < categories.length) {
             ok = newdata[category].indexOf(categories[i]) > -1;
-            if(!ok) {
+            if (!ok) {
               console.warn(
                 `updateAmBarChart: category "${categories[i]}"` + tail
               );
             }
             i++;
           }
-          if(!ok) {
+          if (!ok) {
             return null;
           }
           // check that the received data has the necessary 'values' columns
           i = 0;
-          while(ok && i < values.length) {
+          while (ok && i < values.length) {
             ok = newdata.hasOwnProperty(values[i]);
-            if(!ok) {
+            if (!ok) {
               console.warn(
                 `updateAmBarChart: column "${values[i]}"` + tail
-              );  
+              );
             }
             i++;
           }
-          if(!ok) {
+          if (!ok) {
             return null;
           }
           // update chart data
           let tnewdata = HTMLWidgets.dataframeToD3(newdata);
-          for (let r = 0; r < data.length; ++r){
+          for (let r = 0; r < data.length; ++r) {
             for (let v = 0; v < values.length; ++v) {
               chart.data[r][values[v]] = tnewdata[r][values[v]];
             }
@@ -281,97 +281,97 @@ class AmBarChart extends React.PureComponent {
     }
 
 
-		/* ~~~~\  category axis  /~~~~ */
-		let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-		categoryAxis.paddingBottom = xAxis.adjust || 0;
-		categoryAxis.renderer.grid.template.location = 0;
-		categoryAxis.renderer.cellStartLocation = 1 - cellWidth/100;
-		categoryAxis.renderer.cellEndLocation = cellWidth/100;
-		if(xAxis && xAxis.title && xAxis.title.text !== "") {
-  		categoryAxis.title.text = xAxis.title.text || category;
-  		categoryAxis.title.fontWeight = "bold";
-  		categoryAxis.title.fontSize = xAxis.title.fontSize || 20;
-  		categoryAxis.title.fill =
-  		  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
-		}
-		let xAxisLabels = categoryAxis.renderer.labels.template;
-		xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
-		xAxisLabels.rotation = xAxis.labels.rotation || 0;
-		if(xAxisLabels.rotation !== 0) {
-		  xAxisLabels.horizontalCenter = "right";
-		}
-		xAxisLabels.fill =
-		  xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
-		categoryAxis.dataFields.category = category;
-		categoryAxis.renderer.grid.template.disabled = true;
-		categoryAxis.renderer.minGridDistance = 50;
+    /* ~~~~\  category axis  /~~~~ */
+    let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+    categoryAxis.paddingBottom = xAxis.adjust || 0;
+    categoryAxis.renderer.grid.template.location = 0;
+    categoryAxis.renderer.cellStartLocation = 1 - cellWidth / 100;
+    categoryAxis.renderer.cellEndLocation = cellWidth / 100;
+    if (xAxis && xAxis.title && xAxis.title.text !== "") {
+      categoryAxis.title.text = xAxis.title.text || category;
+      categoryAxis.title.fontWeight = "bold";
+      categoryAxis.title.fontSize = xAxis.title.fontSize || 20;
+      categoryAxis.title.fill =
+        xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+    }
+    let xAxisLabels = categoryAxis.renderer.labels.template;
+    xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
+    xAxisLabels.rotation = xAxis.labels.rotation || 0;
+    if (xAxisLabels.rotation !== 0) {
+      xAxisLabels.horizontalCenter = "right";
+    }
+    xAxisLabels.fill =
+      xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+    categoryAxis.dataFields.category = category;
+    categoryAxis.renderer.grid.template.disabled = true;
+    categoryAxis.renderer.minGridDistance = 50;
     categoryAxis.cursorTooltipEnabled = false;
 
-		/* ~~~~\  value axis  /~~~~ */
+    /* ~~~~\  value axis  /~~~~ */
     let valueAxis = utils.createAxis(
-      "Y", am4charts, am4core, chart, yAxis, 
+      "Y", am4charts, am4core, chart, yAxis,
       minValue, maxValue, false, theme, cursor
     );
-/*		let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-    valueAxis.paddingRight = yAxis.adjust || 0;
-		if(yAxis.title && yAxis.title.text !== "") {
-			valueAxis.title.text = yAxis.title.text;
-			valueAxis.title.fontWeight = "bold";
-			valueAxis.title.fontSize = yAxis.title.fontSize || 20;
-			valueAxis.title.fill =
-			  yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
-    }
-    if(yAxis.labels && yAxis.labels.formatter) {
-      valueAxis.numberFormatter = new am4core.NumberFormatter();
-      valueAxis.numberFormatter.numberFormat = yAxis.labels.formatter;
-      valueAxis.adjustLabelPrecision = false;
-    }
-    if(yAxis.gridLines && !yAxis.breaks) {
-      valueAxis.renderer.grid.template.stroke =
-        yAxis.gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
-      valueAxis.renderer.grid.template.strokeOpacity = 
-        yAxis.gridLines.opacity || 0.2;
-      valueAxis.renderer.grid.template.strokeWidth = 
-        yAxis.gridLines.width || 1;
-      if(yAxis.gridLines.dash) {
-        valueAxis.renderer.grid.template.strokeDasharray = 
-          yAxis.gridLines.dash;
-      }
-    } else {
-      valueAxis.renderer.grid.template.disabled = true;
-    }
-    if(yAxis.breaks) {
-      valueAxis.renderer.labels.template.disabled = true;
-      utils.createGridLines(
-        am4core, valueAxis, yAxis.breaks, yAxis.gridLines, yAxis.labels, theme
-      );
-    } else {
-      let yAxisLabels = valueAxis.renderer.labels.template;
-      yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
-      yAxisLabels.rotation = yAxis.labels.rotation || 0;
-      yAxisLabels.fill =
-        yAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");  
-    }
-		// we set fixed min/max and strictMinMax to true, as otherwise value axis will adjust min/max while dragging and it won't look smooth
-		valueAxis.strictMinMax = true;
-		valueAxis.min = this.props.minValue;
-		valueAxis.max = this.props.maxValue;
-		valueAxis.renderer.minWidth = 60;
-    if(cursor) {
-      if(cursor.tooltip)
-        valueAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
-      if(cursor.extraTooltipPrecision)
-        valueAxis.extraTooltipPrecision = cursor.extraTooltipPrecision;
-      if(cursor.renderer)
-        valueAxis.adapter.add("getTooltipText", cursor.renderer);
-    } else {
-      valueAxis.cursorTooltipEnabled = false;
-    }
-    */
+    /*		let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+        valueAxis.paddingRight = yAxis.adjust || 0;
+        if(yAxis.title && yAxis.title.text !== "") {
+          valueAxis.title.text = yAxis.title.text;
+          valueAxis.title.fontWeight = "bold";
+          valueAxis.title.fontSize = yAxis.title.fontSize || 20;
+          valueAxis.title.fill =
+            yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+        }
+        if(yAxis.labels && yAxis.labels.formatter) {
+          valueAxis.numberFormatter = new am4core.NumberFormatter();
+          valueAxis.numberFormatter.numberFormat = yAxis.labels.formatter;
+          valueAxis.adjustLabelPrecision = false;
+        }
+        if(yAxis.gridLines && !yAxis.breaks) {
+          valueAxis.renderer.grid.template.stroke =
+            yAxis.gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
+          valueAxis.renderer.grid.template.strokeOpacity = 
+            yAxis.gridLines.opacity || 0.2;
+          valueAxis.renderer.grid.template.strokeWidth = 
+            yAxis.gridLines.width || 1;
+          if(yAxis.gridLines.dash) {
+            valueAxis.renderer.grid.template.strokeDasharray = 
+              yAxis.gridLines.dash;
+          }
+        } else {
+          valueAxis.renderer.grid.template.disabled = true;
+        }
+        if(yAxis.breaks) {
+          valueAxis.renderer.labels.template.disabled = true;
+          utils.createGridLines(
+            am4core, valueAxis, yAxis.breaks, yAxis.gridLines, yAxis.labels, theme
+          );
+        } else {
+          let yAxisLabels = valueAxis.renderer.labels.template;
+          yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
+          yAxisLabels.rotation = yAxis.labels.rotation || 0;
+          yAxisLabels.fill =
+            yAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");  
+        }
+        // we set fixed min/max and strictMinMax to true, as otherwise value axis will adjust min/max while dragging and it won't look smooth
+        valueAxis.strictMinMax = true;
+        valueAxis.min = this.props.minValue;
+        valueAxis.max = this.props.maxValue;
+        valueAxis.renderer.minWidth = 60;
+        if(cursor) {
+          if(cursor.tooltip)
+            valueAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+          if(cursor.extraTooltipPrecision)
+            valueAxis.extraTooltipPrecision = cursor.extraTooltipPrecision;
+          if(cursor.renderer)
+            valueAxis.adapter.add("getTooltipText", cursor.renderer);
+        } else {
+          valueAxis.cursorTooltipEnabled = false;
+        }
+        */
 
 
     /* ~~~~\  horizontal line  /~~~~ */
-    if(hline) {
+    if (hline) {
       let range = valueAxis.axisRanges.create();
       range.value = hline.value;
       range.grid.stroke = am4core.color(hline.line.color);
@@ -381,8 +381,8 @@ class AmBarChart extends React.PureComponent {
     }
 
 
-		/* ~~~~\  cursor  /~~~~ */
-		if(cursor) {
+    /* ~~~~\  cursor  /~~~~ */
+    if (cursor) {
       chart.cursor = new am4charts.XYCursor();
       chart.cursor.yAxis = valueAxis;
       chart.cursor.lineX.disabled = true;
@@ -390,7 +390,7 @@ class AmBarChart extends React.PureComponent {
 
 
     /* ~~~~\  legend  /~~~~ */
-    if(chartLegend) {
+    if (chartLegend) {
       chart.legend = new am4charts.Legend();
       chart.legend.position = chartLegend.position || "bottom";
       chart.legend.useDefaultMarker = false;
@@ -399,51 +399,51 @@ class AmBarChart extends React.PureComponent {
       markerTemplate.height = chartLegend.itemsHeight || 20;
       // markerTemplate.strokeWidth = 1;
       // markerTemplate.strokeOpacity = 1;
-      chart.legend.itemContainers.template.events.on("over", function(ev) {
-        ev.target.dataItem.dataContext.columns.each(function(x) {
+      chart.legend.itemContainers.template.events.on("over", function (ev) {
+        ev.target.dataItem.dataContext.columns.each(function (x) {
           x.column.isHover = true;
         })
       });
-      chart.legend.itemContainers.template.events.on("out", function(ev) {
-        ev.target.dataItem.dataContext.columns.each(function(x) {
+      chart.legend.itemContainers.template.events.on("out", function (ev) {
+        ev.target.dataItem.dataContext.columns.each(function (x) {
           x.column.isHover = false;
         })
       });
     }
 
 
-		/* ~~~~\  function handling the drag event  /~~~~ */
-		function handleDrag(event) {
-			var dataItem = event.target.dataItem;
-			// convert coordinate to value
-			let value = valueAxis.yToValue(event.target.pixelY);
-			// set new value
-			dataItem.valueY = value;
-			// make column hover
-			dataItem.column.isHover = true;
-			// hide tooltip not to interrupt
-			dataItem.column.hideTooltip(0);
-			// make bullet hovered (as it might hide if mouse moves away)
-			event.target.isHover = true;
-		}
+    /* ~~~~\  function handling the drag event  /~~~~ */
+    function handleDrag(event) {
+      var dataItem = event.target.dataItem;
+      // convert coordinate to value
+      let value = valueAxis.yToValue(event.target.pixelY);
+      // set new value
+      dataItem.valueY = value;
+      // make column hover
+      dataItem.column.isHover = true;
+      // hide tooltip not to interrupt
+      dataItem.column.hideTooltip(0);
+      // make bullet hovered (as it might hide if mouse moves away)
+      event.target.isHover = true;
+    }
 
     /* 
       trigger the "positionchanged" event on bullets when a resizing occurs, 
       otherwise bullets are unresponsive  
     */
     chart.events.on("sizechanged", event => {
-      event.target.series.each(function(s) {
-        s.bulletsContainer.children.each(function(b) {
+      event.target.series.each(function (s) {
+        s.bulletsContainer.children.each(function (b) {
           b.dispatchImmediately("positionchanged");
         });
       });
     });
 
 
-		values.forEach(function(value, index){
+    values.forEach(function (value, index) {
 
       let series;
-      if(threeD) {
+      if (threeD) {
         series = chart.series.push(new am4charts.ColumnSeries3D());
       } else {
         series = chart.series.push(new am4charts.ColumnSeries());
@@ -457,7 +457,7 @@ class AmBarChart extends React.PureComponent {
 
       /* ~~~~\  value label  /~~~~ */
       let valueLabel;
-      if(showValues) {
+      if (showValues) {
         valueLabel = new am4charts.LabelBullet();
         series.bullets.push(valueLabel);
         valueLabel.label.text =
@@ -466,7 +466,7 @@ class AmBarChart extends React.PureComponent {
         valueLabel.label.truncate = false;
         valueLabel.strokeOpacity = 0;
         valueLabel.adapter.add("dy", (x, target) => {
-          if(target.dataItem.valueY > 0) {
+          if (target.dataItem.valueY > 0) {
             return -10;
           } else {
             return 10;
@@ -479,26 +479,26 @@ class AmBarChart extends React.PureComponent {
       let bullet;
       let columnStyle = columnStyles[value],
         color = columnStyle.color || chart.colors.getIndex(index),
-        strokeColor = columnStyle.strokeColor || 
+        strokeColor = columnStyle.strokeColor ||
           am4core.color(columnStyle.color).lighten(-0.5);
-      if(alwaysShowBullets || draggable[value]) {
+      if (alwaysShowBullets || draggable[value]) {
         bullet = series.bullets.create();
-        if(!alwaysShowBullets) {
+        if (!alwaysShowBullets) {
           bullet.opacity = 0; // initially invisible
           bullet.defaultState.properties.opacity = 0;
         }
         // add sprite to bullet
         let shapeConfig = bulletsStyle[value];
-        if(!shapeConfig.color) {
+        if (!shapeConfig.color) {
           shapeConfig.color = color;
         }
-        if(!shapeConfig.strokeColor) {
+        if (!shapeConfig.strokeColor) {
           shapeConfig.strokeColor = strokeColor;
         }
         let shape =
           utils.Shape(am4core, chart, index, bullet, shapeConfig);
       }
-      if(draggable[value]) {
+      if (draggable[value]) {
         // resize cursor when over
         bullet.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
         bullet.draggable = true;
@@ -516,7 +516,7 @@ class AmBarChart extends React.PureComponent {
           dataItem.column.isHover = false;
           event.target.isHover = false;
           dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
-          if(window.Shiny) {
+          if (window.Shiny) {
             Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
             Shiny.setInputValue(shinyId + "_change", {
               index: dataItem.index + 1,
@@ -532,7 +532,7 @@ class AmBarChart extends React.PureComponent {
       let columnTemplate = series.columns.template;
       columnTemplate.width = am4core.percent(columnWidth);
       columnTemplate.fill = color;
-      if(columnStyle.colorAdapter) {
+      if (columnStyle.colorAdapter) {
         // columnTemplate.adapter.add("fill", (x, target) => {
         //   let item = target.dataItem;
         //   let value = item.valueY;
@@ -543,7 +543,7 @@ class AmBarChart extends React.PureComponent {
         //   return color;
         // });
         columnTemplate.adapter.add("fill", columnStyle.colorAdapter);
-        if(!columnStyle.strokeColor && !columnStyle.strokeColorAdapter) {
+        if (!columnStyle.strokeColor && !columnStyle.strokeColorAdapter) {
           columnTemplate.adapter.add("stroke", (x, target) => {
             let color = columnStyle.colorAdapter(x, target);
             return am4core.color(color).lighten(-0.5);
@@ -551,22 +551,22 @@ class AmBarChart extends React.PureComponent {
         }
       }
       columnTemplate.stroke = strokeColor;
-      if(columnStyle.strokeColorAdapter) {
+      if (columnStyle.strokeColorAdapter) {
         columnTemplate.adapter.add("stroke", columnStyle.strokeColorAdapter);
       }
       columnTemplate.strokeOpacity = 1;
-      columnTemplate.column.fillOpacity = columnStyle.opacity || 
+      columnTemplate.column.fillOpacity = columnStyle.opacity ||
         (threeD ? 1 : 0.8);
       columnTemplate.column.strokeWidth = columnStyle.strokeWidth || 4;
       /* ~~~~\  tooltip  /~~~~ */
-      if(tooltips) {
+      if (tooltips) {
         columnTemplate.tooltipText = tooltips[value].text;
         let tooltip = utils.Tooltip(am4core, chart, index, tooltips[value]);
         tooltip.pointerOrientation = "vertical";
         tooltip.dy = 0;
         tooltip.adapter.add("rotation", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
               return 0;
             } else {
               return 180;
@@ -576,8 +576,8 @@ class AmBarChart extends React.PureComponent {
           }
         });
         tooltip.label.adapter.add("verticalCenter", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
               return "none";
             } else {
               return "bottom";
@@ -587,8 +587,8 @@ class AmBarChart extends React.PureComponent {
           }
         });
         tooltip.label.adapter.add("rotation", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
               return 0;
             } else {
               return 180;
@@ -599,7 +599,7 @@ class AmBarChart extends React.PureComponent {
         });
         columnTemplate.tooltip = tooltip;
         columnTemplate.adapter.add("tooltipY", (x, target) => {
-          if(target.dataItem.valueY > 0) {
+          if (target.dataItem.valueY > 0) {
             return 0;
           } else {
             return -valueAxis.valueToPoint(maxValue - target.dataItem.valueY).y;
@@ -608,28 +608,28 @@ class AmBarChart extends React.PureComponent {
       }
       let cr = columnStyle.cornerRadius || 8;
       columnTemplate.column.adapter.add("cornerRadiusTopRight", (x, target) => {
-        if(target.dataItem.valueY > 0) {
+        if (target.dataItem.valueY > 0) {
           return target.isHover ? 2 * cr : cr;
         } else {
           return 0;
         }
       });
       columnTemplate.column.adapter.add("cornerRadiusBottomRight", (x, target) => {
-        if(target.dataItem.valueY > 0) {
+        if (target.dataItem.valueY > 0) {
           return 0;
         } else {
           return target.isHover ? 2 * cr : cr;
         }
       });
       columnTemplate.column.adapter.add("cornerRadiusTopLeft", (x, target) => {
-        if(target.dataItem.valueY > 0) {
+        if (target.dataItem.valueY > 0) {
           return target.isHover ? 2 * cr : cr;
         } else {
           return 0;
         }
       });
       columnTemplate.column.adapter.add("cornerRadiusBottomLeft", (x, target) => {
-        if(target.dataItem.valueY > 0) {
+        if (target.dataItem.valueY > 0) {
           return 0;
         } else {
           return target.isHover ? 2 * cr : cr;
@@ -640,7 +640,7 @@ class AmBarChart extends React.PureComponent {
       // you can change any property on hover state and it will be animated
       columnHoverState.properties.fillOpacity = 1;
       columnHoverState.properties.strokeWidth = columnStyle.strokeWidth + 2;
-      if(tooltips && showValues) {
+      if (tooltips && showValues) {
         // hide label when hovered because the tooltip is shown
         columnTemplate.events.on("over", event => {
           let dataItem = event.target.dataItem;
@@ -654,7 +654,7 @@ class AmBarChart extends React.PureComponent {
           itemLabelBullet.fillOpacity = 1;
         });
       }
-      if(draggable[value]) {
+      if (draggable[value]) {
         // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
         columnTemplate.events.on("down", event => {
           let dataItem = event.target.dataItem;
@@ -664,7 +664,7 @@ class AmBarChart extends React.PureComponent {
         // when columns position changes, adjust minX/maxX of bullets so that we could only dragg vertically
         columnTemplate.events.on("positionchanged", event => {
           let dataItem = event.target.dataItem;
-          if(dataItem.bullets) {
+          if (dataItem.bullets) {
             //console.log('dataItem.bullets', dataItem.bullets);
             //console.log('bullet.uid', bullet.uid);
             let itemBullet = dataItem.bullets.getKey(bullet.uid);
@@ -691,8 +691,8 @@ class AmBarChart extends React.PureComponent {
   render() {
     return (
       <div
-        id = {this.props.chartId}
-        style = {this.style()}
+        id={this.props.chartId}
+        style={this.style()}
       ></div>
     );
   }
@@ -709,10 +709,10 @@ class AmHorizontalBarChart extends React.PureComponent {
   }
 
   style() {
-    if(window.Shiny && !window.FlexDashboard) {
-      return {width: "100%", height: "100%"};
+    if (window.Shiny && !window.FlexDashboard) {
+      return { width: "100%", height: "100%" };
     } else {
-      return {width: this.props.width, height: this.props.height};
+      return { width: this.props.width, height: this.props.height };
     }
   }
 
@@ -752,8 +752,8 @@ class AmHorizontalBarChart extends React.PureComponent {
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
-    if(window.Shiny) {
-      if(shinyId === undefined) {
+    if (window.Shiny) {
+      if (shinyId === undefined) {
         shinyId = $(document.getElementById(chartId)).parent().attr("id");
       }
       Shiny.setInputValue(
@@ -761,7 +761,7 @@ class AmHorizontalBarChart extends React.PureComponent {
       );
     }
 
-    switch(theme) {
+    switch (theme) {
       case "dark":
         am4core.useTheme(am4themes_dark);
         break;
@@ -792,7 +792,7 @@ class AmHorizontalBarChart extends React.PureComponent {
     }
 
     let chart;
-    if(threeD) {
+    if (threeD) {
       chart = am4core.create(this.props.chartId, am4charts.XYChart3D);
     } else {
       chart = am4core.create(this.props.chartId, am4charts.XYChart);
@@ -809,30 +809,30 @@ class AmHorizontalBarChart extends React.PureComponent {
 
 
     /* ~~~~\  Enable export  /~~~~ */
-    if(this.props.export) {
+    if (this.props.export) {
       chart.exporting.menu = new am4core.ExportMenu();
       chart.exporting.menu.items = utils.exportMenuItems;
     }
-    
 
-		/* ~~~~\  title  /~~~~ */
-		let chartTitle = this.props.chartTitle;
-		if(chartTitle) {
+
+    /* ~~~~\  title  /~~~~ */
+    let chartTitle = this.props.chartTitle;
+    if (chartTitle) {
       let title = chart.titles.create();
-			title.text = chartTitle.text.text;
-			title.fill =
-			  chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
-			title.fontSize = chartTitle.text.fontSize || 22;
-			title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.text = chartTitle.text.text;
+      title.fill =
+        chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
       title.fontFamily = chartTitle.text.fontFamily;
       title.align = chartTitle.align || "left";
       title.dy = -30;
-		}
+    }
 
 
     /* ~~~~\  caption  /~~~~ */
     let chartCaption = this.props.caption;
-    if(chartCaption) {
+    if (chartCaption) {
       let caption = chart.chartContainer.createChild(am4core.Label);
       caption.text = chartCaption.text.text;
       caption.fill =
@@ -845,7 +845,7 @@ class AmHorizontalBarChart extends React.PureComponent {
 
 
     /* ~~~~\  image  /~~~~ */
-    if(this.props.image) {
+    if (this.props.image) {
       utils.Image(am4core, chart, this.props.image);
     }
 
@@ -859,71 +859,71 @@ class AmHorizontalBarChart extends React.PureComponent {
     }
 
 
-		/* ~~~~\  button  /~~~~ */
-		if(this.props.button) {
+    /* ~~~~\  button  /~~~~ */
+    if (this.props.button) {
       let Button = chart.chartContainer.createChild(am4core.Button);
       utils.makeButton(Button, this.props.button);
-      Button.events.on("hit", function() {
-        for(let r = 0; r < data.length; ++r){
-          for(let v = 0; v < values.length; ++v) {
+      Button.events.on("hit", function () {
+        for (let r = 0; r < data.length; ++r) {
+          for (let v = 0; v < values.length; ++v) {
             chart.data[r][values[v]] = data2[r][values[v]];
           }
         }
         chart.invalidateRawData();
-        if(window.Shiny) {
+        if (window.Shiny) {
           Shiny.setInputValue(
             shinyId + ":rAmCharts4.dataframe", chart.data
           );
           Shiny.setInputValue(shinyId + "_change", null);
         }
       });
-		}
+    }
 
 
     /* ~~~~\  Shiny message handler for horizontal bar chart  /~~~~ */
-    if(window.Shiny) {
+    if (window.Shiny) {
       Shiny.addCustomMessageHandler(
         shinyId + "bar",
-        function(newdata) {
+        function (newdata) {
           let tail = " is missing in the data you supplied!";
           // check that the received data has the 'category' column
-          if(!newdata.hasOwnProperty(category)){
+          if (!newdata.hasOwnProperty(category)) {
             console.warn(
               `updateAmBarChart: column "${category}"` + tail
             );
             return null;
-          } 
+          }
           // check that the received data has the necessary categories
           let ok = true, i = 0;
-          while(ok && i < categories.length) {
+          while (ok && i < categories.length) {
             ok = newdata[category].indexOf(categories[i]) > -1;
-            if(!ok) {
+            if (!ok) {
               console.warn(
                 `updateAmBarChart: category "${categories[i]}"` + tail
               );
             }
             i++;
           }
-          if(!ok) {
+          if (!ok) {
             return null;
           }
           // check that the received data has the necessary 'values' columns
           i = 0;
-          while(ok && i < values.length) {
+          while (ok && i < values.length) {
             ok = newdata.hasOwnProperty(values[i]);
-            if(!ok) {
+            if (!ok) {
               console.warn(
                 `updateAmBarChart: column "${values[i]}"` + tail
-              );  
+              );
             }
             i++;
           }
-          if(!ok) {
+          if (!ok) {
             return null;
           }
           // update chart data
           let tnewdata = HTMLWidgets.dataframeToD3(newdata);
-          for (let r = 0; r < data.length; ++r){
+          for (let r = 0; r < data.length; ++r) {
             for (let v = 0; v < values.length; ++v) {
               chart.data[r][values[v]] = tnewdata[r][values[v]];
             }
@@ -938,40 +938,40 @@ class AmHorizontalBarChart extends React.PureComponent {
     }
 
 
-		/* ~~~~\  category axis  /~~~~ */
-		let categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+    /* ~~~~\  category axis  /~~~~ */
+    let categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
     categoryAxis.paddingRight = yAxis.adjust || 0;
-		categoryAxis.renderer.inversed = true;
-		categoryAxis.renderer.grid.template.location = 0;
-		categoryAxis.renderer.cellStartLocation = 1 - cellWidth/100;
-		categoryAxis.renderer.cellEndLocation = cellWidth/100;
-		if(yAxis && yAxis.title && yAxis.title.text !== ""){
-  		categoryAxis.title.text = yAxis.title.text || category;
-  		categoryAxis.title.fontWeight = "bold";
-  		categoryAxis.title.fontSize = yAxis.title.fontSize || 20;
-  		categoryAxis.title.fill =
-  		  yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
-		}
-		var yAxisLabels = categoryAxis.renderer.labels.template;
-		yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
-		yAxisLabels.rotation = yAxis.labels.rotation || 0;
-		yAxisLabels.fill =
-		  yAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
-		categoryAxis.dataFields.category = category;
-		categoryAxis.renderer.grid.template.disabled = true;
-		categoryAxis.renderer.minGridDistance = 50;
-//		categoryAxis.numberFormatter.numberFormat = valueFormatter;
+    categoryAxis.renderer.inversed = true;
+    categoryAxis.renderer.grid.template.location = 0;
+    categoryAxis.renderer.cellStartLocation = 1 - cellWidth / 100;
+    categoryAxis.renderer.cellEndLocation = cellWidth / 100;
+    if (yAxis && yAxis.title && yAxis.title.text !== "") {
+      categoryAxis.title.text = yAxis.title.text || category;
+      categoryAxis.title.fontWeight = "bold";
+      categoryAxis.title.fontSize = yAxis.title.fontSize || 20;
+      categoryAxis.title.fill =
+        yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+    }
+    var yAxisLabels = categoryAxis.renderer.labels.template;
+    yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
+    yAxisLabels.rotation = yAxis.labels.rotation || 0;
+    yAxisLabels.fill =
+      yAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+    categoryAxis.dataFields.category = category;
+    categoryAxis.renderer.grid.template.disabled = true;
+    categoryAxis.renderer.minGridDistance = 50;
+    //		categoryAxis.numberFormatter.numberFormat = valueFormatter;
     categoryAxis.cursorTooltipEnabled = false;
 
-		/* ~~~~\  value axis  /~~~~ */
+    /* ~~~~\  value axis  /~~~~ */
     let valueAxis = utils.createAxis(
-      "X", am4charts, am4core, chart, xAxis, 
+      "X", am4charts, am4core, chart, xAxis,
       minValue, maxValue, false, theme, cursor
     );
 
 
     /* ~~~~\  vertical line  /~~~~ */
-    if(vline) {
+    if (vline) {
       let range = valueAxis.axisRanges.create();
       range.value = vline.value;
       range.grid.stroke = am4core.color(vline.line.color);
@@ -981,8 +981,8 @@ class AmHorizontalBarChart extends React.PureComponent {
     }
 
 
-		/* ~~~~\  cursor  /~~~~ */
-		if(cursor) {
+    /* ~~~~\  cursor  /~~~~ */
+    if (cursor) {
       chart.cursor = new am4charts.XYCursor();
       chart.cursor.xAxis = valueAxis;
       chart.cursor.lineY.disabled = true;
@@ -990,7 +990,7 @@ class AmHorizontalBarChart extends React.PureComponent {
 
 
     /* ~~~~\  legend  /~~~~ */
-    if(chartLegend) {
+    if (chartLegend) {
       chart.legend = new am4charts.Legend();
       chart.legend.position = chartLegend.position || "bottom";
       chart.legend.useDefaultMarker = false;
@@ -999,52 +999,52 @@ class AmHorizontalBarChart extends React.PureComponent {
       markerTemplate.height = chartLegend.itemsHeight || 20;
       //markerTemplate.strokeWidth = 1;
       //markerTemplate.strokeOpacity = 1;
-      chart.legend.itemContainers.template.events.on("over", function(ev) {
-        ev.target.dataItem.dataContext.columns.each(function(x) {
+      chart.legend.itemContainers.template.events.on("over", function (ev) {
+        ev.target.dataItem.dataContext.columns.each(function (x) {
           x.column.isHover = true;
         })
       });
-      chart.legend.itemContainers.template.events.on("out", function(ev) {
-        ev.target.dataItem.dataContext.columns.each(function(x) {
+      chart.legend.itemContainers.template.events.on("out", function (ev) {
+        ev.target.dataItem.dataContext.columns.each(function (x) {
           x.column.isHover = false;
         })
       });
-//      markerTemplate.stroke = am4core.color("#000000"); no effect
+      //      markerTemplate.stroke = am4core.color("#000000"); no effect
     }
 
 
-		/* ~~~~\  function handling the drag event  /~~~~ */
-		function handleDrag(event) {
-			var dataItem = event.target.dataItem;
-			// convert coordinate to value
-			let value = valueAxis.xToValue(event.target.pixelX);
-			// set new value
-			dataItem.valueX = value;
-			// make column hover
-			dataItem.column.isHover = true;
-			// hide tooltip not to interrupt
-			dataItem.column.hideTooltip(0);
-			// make bullet hovered (as it might hide if mouse moves away)
-			event.target.isHover = true;
-		}
+    /* ~~~~\  function handling the drag event  /~~~~ */
+    function handleDrag(event) {
+      var dataItem = event.target.dataItem;
+      // convert coordinate to value
+      let value = valueAxis.xToValue(event.target.pixelX);
+      // set new value
+      dataItem.valueX = value;
+      // make column hover
+      dataItem.column.isHover = true;
+      // hide tooltip not to interrupt
+      dataItem.column.hideTooltip(0);
+      // make bullet hovered (as it might hide if mouse moves away)
+      event.target.isHover = true;
+    }
 
     /* 
       trigger the "positionchanged" event on bullets when a resizing occurs, 
       otherwise bullets are unresponsive  
     */
     chart.events.on("sizechanged", event => {
-      event.target.series.each(function(s) {
-        s.bulletsContainer.children.each(function(b) {
+      event.target.series.each(function (s) {
+        s.bulletsContainer.children.each(function (b) {
           b.dispatchImmediately("positionchanged");
         });
       });
     });
 
 
-		values.forEach(function(value, index){
+    values.forEach(function (value, index) {
 
       let series;
-      if(threeD) {
+      if (threeD) {
         series = chart.series.push(new am4charts.ColumnSeries3D());
       } else {
         series = chart.series.push(new am4charts.ColumnSeries());
@@ -1058,7 +1058,7 @@ class AmHorizontalBarChart extends React.PureComponent {
 
       /* ~~~~\  value label  /~~~~ */
       let valueLabel;
-      if(showValues) {
+      if (showValues) {
         valueLabel = new am4charts.LabelBullet();
         series.bullets.push(valueLabel);
         valueLabel.label.text =
@@ -1066,51 +1066,51 @@ class AmHorizontalBarChart extends React.PureComponent {
         valueLabel.label.hideOversized = true;
         valueLabel.label.truncate = false;
         valueLabel.strokeOpacity = 0;
-  			valueLabel.adapter.add("dx", (x, target) => {
-  				if(target.dataItem.valueX > 0) {
-  					return -10;
-  				} else {
-  					return 10;
-        	}
-			  });
-			  valueLabel.label.adapter.add("horizontalCenter", (x, target) => {
-				  if(target.dataItem.valueX > 0) {
-					  return "left";
-				  } else {
-					  return "right";
-				  }
-			  });
-			  valueLabel.label.adapter.add("dx", (x, target) => {
-				  if(target.dataItem.valueX > 0) {
-					  return 13;
-				  } else {
-					  return -13;
-				  }
-			  });
+        valueLabel.adapter.add("dx", (x, target) => {
+          if (target.dataItem.valueX > 0) {
+            return -10;
+          } else {
+            return 10;
+          }
+        });
+        valueLabel.label.adapter.add("horizontalCenter", (x, target) => {
+          if (target.dataItem.valueX > 0) {
+            return "left";
+          } else {
+            return "right";
+          }
+        });
+        valueLabel.label.adapter.add("dx", (x, target) => {
+          if (target.dataItem.valueX > 0) {
+            return 13;
+          } else {
+            return -13;
+          }
+        });
       }
 
 
       /* ~~~~\  bullet  /~~~~ */
       let bullet;
       let columnStyle = columnStyles[value];
-      if(alwaysShowBullets || draggable[value]) {
+      if (alwaysShowBullets || draggable[value]) {
         bullet = series.bullets.create();
-        if(!alwaysShowBullets) {
+        if (!alwaysShowBullets) {
           bullet.opacity = 0; // initially invisible
           bullet.defaultState.properties.opacity = 0;
         }
         // add sprite to bullet
         let shapeConfig = bulletsStyle[value];
-        if(!shapeConfig.color) {
+        if (!shapeConfig.color) {
           shapeConfig.color = columnStyle.color;
         }
-        if(!shapeConfig.strokeColor) {
+        if (!shapeConfig.strokeColor) {
           shapeConfig.strokeColor = columnStyle.strokeColor;
         }
         let shape =
           utils.Shape(am4core, chart, index, bullet, shapeConfig);
       }
-      if(draggable[value]) {
+      if (draggable[value]) {
         // resize cursor when over
         bullet.cursorOverStyle = am4core.MouseCursorStyle.horizontalResize;
         bullet.draggable = true;
@@ -1128,7 +1128,7 @@ class AmHorizontalBarChart extends React.PureComponent {
           dataItem.column.isHover = false;
           event.target.isHover = false;
           dataCopy[dataItem.index][value] = dataItem.values.valueX.value;
-          if(window.Shiny) {
+          if (window.Shiny) {
             Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
             Shiny.setInputValue(shinyId + "_change", {
               index: dataItem.index + 1,
@@ -1148,84 +1148,84 @@ class AmHorizontalBarChart extends React.PureComponent {
       columnTemplate.stroke = columnStyle.strokeColor ||
         am4core.color(columnTemplate.fill).lighten(-0.5);
       columnTemplate.strokeOpacity = 1;
-      columnTemplate.column.fillOpacity = columnStyle.opacity || 
+      columnTemplate.column.fillOpacity = columnStyle.opacity ||
         (threeD ? 1 : 0.8);
       columnTemplate.column.strokeWidth = columnStyle.strokeWidth;
       /* ~~~~\  tooltip  /~~~~ */
-      if(tooltips) {
+      if (tooltips) {
         columnTemplate.tooltipText = tooltips[value].text;
         let tooltip = utils.Tooltip(am4core, chart, index, tooltips[value]);
-  			tooltip.pointerOrientation = "horizontal";
-	  		tooltip.dx = 0;
-  			tooltip.rotation = 180;
-  			tooltip.label.verticalCenter = "bottom";
-  			tooltip.label.rotation = 180;
-/*      tooltip.adapter.add("rotation", (x, target) => {
-          if(target.dataItem.valueY >= 0) {
-            return 0;
-          } else {
-            return 180;
-          }
-        });
-        tooltip.label.adapter.add("verticalCenter", (x, target) => {
-          if(target.dataItem.valueY >= 0) {
-            return "none";
-          } else {
-            return "bottom";
-          }
-        });
-        tooltip.label.adapter.add("rotation", (x, target) => {
-          if(target.dataItem.valueY >= 0) {
-            return 0;
-          } else {
-            return 180;
-          }
-        });
-        */
+        tooltip.pointerOrientation = "horizontal";
+        tooltip.dx = 0;
+        tooltip.rotation = 180;
+        tooltip.label.verticalCenter = "bottom";
+        tooltip.label.rotation = 180;
+        /*      tooltip.adapter.add("rotation", (x, target) => {
+                  if(target.dataItem.valueY >= 0) {
+                    return 0;
+                  } else {
+                    return 180;
+                  }
+                });
+                tooltip.label.adapter.add("verticalCenter", (x, target) => {
+                  if(target.dataItem.valueY >= 0) {
+                    return "none";
+                  } else {
+                    return "bottom";
+                  }
+                });
+                tooltip.label.adapter.add("rotation", (x, target) => {
+                  if(target.dataItem.valueY >= 0) {
+                    return 0;
+                  } else {
+                    return 180;
+                  }
+                });
+                */
         columnTemplate.tooltip = tooltip;
-	  		columnTemplate.adapter.add("tooltipX", (x, target) => {
-		  		if(target.dataItem.valueX > 0) {
-			  		return valueAxis.valueToPoint(target.dataItem.valueX + minValue).x;
-				  } else {
-					  return 0;
-				  }
-			  });
+        columnTemplate.adapter.add("tooltipX", (x, target) => {
+          if (target.dataItem.valueX > 0) {
+            return valueAxis.valueToPoint(target.dataItem.valueX + minValue).x;
+          } else {
+            return 0;
+          }
+        });
       }
       let cr = columnStyle.cornerRadius || 8;
-			columnTemplate.column.adapter.add("cornerRadiusTopRight", (x, target) => {
-				if(target.dataItem.valueX > 0) {
-					return target.isHover ? 2 * cr : cr;
-				} else {
-					return 0;
-				}
-			});
-			columnTemplate.column.adapter.add("cornerRadiusBottomRight", (x, target) => {
-				if(target.dataItem.valueX > 0) {
-					return target.isHover ? 2 * cr : cr;
-				} else {
-					return 0;
-				}
-			});
-			columnTemplate.column.adapter.add("cornerRadiusTopLeft", (x, target) => {
-				if(target.dataItem.valueX > 0) {
-					return 0;
-				} else {
-					return target.isHover ? 2 * cr : cr;
-				}
-			});
-			columnTemplate.column.adapter.add("cornerRadiusBottomLeft", (x, target) => {
-				if(target.dataItem.valueX > 0) {
-					return 0;
-				} else {
-					return target.isHover ? 2 * cr : cr;
-				}
-			});
+      columnTemplate.column.adapter.add("cornerRadiusTopRight", (x, target) => {
+        if (target.dataItem.valueX > 0) {
+          return target.isHover ? 2 * cr : cr;
+        } else {
+          return 0;
+        }
+      });
+      columnTemplate.column.adapter.add("cornerRadiusBottomRight", (x, target) => {
+        if (target.dataItem.valueX > 0) {
+          return target.isHover ? 2 * cr : cr;
+        } else {
+          return 0;
+        }
+      });
+      columnTemplate.column.adapter.add("cornerRadiusTopLeft", (x, target) => {
+        if (target.dataItem.valueX > 0) {
+          return 0;
+        } else {
+          return target.isHover ? 2 * cr : cr;
+        }
+      });
+      columnTemplate.column.adapter.add("cornerRadiusBottomLeft", (x, target) => {
+        if (target.dataItem.valueX > 0) {
+          return 0;
+        } else {
+          return target.isHover ? 2 * cr : cr;
+        }
+      });
       // columns hover state
       let columnHoverState = columnTemplate.column.states.create("hover");
       // you can change any property on hover state and it will be animated
       columnHoverState.properties.fillOpacity = 1;
       columnHoverState.properties.strokeWidth = columnStyle.strokeWidth + 2;
-      if(tooltips && showValues) {
+      if (tooltips && showValues) {
         // hide label when hovered because the tooltip is shown
         columnTemplate.events.on("over", event => {
           let dataItem = event.target.dataItem;
@@ -1239,7 +1239,7 @@ class AmHorizontalBarChart extends React.PureComponent {
           itemLabelBullet.fillOpacity = 1;
         });
       }
-      if(draggable[value]) {
+      if (draggable[value]) {
         // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
         columnTemplate.events.on("down", event => {
           let dataItem = event.target.dataItem;
@@ -1247,17 +1247,17 @@ class AmHorizontalBarChart extends React.PureComponent {
           itemBullet.dragStart(event.pointer);
         });
         // when columns position changes, adjust minX/maxX of bullets so that we could only dragg horizontally
-  			columnTemplate.events.on("positionchanged", event => {
-	  			let dataItem = event.target.dataItem;
-			  	if(dataItem.bullets !== undefined) {
-  			  	let itemBullet = dataItem.bullets.getKey(bullet.uid);
-	  			  let column = dataItem.column;
-  		  		itemBullet.minY = column.pixelY + column.pixelHeight / 2;
-	  		  	itemBullet.maxY = itemBullet.minY;
-  				  itemBullet.minX = 0;
-  				  itemBullet.maxX = chart.seriesContainer.pixelWidth;
-  				}
-  			});
+        columnTemplate.events.on("positionchanged", event => {
+          let dataItem = event.target.dataItem;
+          if (dataItem.bullets !== undefined) {
+            let itemBullet = dataItem.bullets.getKey(bullet.uid);
+            let column = dataItem.column;
+            itemBullet.minY = column.pixelY + column.pixelHeight / 2;
+            itemBullet.maxY = itemBullet.minY;
+            itemBullet.minX = 0;
+            itemBullet.maxX = chart.seriesContainer.pixelWidth;
+          }
+        });
       }
     });
 
@@ -1266,7 +1266,7 @@ class AmHorizontalBarChart extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    if(this.chart) {
+    if (this.chart) {
       this.chart.dispose();
     }
   }
@@ -1274,8 +1274,8 @@ class AmHorizontalBarChart extends React.PureComponent {
   render() {
     return (
       <div
-        id = {this.props.chartId}
-        style = {this.style()}
+        id={this.props.chartId}
+        style={this.style()}
       ></div>
     );
   }
@@ -1293,15 +1293,15 @@ class AmLineChart extends React.PureComponent {
   }
 
   style() {
-    if(window.Shiny && !window.FlexDashboard) {
-      return {width: "100%", height: "100%"};
+    if (window.Shiny && !window.FlexDashboard) {
+      return { width: "100%", height: "100%" };
     } else {
-      return {width: this.props.width, height: this.props.height};
+      return { width: this.props.width, height: this.props.height };
     }
   }
 
   toggleHover(series, over) {
-    series.segments.each(function(segment) {
+    series.segments.each(function (segment) {
       segment.isHover = over;
     });
   }
@@ -1341,27 +1341,27 @@ class AmLineChart extends React.PureComponent {
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
-    if(isDate) {
+    if (isDate) {
       data[xValue] = data[xValue].map(utils.toDate);
-      if(trendData0) {
-        for(let key in trendData0) {
+      if (trendData0) {
+        for (let key in trendData0) {
           trendData0[key].x = trendData0[key].x.map(utils.toDate);
         }
       }
     }
     data = HTMLWidgets.dataframeToD3(data);
     //let dataCopy = data.map(row => ({...row}));
-    let dataCopy = data.map(row => (utils.subset({...row}, [xValue].concat(yValues))));
+    let dataCopy = data.map(row => (utils.subset({ ...row }, [xValue].concat(yValues))));
     let trendData = trendData0 ?
       Object.assign({}, ...Object.keys(trendData0)
-        .map(k => ({[k]: HTMLWidgets.dataframeToD3(trendData0[k])}))
+        .map(k => ({ [k]: HTMLWidgets.dataframeToD3(trendData0[k]) }))
       ) : null;
 
-    if(window.Shiny) {
-      if(shinyId === undefined){
+    if (window.Shiny) {
+      if (shinyId === undefined) {
         shinyId = $(document.getElementById(chartId)).parent().attr("id");
       }
-      if(isDate) {
+      if (isDate) {
         Shiny.setInputValue(
           shinyId + ":rAmCharts4.dataframeWithDate",
           {
@@ -1377,7 +1377,7 @@ class AmLineChart extends React.PureComponent {
     }
 
 
-    switch(theme) {
+    switch (theme) {
       case "dark":
         am4core.useTheme(am4themes_dark);
         break;
@@ -1422,30 +1422,30 @@ class AmLineChart extends React.PureComponent {
 
 
     /* ~~~~\  Enable export  /~~~~ */
-    if(this.props.export) {
+    if (this.props.export) {
       chart.exporting.menu = new am4core.ExportMenu();
       chart.exporting.menu.items = utils.exportMenuItems;
     }
 
 
-		/* ~~~~\  title  /~~~~ */
-		let chartTitle = this.props.chartTitle;
-		if(chartTitle) {
+    /* ~~~~\  title  /~~~~ */
+    let chartTitle = this.props.chartTitle;
+    if (chartTitle) {
       let title = chart.titles.create();
-			title.text = chartTitle.text.text;
-			title.fill =
-			  chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
-			title.fontSize = chartTitle.text.fontSize || 22;
-			title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.text = chartTitle.text.text;
+      title.fill =
+        chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
       title.fontFamily = chartTitle.text.fontFamily;
       title.align = chartTitle.align || "left";
       title.dy = -30;
-		}
+    }
 
 
     /* ~~~~\  caption  /~~~~ */
     let chartCaption = this.props.caption;
-    if(chartCaption) {
+    if (chartCaption) {
       let caption = chart.chartContainer.createChild(am4core.Label);
       caption.text = chartCaption.text.text;
       caption.fill =
@@ -1458,33 +1458,33 @@ class AmLineChart extends React.PureComponent {
 
 
     /* ~~~~\  image  /~~~~ */
-    if(this.props.image) {
+    if (this.props.image) {
       utils.Image(am4core, chart, this.props.image);
     }
 
 
     /* ~~~~\  scrollbars  /~~~~ */
-    if(this.props.scrollbarX) {
+    if (this.props.scrollbarX) {
       chart.scrollbarX = new am4core.Scrollbar();
     }
-    if(this.props.scrollbarY) {
+    if (this.props.scrollbarY) {
       chart.scrollbarY = new am4core.Scrollbar();
     }
 
 
-		/* ~~~~\  button  /~~~~ */
-		if(this.props.button) {
+    /* ~~~~\  button  /~~~~ */
+    if (this.props.button) {
       let Button = chart.chartContainer.createChild(am4core.Button);
       utils.makeButton(Button, this.props.button);
-      Button.events.on("hit", function() {
-        for(let r = 0; r < data.length; ++r){
-          for(let v = 0; v < yValues.length; ++v) {
+      Button.events.on("hit", function () {
+        for (let r = 0; r < data.length; ++r) {
+          for (let v = 0; v < yValues.length; ++v) {
             chart.data[r][yValues[v]] = data2[r][yValues[v]];
           }
         }
         chart.invalidateRawData();
-        if(window.Shiny) {
-          if(isDate) {
+        if (window.Shiny) {
+          if (isDate) {
             Shiny.setInputValue(
               shinyId + ":rAmCharts4.dataframeWithDate",
               {
@@ -1501,45 +1501,45 @@ class AmLineChart extends React.PureComponent {
           }
         }
 
-        if(trendJS) {
-          let seriesNames = chart.series.values.map(function(x){return x.name});
-          yValues.forEach(function(value, index) {
-            if(trendJS[value]) {
+        if (trendJS) {
+          let seriesNames = chart.series.values.map(function (x) { return x.name });
+          yValues.forEach(function (value, index) {
+            if (trendJS[value]) {
               let thisSeriesName = yValueNames[value],
                 trendSeriesName = thisSeriesName + "_trend",
                 trendSeriesIndex = seriesNames.indexOf(trendSeriesName),
                 trendSeries = chart.series.values[trendSeriesIndex],
                 trendSeriesData = trendSeries.data,
-                regData = data2.map(function(row){
+                regData = data2.map(function (row) {
                   return [row[xValue], row[value]];
                 }),
                 fit = regression.polynomial(
                   regData, { order: trendJS[value], precision: 15 }
                 ),
-                regressionLine = trendSeriesData.map(function(row){
+                regressionLine = trendSeriesData.map(function (row) {
                   let xy = fit.predict(row.x);
-                  return {x: xy[0], y: xy[1]};
+                  return { x: xy[0], y: xy[1] };
                 });
-              regressionLine.forEach(function(point, i){
+              regressionLine.forEach(function (point, i) {
                 trendSeriesData[i] = point;
               });
               trendSeries.invalidateData();
 
               let ribbonSeriesName = thisSeriesName + "_ribbon",
                 ribbonSeriesIndex = seriesNames.indexOf(ribbonSeriesName);
-              if(ribbonSeriesIndex > -1) {
+              if (ribbonSeriesIndex > -1) {
                 let ribbonSeries = chart.series.values[ribbonSeriesIndex],
                   ribbonSeriesData = ribbonSeries.data,
-                  y = data2.map(function(row){
+                  y = data2.map(function (row) {
                     return row[value];
                   }),
-                  yhat = fit.points.map(function(point){ return point[1]; }),
+                  yhat = fit.points.map(function (point) { return point[1]; }),
                   ssq = 0;
-                for(let i = 0; i < y.length; ++i) {
-                  ssq += (y[i] - yhat[i])*(y[i] - yhat[i]);
+                for (let i = 0; i < y.length; ++i) {
+                  ssq += (y[i] - yhat[i]) * (y[i] - yhat[i]);
                 }
                 let sigma = Math.sqrt(ssq / (y.length - 1 - trendJS[value]));
-                for(let i = 0; i < ribbonSeriesData.length; ++i) {
+                for (let i = 0; i < ribbonSeriesData.length; ++i) {
                   let yhat = trendSeriesData[i].y,
                     delta = sigma * ribbonSeriesData[i].seFactor;
                   ribbonSeriesData[i].lwr = yhat - delta;
@@ -1553,175 +1553,174 @@ class AmLineChart extends React.PureComponent {
         }
 
       });
-		}
+    }
 
 
-		/* ~~~~\  x-axis  /~~~~ */
+    /* ~~~~\  x-axis  /~~~~ */
     let XAxis = utils.createAxis(
-      "X", am4charts, am4core, chart, xAxis, 
+      "X", am4charts, am4core, chart, xAxis,
       minX, maxX, isDate, theme, cursor, xValue
     );
-/*
-    let XAxis, Xformatter;
-    if(xAxis.labels && xAxis.labels.formatter) {
-      Xformatter = xAxis.labels.formatter;
-    }
-		if(isDate) {
-      XAxis = chart.xAxes.push(new am4charts.DateAxis());
-      XAxis.dataFields.dateX = xValue;
-      if(Xformatter) {
-        XAxis.dateFormats.setKey("day", Xformatter.day[0]);
-        if(Xformatter.day[1]) {
-          XAxis.periodChangeDateFormats.setKey("day", Xformatter.day[1]);
+    /*
+        let XAxis, Xformatter;
+        if(xAxis.labels && xAxis.labels.formatter) {
+          Xformatter = xAxis.labels.formatter;
         }
-        XAxis.dateFormats.setKey("week", Xformatter.week[0]);
-        if(Xformatter.week[1]) {
-          XAxis.periodChangeDateFormats.setKey("week", Xformatter.week[1]);
+        if(isDate) {
+          XAxis = chart.xAxes.push(new am4charts.DateAxis());
+          XAxis.dataFields.dateX = xValue;
+          if(Xformatter) {
+            XAxis.dateFormats.setKey("day", Xformatter.day[0]);
+            if(Xformatter.day[1]) {
+              XAxis.periodChangeDateFormats.setKey("day", Xformatter.day[1]);
+            }
+            XAxis.dateFormats.setKey("week", Xformatter.week[0]);
+            if(Xformatter.week[1]) {
+              XAxis.periodChangeDateFormats.setKey("week", Xformatter.week[1]);
+            }
+            XAxis.dateFormats.setKey("month", Xformatter.month[0]);
+            if(Xformatter.month[1]) {
+              XAxis.periodChangeDateFormats.setKey("month", Xformatter.month[1]);
+            }
+          }
+        } else {
+          XAxis = chart.xAxes.push(new am4charts.ValueAxis());
+          XAxis.dataFields.valueX = xValue;
+          if(Xformatter) {
+            XAxis.numberFormatter = new am4core.NumberFormatter();
+            XAxis.numberFormatter.numberFormat = Xformatter;
+            XAxis.adjustLabelPrecision = false;
+          }
         }
-        XAxis.dateFormats.setKey("month", Xformatter.month[0]);
-        if(Xformatter.month[1]) {
-          XAxis.periodChangeDateFormats.setKey("month", Xformatter.month[1]);
+        if(xAxis) {
+          XAxis.paddingBottom = xAxis.adjust || 0;
         }
-      }
-		} else {
-      XAxis = chart.xAxes.push(new am4charts.ValueAxis());
-      XAxis.dataFields.valueX = xValue;
-      if(Xformatter) {
-        XAxis.numberFormatter = new am4core.NumberFormatter();
-        XAxis.numberFormatter.numberFormat = Xformatter;
-        XAxis.adjustLabelPrecision = false;
-      }
-    }
-		if(xAxis) {
-      XAxis.paddingBottom = xAxis.adjust || 0;
-		}
-		XAxis.strictMinMax = true;
-		XAxis.min = minX;
-		XAxis.max = maxX;
-		if(xAxis && xAxis.title && xAxis.title.text !== "") {
-  		XAxis.title.text = xAxis.title.text || xValue;
-  		XAxis.title.fontWeight = "bold";
-  		XAxis.title.fontSize = xAxis.title.fontSize || 20;
-  		XAxis.title.fill =
-  		  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
-    }
-
-    let xBreaksType; 
-    if(xAxis.breaks) { 
-      xBreaksType = 
-        typeof xAxis.breaks === "number" ? "interval" : 
-        (Array.isArray(xAxis.breaks) ? "timeInterval" : 
-        "breaks");
-    }
-
-    if(xAxis.gridLines) {
-      if(xBreaksType === "interval")
-        XAxis.renderer.minGridDistance = xAxis.breaks;
-      XAxis.renderer.grid.template.stroke =
-        xAxis.gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
-      XAxis.renderer.grid.template.strokeOpacity = 
-        xAxis.gridLines.opacity || 0.2;
-      XAxis.renderer.grid.template.strokeWidth = 
-        xAxis.gridLines.width || 1;
-      if(xAxis.gridLines.dash) {
-        XAxis.renderer.grid.template.strokeDasharray = 
-          xAxis.gridLines.dash;
-      }
-    } else {
-      XAxis.renderer.grid.template.disabled = true;
-    }
-    if(xBreaksType === "breaks") {
-      XAxis.renderer.grid.template.disabled = true;
-      XAxis.renderer.labels.template.disabled = true;
-      if(isDate) {
-        XAxis.renderer.minGridDistance = 10;
-        XAxis.startLocation = 0.5; // ??
-        XAxis.endLocation = 0.5; // ??
-      }
-      utils.createGridLines(
-        am4core, XAxis, xAxis.breaks, xAxis.gridLines, 
-        xAxis.labels, theme, isDate
-      );
-    } else {
-      if(xBreaksType === "timeInterval") {
-        XAxis.gridIntervals.setAll(xAxis.breaks);
-        XAxis.renderer.grid.template.location = 0.5;
-        XAxis.renderer.labels.template.location = 0.5;
-        XAxis.startLocation = 0.5; // ??
-        XAxis.endLocation = 0.5; // ??
-      }
-      let xAxisLabels = XAxis.renderer.labels.template;
-      xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
-      xAxisLabels.rotation = xAxis.labels.rotation || 0;
-      if(xAxisLabels.rotation !== 0) {
-        xAxisLabels.horizontalCenter = "right";
-      }
-      xAxisLabels.fill =
-        xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
-    }
-    if(cursor &&
-      (cursor === true || !cursor.axes || ["x","xy"].indexOf(cursor.axes)) > -1)
-    {
-      if(cursor.tooltip)
-        XAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
-      if(cursor.extraTooltipPrecision)
-        XAxis.extraTooltipPrecision = cursor.extraTooltipPrecision.x;
-      if(cursor.renderer && cursor.renderer.x)
-        XAxis.adapter.add("getTooltipText", cursor.renderer.x);
-      if(cursor.dateFormat)
-        XAxis.tooltipDateFormat = cursor.dateFormat;
-    } else {
-      XAxis.cursorTooltipEnabled = false;
-    }
-*/
+        XAxis.strictMinMax = true;
+        XAxis.min = minX;
+        XAxis.max = maxX;
+        if(xAxis && xAxis.title && xAxis.title.text !== "") {
+          XAxis.title.text = xAxis.title.text || xValue;
+          XAxis.title.fontWeight = "bold";
+          XAxis.title.fontSize = xAxis.title.fontSize || 20;
+          XAxis.title.fill =
+            xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+        }
+    
+        let xBreaksType; 
+        if(xAxis.breaks) { 
+          xBreaksType = 
+            typeof xAxis.breaks === "number" ? "interval" : 
+            (Array.isArray(xAxis.breaks) ? "timeInterval" : 
+            "breaks");
+        }
+    
+        if(xAxis.gridLines) {
+          if(xBreaksType === "interval")
+            XAxis.renderer.minGridDistance = xAxis.breaks;
+          XAxis.renderer.grid.template.stroke =
+            xAxis.gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
+          XAxis.renderer.grid.template.strokeOpacity = 
+            xAxis.gridLines.opacity || 0.2;
+          XAxis.renderer.grid.template.strokeWidth = 
+            xAxis.gridLines.width || 1;
+          if(xAxis.gridLines.dash) {
+            XAxis.renderer.grid.template.strokeDasharray = 
+              xAxis.gridLines.dash;
+          }
+        } else {
+          XAxis.renderer.grid.template.disabled = true;
+        }
+        if(xBreaksType === "breaks") {
+          XAxis.renderer.grid.template.disabled = true;
+          XAxis.renderer.labels.template.disabled = true;
+          if(isDate) {
+            XAxis.renderer.minGridDistance = 10;
+            XAxis.startLocation = 0.5; // ??
+            XAxis.endLocation = 0.5; // ??
+          }
+          utils.createGridLines(
+            am4core, XAxis, xAxis.breaks, xAxis.gridLines, 
+            xAxis.labels, theme, isDate
+          );
+        } else {
+          if(xBreaksType === "timeInterval") {
+            XAxis.gridIntervals.setAll(xAxis.breaks);
+            XAxis.renderer.grid.template.location = 0.5;
+            XAxis.renderer.labels.template.location = 0.5;
+            XAxis.startLocation = 0.5; // ??
+            XAxis.endLocation = 0.5; // ??
+          }
+          let xAxisLabels = XAxis.renderer.labels.template;
+          xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
+          xAxisLabels.rotation = xAxis.labels.rotation || 0;
+          if(xAxisLabels.rotation !== 0) {
+            xAxisLabels.horizontalCenter = "right";
+          }
+          xAxisLabels.fill =
+            xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+        }
+        if(cursor &&
+          (cursor === true || !cursor.axes || ["x","xy"].indexOf(cursor.axes)) > -1)
+        {
+          if(cursor.tooltip)
+            XAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+          if(cursor.extraTooltipPrecision)
+            XAxis.extraTooltipPrecision = cursor.extraTooltipPrecision.x;
+          if(cursor.renderer && cursor.renderer.x)
+            XAxis.adapter.add("getTooltipText", cursor.renderer.x);
+          if(cursor.dateFormat)
+            XAxis.tooltipDateFormat = cursor.dateFormat;
+        } else {
+          XAxis.cursorTooltipEnabled = false;
+        }
+    */
 
     /* ~~~~\  y-axis  /~~~~ */
     let YAxis = utils.createAxis(
       "Y", am4charts, am4core, chart, yAxis, minY, maxY, false, theme, cursor
     );
-/*		let YAxis = chart.yAxes.push(new am4charts.ValueAxis());
-    if(yAxis) {
-      YAxis.paddingRight = yAxis.adjust || 0;
-    }
-    YAxis.renderer.grid.template.stroke =
-      gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
-    YAxis.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.15;
-    YAxis.renderer.grid.template.strokeWidth = gridLines.width || 1;
-		if(yAxis && yAxis.title && yAxis.title.text !== "") {
-			YAxis.title.text = yAxis.title.text;
-			YAxis.title.fontWeight = "bold";
-			YAxis.title.fontSize = yAxis.title.fontSize || 20;
-			YAxis.title.fill =
-			  yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
-		}
-		if(yAxis.labels) {
-  		let yAxisLabels = YAxis.renderer.labels.template;
-      if(yAxis.labels.formatter) {
-        YAxis.numberFormatter = new am4core.NumberFormatter();
-        YAxis.numberFormatter.numberFormat = yAxis.labels.formatter;
-        YAxis.adjustLabelPrecision = false;
-      }
-      yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
-		  yAxisLabels.rotation = yAxis.labels.rotation || 0;
-		  yAxisLabels.fill =
-		    yAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
-		} else {
-		  YAxis.renderer.labels.template.disabled = true;
-		}
-		// we set fixed min/max and strictMinMax to true, as otherwise value axis will adjust min/max while dragging and it won't look smooth
-		YAxis.strictMinMax = true;
-		YAxis.min = minY;
-		YAxis.max = maxY;
-    YAxis.renderer.minWidth = 60;
-    */
-    if(cursor &&
-      (cursor === true || !cursor.axes || ["y","xy"].indexOf(cursor.axes)) > -1)
-    {
-      if(cursor.tooltip)
+    /*		let YAxis = chart.yAxes.push(new am4charts.ValueAxis());
+        if(yAxis) {
+          YAxis.paddingRight = yAxis.adjust || 0;
+        }
+        YAxis.renderer.grid.template.stroke =
+          gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
+        YAxis.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.15;
+        YAxis.renderer.grid.template.strokeWidth = gridLines.width || 1;
+        if(yAxis && yAxis.title && yAxis.title.text !== "") {
+          YAxis.title.text = yAxis.title.text;
+          YAxis.title.fontWeight = "bold";
+          YAxis.title.fontSize = yAxis.title.fontSize || 20;
+          YAxis.title.fill =
+            yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+        }
+        if(yAxis.labels) {
+          let yAxisLabels = YAxis.renderer.labels.template;
+          if(yAxis.labels.formatter) {
+            YAxis.numberFormatter = new am4core.NumberFormatter();
+            YAxis.numberFormatter.numberFormat = yAxis.labels.formatter;
+            YAxis.adjustLabelPrecision = false;
+          }
+          yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
+          yAxisLabels.rotation = yAxis.labels.rotation || 0;
+          yAxisLabels.fill =
+            yAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+        } else {
+          YAxis.renderer.labels.template.disabled = true;
+        }
+        // we set fixed min/max and strictMinMax to true, as otherwise value axis will adjust min/max while dragging and it won't look smooth
+        YAxis.strictMinMax = true;
+        YAxis.min = minY;
+        YAxis.max = maxY;
+        YAxis.renderer.minWidth = 60;
+        */
+    if (cursor &&
+      (cursor === true || !cursor.axes || ["y", "xy"].indexOf(cursor.axes)) > -1) {
+      if (cursor.tooltip)
         YAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
-      if(cursor.extraTooltipPrecision)
+      if (cursor.extraTooltipPrecision)
         YAxis.extraTooltipPrecision = cursor.extraTooltipPrecision.y;
-      if(cursor.renderer && cursor.renderer.y)
+      if (cursor.renderer && cursor.renderer.y)
         YAxis.adapter.add("getTooltipText", cursor.renderer.y);
     } else {
       YAxis.cursorTooltipEnabled = false;
@@ -1729,7 +1728,7 @@ class AmLineChart extends React.PureComponent {
 
 
     /* ~~~~\  horizontal line  /~~~~ */
-    if(hline) {
+    if (hline) {
       let range = YAxis.axisRanges.create();
       range.value = hline.value;
       range.grid.stroke = am4core.color(hline.line.color);
@@ -1740,20 +1739,20 @@ class AmLineChart extends React.PureComponent {
 
 
     /* ~~~~\  vertical line  /~~~~ */
-    if(vline) {
+    if (vline) {
       let range = XAxis.axisRanges.create();
       range.value = vline.value;
       range.grid.stroke = am4core.color(vline.line.color);
       range.grid.strokeWidth = vline.line.width;
       range.grid.strokeOpacity = vline.line.opacity;
       range.grid.strokeDasharray = vline.line.dash;
-    }    
+    }
 
 
-		/* ~~~~\  cursor  /~~~~ */
-		if(cursor) {
+    /* ~~~~\  cursor  /~~~~ */
+    if (cursor) {
       chart.cursor = new am4charts.XYCursor();
-      switch(cursor.axes) {
+      switch (cursor.axes) {
         case "x":
           chart.cursor.xAxis = XAxis;
           chart.cursor.lineY.disabled = true;
@@ -1774,7 +1773,7 @@ class AmLineChart extends React.PureComponent {
 
 
     /* ~~~~\  legend  /~~~~ */
-    if(chartLegend) {
+    if (chartLegend) {
       chart.legend = new am4charts.Legend();
       chart.legend.position = chartLegend.position || "bottom";
       chart.legend.useDefaultMarker = false;
@@ -1782,78 +1781,78 @@ class AmLineChart extends React.PureComponent {
       markerTemplate.width = chartLegend.itemsWidth || 30;
       markerTemplate.height = chartLegend.itemsHeight || 20;
       let toggleHover = this.toggleHover;
-      chart.legend.itemContainers.template.events.on("over", function(ev) {
+      chart.legend.itemContainers.template.events.on("over", function (ev) {
         toggleHover(ev.target.dataItem.dataContext, true);
       });
-      chart.legend.itemContainers.template.events.on("out", function(ev) {
+      chart.legend.itemContainers.template.events.on("out", function (ev) {
         toggleHover(ev.target.dataItem.dataContext, false);
       });
     }
 
-		/* ~~~~\  function handling the drag event  /~~~~ */
-		function handleDrag(event) {
-			let dataItem = event.target.dataItem;
-			//console.log("dataItem", dataItem);
-			// convert coordinate to value
-			let value = YAxis.yToValue(event.target.pixelY);
-			// set new value
-			dataItem.valueY = value;
-			// make line hover
-			dataItem.segment.isHover = true;
-			// hide tooltip not to interrupt
-			dataItem.segment.hideTooltip(0);
-			// make bullet hovered (as it might hide if mouse moves away)
-			event.target.isHover = true;
-		}
+    /* ~~~~\  function handling the drag event  /~~~~ */
+    function handleDrag(event) {
+      let dataItem = event.target.dataItem;
+      //console.log("dataItem", dataItem);
+      // convert coordinate to value
+      let value = YAxis.yToValue(event.target.pixelY);
+      // set new value
+      dataItem.valueY = value;
+      // make line hover
+      dataItem.segment.isHover = true;
+      // hide tooltip not to interrupt
+      dataItem.segment.hideTooltip(0);
+      // make bullet hovered (as it might hide if mouse moves away)
+      event.target.isHover = true;
+    }
 
-		/* ~~~~\  function handling the dragstop event  /~~~~ */
-		function handleDragStop(event, value) {
+    /* ~~~~\  function handling the dragstop event  /~~~~ */
+    function handleDragStop(event, value) {
       handleDrag(event);
       let dataItem = event.target.dataItem;
       dataItem.component.isHover = false; // XXXX
       event.target.isHover = false;
       dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
 
-      if(trendJS && trendJS[value]){
+      if (trendJS && trendJS[value]) {
         let newvalue = YAxis.yToValue(event.target.pixelY),
-          seriesNames = chart.series.values.map(function(x){return x.name}),
+          seriesNames = chart.series.values.map(function (x) { return x.name }),
           thisSeriesName = dataItem.component.name,
           thisSeriesData = dataItem.component.dataProvider.data,
-          thisSeriesDataCopy = thisSeriesData.map(row => ({...row}));
-			  thisSeriesDataCopy[dataItem.index][value] = newvalue;
-			  thisSeriesData[dataItem.index][value] = newvalue;
-			  let trendSeriesName = thisSeriesName + "_trend",
-			    trendSeriesIndex = seriesNames.indexOf(trendSeriesName),
-			    trendSeries = chart.series.values[trendSeriesIndex],
-			    trendSeriesData = trendSeries.data,
-			    regData = thisSeriesDataCopy.map(function(row){
-			      return [row[xValue], row[value]];
-			    }),
-			    fit = regression.polynomial(
-			      regData, { order: trendJS[value], precision: 15 }
-			    ),
-			    regressionLine = trendSeriesData.map(function(row){
-			      let xy = fit.predict(row.x);
-			      return {x: xy[0], y: xy[1]};
-			    });
-			  regressionLine.forEach(function(point, i){trendSeriesData[i] = point;});
-			  trendSeries.invalidateData();
+          thisSeriesDataCopy = thisSeriesData.map(row => ({ ...row }));
+        thisSeriesDataCopy[dataItem.index][value] = newvalue;
+        thisSeriesData[dataItem.index][value] = newvalue;
+        let trendSeriesName = thisSeriesName + "_trend",
+          trendSeriesIndex = seriesNames.indexOf(trendSeriesName),
+          trendSeries = chart.series.values[trendSeriesIndex],
+          trendSeriesData = trendSeries.data,
+          regData = thisSeriesDataCopy.map(function (row) {
+            return [row[xValue], row[value]];
+          }),
+          fit = regression.polynomial(
+            regData, { order: trendJS[value], precision: 15 }
+          ),
+          regressionLine = trendSeriesData.map(function (row) {
+            let xy = fit.predict(row.x);
+            return { x: xy[0], y: xy[1] };
+          });
+        regressionLine.forEach(function (point, i) { trendSeriesData[i] = point; });
+        trendSeries.invalidateData();
 
         let ribbonSeriesName = thisSeriesName + "_ribbon",
           ribbonSeriesIndex = seriesNames.indexOf(ribbonSeriesName);
-        if(ribbonSeriesIndex > -1) {
+        if (ribbonSeriesIndex > -1) {
           let ribbonSeries = chart.series.values[ribbonSeriesIndex],
             ribbonSeriesData = ribbonSeries.data,
-            y = thisSeriesDataCopy.map(function(row){
+            y = thisSeriesDataCopy.map(function (row) {
               return row[value];
             }),
-            yhat = fit.points.map(function(point){ return point[1]; }),
+            yhat = fit.points.map(function (point) { return point[1]; }),
             ssq = 0;
-          for(let i = 0; i < y.length; ++i) {
-            ssq += (y[i] - yhat[i])*(y[i] - yhat[i]);
+          for (let i = 0; i < y.length; ++i) {
+            ssq += (y[i] - yhat[i]) * (y[i] - yhat[i]);
           }
           let sigma = Math.sqrt(ssq / (y.length - 1 - trendJS[value]));
-          for(let i = 0; i < ribbonSeriesData.length; ++i) {
+          for (let i = 0; i < ribbonSeriesData.length; ++i) {
             let yhat = trendSeriesData[i].y,
               delta = sigma * ribbonSeriesData[i].seFactor;
             ribbonSeriesData[i].lwr = yhat - delta;
@@ -1864,8 +1863,8 @@ class AmLineChart extends React.PureComponent {
 
       }
 
-      if(window.Shiny) {
-        if(isDate) {
+      if (window.Shiny) {
+        if (isDate) {
           Shiny.setInputValue(
             shinyId + ":rAmCharts4.dataframeWithDate",
             {
@@ -1891,27 +1890,27 @@ class AmLineChart extends React.PureComponent {
           });
         }
       }
-		}
+    }
 
     /* 
       trigger the "positionchanged" event on bullets when a resizing occurs, 
       otherwise bullets are unresponsive  
     */
     chart.events.on("sizechanged", event => {
-      event.target.series.each(function(s) {
-        s.bulletsContainer.children.each(function(b) {
+      event.target.series.each(function (s) {
+        s.bulletsContainer.children.each(function (b) {
           b.dispatchImmediately("positionchanged");
         });
       });
     });
 
 
-		yValues.forEach(function(value, index){
+    yValues.forEach(function (value, index) {
 
       let lineStyle = lineStyles[value];
 
       let series = chart.series.push(new am4charts.LineSeries());
-      if(isDate) {
+      if (isDate) {
         series.dataFields.dateX = xValue;
       } else {
         series.dataFields.valueX = xValue;
@@ -1926,39 +1925,39 @@ class AmLineChart extends React.PureComponent {
 
 
       /* ~~~~\  value label  /~~~~ */
-/*    let valueLabel = new am4charts.LabelBullet();
-      series.bullets.push(valueLabel);
-      valueLabel.label.text =
-        "{valueY.value.formatNumber('" + valueFormatter + "')}";
-      valueLabel.label.hideOversized = true;
-      valueLabel.label.truncate = false;
-      valueLabel.strokeOpacity = 0;
-      valueLabel.adapter.add("dy", (x, target) => {
-        if(target.dataItem.valueY > 0) {
-          return -10;
-        } else {
-          return 10;
-        }
-      });
-      */
+      /*    let valueLabel = new am4charts.LabelBullet();
+            series.bullets.push(valueLabel);
+            valueLabel.label.text =
+              "{valueY.value.formatNumber('" + valueFormatter + "')}";
+            valueLabel.label.hideOversized = true;
+            valueLabel.label.truncate = false;
+            valueLabel.strokeOpacity = 0;
+            valueLabel.adapter.add("dy", (x, target) => {
+              if(target.dataItem.valueY > 0) {
+                return -10;
+              } else {
+                return 10;
+              }
+            });
+            */
 
       /* ~~~~\  bullet  /~~~~ */
       let bullet = series.bullets.push(new am4charts.Bullet());
       let shape =
         utils.Shape(am4core, chart, index, bullet, bulletsStyle[value]);
-      if(!alwaysShowBullets){
+      if (!alwaysShowBullets) {
         shape.opacity = 0; // initially invisible
         shape.defaultState.properties.opacity = 0;
       }
-      if(tooltips) {
+      if (tooltips) {
         /* ~~~~\  tooltip  /~~~~ */
         bullet.tooltipText = tooltips[value].text;
         let tooltip = utils.Tooltip(am4core, chart, index, tooltips[value]);
         tooltip.pointerOrientation = "vertical";
         tooltip.dy = 0;
         tooltip.adapter.add("rotation", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
               return 0;
             } else {
               return 180;
@@ -1968,8 +1967,8 @@ class AmLineChart extends React.PureComponent {
           }
         });
         tooltip.label.adapter.add("verticalCenter", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
               return "none";
             } else {
               return "bottom";
@@ -1979,8 +1978,8 @@ class AmLineChart extends React.PureComponent {
           }
         });
         tooltip.label.adapter.add("rotation", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
               return 0;
             } else {
               return 180;
@@ -1992,25 +1991,25 @@ class AmLineChart extends React.PureComponent {
         bullet.tooltip = tooltip;
         // hide label when hovered because the tooltip is shown
         // XXX y'a pas de label
-/*      bullet.events.on("over", event => {
-          let dataItem = event.target.dataItem;
-          console.log("dataItem bullet on over", dataItem);
-          let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
-          itemLabelBullet.fillOpacity = 0;
-        });
-        // show label when mouse is out
-        bullet.events.on("out", event => {
-          let dataItem = event.target.dataItem;
-          let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
-          itemLabelBullet.fillOpacity = 1;
-        });
-        */
+        /*      bullet.events.on("over", event => {
+                  let dataItem = event.target.dataItem;
+                  console.log("dataItem bullet on over", dataItem);
+                  let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
+                  itemLabelBullet.fillOpacity = 0;
+                });
+                // show label when mouse is out
+                bullet.events.on("out", event => {
+                  let dataItem = event.target.dataItem;
+                  let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
+                  itemLabelBullet.fillOpacity = 1;
+                });
+                */
       }
       // create bullet hover state
       let hoverState = shape.states.create("hover");
       hoverState.properties.strokeWidth = shape.strokeWidth + 3;
       hoverState.properties.opacity = 1; // visible when hovered
-      if(draggable[value]){
+      if (draggable[value]) {
         bullet.draggable = true;
         // resize cursor when over
         bullet.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
@@ -2031,7 +2030,7 @@ class AmLineChart extends React.PureComponent {
         // when line position changes, adjust minX/maxX of bullets so that we could only dragg vertically
         bullet.events.on("positionchanged", event => {
           let dataItem = event.target.dataItem;
-          if(dataItem.bullets) {
+          if (dataItem.bullets) {
             let itemBullet = dataItem.bullets.getKey(bullet.uid);
             let point = dataItem.point;
             itemBullet.minX = point.x;
@@ -2039,7 +2038,7 @@ class AmLineChart extends React.PureComponent {
             itemBullet.minY = 0;
             itemBullet.maxY = chart.seriesContainer.pixelHeight;
           }
-        }); 
+        });
       }
 
       /* ~~~~\  line template  /~~~~ */
@@ -2048,7 +2047,7 @@ class AmLineChart extends React.PureComponent {
       series.strokeWidth = lineStyle.width || 3;
       series.stroke = lineStyle.color ||
         chart.colors.getIndex(index).saturate(0.7);
-      if(lineStyle.dash)
+      if (lineStyle.dash)
         series.strokeDasharray = lineStyle.dash;
       // line hover state
       let lineHoverState = lineTemplate.states.create("hover");
@@ -2057,13 +2056,13 @@ class AmLineChart extends React.PureComponent {
       lineHoverState.properties.strokeWidth = series.strokeWidth + 2;
 
       /* ~~~~\ trend line /~~~~ */
-      if(trendData && trendData[value]) {
+      if (trendData && trendData[value]) {
         let trend = chart.series.push(new am4charts.LineSeries());
         trend.zIndex = 10000;
         trend.name = yValueNames[value] + "_trend";
         trend.hiddenInLegend = true;
         trend.data = trendData[value];
-        if(isDate){
+        if (isDate) {
           trend.dataFields.dateX = "x";
         } else {
           trend.dataFields.valueX = "x";
@@ -2075,17 +2074,17 @@ class AmLineChart extends React.PureComponent {
         trend.strokeWidth = trendStyle.width || 3;
         trend.stroke = trendStyle.color ||
           chart.colors.getIndex(index).saturate(0.7);
-        if(trendStyle.dash)
+        if (trendStyle.dash)
           trend.strokeDasharray = trendStyle.dash;
         trend.tensionX = trendStyle.tensionX || 0.8;
         trend.tensionY = trendStyle.tensionY || 0.8;
         /* ~~~~\ ribbon /~~~~ */
-        if(trendData[value][0].hasOwnProperty("lwr")) {
+        if (trendData[value][0].hasOwnProperty("lwr")) {
           let ribbon = chart.series.push(new am4charts.LineSeries());
           ribbon.name = yValueNames[value] + "_ribbon";
           ribbon.hiddenInLegend = true;
-          ribbon.data = trendData[value].map(row => ({...row}));
-          if(isDate){
+          ribbon.data = trendData[value].map(row => ({ ...row }));
+          if (isDate) {
             ribbon.dataFields.dateX = "x";
           } else {
             ribbon.dataFields.valueX = "x";
@@ -2110,7 +2109,7 @@ class AmLineChart extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    if(this.chart) {
+    if (this.chart) {
       this.chart.dispose();
     }
   }
@@ -2118,8 +2117,8 @@ class AmLineChart extends React.PureComponent {
   render() {
     return (
       <div
-        id = {this.props.chartId}
-        style = {this.style()}
+        id={this.props.chartId}
+        style={this.style()}
       ></div>
     );
   }
@@ -2136,10 +2135,10 @@ class AmScatterChart extends React.PureComponent {
   }
 
   style() {
-    if(window.Shiny && !window.FlexDashboard) {
-      return {width: "100%", height: "100%"};
+    if (window.Shiny && !window.FlexDashboard) {
+      return { width: "100%", height: "100%" };
     } else {
-      return {width: this.props.width, height: this.props.height};
+      return { width: this.props.width, height: this.props.height };
     }
   }
 
@@ -2177,27 +2176,27 @@ class AmScatterChart extends React.PureComponent {
       shinyId = this.props.shinyId;
 
 
-    if(isDate) {
+    if (isDate) {
       data[xValue] = data[xValue].map(utils.toDate);
-      if(trendData0) {
-        for(let key in trendData0) {
+      if (trendData0) {
+        for (let key in trendData0) {
           trendData0[key].x = trendData0[key].x.map(utils.toDate);
         }
       }
     }
     data = HTMLWidgets.dataframeToD3(data);
-    let dataCopy = 
-      data.map(row => (utils.subset({...row}, [xValue].concat(yValues))));
+    let dataCopy =
+      data.map(row => (utils.subset({ ...row }, [xValue].concat(yValues))));
     let trendData = trendData0 ?
       Object.assign({}, ...Object.keys(trendData0)
-        .map(k => ({[k]: HTMLWidgets.dataframeToD3(trendData0[k])}))
+        .map(k => ({ [k]: HTMLWidgets.dataframeToD3(trendData0[k]) }))
       ) : null;
 
-    if(window.Shiny) {
-      if(shinyId === undefined){
+    if (window.Shiny) {
+      if (shinyId === undefined) {
         shinyId = $(document.getElementById(chartId)).parent().attr("id");
       }
-      if(isDate) {
+      if (isDate) {
         Shiny.setInputValue(
           shinyId + ":rAmCharts4.dataframeWithDate",
           {
@@ -2212,7 +2211,7 @@ class AmScatterChart extends React.PureComponent {
       }
     }
 
-    switch(theme) {
+    switch (theme) {
       case "dark":
         am4core.useTheme(am4themes_dark);
         break;
@@ -2255,30 +2254,30 @@ class AmScatterChart extends React.PureComponent {
 
 
     /* ~~~~\  Enable export  /~~~~ */
-    if(this.props.export) {
+    if (this.props.export) {
       chart.exporting.menu = new am4core.ExportMenu();
       chart.exporting.menu.items = utils.exportMenuItems;
     }
 
 
-		/* ~~~~\  title  /~~~~ */
-		let chartTitle = this.props.chartTitle;
-		if(chartTitle) {
+    /* ~~~~\  title  /~~~~ */
+    let chartTitle = this.props.chartTitle;
+    if (chartTitle) {
       let title = chart.titles.create();
-			title.text = chartTitle.text.text;
-			title.fill =
-			  chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
-			title.fontSize = chartTitle.text.fontSize || 22;
-			title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.text = chartTitle.text.text;
+      title.fill =
+        chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
       title.fontFamily = chartTitle.text.fontFamily;
       title.align = chartTitle.align || "left";
       title.dy = -30;
-		}
+    }
 
 
     /* ~~~~\  caption  /~~~~ */
     let chartCaption = this.props.caption;
-    if(chartCaption) {
+    if (chartCaption) {
       let caption = chart.chartContainer.createChild(am4core.Label);
       caption.text = chartCaption.text.text;
       caption.fill =
@@ -2291,71 +2290,71 @@ class AmScatterChart extends React.PureComponent {
 
 
     /* ~~~~\  image  /~~~~ */
-    if(this.props.image) {
+    if (this.props.image) {
       utils.Image(am4core, chart, this.props.image);
     }
 
 
     /* ~~~~\  scrollbars  /~~~~ */
-    if(this.props.scrollbarX) {
+    if (this.props.scrollbarX) {
       chart.scrollbarX = new am4core.Scrollbar();
     }
-    if(this.props.scrollbarY) {
+    if (this.props.scrollbarY) {
       chart.scrollbarY = new am4core.Scrollbar();
     }
 
 
-		/* ~~~~\  button  /~~~~ */
-		if(this.props.button) {
+    /* ~~~~\  button  /~~~~ */
+    if (this.props.button) {
       let Button = chart.chartContainer.createChild(am4core.Button);
       utils.makeButton(Button, this.props.button);
-      Button.events.on("hit", function() {
-        for (let r = 0; r < data.length; ++r){
+      Button.events.on("hit", function () {
+        for (let r = 0; r < data.length; ++r) {
           for (let v = 0; v < yValues.length; ++v) {
             chart.data[r][yValues[v]] = data2[r][yValues[v]];
           }
         }
         chart.invalidateRawData();
 
-        if(trendJS) {
-          let seriesNames = chart.series.values.map(function(x){return x.name});
-          yValues.forEach(function(value, index) {
-            if(trendJS[value]) {
+        if (trendJS) {
+          let seriesNames = chart.series.values.map(function (x) { return x.name });
+          yValues.forEach(function (value, index) {
+            if (trendJS[value]) {
               let thisSeriesName = yValueNames[value],
                 trendSeriesName = thisSeriesName + "_trend",
                 trendSeriesIndex = seriesNames.indexOf(trendSeriesName),
                 trendSeries = chart.series.values[trendSeriesIndex],
                 trendSeriesData = trendSeries.data,
-                regData = data2.map(function(row){
+                regData = data2.map(function (row) {
                   return [row[xValue], row[value]];
                 }),
                 fit = regression.polynomial(
                   regData, { order: trendJS[value], precision: 15 }
                 ),
-                regressionLine = trendSeriesData.map(function(row){
+                regressionLine = trendSeriesData.map(function (row) {
                   let xy = fit.predict(row.x);
-                  return {x: xy[0], y: xy[1]};
+                  return { x: xy[0], y: xy[1] };
                 });
-              regressionLine.forEach(function(point, i){
+              regressionLine.forEach(function (point, i) {
                 trendSeriesData[i] = point;
               });
               trendSeries.invalidateData();
 
               let ribbonSeriesName = thisSeriesName + "_ribbon",
-              ribbonSeriesIndex = seriesNames.indexOf(ribbonSeriesName);
-              if(ribbonSeriesIndex > -1) {
+                ribbonSeriesIndex = seriesNames.indexOf(ribbonSeriesName);
+              if (ribbonSeriesIndex > -1) {
                 let ribbonSeries = chart.series.values[ribbonSeriesIndex],
                   ribbonSeriesData = ribbonSeries.data,
-                  y = data2.map(function(row){
+                  y = data2.map(function (row) {
                     return row[value];
                   }),
-                  yhat = fit.points.map(function(point){ return point[1]; }),
+                  yhat = fit.points.map(function (point) { return point[1]; }),
                   ssq = 0;
-                for(let i = 0; i < y.length; ++i) {
-                  ssq += (y[i] - yhat[i])*(y[i] - yhat[i]);
+                for (let i = 0; i < y.length; ++i) {
+                  ssq += (y[i] - yhat[i]) * (y[i] - yhat[i]);
                 }
                 let sigma = Math.sqrt(ssq / (y.length - 1 - trendJS[value]));
-                for(let i = 0; i < ribbonSeriesData.length; ++i) {
+                for (let i = 0; i < ribbonSeriesData.length; ++i) {
                   let yhat = trendSeriesData[i].y,
                     delta = sigma * ribbonSeriesData[i].seFactor;
                   ribbonSeriesData[i].lwr = yhat - delta;
@@ -2367,8 +2366,8 @@ class AmScatterChart extends React.PureComponent {
           })
         }
 
-        if(window.Shiny) {
-          if(isDate) {
+        if (window.Shiny) {
+          if (isDate) {
             Shiny.setInputValue(
               shinyId + ":rAmCharts4.dataframeWithDate",
               {
@@ -2385,23 +2384,23 @@ class AmScatterChart extends React.PureComponent {
           }
         }
       });
-		}
+    }
 
 
-		/* ~~~~\  x-axis  /~~~~ */
+    /* ~~~~\  x-axis  /~~~~ */
     let XAxis = utils.createAxis(
-      "X", am4charts, am4core, chart, xAxis, 
+      "X", am4charts, am4core, chart, xAxis,
       minX, maxX, isDate, theme, cursor, xValue
     );
 
-		/* ~~~~\  y-axis  /~~~~ */
+    /* ~~~~\  y-axis  /~~~~ */
     let YAxis = utils.createAxis(
       "Y", am4charts, am4core, chart, yAxis, minY, maxY, false, theme, cursor
     );
 
 
     /* ~~~~\  horizontal line  /~~~~ */
-    if(hline) {
+    if (hline) {
       let range = YAxis.axisRanges.create();
       range.value = hline.value;
       range.grid.stroke = am4core.color(hline.line.color);
@@ -2412,7 +2411,7 @@ class AmScatterChart extends React.PureComponent {
 
 
     /* ~~~~\  vertical line  /~~~~ */
-    if(vline) {
+    if (vline) {
       let range = XAxis.axisRanges.create();
       range.value = vline.value;
       range.grid.stroke = am4core.color(vline.line.color);
@@ -2420,12 +2419,12 @@ class AmScatterChart extends React.PureComponent {
       range.grid.strokeOpacity = vline.line.opacity;
       range.grid.strokeDasharray = vline.line.dash;
     }
-    
 
-		/* ~~~~\  cursor  /~~~~ */
-		if(cursor) {
+
+    /* ~~~~\  cursor  /~~~~ */
+    if (cursor) {
       chart.cursor = new am4charts.XYCursor();
-      switch(cursor.axes) {
+      switch (cursor.axes) {
         case "x":
           chart.cursor.xAxis = XAxis;
           chart.cursor.lineY.disabled = true;
@@ -2446,27 +2445,27 @@ class AmScatterChart extends React.PureComponent {
 
 
     /* ~~~~\  legend  /~~~~ */
-    if(chartLegend) {
+    if (chartLegend) {
       chart.legend = new am4charts.Legend();
       chart.legend.position = chartLegend.position || "bottom";
       chart.legend.useDefaultMarker = false;
       let markerTemplate = chart.legend.markers.template;
       markerTemplate.width = chartLegend.itemsWidth || 20;
       markerTemplate.height = chartLegend.itemsHeight || 20;
-      chart.legend.itemContainers.template.events.on("over", function(ev) {
+      chart.legend.itemContainers.template.events.on("over", function (ev) {
         ev.target.dataItem.dataContext.bulletsContainer.children.each(
-          function(bullet){
+          function (bullet) {
             bullet.children.each(
-              function(c){c.isHover = true;}
+              function (c) { c.isHover = true; }
             );
           }
         );
       });
-      chart.legend.itemContainers.template.events.on("out", function(ev) {
+      chart.legend.itemContainers.template.events.on("out", function (ev) {
         ev.target.dataItem.dataContext.bulletsContainer.children.each(
-          function(bullet){
+          function (bullet) {
             bullet.children.each(
-              function(c){c.isHover = false;}
+              function (c) { c.isHover = false; }
             );
           }
         );
@@ -2474,69 +2473,69 @@ class AmScatterChart extends React.PureComponent {
     }
 
 
-		/* ~~~~\  function handling the drag event  /~~~~ */
-		function handleDrag(event) {
-			var dataItem = event.target.dataItem;
-			// convert coordinate to value
-			let value = YAxis.yToValue(event.target.pixelY);
-			// set new value
-			dataItem.valueY = value;
-			// make line hover
-			dataItem.segment.isHover = true;
-			// hide tooltip not to interrupt
-			dataItem.segment.hideTooltip(0);
-			// make bullet hovered (as it might hide if mouse moves away)
-			event.target.isHover = true;
-		}
+    /* ~~~~\  function handling the drag event  /~~~~ */
+    function handleDrag(event) {
+      var dataItem = event.target.dataItem;
+      // convert coordinate to value
+      let value = YAxis.yToValue(event.target.pixelY);
+      // set new value
+      dataItem.valueY = value;
+      // make line hover
+      dataItem.segment.isHover = true;
+      // hide tooltip not to interrupt
+      dataItem.segment.hideTooltip(0);
+      // make bullet hovered (as it might hide if mouse moves away)
+      event.target.isHover = true;
+    }
 
-		/* ~~~~\  function handling the dragstop event  /~~~~ */
-		function handleDragStop(event, value) {
+    /* ~~~~\  function handling the dragstop event  /~~~~ */
+    function handleDragStop(event, value) {
       handleDrag(event);
       let dataItem = event.target.dataItem;
       dataItem.component.isHover = false; // XXXX
       event.target.isHover = false;
       dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
 
-      if(trendJS && trendJS[value]){
+      if (trendJS && trendJS[value]) {
         let newvalue = YAxis.yToValue(event.target.pixelY),
-          seriesNames = chart.series.values.map(function(x){return x.name}),
+          seriesNames = chart.series.values.map(function (x) { return x.name }),
           thisSeriesName = dataItem.component.name,
           thisSeriesData = dataItem.component.dataProvider.data,
-          thisSeriesDataCopy = thisSeriesData.map(row => ({...row}));
-			  thisSeriesDataCopy[dataItem.index][value] = newvalue;
-			  thisSeriesData[dataItem.index][value] = newvalue;
-			  let trendSeriesName = thisSeriesName + "_trend",
-			    trendSeriesIndex = seriesNames.indexOf(trendSeriesName),
-			    trendSeries = chart.series.values[trendSeriesIndex],
-			    trendSeriesData = trendSeries.data,
-			    regData = thisSeriesDataCopy.map(function(row){
-			      return [row[xValue], row[value]];
-			    }),
-			    fit = regression.polynomial(
-			      regData, { order: trendJS[value], precision: 15 }
-			    ),
-			    regressionLine = trendSeriesData.map(function(row){
-			      let xy = fit.predict(row.x);
-			      return {x: xy[0], y: xy[1]};
-			    });
-			  regressionLine.forEach(function(point, i){trendSeriesData[i] = point;});
+          thisSeriesDataCopy = thisSeriesData.map(row => ({ ...row }));
+        thisSeriesDataCopy[dataItem.index][value] = newvalue;
+        thisSeriesData[dataItem.index][value] = newvalue;
+        let trendSeriesName = thisSeriesName + "_trend",
+          trendSeriesIndex = seriesNames.indexOf(trendSeriesName),
+          trendSeries = chart.series.values[trendSeriesIndex],
+          trendSeriesData = trendSeries.data,
+          regData = thisSeriesDataCopy.map(function (row) {
+            return [row[xValue], row[value]];
+          }),
+          fit = regression.polynomial(
+            regData, { order: trendJS[value], precision: 15 }
+          ),
+          regressionLine = trendSeriesData.map(function (row) {
+            let xy = fit.predict(row.x);
+            return { x: xy[0], y: xy[1] };
+          });
+        regressionLine.forEach(function (point, i) { trendSeriesData[i] = point; });
         trendSeries.invalidateData();
 
         let ribbonSeriesName = thisSeriesName + "_ribbon",
-			    ribbonSeriesIndex = seriesNames.indexOf(ribbonSeriesName);
-        if(ribbonSeriesIndex > -1) {
+          ribbonSeriesIndex = seriesNames.indexOf(ribbonSeriesName);
+        if (ribbonSeriesIndex > -1) {
           let ribbonSeries = chart.series.values[ribbonSeriesIndex],
             ribbonSeriesData = ribbonSeries.data,
-            y = thisSeriesDataCopy.map(function(row){
+            y = thisSeriesDataCopy.map(function (row) {
               return row[value];
             }),
-            yhat = fit.points.map(function(point){ return point[1]; }),
+            yhat = fit.points.map(function (point) { return point[1]; }),
             ssq = 0;
-          for(let i = 0; i < y.length; ++i) {
-            ssq += (y[i] - yhat[i])*(y[i] - yhat[i]);
+          for (let i = 0; i < y.length; ++i) {
+            ssq += (y[i] - yhat[i]) * (y[i] - yhat[i]);
           }
           let sigma = Math.sqrt(ssq / (y.length - 1 - trendJS[value]));
-          for(let i = 0; i < ribbonSeriesData.length; ++i) {
+          for (let i = 0; i < ribbonSeriesData.length; ++i) {
             let yhat = trendSeriesData[i].y,
               delta = sigma * ribbonSeriesData[i].seFactor;
             ribbonSeriesData[i].lwr = yhat - delta;
@@ -2545,10 +2544,10 @@ class AmScatterChart extends React.PureComponent {
           ribbonSeries.invalidateData();
         }
 
-			}
+      }
 
-      if(window.Shiny) {
-        if(isDate) {
+      if (window.Shiny) {
+        if (isDate) {
           Shiny.setInputValue(
             shinyId + ":rAmCharts4.dataframeWithDate",
             {
@@ -2574,28 +2573,28 @@ class AmScatterChart extends React.PureComponent {
           });
         }
       }
-		}
+    }
 
     /* 
       trigger the "positionchanged" event on bullets when a resizing occurs, 
       otherwise bullets are unresponsive  
     */
     chart.events.on("sizechanged", event => {
-      event.target.series.each(function(s) {
-        s.bulletsContainer.children.each(function(b) {
+      event.target.series.each(function (s) {
+        s.bulletsContainer.children.each(function (b) {
           b.dispatchImmediately("positionchanged");
         });
       });
     });
 
 
-		yValues.forEach(function(value, index){
+    yValues.forEach(function (value, index) {
 
       let series = chart.series.push(new am4charts.LineSeries());
       series.bulletsContainer.parent = chart.seriesContainer;
       series.strokeOpacity = 0;
       series.zIndex = -1;
-      if(isDate) {
+      if (isDate) {
         series.dataFields.dateX = xValue;
       } else {
         series.dataFields.valueX = xValue;
@@ -2606,36 +2605,36 @@ class AmScatterChart extends React.PureComponent {
       series.defaultState.interpolationDuration = 1500;
 
       /* ~~~~\  value label  /~~~~ */
-/*    let valueLabel = new am4charts.LabelBullet();
-      series.bullets.push(valueLabel);
-      valueLabel.label.text =
-        "{valueY.value.formatNumber('" + valueFormatter + "')}";
-      valueLabel.label.hideOversized = true;
-      valueLabel.label.truncate = false;
-      valueLabel.strokeOpacity = 0;
-      valueLabel.adapter.add("dy", (x, target) => {
-        if(target.dataItem.valueY > 0) {
-          return -10;
-        } else {
-          return 10;
-        }
-      });
-      */
+      /*    let valueLabel = new am4charts.LabelBullet();
+            series.bullets.push(valueLabel);
+            valueLabel.label.text =
+              "{valueY.value.formatNumber('" + valueFormatter + "')}";
+            valueLabel.label.hideOversized = true;
+            valueLabel.label.truncate = false;
+            valueLabel.strokeOpacity = 0;
+            valueLabel.adapter.add("dy", (x, target) => {
+              if(target.dataItem.valueY > 0) {
+                return -10;
+              } else {
+                return 10;
+              }
+            });
+            */
 
       /* ~~~~\  bullet  /~~~~ */
       let bullet = series.bullets.push(new am4charts.Bullet());
       let shape =
         utils.Shape(am4core, chart, index, bullet, pointsStyle[value]);
       shape.zIndex = -1;
-      if(tooltips) {
+      if (tooltips) {
         /* ~~~~\  tooltip  /~~~~ */
         bullet.tooltipText = tooltips[value].text;
         let tooltip = utils.Tooltip(am4core, chart, index, tooltips[value]);
         tooltip.pointerOrientation = "vertical";
         tooltip.dy = 0;
         tooltip.adapter.add("rotation", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
               return 0;
             } else {
               return 180;
@@ -2645,8 +2644,8 @@ class AmScatterChart extends React.PureComponent {
           }
         });
         tooltip.label.adapter.add("verticalCenter", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
               return "none";
             } else {
               return "bottom";
@@ -2656,8 +2655,8 @@ class AmScatterChart extends React.PureComponent {
           }
         });
         tooltip.label.adapter.add("rotation", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
               return 0;
             } else {
               return 180;
@@ -2669,24 +2668,24 @@ class AmScatterChart extends React.PureComponent {
         bullet.tooltip = tooltip;
         // hide label when hovered because the tooltip is shown
         // XXX y'a pas de label
-/*      bullet.events.on("over", event => {
-          let dataItem = event.target.dataItem;
-          console.log("dataItem bullet on over", dataItem);
-          let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
-          itemLabelBullet.fillOpacity = 0;
-        });
-        // show label when mouse is out
-        bullet.events.on("out", event => {
-          let dataItem = event.target.dataItem;
-          let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
-          itemLabelBullet.fillOpacity = 1;
-        });
-        */
+        /*      bullet.events.on("over", event => {
+                  let dataItem = event.target.dataItem;
+                  console.log("dataItem bullet on over", dataItem);
+                  let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
+                  itemLabelBullet.fillOpacity = 0;
+                });
+                // show label when mouse is out
+                bullet.events.on("out", event => {
+                  let dataItem = event.target.dataItem;
+                  let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
+                  itemLabelBullet.fillOpacity = 1;
+                });
+                */
       }
       // create bullet hover state
       let hoverState = shape.states.create("hover");
       hoverState.properties.strokeWidth = shape.strokeWidth + 3;
-      if(draggable[value]){
+      if (draggable[value]) {
         bullet.draggable = true;
         // resize cursor when over
         bullet.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
@@ -2707,7 +2706,7 @@ class AmScatterChart extends React.PureComponent {
         // when point position changes, adjust minX/maxX of bullets so that we could only dragg vertically
         bullet.events.on("positionchanged", event => {
           let dataItem = event.target.dataItem;
-          if(dataItem.bullets) {
+          if (dataItem.bullets) {
             let itemBullet = dataItem.bullets.getKey(bullet.uid);
             let point = dataItem.point;
             itemBullet.minX = point.x;
@@ -2719,13 +2718,13 @@ class AmScatterChart extends React.PureComponent {
       }
 
       /* ~~~~\ trend line /~~~~ */
-      if(trendData && trendData[value]) {
+      if (trendData && trendData[value]) {
         let trend = chart.series.push(new am4charts.LineSeries());
         trend.zIndex = 10000;
         trend.name = yValueNames[value] + "_trend";
         trend.hiddenInLegend = true;
         trend.data = trendData[value];
-        if(isDate){
+        if (isDate) {
           trend.dataFields.dateX = "x";
         } else {
           trend.dataFields.valueX = "x";
@@ -2737,17 +2736,17 @@ class AmScatterChart extends React.PureComponent {
         trend.strokeWidth = trendStyle.width || 3;
         trend.stroke = trendStyle.color ||
           chart.colors.getIndex(index).saturate(0.7);
-        if(trendStyle.dash)
+        if (trendStyle.dash)
           trend.strokeDasharray = trendStyle.dash;
         trend.tensionX = trendStyle.tensionX || 0.8;
         trend.tensionY = trendStyle.tensionY || 0.8;
         /* ~~~~\ ribbon /~~~~ */
-        if(trendData[value][0].hasOwnProperty("lwr")) {
+        if (trendData[value][0].hasOwnProperty("lwr")) {
           let ribbon = chart.series.push(new am4charts.LineSeries());
           ribbon.name = yValueNames[value] + "_ribbon";
           ribbon.hiddenInLegend = true;
-          ribbon.data = trendData[value].map(row => ({...row}));
-          if(isDate) {
+          ribbon.data = trendData[value].map(row => ({ ...row }));
+          if (isDate) {
             ribbon.dataFields.dateX = "x";
           } else {
             ribbon.dataFields.valueX = "x";
@@ -2756,19 +2755,19 @@ class AmScatterChart extends React.PureComponent {
           ribbon.dataFields.openValueY = "upr";
           ribbon.sequencedInterpolation = true;
           ribbon.defaultState.interpolationDuration = 1500;
-/*  attempt animation upr line        
-          let ribbon2 = chart.series.push(new am4charts.LineSeries());
-          ribbon2.name = yValueNames[value] + "_ribbon2";
-          ribbon2.hiddenInLegend = true;
-          ribbon2.data = ribbon.data;
-          if(isDate) {
-            ribbon2.dataFields.dateX = "x";
-          } else {
-            ribbon2.dataFields.valueX = "x";
-          }
-          ribbon2.dataFields.valueY = "upr";
-          ribbon2.sequencedInterpolation = true;
-          ribbon2.defaultState.interpolationDuration = 1000; */
+          /*  attempt animation upr line        
+                    let ribbon2 = chart.series.push(new am4charts.LineSeries());
+                    ribbon2.name = yValueNames[value] + "_ribbon2";
+                    ribbon2.hiddenInLegend = true;
+                    ribbon2.data = ribbon.data;
+                    if(isDate) {
+                      ribbon2.dataFields.dateX = "x";
+                    } else {
+                      ribbon2.dataFields.valueX = "x";
+                    }
+                    ribbon2.dataFields.valueY = "upr";
+                    ribbon2.sequencedInterpolation = true;
+                    ribbon2.defaultState.interpolationDuration = 1000; */
           let ribbonStyle = ribbonStyles[value];
           ribbon.fill = ribbonStyle.color || trend.stroke.lighten(0.4);
           ribbon.fillOpacity = ribbonStyle.opacity || 0.3;
@@ -2785,7 +2784,7 @@ class AmScatterChart extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    if(this.chart) {
+    if (this.chart) {
       this.chart.dispose();
     }
   }
@@ -2793,8 +2792,8 @@ class AmScatterChart extends React.PureComponent {
   render() {
     return (
       <div
-        id = {this.props.chartId}
-        style = {this.style()}
+        id={this.props.chartId}
+        style={this.style()}
       ></div>
     );
   }
@@ -2812,10 +2811,10 @@ class AmRangeAreaChart extends React.PureComponent {
   }
 
   style() {
-    if(window.Shiny && !window.FlexDashboard) {
-      return {width: "100%", height: "100%"};
+    if (window.Shiny && !window.FlexDashboard) {
+      return { width: "100%", height: "100%" };
     } else {
-      return {width: this.props.width, height: this.props.height};
+      return { width: this.props.width, height: this.props.height };
     }
   }
 
@@ -2858,18 +2857,18 @@ class AmRangeAreaChart extends React.PureComponent {
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
-    if(isDate) {
+    if (isDate) {
       data[xValue] = data[xValue].map(utils.toDate);
     }
     data = HTMLWidgets.dataframeToD3(data);
-    let dataCopy = 
-      data.map(row => (utils.subset({...row}, [xValue].concat(yValues.flat()))));
+    let dataCopy =
+      data.map(row => (utils.subset({ ...row }, [xValue].concat(yValues.flat()))));
 
-    if(window.Shiny) {
-      if(shinyId === undefined){
+    if (window.Shiny) {
+      if (shinyId === undefined) {
         shinyId = $(document.getElementById(chartId)).parent().attr("id");
       }
-      if(isDate) {
+      if (isDate) {
         Shiny.setInputValue(
           shinyId + ":rAmCharts4.dataframeWithDate",
           {
@@ -2885,7 +2884,7 @@ class AmRangeAreaChart extends React.PureComponent {
     }
 
 
-    switch(theme) {
+    switch (theme) {
       case "dark":
         am4core.useTheme(am4themes_dark);
         break;
@@ -2930,55 +2929,55 @@ class AmRangeAreaChart extends React.PureComponent {
 
 
     /* ~~~~\  Enable export  /~~~~ */
-    if(this.props.export) {
+    if (this.props.export) {
       chart.exporting.menu = new am4core.ExportMenu();
       chart.exporting.menu.items = utils.exportMenuItems;
     }
 
 
-/* 		 ~~~~\  title  /~~~~ 
-		let chartTitle = this.props.chartTitle;
-		//let container;
-		if(chartTitle) {
-			//let title = chart.plotContainer.createChild(am4core.Label);
-			//container = chart.plotContainer.createChild(am4core.Container);
-			//container.y = this.props.scrollbarX ? -56 : -42;
-			//container.x = -45;
-			//container.horizontalCenter = "left";
-      //let title = container.createChild(am4core.Label);
-      let title = chart.titles.create();
-			title.text = chartTitle.text;
-			title.fill =
-			  chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
-			title.fontSize = chartTitle.fontSize || 22;
-			title.fontWeight = "bold";
-			title.fontFamily = "Tahoma";
-			// title.y = this.props.scrollbarX ? -56 : -42;
-			// title.x = -45;
-			// title.horizontalCenter = "left";
-			// title.zIndex = 100;
-			// title.fillOpacity = 1;
-		}
- */
+    /* 		 ~~~~\  title  /~~~~ 
+        let chartTitle = this.props.chartTitle;
+        //let container;
+        if(chartTitle) {
+          //let title = chart.plotContainer.createChild(am4core.Label);
+          //container = chart.plotContainer.createChild(am4core.Container);
+          //container.y = this.props.scrollbarX ? -56 : -42;
+          //container.x = -45;
+          //container.horizontalCenter = "left";
+          //let title = container.createChild(am4core.Label);
+          let title = chart.titles.create();
+          title.text = chartTitle.text;
+          title.fill =
+            chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
+          title.fontSize = chartTitle.fontSize || 22;
+          title.fontWeight = "bold";
+          title.fontFamily = "Tahoma";
+          // title.y = this.props.scrollbarX ? -56 : -42;
+          // title.x = -45;
+          // title.horizontalCenter = "left";
+          // title.zIndex = 100;
+          // title.fillOpacity = 1;
+        }
+     */
 
-		/* ~~~~\  title  /~~~~ */
-		let chartTitle = this.props.chartTitle;
-		if(chartTitle) {
+    /* ~~~~\  title  /~~~~ */
+    let chartTitle = this.props.chartTitle;
+    if (chartTitle) {
       let title = chart.titles.create();
-			title.text = chartTitle.text.text;
-			title.fill =
-			  chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
-			title.fontSize = chartTitle.text.fontSize || 22;
-			title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.text = chartTitle.text.text;
+      title.fill =
+        chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
       title.fontFamily = chartTitle.text.fontFamily;
       title.align = chartTitle.align || "left";
       title.dy = -30;
-		}
+    }
 
 
     /* ~~~~\  caption  /~~~~ */
     let chartCaption = this.props.caption;
-    if(chartCaption) {
+    if (chartCaption) {
       let caption = chart.chartContainer.createChild(am4core.Label);
       caption.text = chartCaption.text.text;
       caption.fill =
@@ -2991,7 +2990,7 @@ class AmRangeAreaChart extends React.PureComponent {
 
 
     /* ~~~~\  image  /~~~~ */
-    if(this.props.image) {
+    if (this.props.image) {
       //let image = chart.chartContainer.createChild(am4core.Image);
       //let image = container.createChild(am4core.Image);
       let img = this.props.image.image;
@@ -3004,7 +3003,7 @@ class AmRangeAreaChart extends React.PureComponent {
       image.height = img.height || 60;
       image.fillOpacity = img.opacity || 1;
       img.position = img.position || "bottomleft";
-      switch(img.position) {
+      switch (img.position) {
         case "bottomleft":
           chart.logo.dispose();
           image.x = 0;
@@ -3025,37 +3024,37 @@ class AmRangeAreaChart extends React.PureComponent {
       }
       image.dx = img.hjust || 0;
       image.dy = img.vjust || 0;
-//      image.verticalCenter = "top";
-//      image.horizontalCenter = "left";
-//      image.align = img.align || "right";
+      //      image.verticalCenter = "top";
+      //      image.horizontalCenter = "left";
+      //      image.align = img.align || "right";
       image.href = img.href;
-//      image.dx = image.width;
+      //      image.dx = image.width;
     }
 
 
     /* ~~~~\  scrollbars  /~~~~ */
-    if(this.props.scrollbarX) {
+    if (this.props.scrollbarX) {
       chart.scrollbarX = new am4core.Scrollbar();
     }
-    if(this.props.scrollbarY) {
+    if (this.props.scrollbarY) {
       chart.scrollbarY = new am4core.Scrollbar();
     }
 
 
-		/* ~~~~\  button  /~~~~ */
-		if(this.props.button) {
+    /* ~~~~\  button  /~~~~ */
+    if (this.props.button) {
       let Button = chart.chartContainer.createChild(am4core.Button);
       utils.makeButton(Button, this.props.button);
-      Button.events.on("hit", function() {
-        for(let r = 0; r < data.length; ++r) {
-          for(let v = 0; v < yValues.length; ++v) {
+      Button.events.on("hit", function () {
+        for (let r = 0; r < data.length; ++r) {
+          for (let v = 0; v < yValues.length; ++v) {
             chart.data[r][yValues[v][0]] = data2[r][yValues[v][0]];
             chart.data[r][yValues[v][1]] = data2[r][yValues[v][1]];
           }
         }
         chart.invalidateRawData();
-        if(window.Shiny) {
-          if(isDate) {
+        if (window.Shiny) {
+          if (isDate) {
             Shiny.setInputValue(
               shinyId + ":rAmCharts4.dataframeWithDate",
               {
@@ -3072,23 +3071,23 @@ class AmRangeAreaChart extends React.PureComponent {
           }
         }
       });
-		}
+    }
 
 
-		/* ~~~~\  x-axis  /~~~~ */
+    /* ~~~~\  x-axis  /~~~~ */
     let XAxis = utils.createAxis(
-      "X", am4charts, am4core, chart, xAxis, 
+      "X", am4charts, am4core, chart, xAxis,
       minX, maxX, isDate, theme, cursor, xValue
     );
 
-		/* ~~~~\  y-axis  /~~~~ */
+    /* ~~~~\  y-axis  /~~~~ */
     let YAxis = utils.createAxis(
       "Y", am4charts, am4core, chart, yAxis, minY, maxY, false, theme, cursor
     );
 
 
     /* ~~~~\  vertical line  /~~~~ */
-    if(vline) {
+    if (vline) {
       let range = XAxis.axisRanges.create();
       range.value = vline.value;
       range.grid.stroke = am4core.color(vline.line.color);
@@ -3099,7 +3098,7 @@ class AmRangeAreaChart extends React.PureComponent {
 
 
     /* ~~~~\  horizontal line  /~~~~ */
-    if(hline) {
+    if (hline) {
       let range = YAxis.axisRanges.create();
       range.value = hline.value;
       range.grid.stroke = am4core.color(hline.line.color);
@@ -3109,10 +3108,10 @@ class AmRangeAreaChart extends React.PureComponent {
     }
 
 
-		/* ~~~~\  cursor  /~~~~ */
-		if(cursor) {
+    /* ~~~~\  cursor  /~~~~ */
+    if (cursor) {
       chart.cursor = new am4charts.XYCursor();
-      switch(cursor.axes) {
+      switch (cursor.axes) {
         case "x":
           chart.cursor.xAxis = XAxis;
           chart.cursor.lineY.disabled = true;
@@ -3133,20 +3132,20 @@ class AmRangeAreaChart extends React.PureComponent {
 
 
     /* ~~~~\  legend  /~~~~ */
-    if(chartLegend) {
+    if (chartLegend) {
       let legend = new am4charts.Legend();
       legend.position = chartLegend.position || "bottom";
       legend.useDefaultMarker = false;
-      legend.events.on("dataitemsvalidated", function(ev) {
-        ev.target.markers.values.forEach(function(container, index) {
+      legend.events.on("dataitemsvalidated", function (ev) {
+        ev.target.markers.values.forEach(function (container, index) {
           let children = container.children.values.map(
-            function(child){ return child.className; }
+            function (child) { return child.className; }
           ),
             bullet = children.indexOf("Bullet");
-          if(bullet > -1)
+          if (bullet > -1)
             container.children.values[bullet].dispose();
-          if(JSON.stringify(children) !== '["Line","Rectangle","Line"]'){
-            let y2series = allSeries[2*index+1];
+          if (JSON.stringify(children) !== '["Line","Rectangle","Line"]') {
+            let y2series = allSeries[2 * index + 1];
             let line = new am4core.Line();
             line.stroke = y2series.stroke;
             line.valign = "bottom";
@@ -3168,31 +3167,31 @@ class AmRangeAreaChart extends React.PureComponent {
       //markerTemplate.strokeOpacity = 1;
 
       let toggleHover = this.toggleHover;
-      legend.itemContainers.template.events.on("over", function(ev) {
+      legend.itemContainers.template.events.on("over", function (ev) {
         let thisSeries = ev.target.dataItem.dataContext;
-        if(thisSeries.visible)
+        if (thisSeries.visible)
           toggleHover(thisSeries, true);
-//        let seriesNames = allSeries.map(function(x){return x.name}),
-//          y2name = yValueNames[thisSeries.dataFields.openValueY],
-//          y2series = allSeries[seriesNames.indexOf(y2name)];
-//        toggleHover(y2series, true);
+        //        let seriesNames = allSeries.map(function(x){return x.name}),
+        //          y2name = yValueNames[thisSeries.dataFields.openValueY],
+        //          y2series = allSeries[seriesNames.indexOf(y2name)];
+        //        toggleHover(y2series, true);
       });
-      legend.itemContainers.template.events.on("out", function(ev) {
+      legend.itemContainers.template.events.on("out", function (ev) {
         let thisSeries = ev.target.dataItem.dataContext;
-        if(thisSeries.visible && thisSeries.wasHover)
+        if (thisSeries.visible && thisSeries.wasHover)
           toggleHover(thisSeries, false);
-//        let seriesNames = allSeries.map(function(x){return x.name}),
-//          y2name = yValueNames[thisSeries.dataFields.openValueY],
-//          y2series = allSeries[seriesNames.indexOf(y2name)];
-//        toggleHover(y2series, false);
+        //        let seriesNames = allSeries.map(function(x){return x.name}),
+        //          y2name = yValueNames[thisSeries.dataFields.openValueY],
+        //          y2series = allSeries[seriesNames.indexOf(y2name)];
+        //        toggleHover(y2series, false);
       });
-      legend.itemContainers.template.events.on("hit", function(ev) {
+      legend.itemContainers.template.events.on("hit", function (ev) {
         let thisSeries = ev.target.dataItem.dataContext;
-        let seriesNames = allSeries.map(function(x){return x.name}),
+        let seriesNames = allSeries.map(function (x) { return x.name }),
           y2name = yValueNames[thisSeries.dataFields.openValueY],
           y2series = allSeries[seriesNames.indexOf(y2name)];
         toggleHover(thisSeries, !y2series.visible);
-        if(y2series.visible) {
+        if (y2series.visible) {
           y2series.hide(500);
         } else {
           y2series.show(500);
@@ -3202,32 +3201,32 @@ class AmRangeAreaChart extends React.PureComponent {
       chart.legend = legend;
     }
 
-    
-		/* ~~~~\  function handling the drag event  /~~~~ */
-		function handleDrag(event) {
-			let dataItem = event.target.dataItem;
-			// convert coordinate to value
-			let value = YAxis.yToValue(event.target.pixelY);
-			// set new value
-			dataItem.valueY = value;
-			// make line hover
-			dataItem.segment.isHover = true;
-			// hide tooltip not to interrupt
-			dataItem.segment.hideTooltip(0);
-			// make bullet hovered (as it might hide if mouse moves away)
-			event.target.isHover = true;
-		}
 
-		/* ~~~~\  function handling the dragstop event  /~~~~ */
-		function handleDragStop(event, value) {
+    /* ~~~~\  function handling the drag event  /~~~~ */
+    function handleDrag(event) {
+      let dataItem = event.target.dataItem;
+      // convert coordinate to value
+      let value = YAxis.yToValue(event.target.pixelY);
+      // set new value
+      dataItem.valueY = value;
+      // make line hover
+      dataItem.segment.isHover = true;
+      // hide tooltip not to interrupt
+      dataItem.segment.hideTooltip(0);
+      // make bullet hovered (as it might hide if mouse moves away)
+      event.target.isHover = true;
+    }
+
+    /* ~~~~\  function handling the dragstop event  /~~~~ */
+    function handleDragStop(event, value) {
       handleDrag(event);
       let dataItem = event.target.dataItem;
       dataItem.component.isHover = false; // XXXX
       event.target.isHover = false;
       dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
 
-      if(window.Shiny) {
-        if(isDate) {
+      if (window.Shiny) {
+        if (isDate) {
           Shiny.setInputValue(
             shinyId + ":rAmCharts4.dataframeWithDate",
             {
@@ -3253,22 +3252,22 @@ class AmRangeAreaChart extends React.PureComponent {
           });
         }
       }
-		}
+    }
 
     /* 
       trigger the "positionchanged" event on bullets when a resizing occurs, 
       otherwise bullets are unresponsive  
     */
     chart.events.on("sizechanged", event => {
-      event.target.series.each(function(s) {
-        s.bulletsContainer.children.each(function(b) {
+      event.target.series.each(function (s) {
+        s.bulletsContainer.children.each(function (b) {
           b.dispatchImmediately("positionchanged");
         });
       });
     });
 
 
-		yValues.forEach(function(y1y2, index){
+    yValues.forEach(function (y1y2, index) {
 
       let y1 = y1y2[0], y2 = y1y2[1];
 
@@ -3277,8 +3276,8 @@ class AmRangeAreaChart extends React.PureComponent {
 
       let series1 = chart.series.push(new am4charts.LineSeries()),
         series2 = chart.series.push(new am4charts.LineSeries());
-        series2.hiddenInLegend = true;
-      if(isDate) {
+      series2.hiddenInLegend = true;
+      if (isDate) {
         series1.dataFields.dateX = xValue;
         series2.dataFields.dateX = xValue;
       } else {
@@ -3310,13 +3309,13 @@ class AmRangeAreaChart extends React.PureComponent {
         shape1 = utils.Shape(am4core, chart, index, bullet1, bulletsStyle[y1]);
       let bullet2 = series2.bullets.push(new am4charts.Bullet()),
         shape2 = utils.Shape(am4core, chart, index, bullet2, bulletsStyle[y2]);
-      if(!alwaysShowBullets){
+      if (!alwaysShowBullets) {
         shape1.opacity = 0; // initially invisible
         shape1.defaultState.properties.opacity = 0;
         shape2.opacity = 0; // initially invisible
         shape2.defaultState.properties.opacity = 0;
       }
-      if(tooltips) {
+      if (tooltips) {
         /* ~~~~\  tooltip  /~~~~ */
         bullet1.tooltipText = tooltips[y1].text;
         let tooltip1 = utils.Tooltip(am4core, chart, index, tooltips[y1]);
@@ -3327,8 +3326,8 @@ class AmRangeAreaChart extends React.PureComponent {
         tooltip2.pointerOrientation = "vertical";
         tooltip2.dy = 0;
         tooltip1.adapter.add("rotation", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
               return 0;
             } else {
               return 180;
@@ -3338,8 +3337,8 @@ class AmRangeAreaChart extends React.PureComponent {
           }
         });
         tooltip1.label.adapter.add("verticalCenter", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
               return "none";
             } else {
               return "bottom";
@@ -3349,8 +3348,8 @@ class AmRangeAreaChart extends React.PureComponent {
           }
         });
         tooltip1.label.adapter.add("rotation", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
               return 0;
             } else {
               return 180;
@@ -3360,8 +3359,8 @@ class AmRangeAreaChart extends React.PureComponent {
           }
         });
         tooltip2.adapter.add("rotation", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
               return 0;
             } else {
               return 180;
@@ -3371,8 +3370,8 @@ class AmRangeAreaChart extends React.PureComponent {
           }
         });
         tooltip2.label.adapter.add("verticalCenter", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
               return "none";
             } else {
               return "bottom";
@@ -3382,8 +3381,8 @@ class AmRangeAreaChart extends React.PureComponent {
           }
         });
         tooltip2.label.adapter.add("rotation", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
               return 0;
             } else {
               return 180;
@@ -3396,18 +3395,18 @@ class AmRangeAreaChart extends React.PureComponent {
         bullet2.tooltip = tooltip2;
         // hide label when hovered because the tooltip is shown
         // XXX y'a pas de label
-      /*bullet.events.on("over", event => {
-          let dataItem = event.target.dataItem;
-          console.log("dataItem bullet on over", dataItem);
-          let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
-          itemLabelBullet.fillOpacity = 0;
-        });
-        // show label when mouse is out
-        bullet.events.on("out", event => {
-          let dataItem = event.target.dataItem;
-          let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
-          itemLabelBullet.fillOpacity = 1;
-        });*/
+        /*bullet.events.on("over", event => {
+            let dataItem = event.target.dataItem;
+            console.log("dataItem bullet on over", dataItem);
+            let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
+            itemLabelBullet.fillOpacity = 0;
+          });
+          // show label when mouse is out
+          bullet.events.on("out", event => {
+            let dataItem = event.target.dataItem;
+            let itemLabelBullet = dataItem.bullets.getKey(valueLabel.uid);
+            itemLabelBullet.fillOpacity = 1;
+          });*/
 
       }
       // create bullet hover state
@@ -3417,7 +3416,7 @@ class AmRangeAreaChart extends React.PureComponent {
       let hoverState2 = shape2.states.create("hover");
       hoverState2.properties.strokeWidth = shape2.strokeWidth + 3;
       hoverState2.properties.opacity = 1; // visible when hovered
-      if(draggable[y1]) {
+      if (draggable[y1]) {
         bullet1.draggable = true;
         // resize cursor when over
         bullet1.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
@@ -3439,7 +3438,7 @@ class AmRangeAreaChart extends React.PureComponent {
         bullet1.events.on("positionchanged", event => {
           let dataItem = event.target.dataItem;
           //console.log("dataItem", dataItem);
-          if(dataItem.bullets) {
+          if (dataItem.bullets) {
             let itemBullet = dataItem.bullets.getKey(bullet1.uid);
             let point = dataItem.point;
             itemBullet.minX = point.x;
@@ -3449,7 +3448,7 @@ class AmRangeAreaChart extends React.PureComponent {
           }
         });
       }
-      if(draggable[y2]) {
+      if (draggable[y2]) {
         bullet2.draggable = true;
         // resize cursor when over
         bullet2.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
@@ -3473,7 +3472,7 @@ class AmRangeAreaChart extends React.PureComponent {
         bullet2.events.on("positionchanged", event => {
           let dataItem = event.target.dataItem;
           //console.log("dataItem", dataItem);
-          if(dataItem.bullets) {
+          if (dataItem.bullets) {
             let itemBullet = dataItem.bullets.getKey(bullet2.uid);
             let point = dataItem.point;
             itemBullet.minX = point.x;
@@ -3488,8 +3487,8 @@ class AmRangeAreaChart extends React.PureComponent {
       /* ~~~~\  line template  /~~~~ */
       let lineTemplate1 = series1.segments.template,
         lineTemplate2 = series2.segments.template;
-//      lineTemplate1.tooltipText = "{valueY}";
-//      lineTemplate2.tooltipText = "y2: {valueY}";
+      //      lineTemplate1.tooltipText = "{valueY}";
+      //      lineTemplate2.tooltipText = "y2: {valueY}";
       lineTemplate1.interactionsEnabled = true;
       lineTemplate2.interactionsEnabled = true;
       series1.strokeWidth = lineStyle1.width || 3;
@@ -3498,33 +3497,33 @@ class AmRangeAreaChart extends React.PureComponent {
         chart.colors.getIndex(index).saturate(0.7);
       series2.stroke = lineStyle2.color ||
         chart.colors.getIndex(index).saturate(0.7);
-      if(lineStyle1.dash)
+      if (lineStyle1.dash)
         series1.strokeDasharray = lineStyle1.dash;
-      if(lineStyle2.dash)
+      if (lineStyle2.dash)
         series2.strokeDasharray = lineStyle2.dash;
-/*      // line hover state
-      let lineHoverState1 = lineTemplate1.states.create("hover"),
-        lineHoverState2 = lineTemplate2.states.create("hover");
-*/
+      /*      // line hover state
+            let lineHoverState1 = lineTemplate1.states.create("hover"),
+              lineHoverState2 = lineTemplate2.states.create("hover");
+      */
       // you can change any property on hover state and it will be animated
-/* let pattern = new am4core.LinePattern();
-pattern.width = 10;
-pattern.height = 10;
-pattern.stroke = "white";// am4core.color("red").lighten(0.5);
-pattern.strokeWidth = 2;
-pattern.rotation = 45;
-pattern.backgroundFill = areas[index].color;
-pattern.backgroundOpacity = areas[index].opacity;
-console.log("ppatern", pattern);
-lineHoverState1.properties.fill = pattern;
-*/
-/*      lineHoverState1.properties.fill = series1.fill.lighten(0.25);
-      lineHoverState1.properties.strokeWidth = series1.strokeWidth + 2;
-      lineHoverState2.properties.strokeWidth = series2.strokeWidth + 2;
-*/
+      /* let pattern = new am4core.LinePattern();
+      pattern.width = 10;
+      pattern.height = 10;
+      pattern.stroke = "white";// am4core.color("red").lighten(0.5);
+      pattern.strokeWidth = 2;
+      pattern.rotation = 45;
+      pattern.backgroundFill = areas[index].color;
+      pattern.backgroundOpacity = areas[index].opacity;
+      console.log("ppatern", pattern);
+      lineHoverState1.properties.fill = pattern;
+      */
+      /*      lineHoverState1.properties.fill = series1.fill.lighten(0.25);
+            lineHoverState1.properties.strokeWidth = series1.strokeWidth + 2;
+            lineHoverState2.properties.strokeWidth = series2.strokeWidth + 2;
+      */
       lineTemplate1.events.on("over", event => {
-//        let seriesNames = allChartSeries.map(function(x){return x.name}),
-//          y2series = allChartSeries[seriesNames.indexOf(yValueNames[y2])];
+        //        let seriesNames = allChartSeries.map(function(x){return x.name}),
+        //          y2series = allChartSeries[seriesNames.indexOf(yValueNames[y2])];
         series1.strokeWidth = series1.strokeWidth + 2;
         series1.fill = series1.fill.lighten(0.25);
         series2.strokeWidth = series2.strokeWidth + 2;
@@ -3535,8 +3534,8 @@ lineHoverState1.properties.fill = pattern;
         series2.strokeWidth = series2.strokeWidth - 2;
       });
       lineTemplate2.events.on("over", event => {
-//        let seriesNames = allChartSeries.map(function(x){return x.name}),
-//          y1series = allChartSeries[seriesNames.indexOf(areas[index].name)];
+        //        let seriesNames = allChartSeries.map(function(x){return x.name}),
+        //          y1series = allChartSeries[seriesNames.indexOf(areas[index].name)];
         series1.strokeWidth = series1.strokeWidth + 2;
         series1.fill = series1.fill.lighten(0.25); //lineHoverState1.properties.fill;
         series2.strokeWidth = series2.strokeWidth + 2;
@@ -3563,8 +3562,8 @@ lineHoverState1.properties.fill = pattern;
   render() {
     return (
       <div
-        id = {this.props.chartId}
-        style = {this.style()}
+        id={this.props.chartId}
+        style={this.style()}
       ></div>
     );
   }
@@ -3582,10 +3581,10 @@ class AmRadialBarChart extends React.PureComponent {
   }
 
   style() {
-    if(window.Shiny && !window.FlexDashboard) {
-      return {width: "100%", height: "100%"};
+    if (window.Shiny && !window.FlexDashboard) {
+      return { width: "100%", height: "100%" };
     } else {
-      return {width: this.props.width, height: this.props.height};
+      return { width: this.props.width, height: this.props.height };
     }
   }
 
@@ -3623,8 +3622,8 @@ class AmRadialBarChart extends React.PureComponent {
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
-    if(window.Shiny) {
-      if(shinyId === undefined) {
+    if (window.Shiny) {
+      if (shinyId === undefined) {
         shinyId = $(document.getElementById(chartId)).parent().attr("id");
       }
       Shiny.setInputValue(
@@ -3632,7 +3631,7 @@ class AmRadialBarChart extends React.PureComponent {
       );
     }
 
-    switch(theme) {
+    switch (theme) {
       case "dark":
         am4core.useTheme(am4themes_dark);
         break;
@@ -3665,11 +3664,11 @@ class AmRadialBarChart extends React.PureComponent {
     let chart = am4core.create(this.props.chartId, am4charts.RadarChart);
     chart.radius = am4core.percent(100);
     chart.innerRadius = am4core.percent(this.props.innerRadius);
-  
+
     chart.data = data;
 
     chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
-    if(this.props.chartTitle) {
+    if (this.props.chartTitle) {
       chart.padding(50, 10, 10, 10);
     } else {
       chart.padding(10, 10, 10, 10);
@@ -3681,30 +3680,30 @@ class AmRadialBarChart extends React.PureComponent {
 
 
     /* ~~~~\  Enable export  /~~~~ */
-    if(this.props.export) {
+    if (this.props.export) {
       chart.exporting.menu = new am4core.ExportMenu();
       chart.exporting.menu.items = utils.exportMenuItems;
     }
 
 
-		/* ~~~~\  title  /~~~~ */
-		let chartTitle = this.props.chartTitle;
-		if(chartTitle) {
+    /* ~~~~\  title  /~~~~ */
+    let chartTitle = this.props.chartTitle;
+    if (chartTitle) {
       let title = chart.titles.create();
       title.dy = -30;
-			title.text = chartTitle.text.text;
-			title.fill =
-			  chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
-			title.fontSize = chartTitle.text.fontSize || 22;
-			title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.text = chartTitle.text.text;
+      title.fill =
+        chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
       title.fontFamily = chartTitle.text.fontFamily;
       title.align = chartTitle.align || "left";
-		}
+    }
 
 
     /* ~~~~\  caption  /~~~~ */
     let chartCaption = this.props.caption;
-    if(chartCaption) {
+    if (chartCaption) {
       let caption = chart.chartContainer.createChild(am4core.Label);
       caption.text = chartCaption.text.text;
       caption.fill =
@@ -3717,85 +3716,85 @@ class AmRadialBarChart extends React.PureComponent {
 
 
     /* ~~~~\  image  /~~~~ */
-    if(this.props.image) {
+    if (this.props.image) {
       utils.Image(am4core, chart, this.props.image);
     }
 
 
     /* ~~~~\  scrollbars  /~~~~ */
-    if(this.props.scrollbarX) {
+    if (this.props.scrollbarX) {
       chart.scrollbarX = new am4core.Scrollbar();
     }
-    if(this.props.scrollbarY) {
+    if (this.props.scrollbarY) {
       chart.scrollbarY = new am4core.Scrollbar();
     }
 
 
-		/* ~~~~\  button  /~~~~ */
-		if(this.props.button) {
+    /* ~~~~\  button  /~~~~ */
+    if (this.props.button) {
       let Button = chart.chartContainer.createChild(am4core.Button);
       utils.makeButton(Button, this.props.button);
-      Button.events.on("hit", function() {
-        for (let r = 0; r < data.length; ++r){
+      Button.events.on("hit", function () {
+        for (let r = 0; r < data.length; ++r) {
           for (let v = 0; v < values.length; ++v) {
             chart.data[r][values[v]] = data2[r][values[v]];
           }
         }
         chart.invalidateRawData();
-        if(window.Shiny) {
+        if (window.Shiny) {
           Shiny.setInputValue(
             shinyId + ":rAmCharts4.dataframe", chart.data
           );
           Shiny.setInputValue(shinyId + "_change", null);
         }
       });
-		}
+    }
 
 
     /* ~~~~\  Shiny message handler for radial bar chart  /~~~~ */
-    if(window.Shiny) {
+    if (window.Shiny) {
       Shiny.addCustomMessageHandler(
         shinyId + "bar",
-        function(newdata) {
+        function (newdata) {
           let tail = " is missing in the data you supplied!";
           // check that the received data has the 'category' column
-          if(!newdata.hasOwnProperty(category)){
+          if (!newdata.hasOwnProperty(category)) {
             console.warn(
               `updateAmBarChart: column "${category}"` + tail
             );
             return null;
-          } 
+          }
           // check that the received data has the necessary categories
           let ok = true, i = 0;
-          while(ok && i < categories.length) {
+          while (ok && i < categories.length) {
             ok = newdata[category].indexOf(categories[i]) > -1;
-            if(!ok) {
+            if (!ok) {
               console.warn(
                 `updateAmBarChart: category "${categories[i]}"` + tail
               );
             }
             i++;
           }
-          if(!ok) {
+          if (!ok) {
             return null;
           }
           // check that the received data has the necessary 'values' columns
           i = 0;
-          while(ok && i < values.length) {
+          while (ok && i < values.length) {
             ok = newdata.hasOwnProperty(values[i]);
-            if(!ok) {
+            if (!ok) {
               console.warn(
                 `updateAmBarChart: column "${values[i]}"` + tail
-              );  
+              );
             }
             i++;
           }
-          if(!ok) {
+          if (!ok) {
             return null;
           }
           // update chart data
           let tnewdata = HTMLWidgets.dataframeToD3(newdata);
-          for (let r = 0; r < data.length; ++r){
+          for (let r = 0; r < data.length; ++r) {
             for (let v = 0; v < values.length; ++v) {
               chart.data[r][values[v]] = tnewdata[r][values[v]];
             }
@@ -3811,45 +3810,45 @@ class AmRadialBarChart extends React.PureComponent {
 
 
     /* ~~~~\  category axis  /~~~~ */
-		let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-		categoryAxis.paddingBottom = xAxis.adjust || 0;
-		categoryAxis.renderer.grid.template.location = 0;
-		categoryAxis.renderer.cellStartLocation = 1 - cellWidth/100;
-		categoryAxis.renderer.cellEndLocation = cellWidth/100;
-		if(xAxis && xAxis.title && xAxis.title.text !== "") {
-  		categoryAxis.title.text = xAxis.title.text || category;
-  		categoryAxis.title.fontWeight = "bold";
-  		categoryAxis.title.fontSize = xAxis.title.fontSize || 20;
-  		categoryAxis.title.fill =
-  		  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+    let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+    categoryAxis.paddingBottom = xAxis.adjust || 0;
+    categoryAxis.renderer.grid.template.location = 0;
+    categoryAxis.renderer.cellStartLocation = 1 - cellWidth / 100;
+    categoryAxis.renderer.cellEndLocation = cellWidth / 100;
+    if (xAxis && xAxis.title && xAxis.title.text !== "") {
+      categoryAxis.title.text = xAxis.title.text || category;
+      categoryAxis.title.fontWeight = "bold";
+      categoryAxis.title.fontSize = xAxis.title.fontSize || 20;
+      categoryAxis.title.fill =
+        xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
     }
-    if(xAxis.labels) {
+    if (xAxis.labels) {
       let xAxisLabels = categoryAxis.renderer.labels.template;
       xAxisLabels.location = 0.5;
-      if(typeof xAxis.labels.radius === "number")
+      if (typeof xAxis.labels.radius === "number")
         xAxisLabels.radius = am4core.percent(xAxis.labels.radius);
-      if(typeof xAxis.labels.relativeRotation === "number")
-        xAxisLabels.relativeRotation = xAxis.labels.relativeRotation; 
+      if (typeof xAxis.labels.relativeRotation === "number")
+        xAxisLabels.relativeRotation = xAxis.labels.relativeRotation;
       xAxisLabels.fontSize = xAxis.labels.fontSize || 14;
       xAxisLabels.fill =
         xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
     } else {
       categoryAxis.renderer.labels.template.disabled = true;
     }
-		categoryAxis.dataFields.category = category;
-		//categoryAxis.renderer.grid.template.disabled = true;
-		//categoryAxis.renderer.minGridDistance = 50;
+    categoryAxis.dataFields.category = category;
+    //categoryAxis.renderer.grid.template.disabled = true;
+    //categoryAxis.renderer.minGridDistance = 50;
     categoryAxis.cursorTooltipEnabled = false;
 
-		/* ~~~~\  value axis  /~~~~ */
+    /* ~~~~\  value axis  /~~~~ */
     let valueAxis = utils.createAxis(
-      "Y", am4charts, am4core, chart, yAxis, 
+      "Y", am4charts, am4core, chart, yAxis,
       minValue, maxValue, false, theme, cursor
     );
 
 
-		/* ~~~~\ cursor /~~~~ */
-		if(cursor) {
+    /* ~~~~\ cursor /~~~~ */
+    if (cursor) {
       chart.cursor = new am4charts.XYCursor();
       chart.cursor.yAxis = valueAxis;
       chart.cursor.lineX.disabled = true;
@@ -3857,28 +3856,28 @@ class AmRadialBarChart extends React.PureComponent {
 
 
     /* ~~~~\  legend  /~~~~ */
-    if(chartLegend) {
+    if (chartLegend) {
       chart.legend = new am4charts.Legend();
       chart.legend.position = chartLegend.position || "bottom";
       chart.legend.useDefaultMarker = false;
       let markerTemplate = chart.legend.markers.template;
       markerTemplate.width = chartLegend.itemsWidth || 20;
       markerTemplate.height = chartLegend.itemsHeight || 20;
-      chart.legend.itemContainers.template.events.on("over", function(ev) {
-        ev.target.dataItem.dataContext.columns.each(function(x) {
+      chart.legend.itemContainers.template.events.on("over", function (ev) {
+        ev.target.dataItem.dataContext.columns.each(function (x) {
           x.column.isHover = true;
         })
       });
-      chart.legend.itemContainers.template.events.on("out", function(ev) {
-        ev.target.dataItem.dataContext.columns.each(function(x) {
+      chart.legend.itemContainers.template.events.on("out", function (ev) {
+        ev.target.dataItem.dataContext.columns.each(function (x) {
           x.column.isHover = false;
         })
       });
     }
 
 
-		/* ~~~~\  function handling the drag event  /~~~~ */
-		function handleDrag(event) {
+    /* ~~~~\  function handling the drag event  /~~~~ */
+    function handleDrag(event) {
       let dataItem = event.target.dataItem;
       //console.log(event.target);
       let position = valueAxis.pointToPosition(
@@ -3888,32 +3887,32 @@ class AmRadialBarChart extends React.PureComponent {
         }
       ),
         value = valueAxis.positionToValue(position);
-			// convert coordinate to value
-//			let value = valueAxis.yToValue(event.target.pixelY);
-			// set new value
-			dataItem.valueY = maxValue - value; // should I use minValue as well?
-			// make column hover
-			dataItem.column.isHover = true;
-			// hide tooltip not to interrupt
-			dataItem.column.hideTooltip(0);
-			// make bullet hovered (as it might hide if mouse moves away)
-			event.target.isHover = true;
-		}
+      // convert coordinate to value
+      //			let value = valueAxis.yToValue(event.target.pixelY);
+      // set new value
+      dataItem.valueY = maxValue - value; // should I use minValue as well?
+      // make column hover
+      dataItem.column.isHover = true;
+      // hide tooltip not to interrupt
+      dataItem.column.hideTooltip(0);
+      // make bullet hovered (as it might hide if mouse moves away)
+      event.target.isHover = true;
+    }
 
     /* 
       trigger the "positionchanged" event on bullets when a resizing occurs, 
       otherwise bullets are unresponsive  
     */
     chart.events.on("sizechanged", event => {
-      event.target.series.each(function(s) {
-        s.bulletsContainer.children.each(function(b) {
+      event.target.series.each(function (s) {
+        s.bulletsContainer.children.each(function (b) {
           b.dispatchImmediately("positionchanged");
         });
       });
     });
 
 
-		values.forEach(function(value, index){
+    values.forEach(function (value, index) {
 
       let series = chart.series.push(new am4charts.RadarColumnSeries());
       series.dataFields.categoryX = category;
@@ -3925,7 +3924,7 @@ class AmRadialBarChart extends React.PureComponent {
 
       /* ~~~~\  value label  /~~~~ */
       let valueLabel;
-      if(showValues) {
+      if (showValues) {
         valueLabel = new am4charts.LabelBullet();
         series.bullets.push(valueLabel);
         valueLabel.label.text =
@@ -3934,7 +3933,7 @@ class AmRadialBarChart extends React.PureComponent {
         valueLabel.label.truncate = false;
         valueLabel.strokeOpacity = 0;
         valueLabel.adapter.add("dy", (x, target) => {
-          if(target.dataItem.valueY > 0) {
+          if (target.dataItem.valueY > 0) {
             return -10;
           } else {
             return 10;
@@ -3947,26 +3946,26 @@ class AmRadialBarChart extends React.PureComponent {
       let bullet;
       let columnStyle = columnStyles[value],
         color = columnStyle.color || chart.colors.getIndex(index),
-        strokeColor = columnStyle.strokeColor || 
+        strokeColor = columnStyle.strokeColor ||
           am4core.color(columnStyle.color).lighten(-0.5);
-      if(alwaysShowBullets || draggable[value]) {
+      if (alwaysShowBullets || draggable[value]) {
         bullet = series.bullets.create();
-        if(!alwaysShowBullets) {
+        if (!alwaysShowBullets) {
           bullet.opacity = 0; // initially invisible
           bullet.defaultState.properties.opacity = 0;
         }
         // add sprite to bullet
         let shapeConfig = bulletsStyle[value];
-        if(!shapeConfig.color) {
+        if (!shapeConfig.color) {
           shapeConfig.color = color;
         }
-        if(!shapeConfig.strokeColor) {
+        if (!shapeConfig.strokeColor) {
           shapeConfig.strokeColor = strokeColor;
         }
         let shape =
           utils.Shape(am4core, chart, index, bullet, shapeConfig);
       }
-      if(draggable[value]) {
+      if (draggable[value]) {
         // cursor when over
         bullet.cursorOverStyle = am4core.MouseCursorStyle.pointer;
         bullet.draggable = true;
@@ -3984,7 +3983,7 @@ class AmRadialBarChart extends React.PureComponent {
           dataItem.column.isHover = false;
           event.target.isHover = false;
           dataCopy[dataItem.index][value] = dataItem.values.valueY.value;
-          if(window.Shiny) {
+          if (window.Shiny) {
             Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
             Shiny.setInputValue(shinyId + "_change", {
               index: dataItem.index + 1,
@@ -4000,9 +3999,9 @@ class AmRadialBarChart extends React.PureComponent {
       let columnTemplate = series.columns.template;
       columnTemplate.width = am4core.percent(columnWidth);
       columnTemplate.fill = color;
-      if(columnStyle.colorAdapter) {
+      if (columnStyle.colorAdapter) {
         columnTemplate.adapter.add("fill", columnStyle.colorAdapter);
-        if(!columnStyle.strokeColor && !columnStyle.strokeColorAdapter) {
+        if (!columnStyle.strokeColor && !columnStyle.strokeColorAdapter) {
           columnTemplate.adapter.add("stroke", (x, target) => {
             let color = columnStyle.colorAdapter(x, target);
             return am4core.color(color).lighten(-0.5);
@@ -4010,23 +4009,23 @@ class AmRadialBarChart extends React.PureComponent {
         }
       }
       columnTemplate.stroke = strokeColor;
-      if(columnStyle.strokeColorAdapter) {
+      if (columnStyle.strokeColorAdapter) {
         columnTemplate.adapter.add("stroke", columnStyle.strokeColorAdapter);
       }
       columnTemplate.strokeOpacity = 1;
       columnTemplate.radarColumn.fillOpacity = columnStyle.opacity || 0.8;
-      columnTemplate.radarColumn.strokeWidth = 
-        typeof columnStyle.strokeWidth === "number" ? 
+      columnTemplate.radarColumn.strokeWidth =
+        typeof columnStyle.strokeWidth === "number" ?
           columnStyle.strokeWidth : 4;
       /* ~~~~\  tooltip  /~~~~ */
-      if(tooltips) {
+      if (tooltips) {
         columnTemplate.tooltipText = tooltips[value].text;
         let tooltip = utils.Tooltip(am4core, chart, index, tooltips[value]);
         tooltip.pointerOrientation = "vertical";
         tooltip.dy = 0;
         tooltip.adapter.add("rotation", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
               return 0;
             } else {
               return 180;
@@ -4036,8 +4035,8 @@ class AmRadialBarChart extends React.PureComponent {
           }
         });
         tooltip.label.adapter.add("verticalCenter", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
               return "none";
             } else {
               return "bottom";
@@ -4047,8 +4046,8 @@ class AmRadialBarChart extends React.PureComponent {
           }
         });
         tooltip.label.adapter.add("rotation", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
               return 0;
             } else {
               return 180;
@@ -4059,7 +4058,7 @@ class AmRadialBarChart extends React.PureComponent {
         });
         columnTemplate.tooltip = tooltip;
         columnTemplate.adapter.add("tooltipY", (x, target) => {
-          if(target.dataItem.valueY > 0) {
+          if (target.dataItem.valueY > 0) {
             return 0;
           } else {
             return -valueAxis.valueToPoint(maxValue - target.dataItem.valueY).y;
@@ -4068,7 +4067,7 @@ class AmRadialBarChart extends React.PureComponent {
       }
       let cr = columnStyle.cornerRadius || 8;
       columnTemplate.radarColumn.adapter.add("cornerRadius", (x, target) => {
-        if(target.dataItem.valueY > 0) {
+        if (target.dataItem.valueY > 0) {
           return target.isHover ? 2 * cr : cr;
         } else {
           return 0;
@@ -4080,7 +4079,7 @@ class AmRadialBarChart extends React.PureComponent {
       // you can change any property on hover state and it will be animated
       columnHoverState.properties.fillOpacity = 1;
       columnHoverState.properties.strokeWidth = columnStyle.strokeWidth + 2;
-      if(tooltips && showValues) {
+      if (tooltips && showValues) {
         // hide label when hovered because the tooltip is shown
         columnTemplate.events.on("over", event => {
           let dataItem = event.target.dataItem;
@@ -4094,7 +4093,7 @@ class AmRadialBarChart extends React.PureComponent {
           itemLabelBullet.fillOpacity = 1;
         });
       }
-      if(draggable[value]) {
+      if (draggable[value]) {
         // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
         columnTemplate.events.on("down", event => {
           let dataItem = event.target.dataItem;
@@ -4104,7 +4103,7 @@ class AmRadialBarChart extends React.PureComponent {
         // when columns position changes, adjust minX/maxX of bullets so that we could only dragg vertically
         columnTemplate.events.on("positionchanged", event => {
           let dataItem = event.target.dataItem;
-          if(dataItem.bullets) {
+          if (dataItem.bullets) {
             let itemBullet = dataItem.bullets.getKey(bullet.uid);
             let column = dataItem.column;
             itemBullet.minX = column.pixelX + column.pixelWidth / 2;
@@ -4129,8 +4128,8 @@ class AmRadialBarChart extends React.PureComponent {
   render() {
     return (
       <div
-        id = {this.props.chartId}
-        style = {this.style()}
+        id={this.props.chartId}
+        style={this.style()}
       ></div>
     );
   }
@@ -4148,10 +4147,10 @@ class AmDumbbellChart extends React.PureComponent {
   }
 
   style() {
-    if(window.Shiny && !window.FlexDashboard) {
-      return {width: "100%", height: "100%"};
+    if (window.Shiny && !window.FlexDashboard) {
+      return { width: "100%", height: "100%" };
     } else {
-      return {width: this.props.width, height: this.props.height};
+      return { width: this.props.width, height: this.props.height };
     }
   }
 
@@ -4186,8 +4185,8 @@ class AmDumbbellChart extends React.PureComponent {
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
-    if(window.Shiny) {
-      if(shinyId === undefined) {
+    if (window.Shiny) {
+      if (shinyId === undefined) {
         shinyId = $(document.getElementById(chartId)).parent().attr("id");
       }
       Shiny.setInputValue(
@@ -4195,7 +4194,7 @@ class AmDumbbellChart extends React.PureComponent {
       );
     }
 
-    switch(theme) {
+    switch (theme) {
       case "dark":
         am4core.useTheme(am4themes_dark);
         break;
@@ -4239,30 +4238,30 @@ class AmDumbbellChart extends React.PureComponent {
 
 
     /* ~~~~\  Enable export  /~~~~ */
-    if(this.props.export) {
+    if (this.props.export) {
       chart.exporting.menu = new am4core.ExportMenu();
       chart.exporting.menu.items = utils.exportMenuItems;
     }
 
 
-		/* ~~~~\  title  /~~~~ */
-		let chartTitle = this.props.chartTitle;
-		if(chartTitle) {
+    /* ~~~~\  title  /~~~~ */
+    let chartTitle = this.props.chartTitle;
+    if (chartTitle) {
       let title = chart.titles.create();
-			title.text = chartTitle.text.text;
-			title.fill =
-			  chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
-			title.fontSize = chartTitle.text.fontSize || 22;
-			title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.text = chartTitle.text.text;
+      title.fill =
+        chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
       title.fontFamily = chartTitle.text.fontFamily;
       title.align = chartTitle.align || "left";
       title.dy = -30;
-		}
+    }
 
 
     /* ~~~~\  caption  /~~~~ */
     let chartCaption = this.props.caption;
-    if(chartCaption) {
+    if (chartCaption) {
       let caption = chart.chartContainer.createChild(am4core.Label);
       caption.text = chartCaption.text.text;
       caption.fill =
@@ -4275,83 +4274,83 @@ class AmDumbbellChart extends React.PureComponent {
 
 
     /* ~~~~\  image  /~~~~ */
-    if(this.props.image) {
+    if (this.props.image) {
       utils.Image(am4core, chart, this.props.image);
     }
 
 
     /* ~~~~\  scrollbars  /~~~~ */
-    if(this.props.scrollbarX) {
+    if (this.props.scrollbarX) {
       chart.scrollbarX = new am4core.Scrollbar();
     }
-    if(this.props.scrollbarY) {
+    if (this.props.scrollbarY) {
       chart.scrollbarY = new am4core.Scrollbar();
     }
 
 
-		/* ~~~~\  button  /~~~~ */
-		if(this.props.button) {
+    /* ~~~~\  button  /~~~~ */
+    if (this.props.button) {
       let Button = chart.chartContainer.createChild(am4core.Button);
       utils.makeButton(Button, this.props.button);
-      Button.events.on("hit", function() {
-        for(let r = 0; r < data.length; ++r) {
-          for(let v = 0; v < values.length; ++v) {
+      Button.events.on("hit", function () {
+        for (let r = 0; r < data.length; ++r) {
+          for (let v = 0; v < values.length; ++v) {
             chart.data[r][values[v][0]] = data2[r][values[v][0]];
             chart.data[r][values[v][1]] = data2[r][values[v][1]];
           }
         }
         chart.invalidateRawData();
-        if(window.Shiny) {
+        if (window.Shiny) {
           Shiny.setInputValue(
             shinyId + ":rAmCharts4.dataframe", chart.data
           );
           Shiny.setInputValue(shinyId + "_change", null);
         }
       });
-		}
+    }
 
 
     /* ~~~~\  category axis  /~~~~ */
     let categoryAxis = utils.createCategoryAxis(
       "X", am4charts, chart, category, xAxis, 80, theme
     );
-/*		let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-		categoryAxis.paddingBottom = xAxis.adjust || 0;
-		categoryAxis.renderer.grid.template.location = 0;
-		categoryAxis.renderer.cellStartLocation = 1 - 80/100;
-		categoryAxis.renderer.cellEndLocation = 80/100;
-		if(xAxis && xAxis.title && xAxis.title.text !== "") {
-  		categoryAxis.title.text = xAxis.title.text || category;
-  		categoryAxis.title.fontWeight = xAxis.title.fontWeight || "bold";
-      categoryAxis.title.fontSize = xAxis.title.fontSize || 20;
-      categoryAxis.title.fontFamily = xAxis.title.fontFamily;
-  		categoryAxis.title.fill =
-  		  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
-		}
-		let xAxisLabels = categoryAxis.renderer.labels.template;
-		xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
-		xAxisLabels.rotation = xAxis.labels.rotation || 0;
-		if(xAxisLabels.rotation !== 0) {
-		  xAxisLabels.horizontalCenter = "right";
-		}
-		xAxisLabels.fill =
-		  xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
-		categoryAxis.dataFields.category = category;
-		categoryAxis.renderer.grid.template.disabled = true;
-		categoryAxis.renderer.minGridDistance = 50;
-    categoryAxis.cursorTooltipEnabled = false; 
-*/
+    /*		let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+        categoryAxis.paddingBottom = xAxis.adjust || 0;
+        categoryAxis.renderer.grid.template.location = 0;
+        categoryAxis.renderer.cellStartLocation = 1 - 80/100;
+        categoryAxis.renderer.cellEndLocation = 80/100;
+        if(xAxis && xAxis.title && xAxis.title.text !== "") {
+          categoryAxis.title.text = xAxis.title.text || category;
+          categoryAxis.title.fontWeight = xAxis.title.fontWeight || "bold";
+          categoryAxis.title.fontSize = xAxis.title.fontSize || 20;
+          categoryAxis.title.fontFamily = xAxis.title.fontFamily;
+          categoryAxis.title.fill =
+            xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+        }
+        let xAxisLabels = categoryAxis.renderer.labels.template;
+        xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
+        xAxisLabels.rotation = xAxis.labels.rotation || 0;
+        if(xAxisLabels.rotation !== 0) {
+          xAxisLabels.horizontalCenter = "right";
+        }
+        xAxisLabels.fill =
+          xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+        categoryAxis.dataFields.category = category;
+        categoryAxis.renderer.grid.template.disabled = true;
+        categoryAxis.renderer.minGridDistance = 50;
+        categoryAxis.cursorTooltipEnabled = false; 
+    */
 
 
-		/* ~~~~\  value axis  /~~~~ */
+    /* ~~~~\  value axis  /~~~~ */
     let valueAxis = utils.createAxis(
-      "Y", am4charts, am4core, chart, yAxis, 
+      "Y", am4charts, am4core, chart, yAxis,
       minValue, maxValue, false, theme, cursor
     );
 
 
     /* ~~~~\  horizontal line  /~~~~ */
-    if(hline) {
+    if (hline) {
       let range = valueAxis.axisRanges.create();
       range.value = hline.value;
       range.grid.stroke = am4core.color(hline.line.color);
@@ -4361,8 +4360,8 @@ class AmDumbbellChart extends React.PureComponent {
     }
 
 
-		/* ~~~~\  cursor  /~~~~ */
-		if(cursor) {
+    /* ~~~~\  cursor  /~~~~ */
+    if (cursor) {
       chart.cursor = new am4charts.XYCursor();
       chart.cursor.yAxis = valueAxis;
       chart.cursor.lineX.disabled = true;
@@ -4370,37 +4369,37 @@ class AmDumbbellChart extends React.PureComponent {
 
 
     /* ~~~~\  legend  /~~~~ */
-    if(chartLegend) {
+    if (chartLegend) {
       chart.legend = new am4charts.Legend();
       chart.legend.position = chartLegend.position || "bottom";
       chart.legend.useDefaultMarker = false;
       let markerTemplate = chart.legend.markers.template;
       markerTemplate.width = chartLegend.itemsWidth || 20;
       markerTemplate.height = chartLegend.itemsHeight || 20;
-      chart.legend.itemContainers.template.events.on("over", function(ev) {
+      chart.legend.itemContainers.template.events.on("over", function (ev) {
         let dataItem = ev.target.dataItem;
-        dataItem.dataContext.columns.each(function(x) {
+        dataItem.dataContext.columns.each(function (x) {
           x.column.isHover = true;
         })
         let columns = dataItem.dataContext.columns,
           ncols = columns.length;
-        for(let i = 0; i < ncols; ++i) {
+        for (let i = 0; i < ncols; ++i) {
           let bullets = columns.getIndex(i).column.dataItem.bullets;
-          bullets.each(function(bid) {
+          bullets.each(function (bid) {
             bullets.getKey(bid).children.getIndex(0).isHover = true;
           });
         }
       });
-      chart.legend.itemContainers.template.events.on("out", function(ev) {
+      chart.legend.itemContainers.template.events.on("out", function (ev) {
         let dataItem = ev.target.dataItem;
-        dataItem.dataContext.columns.each(function(x) {
+        dataItem.dataContext.columns.each(function (x) {
           x.column.isHover = false;
         })
         let columns = dataItem.dataContext.columns,
           ncols = columns.length;
-        for(let i = 0; i < ncols; ++i) {
+        for (let i = 0; i < ncols; ++i) {
           let bullets = columns.getIndex(i).column.dataItem.bullets;
-          bullets.each(function(bid) {
+          bullets.each(function (bid) {
             bullets.getKey(bid).children.getIndex(0).isHover = false;
           });
         }
@@ -4408,32 +4407,32 @@ class AmDumbbellChart extends React.PureComponent {
     }
 
 
-		/* ~~~~\  function handling the drag event  /~~~~ */
-		function handleDrag(event) {
-			var dataItem = event.target.dataItem;
-			// convert coordinate to value
-			let value = valueAxis.yToValue(event.target.pixelY);
-			// set new value
-			dataItem.openValueY = value;
-			// make column hover
+    /* ~~~~\  function handling the drag event  /~~~~ */
+    function handleDrag(event) {
+      var dataItem = event.target.dataItem;
+      // convert coordinate to value
+      let value = valueAxis.yToValue(event.target.pixelY);
+      // set new value
+      dataItem.openValueY = value;
+      // make column hover
       //dataItem.column.isHover = true;
-      
-			// hide tooltip not to interrupt
+
+      // hide tooltip not to interrupt
       //dataItem.column.hideTooltip(0);
       event.target.hideTooltip(0);
-			// make bullet hovered (as it might hide if mouse moves away)
-			event.target.isHover = true;
-		}
+      // make bullet hovered (as it might hide if mouse moves away)
+      event.target.isHover = true;
+    }
 
-		/* ~~~~\  function handling the dragstop event  /~~~~ */
-		function handleDragStop(event, value, field) {
+    /* ~~~~\  function handling the dragstop event  /~~~~ */
+    function handleDragStop(event, value, field) {
       //handleDrag(event);
       let dataItem = event.target.dataItem;
       event.target.isHover = false;
       let newValue = dataItem.values[field].value;
       dataCopy[dataItem.index][value] = newValue;
 
-      if(window.Shiny) {
+      if (window.Shiny) {
         Shiny.setInputValue(
           shinyId + ":rAmCharts4.dataframe", dataCopy
         );
@@ -4444,7 +4443,7 @@ class AmDumbbellChart extends React.PureComponent {
           value: newValue
         });
       }
-		}
+    }
 
 
     /* 
@@ -4452,21 +4451,21 @@ class AmDumbbellChart extends React.PureComponent {
       otherwise bullets are unresponsive  
     */
     chart.events.on("sizechanged", event => {
-      event.target.series.each(function(s) {
-        s.bulletsContainer.children.each(function(b) {
+      event.target.series.each(function (s) {
+        s.bulletsContainer.children.each(function (b) {
           b.dispatchImmediately("positionchanged");
         });
       });
     });
 
 
-		values.forEach(function(y1y2, index){
+    values.forEach(function (y1y2, index) {
 
       let y1 = y1y2[0], y2 = y1y2[1];
 
       let series1 = chart.series.push(new am4charts.ColumnSeries()),
         series2 = chart.series.push(new am4charts.LineSeries());
-        // je n'utilise plus series2
+      // je n'utilise plus series2
       series2.hiddenInLegend = true;
       series2.strokeWidth = 0;
       series2.strokeOpacity = 0;
@@ -4478,8 +4477,8 @@ class AmDumbbellChart extends React.PureComponent {
       series2.name = valueNames[y2];
       series1.dataFields.openValueY = y2;
       series2.dataFields.openValueY = y1;
-//      series1.fill = areas[index].color || chart.colors.getIndex(index);
-//      series1.fillOpacity = areas[index].opacity;
+      //      series1.fill = areas[index].color || chart.colors.getIndex(index);
+      //      series1.fillOpacity = areas[index].opacity;
       //series2.fillOpacity = series1.fillOpacity;
       //series2.zIndex = -1;
       series1.sequencedInterpolation = true;
@@ -4492,7 +4491,7 @@ class AmDumbbellChart extends React.PureComponent {
       bullet1.locationY = 1;
       let bullet2 = series1.bullets.push(new am4charts.Bullet()),
         shape2 = utils.Shape(am4core, chart, index, bullet2, bulletsStyle[y2]);
-      if(tooltips) {
+      if (tooltips) {
         /* ~~~~\  tooltip  /~~~~ */
         bullet1.tooltipText = tooltips[y1].text;
         let tooltip1 = utils.Tooltip(am4core, chart, index, tooltips[y1]);
@@ -4512,7 +4511,7 @@ class AmDumbbellChart extends React.PureComponent {
       let hoverState2 = shape2.states.create("hover");
       hoverState2.properties.strokeWidth = shape2.strokeWidth + 2;
       hoverState2.properties.opacity = 1; // visible when hovered
-      if(draggable[y1]) {
+      if (draggable[y1]) {
         bullet1.draggable = true;
         // resize cursor when over
         bullet1.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
@@ -4541,7 +4540,7 @@ class AmDumbbellChart extends React.PureComponent {
         // when line position changes, adjust minX/maxX of bullets so that we could only dragg vertically
         bullet1.events.on("positionchanged", event => {
           let dataItem = event.target.dataItem;
-          if(dataItem.bullets) {
+          if (dataItem.bullets) {
             let itemBullet = dataItem.bullets.getKey(bullet1.uid);
             let column = dataItem.column;
             itemBullet.minX = column.pixelX + column.pixelWidth / 2;
@@ -4551,7 +4550,7 @@ class AmDumbbellChart extends React.PureComponent {
           }
         });
       }
-      if(draggable[y2]) {
+      if (draggable[y2]) {
         bullet2.draggable = true;
         // resize cursor when over
         bullet2.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
@@ -4580,7 +4579,7 @@ class AmDumbbellChart extends React.PureComponent {
         // when line position changes, adjust minX/maxX of bullets so that we could only dragg vertically
         bullet2.events.on("positionchanged", event => {
           let dataItem = event.target.dataItem;
-          if(dataItem.bullets) {
+          if (dataItem.bullets) {
             let itemBullet = dataItem.bullets.getKey(bullet2.uid);
             let column = dataItem.column;
             itemBullet.minX = column.pixelX + column.pixelWidth / 2;
@@ -4594,9 +4593,9 @@ class AmDumbbellChart extends React.PureComponent {
       /* ~~~~\  column template  /~~~~ */
       let columnStyle = segmentsStyles[seriesNames[index]];
       let columnTemplate = series1.columns.template;
-      columnTemplate.width = columnStyle.width || 1; 
+      columnTemplate.width = columnStyle.width || 1;
       columnTemplate.fill = columnStyle.color || chart.colors.getIndex(index);
-      if(columnStyle.colorAdapter) { 
+      if (columnStyle.colorAdapter) {
         columnTemplate.adapter.add("fill", columnStyle.colorAdapter);
         columnTemplate.adapter.add("stroke", columnStyle.colorAdapter);
       }
@@ -4632,7 +4631,7 @@ class AmDumbbellChart extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    if(this.chart) {
+    if (this.chart) {
       this.chart.dispose();
     }
   }
@@ -4640,8 +4639,8 @@ class AmDumbbellChart extends React.PureComponent {
   render() {
     return (
       <div
-        id = {this.props.chartId}
-        style = {this.style()}
+        id={this.props.chartId}
+        style={this.style()}
       ></div>
     );
   }
@@ -4659,10 +4658,10 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
   }
 
   style() {
-    if(window.Shiny && !window.FlexDashboard) {
-      return {width: "100%", height: "100%"};
+    if (window.Shiny && !window.FlexDashboard) {
+      return { width: "100%", height: "100%" };
     } else {
-      return {width: this.props.width, height: this.props.height};
+      return { width: this.props.width, height: this.props.height };
     }
   }
 
@@ -4697,8 +4696,8 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
-    if(window.Shiny) {
-      if(shinyId === undefined) {
+    if (window.Shiny) {
+      if (shinyId === undefined) {
         shinyId = $(document.getElementById(chartId)).parent().attr("id");
       }
       Shiny.setInputValue(
@@ -4706,7 +4705,7 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
       );
     }
 
-    switch(theme) {
+    switch (theme) {
       case "dark":
         am4core.useTheme(am4themes_dark);
         break;
@@ -4750,30 +4749,30 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
 
 
     /* ~~~~\  Enable export  /~~~~ */
-    if(this.props.export) {
+    if (this.props.export) {
       chart.exporting.menu = new am4core.ExportMenu();
       chart.exporting.menu.items = utils.exportMenuItems;
     }
 
 
-		/* ~~~~\  title  /~~~~ */
-		let chartTitle = this.props.chartTitle;
-		if(chartTitle) {
+    /* ~~~~\  title  /~~~~ */
+    let chartTitle = this.props.chartTitle;
+    if (chartTitle) {
       let title = chart.titles.create();
-			title.text = chartTitle.text.text;
-			title.fill =
-			  chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
-			title.fontSize = chartTitle.text.fontSize || 22;
-			title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.text = chartTitle.text.text;
+      title.fill =
+        chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
       title.fontFamily = chartTitle.text.fontFamily;
       title.align = chartTitle.align || "left";
       title.dy = -30;
-		}
+    }
 
 
     /* ~~~~\  caption  /~~~~ */
     let chartCaption = this.props.caption;
-    if(chartCaption) {
+    if (chartCaption) {
       let caption = chart.chartContainer.createChild(am4core.Label);
       caption.text = chartCaption.text.text;
       caption.fill =
@@ -4786,40 +4785,40 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
 
 
     /* ~~~~\  image  /~~~~ */
-    if(this.props.image) {
+    if (this.props.image) {
       utils.Image(am4core, chart, this.props.image);
     }
 
 
     /* ~~~~\  scrollbars  /~~~~ */
-    if(this.props.scrollbarX) {
+    if (this.props.scrollbarX) {
       chart.scrollbarX = new am4core.Scrollbar();
     }
-    if(this.props.scrollbarY) {
+    if (this.props.scrollbarY) {
       chart.scrollbarY = new am4core.Scrollbar();
     }
 
 
-		/* ~~~~\  button  /~~~~ */
-		if(this.props.button) {
+    /* ~~~~\  button  /~~~~ */
+    if (this.props.button) {
       let Button = chart.chartContainer.createChild(am4core.Button);
       utils.makeButton(Button, this.props.button);
-      Button.events.on("hit", function() {
-        for(let r = 0; r < data.length; ++r) {
-          for(let v = 0; v < values.length; ++v) {
+      Button.events.on("hit", function () {
+        for (let r = 0; r < data.length; ++r) {
+          for (let v = 0; v < values.length; ++v) {
             chart.data[r][values[v][0]] = data2[r][values[v][0]];
             chart.data[r][values[v][1]] = data2[r][values[v][1]];
           }
         }
         chart.invalidateRawData();
-        if(window.Shiny) {
+        if (window.Shiny) {
           Shiny.setInputValue(
             shinyId + ":rAmCharts4.dataframe", chart.data
           );
           Shiny.setInputValue(shinyId + "_change", null);
         }
       });
-		}
+    }
 
 
     /* ~~~~\  category axis  /~~~~ */
@@ -4827,15 +4826,15 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
       "Y", am4charts, chart, category, yAxis, 80, theme
     );
 
-		/* ~~~~\  value axis  /~~~~ */
+    /* ~~~~\  value axis  /~~~~ */
     let valueAxis = utils.createAxis(
-      "X", am4charts, am4core, chart, xAxis, 
+      "X", am4charts, am4core, chart, xAxis,
       minValue, maxValue, false, theme, cursor
     );
 
 
     /* ~~~~\  vertical line  /~~~~ */
-    if(vline) {
+    if (vline) {
       let range = valueAxis.axisRanges.create();
       range.value = vline.value;
       range.grid.stroke = am4core.color(vline.line.color);
@@ -4845,8 +4844,8 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
     }
 
 
-		/* ~~~~\  cursor  /~~~~ */
-		if(cursor) {
+    /* ~~~~\  cursor  /~~~~ */
+    if (cursor) {
       chart.cursor = new am4charts.XYCursor();
       chart.cursor.xAxis = valueAxis;
       chart.cursor.lineY.disabled = true;
@@ -4854,37 +4853,37 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
 
 
     /* ~~~~\  legend  /~~~~ */
-    if(chartLegend) {
+    if (chartLegend) {
       chart.legend = new am4charts.Legend();
       chart.legend.position = chartLegend.position || "bottom";
       chart.legend.useDefaultMarker = false;
       let markerTemplate = chart.legend.markers.template;
       markerTemplate.width = chartLegend.itemsWidth || 20;
       markerTemplate.height = chartLegend.itemsHeight || 20;
-      chart.legend.itemContainers.template.events.on("over", function(ev) {
+      chart.legend.itemContainers.template.events.on("over", function (ev) {
         let dataItem = ev.target.dataItem;
-        dataItem.dataContext.columns.each(function(x) {
+        dataItem.dataContext.columns.each(function (x) {
           x.column.isHover = true;
         })
         let columns = dataItem.dataContext.columns,
           ncols = columns.length;
-        for(let i = 0; i < ncols; ++i) {
+        for (let i = 0; i < ncols; ++i) {
           let bullets = columns.getIndex(i).column.dataItem.bullets;
-          bullets.each(function(bid) {
+          bullets.each(function (bid) {
             bullets.getKey(bid).children.getIndex(0).isHover = true;
           });
         }
       });
-      chart.legend.itemContainers.template.events.on("out", function(ev) {
+      chart.legend.itemContainers.template.events.on("out", function (ev) {
         let dataItem = ev.target.dataItem;
-        dataItem.dataContext.columns.each(function(x) {
+        dataItem.dataContext.columns.each(function (x) {
           x.column.isHover = false;
         })
         let columns = dataItem.dataContext.columns,
           ncols = columns.length;
-        for(let i = 0; i < ncols; ++i) {
+        for (let i = 0; i < ncols; ++i) {
           let bullets = columns.getIndex(i).column.dataItem.bullets;
-          bullets.each(function(bid) {
+          bullets.each(function (bid) {
             bullets.getKey(bid).children.getIndex(0).isHover = false;
           });
         }
@@ -4892,14 +4891,14 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
     }
 
 
-		/* ~~~~\  function handling the dragstop event  /~~~~ */
-		function handleDragStop(event, value, field) {
+    /* ~~~~\  function handling the dragstop event  /~~~~ */
+    function handleDragStop(event, value, field) {
       let dataItem = event.target.dataItem;
       event.target.isHover = false;
       let newValue = dataItem.values[field].value;
       dataCopy[dataItem.index][value] = newValue;
 
-      if(window.Shiny) {
+      if (window.Shiny) {
         Shiny.setInputValue(
           shinyId + ":rAmCharts4.dataframe", dataCopy
         );
@@ -4910,7 +4909,7 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
           value: newValue
         });
       }
-		}
+    }
 
 
     /* 
@@ -4918,15 +4917,15 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
       otherwise bullets are unresponsive  
     */
     chart.events.on("sizechanged", event => {
-      event.target.series.each(function(s) {
-        s.bulletsContainer.children.each(function(b) {
+      event.target.series.each(function (s) {
+        s.bulletsContainer.children.each(function (b) {
           b.dispatchImmediately("positionchanged");
         });
       });
     });
 
 
-		values.forEach(function(y1y2, index){
+    values.forEach(function (y1y2, index) {
 
       let y1 = y1y2[0], y2 = y1y2[1];
 
@@ -4943,7 +4942,7 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
       bullet1.locationX = 1;
       let bullet2 = series.bullets.push(new am4charts.Bullet()),
         shape2 = utils.Shape(am4core, chart, index, bullet2, bulletsStyle[y2]);
-      if(tooltips) {
+      if (tooltips) {
         /* ~~~~\  tooltip  /~~~~ */
         bullet1.tooltipText = tooltips[y1].text;
         let tooltip1 = utils.Tooltip(am4core, chart, index, tooltips[y1]);
@@ -4963,7 +4962,7 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
       let hoverState2 = shape2.states.create("hover");
       hoverState2.properties.strokeWidth = shape2.strokeWidth + 2;
       hoverState2.properties.opacity = 1; // visible when hovered
-      if(draggable[y1]) {
+      if (draggable[y1]) {
         bullet1.draggable = true;
         // resize cursor when over
         bullet1.cursorOverStyle = am4core.MouseCursorStyle.horizontalResize;
@@ -4992,7 +4991,7 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
         // when line position changes, adjust minX/maxX of bullets so that we could only dragg vertically
         bullet1.events.on("positionchanged", event => {
           let dataItem = event.target.dataItem;
-          if(dataItem.bullets) {
+          if (dataItem.bullets) {
             let itemBullet = dataItem.bullets.getKey(bullet1.uid);
             let column = dataItem.column;
             itemBullet.minY = column.pixelY + column.pixelHeight / 2;
@@ -5002,7 +5001,7 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
           }
         });
       }
-      if(draggable[y2]) {
+      if (draggable[y2]) {
         bullet2.draggable = true;
         // resize cursor when over
         bullet2.cursorOverStyle = am4core.MouseCursorStyle.horizontalResize;
@@ -5031,7 +5030,7 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
         // when line position changes, adjust minX/maxX of bullets so that we could only dragg vertically
         bullet2.events.on("positionchanged", event => {
           let dataItem = event.target.dataItem;
-          if(dataItem.bullets) {
+          if (dataItem.bullets) {
             let itemBullet = dataItem.bullets.getKey(bullet2.uid);
             let column = dataItem.column;
             itemBullet.minY = column.pixelY + column.pixelHeight / 2;
@@ -5045,9 +5044,9 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
       /* ~~~~\  column template  /~~~~ */
       let columnStyle = segmentsStyles[seriesNames[index]];
       let columnTemplate = series.columns.template;
-      columnTemplate.height = columnStyle.width || 1; 
+      columnTemplate.height = columnStyle.width || 1;
       columnTemplate.fill = columnStyle.color || chart.colors.getIndex(index);
-      if(columnStyle.colorAdapter) { 
+      if (columnStyle.colorAdapter) {
         columnTemplate.adapter.add("fill", columnStyle.colorAdapter);
         columnTemplate.adapter.add("stroke", columnStyle.colorAdapter);
       }
@@ -5083,7 +5082,7 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    if(this.chart) {
+    if (this.chart) {
       this.chart.dispose();
     }
   }
@@ -5091,8 +5090,8 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
   render() {
     return (
       <div
-        id = {this.props.chartId}
-        style = {this.style()}
+        id={this.props.chartId}
+        style={this.style()}
       ></div>
     );
   }
@@ -5103,9 +5102,9 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
 /* COMPONENT: GAUGE CHART */
 
 function lookUpGrade(lookupScore, grades) {
-  for(let i = 0; i < grades.length; i++) {
+  for (let i = 0; i < grades.length; i++) {
     let x = grades[i];
-    if(x.lowScore < lookupScore && x.highScore >= lookupScore) {
+    if (x.lowScore < lookupScore && x.highScore >= lookupScore) {
       return x;
     }
   }
@@ -5121,10 +5120,10 @@ class AmGaugeChart extends React.PureComponent {
   }
 
   style() {
-    if(window.Shiny && !window.FlexDashboard) {
-      return {width: "100%", height: "100%"};
+    if (window.Shiny && !window.FlexDashboard) {
+      return { width: "100%", height: "100%" };
     } else {
-      return {width: this.props.width, height: this.props.height};
+      return { width: this.props.width, height: this.props.height };
     }
   }
 
@@ -5149,13 +5148,13 @@ class AmGaugeChart extends React.PureComponent {
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
-    if(window.Shiny) {
-      if(shinyId === undefined) {
+    if (window.Shiny) {
+      if (shinyId === undefined) {
         shinyId = $(document.getElementById(chartId)).parent().attr("id");
       }
     }
 
-    switch(theme) {
+    switch (theme) {
       case "dark":
         am4core.useTheme(am4themes_dark);
         break;
@@ -5188,13 +5187,13 @@ class AmGaugeChart extends React.PureComponent {
     let chart = am4core.create(this.props.chartId, am4charts.GaugeChart);
 
     let nparts = gradingData.label.length;
-    if(gradingData.color) {
-      for(let i = 0; i < nparts; i++) {
+    if (gradingData.color) {
+      for (let i = 0; i < nparts; i++) {
         gradingData.color[i] = am4core.color(gradingData.color[i]);
       }
     } else {
       gradingData.color = new Array(nparts);
-      for(let i = 0; i < nparts; i++) {
+      for (let i = 0; i < nparts; i++) {
         gradingData.color[i] = chart.colors.getIndex(i);
       }
     }
@@ -5215,30 +5214,30 @@ class AmGaugeChart extends React.PureComponent {
 
 
     /* ~~~~\  Enable export  /~~~~ */
-    if(this.props.export) {
+    if (this.props.export) {
       chart.exporting.menu = new am4core.ExportMenu();
       chart.exporting.menu.items = utils.exportMenuItems;
     }
 
 
-		/* ~~~~\  title  /~~~~ */
-		let chartTitle = this.props.chartTitle;
-		if(chartTitle) {
+    /* ~~~~\  title  /~~~~ */
+    let chartTitle = this.props.chartTitle;
+    if (chartTitle) {
       let title = chart.titles.create();
-			title.text = chartTitle.text.text;
-			title.fill =
-			  chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
-			title.fontSize = chartTitle.text.fontSize || 22;
-			title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.text = chartTitle.text.text;
+      title.fill =
+        chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
       title.fontFamily = chartTitle.text.fontFamily;
       title.align = chartTitle.align || "left";
       title.dy = -30;
-		}
+    }
 
 
     /* ~~~~\  caption  /~~~~ */
     let chartCaption = this.props.caption;
-    if(chartCaption) {
+    if (chartCaption) {
       let caption = chart.chartContainer.createChild(am4core.Label);
       caption.text = chartCaption.text.text;
       caption.fill =
@@ -5251,7 +5250,7 @@ class AmGaugeChart extends React.PureComponent {
 
 
     /* ~~~~\  image  /~~~~ */
-    if(this.props.image) {
+    if (this.props.image) {
       utils.Image(am4core, chart, this.props.image);
     }
 
@@ -5280,7 +5279,7 @@ class AmGaugeChart extends React.PureComponent {
     axis2.strictMinMax = true;
     axis2.renderer.labels.template.disabled = true; // ???????? strange
     axis2.renderer.ticks.template.disabled = true;
-    if(gridLines) {
+    if (gridLines) {
       axis2.renderer.grid.template.disabled = false;
       axis2.renderer.grid.template.stroke =
         gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
@@ -5290,9 +5289,9 @@ class AmGaugeChart extends React.PureComponent {
     } else {
       axis2.renderer.grid.template.disabled = true;
     }
-//    axis2.renderer.grid.template.opacity = 0.5;
+    //    axis2.renderer.grid.template.opacity = 0.5;
     axis2.renderer.labels.template.bent = true;
-//    axis2.renderer.labels.template.fill = am4core.color("#000");
+    //    axis2.renderer.labels.template.fill = am4core.color("#000");
     axis2.renderer.labels.template.fontSize = labelsFont.fontSize;
     axis2.renderer.labels.template.fontWeight = labelsFont.fontWeight;
     axis2.renderer.labels.template.fontFamily = labelsFont.fontFamily;
@@ -5300,13 +5299,13 @@ class AmGaugeChart extends React.PureComponent {
 
 
     /* ~~~~\  ranges  /~~~~ */
-    for(let grading of data.gradingData) {
+    for (let grading of data.gradingData) {
       let range = axis2.axisRanges.create();
       range.axisFill.fill = grading.color;
       range.axisFill.fillOpacity = 0.8;
       range.axisFill.zIndex = -1;
       range.value = grading.lowScore > minScore ? grading.lowScore : minScore;
-      range.endValue = 
+      range.endValue =
         grading.highScore < maxScore ? grading.highScore : maxScore;
       range.grid.strokeOpacity = 0;
       range.stroke = grading.color.lighten(-0.1);
@@ -5314,18 +5313,18 @@ class AmGaugeChart extends React.PureComponent {
       range.label.text = grading.label;
       range.label.fill = grading.color.alternative;
       range.label.location = 0.5;
-      range.label.radius = am4core.percent(labelsRadius); 
-      range.label.paddingBottom = 
-        -utils.fontSizeToPixels(chartFontSize, labelsFont.fontSize) / 2; 
-//    range.label.fontSize = labelsFont.fontSize;
+      range.label.radius = am4core.percent(labelsRadius);
+      range.label.paddingBottom =
+        -utils.fontSizeToPixels(chartFontSize, labelsFont.fontSize) / 2;
+      //    range.label.fontSize = labelsFont.fontSize;
     }
-    
+
 
     /* ~~~~\  matching grade  /~~~~ */
     let matchingGrade = lookUpGrade(data.score, data.gradingData);
-    
 
-    /* ~~~~\  score label  /~~~~ */    
+
+    /* ~~~~\  score label  /~~~~ */
     let label = chart.radarContainer.createChild(am4core.Label);
     label.isMeasured = false;
     label.fontSize = scoreFont.fontSize;
@@ -5339,9 +5338,9 @@ class AmGaugeChart extends React.PureComponent {
     label.text = data.score.toFixed(scorePrecision);
     //label.text = "{score}";
     label.fill = matchingGrade.color;
-    
 
-    /* ~~~~\  score range label  /~~~~ */    
+
+    /* ~~~~\  score range label  /~~~~ */
     let label2 = chart.radarContainer.createChild(am4core.Label);
     label2.isMeasured = false;
     label2.fontSize = scoreLabelFont.fontSize;
@@ -5351,9 +5350,9 @@ class AmGaugeChart extends React.PureComponent {
     label2.verticalCenter = "bottom";
     label2.text = matchingGrade.label;
     label2.fill = matchingGrade.color;
-    
-    
-    /* ~~~~\  hand  /~~~~ */    
+
+
+    /* ~~~~\  hand  /~~~~ */
     let clockHand = chart.hands.push(new am4charts.ClockHand());
     clockHand.axis = axis2;
     clockHand.innerRadius = am4core.percent(hand.innerRadius);
@@ -5363,21 +5362,21 @@ class AmGaugeChart extends React.PureComponent {
     clockHand.fill = am4core.color(hand.color);
     clockHand.stroke = am4core.color(hand.strokeColor);
 
-    clockHand.events.on("positionchanged", function() {
+    clockHand.events.on("positionchanged", function () {
       let position = clockHand.currentPosition;
       label.text = axis2.positionToValue(position).toFixed(scorePrecision);
       let value = axis.positionToValue(position);
       let matchingGrade = lookUpGrade(value, data.gradingData);
       label2.text = matchingGrade.label;
       label2.fill = matchingGrade.color;
-      label2.stroke = matchingGrade.color;  
+      label2.stroke = matchingGrade.color;
       label.fill = matchingGrade.color;
     })
 
-    if(window.Shiny) {
+    if (window.Shiny) {
       Shiny.addCustomMessageHandler(
         shinyId + "gauge",
-        function(score) {
+        function (score) {
           clockHand.showValue(score, 1000, am4core.ease.cubicOut);
         }
       );
@@ -5388,7 +5387,7 @@ class AmGaugeChart extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    if(this.chart) {
+    if (this.chart) {
       this.chart.dispose();
     }
   }
@@ -5396,8 +5395,8 @@ class AmGaugeChart extends React.PureComponent {
   render() {
     return (
       <div
-        id = {this.props.chartId}
-        style = {this.style()}
+        id={this.props.chartId}
+        style={this.style()}
       ></div>
     );
   }
@@ -5415,17 +5414,17 @@ class AmStackedBarChart extends React.PureComponent {
   }
 
   style() {
-    if(window.Shiny && !window.FlexDashboard) {
-      return {width: "100%", height: "100%"};
+    if (window.Shiny && !window.FlexDashboard) {
+      return { width: "100%", height: "100%" };
     } else {
-      return {width: this.props.width, height: this.props.height};
+      return { width: this.props.width, height: this.props.height };
     }
   }
 
   componentDidMount() {
 
     let theme = this.props.theme,
-      threeD = this.props.threeD, 
+      threeD = this.props.threeD,
       chartLegend = this.props.legend,
       category = this.props.category,
       categories = this.props.data[category],
@@ -5455,8 +5454,8 @@ class AmStackedBarChart extends React.PureComponent {
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
-    if(window.Shiny) {
-      if(shinyId === undefined) {
+    if (window.Shiny) {
+      if (shinyId === undefined) {
         shinyId = $(document.getElementById(chartId)).parent().attr("id");
       }
       Shiny.setInputValue(
@@ -5464,7 +5463,7 @@ class AmStackedBarChart extends React.PureComponent {
       );
     }
 
-    switch(theme) {
+    switch (theme) {
       case "dark":
         am4core.useTheme(am4themes_dark);
         break;
@@ -5495,7 +5494,7 @@ class AmStackedBarChart extends React.PureComponent {
     }
 
     let chart;
-    if(threeD) {
+    if (threeD) {
       chart = am4core.create(this.props.chartId, am4charts.XYChart3D);
     } else {
       chart = am4core.create(this.props.chartId, am4charts.XYChart);
@@ -5511,30 +5510,30 @@ class AmStackedBarChart extends React.PureComponent {
 
 
     /* ~~~~\  Enable export  /~~~~ */
-    if(this.props.export) {
+    if (this.props.export) {
       chart.exporting.menu = new am4core.ExportMenu();
       chart.exporting.menu.items = utils.exportMenuItems;
     }
 
 
-		/* ~~~~\  title  /~~~~ */
-		let chartTitle = this.props.chartTitle;
-		if(chartTitle) {
+    /* ~~~~\  title  /~~~~ */
+    let chartTitle = this.props.chartTitle;
+    if (chartTitle) {
       let title = chart.titles.create();
-			title.text = chartTitle.text.text;
-			title.fill =
-			  chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
-			title.fontSize = chartTitle.text.fontSize || 22;
-			title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.text = chartTitle.text.text;
+      title.fill =
+        chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
       title.fontFamily = chartTitle.text.fontFamily;
       title.align = chartTitle.align || "left";
       title.dy = -30;
-		}
+    }
 
 
     /* ~~~~\  caption  /~~~~ */
     let chartCaption = this.props.caption;
-    if(chartCaption) {
+    if (chartCaption) {
       let caption = chart.chartContainer.createChild(am4core.Label);
       caption.text = chartCaption.text.text;
       caption.fill =
@@ -5547,85 +5546,85 @@ class AmStackedBarChart extends React.PureComponent {
 
 
     /* ~~~~\  image  /~~~~ */
-    if(this.props.image) {
+    if (this.props.image) {
       utils.Image(am4core, chart, this.props.image);
     }
 
 
     /* ~~~~\  scrollbars  /~~~~ */
-    if(this.props.scrollbarX) {
+    if (this.props.scrollbarX) {
       chart.scrollbarX = new am4core.Scrollbar();
     }
-    if(this.props.scrollbarY) {
+    if (this.props.scrollbarY) {
       chart.scrollbarY = new am4core.Scrollbar();
     }
 
 
-		/* ~~~~\  button  /~~~~ */
-		if(this.props.button) {
+    /* ~~~~\  button  /~~~~ */
+    if (this.props.button) {
       let Button = chart.chartContainer.createChild(am4core.Button);
       utils.makeButton(Button, this.props.button);
-      Button.events.on("hit", function() {
-        for (let r = 0; r < data.length; ++r){
+      Button.events.on("hit", function () {
+        for (let r = 0; r < data.length; ++r) {
           for (let v = 0; v < Series.length; ++v) {
             chart.data[r][Series[v]] = data2[r][Series[v]];
           }
         }
         chart.invalidateRawData();
-        if(window.Shiny) {
+        if (window.Shiny) {
           Shiny.setInputValue(
             shinyId + ":rAmCharts4.dataframe", chart.data
           );
           Shiny.setInputValue(shinyId + "_change", null);
         }
       });
-		}
+    }
 
 
     /* ~~~~\  Shiny message handler for stacked bar chart  /~~~~ */
-    if(window.Shiny) {
+    if (window.Shiny) {
       Shiny.addCustomMessageHandler(
         shinyId + "bar",
-        function(newdata) {
+        function (newdata) {
           let tail = " is missing in the data you supplied!";
           // check that the received data has the 'category' column
-          if(!newdata.hasOwnProperty(category)){
+          if (!newdata.hasOwnProperty(category)) {
             console.warn(
               `updateAmBarChart: column "${category}"` + tail
             );
             return null;
-          } 
+          }
           // check that the received data has the necessary categories
           let ok = true, i = 0;
-          while(ok && i < categories.length) {
+          while (ok && i < categories.length) {
             ok = newdata[category].indexOf(categories[i]) > -1;
-            if(!ok) {
+            if (!ok) {
               console.warn(
                 `updateAmBarChart: category "${categories[i]}"` + tail
               );
             }
             i++;
           }
-          if(!ok) {
+          if (!ok) {
             return null;
           }
           // check that the received data has the necessary 'Series' columns
           i = 0;
-          while(ok && i < Series.length) {
+          while (ok && i < Series.length) {
             ok = newdata.hasOwnProperty(Series[i]);
-            if(!ok) {
+            if (!ok) {
               console.warn(
                 `updateAmBarChart: column "${Series[i]}"` + tail
-              );  
+              );
             }
             i++;
           }
-          if(!ok) {
+          if (!ok) {
             return null;
           }
           // update chart data
           let tnewdata = HTMLWidgets.dataframeToD3(newdata);
-          for (let r = 0; r < data.length; ++r){
+          for (let r = 0; r < data.length; ++r) {
             for (let v = 0; v < Series.length; ++v) {
               chart.data[r][Series[v]] = tnewdata[r][Series[v]];
             }
@@ -5640,21 +5639,21 @@ class AmStackedBarChart extends React.PureComponent {
     }
 
 
-		/* ~~~~\  category axis  /~~~~ */
+    /* ~~~~\  category axis  /~~~~ */
     let categoryAxis = utils.createCategoryAxis(
       "X", am4charts, chart, category, xAxis, cellWidth, theme
     );
 
-    
-		/* ~~~~\  value axis  /~~~~ */
+
+    /* ~~~~\  value axis  /~~~~ */
     let valueAxis = utils.createAxis(
-      "Y", am4charts, am4core, chart, yAxis, 
+      "Y", am4charts, am4core, chart, yAxis,
       minValue, maxValue, false, theme, cursor
     );
 
 
     /* ~~~~\  horizontal line  /~~~~ */
-    if(hline) {
+    if (hline) {
       let range = valueAxis.axisRanges.create();
       range.value = hline.value;
       range.grid.stroke = am4core.color(hline.line.color);
@@ -5664,8 +5663,8 @@ class AmStackedBarChart extends React.PureComponent {
     }
 
 
-		/* ~~~~\  cursor  /~~~~ */
-		if(cursor) {
+    /* ~~~~\  cursor  /~~~~ */
+    if (cursor) {
       chart.cursor = new am4charts.XYCursor();
       chart.cursor.yAxis = valueAxis;
       chart.cursor.lineX.disabled = true;
@@ -5673,7 +5672,7 @@ class AmStackedBarChart extends React.PureComponent {
 
 
     /* ~~~~\  legend  /~~~~ */
-    if(chartLegend) {
+    if (chartLegend) {
       chart.legend = new am4charts.Legend();
       chart.legend.position = chartLegend.position || "bottom";
       chart.legend.useDefaultMarker = false;
@@ -5682,23 +5681,23 @@ class AmStackedBarChart extends React.PureComponent {
       markerTemplate.height = chartLegend.itemsHeight || 20;
       // markerTemplate.strokeWidth = 1;
       // markerTemplate.strokeOpacity = 1;
-      chart.legend.itemContainers.template.events.on("over", function(ev) {
-        ev.target.dataItem.dataContext.columns.each(function(x) {
+      chart.legend.itemContainers.template.events.on("over", function (ev) {
+        ev.target.dataItem.dataContext.columns.each(function (x) {
           x.column.isHover = true;
         })
       });
-      chart.legend.itemContainers.template.events.on("out", function(ev) {
-        ev.target.dataItem.dataContext.columns.each(function(x) {
+      chart.legend.itemContainers.template.events.on("out", function (ev) {
+        ev.target.dataItem.dataContext.columns.each(function (x) {
           x.column.isHover = false;
         })
       });
     }
 
 
-		Series.forEach(function(Serie, index){
+    Series.forEach(function (Serie, index) {
 
       let series;
-      if(threeD) {
+      if (threeD) {
         series = chart.series.push(new am4charts.ColumnSeries3D());
       } else {
         series = chart.series.push(new am4charts.ColumnSeries());
@@ -5713,18 +5712,18 @@ class AmStackedBarChart extends React.PureComponent {
       /* ~~~~\  column template  /~~~~ */
       let columnTemplate = series.columns.template;
       columnTemplate.width = am4core.percent(columnWidth);
-      if(colors) {
+      if (colors) {
         columnTemplate.fill = colors[Serie];
       }
       /* ~~~~\  tooltip  /~~~~ */
-      if(tooltips) {
+      if (tooltips) {
         columnTemplate.tooltipText = tooltips[Serie].text;
         let tooltip = utils.Tooltip(am4core, chart, index, tooltips[Serie]);
         tooltip.pointerOrientation = "vertical";
         tooltip.dy = 0;
         tooltip.adapter.add("rotation", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
               return 0;
             } else {
               return 180;
@@ -5734,8 +5733,8 @@ class AmStackedBarChart extends React.PureComponent {
           }
         });
         tooltip.label.adapter.add("verticalCenter", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
               return "none";
             } else {
               return "bottom";
@@ -5745,8 +5744,8 @@ class AmStackedBarChart extends React.PureComponent {
           }
         });
         tooltip.label.adapter.add("rotation", (x, target) => {
-          if(target.dataItem) {
-            if(target.dataItem.valueY >= 0) {
+          if (target.dataItem) {
+            if (target.dataItem.valueY >= 0) {
               return 0;
             } else {
               return 180;
@@ -5757,7 +5756,7 @@ class AmStackedBarChart extends React.PureComponent {
         });
         columnTemplate.tooltip = tooltip;
         columnTemplate.adapter.add("tooltipY", (x, target) => {
-          if(target.dataItem.valueY > 0) {
+          if (target.dataItem.valueY > 0) {
             return 0;
           } else {
             return -valueAxis.valueToPoint(maxValue - target.dataItem.valueY).y;
@@ -5783,8 +5782,8 @@ class AmStackedBarChart extends React.PureComponent {
   render() {
     return (
       <div
-        id = {this.props.chartId}
-        style = {this.style()}
+        id={this.props.chartId}
+        style={this.style()}
       ></div>
     );
   }
@@ -5801,10 +5800,10 @@ class AmBoxplotChart extends React.PureComponent {
   }
 
   style() {
-    if(window.Shiny && !window.FlexDashboard) {
-      return {width: "100%", height: "100%"};
+    if (window.Shiny && !window.FlexDashboard) {
+      return { width: "100%", height: "100%" };
     } else {
-      return {width: this.props.width, height: this.props.height};
+      return { width: this.props.width, height: this.props.height };
     }
   }
 
@@ -5835,8 +5834,8 @@ class AmBoxplotChart extends React.PureComponent {
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
-    if(window.Shiny) {
-      if(shinyId === undefined) {
+    if (window.Shiny) {
+      if (shinyId === undefined) {
         shinyId = $(document.getElementById(chartId)).parent().attr("id");
       }
       Shiny.setInputValue(
@@ -5844,7 +5843,7 @@ class AmBoxplotChart extends React.PureComponent {
       );
     }
 
-    switch(theme) {
+    switch (theme) {
       case "dark":
         am4core.useTheme(am4themes_dark);
         break;
@@ -5888,30 +5887,30 @@ class AmBoxplotChart extends React.PureComponent {
 
 
     /* ~~~~\  Enable export  /~~~~ */
-    if(this.props.export) {
+    if (this.props.export) {
       chart.exporting.menu = new am4core.ExportMenu();
       chart.exporting.menu.items = utils.exportMenuItems;
     }
 
 
-		/* ~~~~\  title  /~~~~ */
-		let chartTitle = this.props.chartTitle;
-		if(chartTitle) {
+    /* ~~~~\  title  /~~~~ */
+    let chartTitle = this.props.chartTitle;
+    if (chartTitle) {
       let title = chart.titles.create();
-			title.text = chartTitle.text.text;
-			title.fill =
-			  chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
-			title.fontSize = chartTitle.text.fontSize || 22;
-			title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.text = chartTitle.text.text;
+      title.fill =
+        chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
       title.fontFamily = chartTitle.text.fontFamily;
       title.align = chartTitle.align || "left";
       title.dy = -30;
-		}
+    }
 
 
     /* ~~~~\  caption  /~~~~ */
     let chartCaption = this.props.caption;
-    if(chartCaption) {
+    if (chartCaption) {
       let caption = chart.chartContainer.createChild(am4core.Label);
       caption.text = chartCaption.text.text;
       caption.fill =
@@ -5924,35 +5923,35 @@ class AmBoxplotChart extends React.PureComponent {
 
 
     /* ~~~~\  image  /~~~~ */
-    if(this.props.image) {
+    if (this.props.image) {
       utils.Image(am4core, chart, this.props.image);
     }
 
 
     /* ~~~~\  scrollbars  /~~~~ */
-    if(this.props.scrollbarX) {
+    if (this.props.scrollbarX) {
       chart.scrollbarX = new am4core.Scrollbar();
     }
-    if(this.props.scrollbarY) {
+    if (this.props.scrollbarY) {
       chart.scrollbarY = new am4core.Scrollbar();
     }
 
 
-		/* ~~~~\  button  /~~~~ */
-		if(this.props.button) {
+    /* ~~~~\  button  /~~~~ */
+    if (this.props.button) {
       let Button = chart.chartContainer.createChild(am4core.Button);
       utils.makeButton(Button, this.props.button);
-      Button.events.on("hit", function() {
+      Button.events.on("hit", function () {
         chart.data = data2;
         chart.invalidateRawData();
-        if(window.Shiny) {
+        if (window.Shiny) {
           Shiny.setInputValue(
             shinyId + ":rAmCharts4.dataframe", chart.data
           );
           Shiny.setInputValue(shinyId + "_change", null);
         }
       });
-		}
+    }
 
 
     /* ~~~~\  category axis  /~~~~ */
@@ -5961,15 +5960,15 @@ class AmBoxplotChart extends React.PureComponent {
     );
 
 
-		/* ~~~~\  value axis  /~~~~ */
+    /* ~~~~\  value axis  /~~~~ */
     let valueAxis = utils.createAxis(
-      "Y", am4charts, am4core, chart, yAxis, 
+      "Y", am4charts, am4core, chart, yAxis,
       minValue, maxValue, false, theme, cursor
     );
 
 
     /* ~~~~\  horizontal line  /~~~~ */
-    if(hline) {
+    if (hline) {
       let range = valueAxis.axisRanges.create();
       range.value = hline.value;
       range.grid.stroke = am4core.color(hline.line.color);
@@ -5979,8 +5978,8 @@ class AmBoxplotChart extends React.PureComponent {
     }
 
 
-		/* ~~~~\  cursor  /~~~~ */
-		if(cursor) {
+    /* ~~~~\  cursor  /~~~~ */
+    if (cursor) {
       chart.cursor = new am4charts.XYCursor();
       chart.cursor.yAxis = valueAxis;
       chart.cursor.lineX.disabled = true;
@@ -5989,179 +5988,79 @@ class AmBoxplotChart extends React.PureComponent {
 
     /* ~~~~~~~~~~~~~~~~~~~~~ */
 
-		values.forEach(function(y1y2, index){
+    c(
+      "High whisker: {highValueY.value.formatNumber('%s')}",
+      "High hinge: {valueY.value.formatNumber('%s')}",
+      "Median: {median.formatNumber('%s')}",
+      "Low hinge: {openValueY.value.formatNumber('%s')}",
+      "Low whisker: {lowValueY.value.formatNumber('%s')}"
+    )
 
-      let y1 = y1y2[0], y2 = y1y2[1];
+    let series = chart.series.push(new am4charts.CandlestickSeries());
+    series.fill = color;
+    series.dataFields.categoryX = category;
+//    series.dataFields.dateX = "date";
+    series.dataFields.valueY = "hingeUpr";
+    series.dataFields.openValueY = "hingeLwr";
+    series.dataFields.lowValueY = "whiskerLwr";
+    series.dataFields.highValueY = "whiskerUpr";
+    series.simplifiedProcessing = true;
+    series.riseFromOpenState = undefined;
+    series.dropFromOpenState = undefined;
+    series.sequencedInterpolation = true;
+    series.defaultState.interpolationDuration = 1000;
+    if(tooltips) {
+      series.tooltipText = tooltips.text;
+      let tooltip = utils.Tooltip(am4core, chart, 0, tooltips);
+      series.tooltip = tooltip;
+    }
 
-      let series1 = chart.series.push(new am4charts.ColumnSeries()),
-        series2 = chart.series.push(new am4charts.LineSeries());
-        // je n'utilise plus series2
-      series2.hiddenInLegend = true;
-      series2.strokeWidth = 0;
-      series2.strokeOpacity = 0;
-      series1.dataFields.categoryX = category;
-      series2.dataFields.categoryX = category;
-      series1.dataFields.valueY = y1;
-      series2.dataFields.valueY = y2;
-      series1.name = seriesNames[index];
-      series2.name = valueNames[y2];
-      series1.dataFields.openValueY = y2;
-      series2.dataFields.openValueY = y1;
-//      series1.fill = areas[index].color || chart.colors.getIndex(index);
-//      series1.fillOpacity = areas[index].opacity;
-      //series2.fillOpacity = series1.fillOpacity;
-      //series2.zIndex = -1;
-      series1.sequencedInterpolation = true;
-      series2.sequencedInterpolation = true;
-      series1.defaultState.interpolationDuration = 1000;
-      series2.defaultState.interpolationDuration = 1500;
-      /* ~~~~\  bullet  /~~~~ */
+    let medianaSeries = chart.series.push(new am4charts.StepLineSeries());
+    medianaSeries.noRisers = true;
+    medianaSeries.startLocation = 0.1;
+    medianaSeries.endLocation = 0.9;
+    medianaSeries.dataFields.valueY = "median";
+    medianaSeries.dataFields.categoryX = category;
+//    medianaSeries.dataFields.dateX = "date";
+    medianaSeries.strokeWidth = 2;
+    medianaSeries.stroke = am4core.color("#fff");
+
+    let topSeries = chart.series.push(new am4charts.StepLineSeries());
+    topSeries.noRisers = true;
+    topSeries.startLocation = 0.2;
+    topSeries.endLocation = 0.8;
+    topSeries.dataFields.valueY = "whiskerUpr";
+    topSeries.dataFields.categoryX = category;
+//    topSeries.dataFields.dateX = "date";
+    topSeries.stroke = chart.colors.getIndex(0);
+    topSeries.strokeWidth = 2;
+
+    let bottomSeries = chart.series.push(new am4charts.StepLineSeries());
+    bottomSeries.noRisers = true;
+    bottomSeries.startLocation = 0.2;
+    bottomSeries.endLocation = 0.8;
+    bottomSeries.dataFields.valueY = "whiskerLwr";
+    bottomSeries.dataFields.categoryX = category;
+//    bottomSeries.dataFields.dateX = "date";
+    bottomSeries.stroke = chart.colors.getIndex(0);
+    bottomSeries.strokeWidth = 2;
+
+      /* ~~~~\  bullet  /~~~~ 
       let bullet1 = series1.bullets.push(new am4charts.Bullet()),
         shape1 = utils.Shape(am4core, chart, index, bullet1, bulletsStyle[y1]);
       bullet1.locationY = 1;
-      let bullet2 = series1.bullets.push(new am4charts.Bullet()),
-        shape2 = utils.Shape(am4core, chart, index, bullet2, bulletsStyle[y2]);
-      if(tooltips) {
-        /* ~~~~\  tooltip  /~~~~ */
-        bullet1.tooltipText = tooltips[y1].text;
-        let tooltip1 = utils.Tooltip(am4core, chart, index, tooltips[y1]);
-        bullet2.tooltipText = tooltips[y2].text;
-        let tooltip2 = utils.Tooltip(am4core, chart, index, tooltips[y2]);
-        tooltip1.pointerOrientation = "horizontal";
-        tooltip1.dy = 0;
-        tooltip2.pointerOrientation = "horizontal";
-        tooltip2.dy = 0;
-        bullet1.tooltip = tooltip1;
-        bullet2.tooltip = tooltip2;
-      }
       // create bullet hover state
       let hoverState1 = shape1.states.create("hover");
       hoverState1.properties.strokeWidth = shape1.strokeWidth + 2;
       hoverState1.properties.opacity = 1; // visible when hovered
-      let hoverState2 = shape2.states.create("hover");
-      hoverState2.properties.strokeWidth = shape2.strokeWidth + 2;
-      hoverState2.properties.opacity = 1; // visible when hovered
-      if(draggable[y1]) {
-        bullet1.draggable = true;
-        // resize cursor when over
-        bullet1.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
-        // while dragging
-        bullet1.events.on("drag", event => {
-          let dataItem = event.target.dataItem;
-          // convert coordinate to value
-          let value = valueAxis.yToValue(event.target.pixelY);
-          // set new value
-          dataItem.openValueY = value;
-          // hide tooltip not to interrupt
-          event.target.hideTooltip(0);
-          // make bullet hovered (as it might hide if mouse moves away)
-          event.target.isHover = true;
-        });
-        // on dragging stop
-        bullet1.events.on("dragstop", event => {
-          handleDragStop(event, y2, "openValueY");
-        });
-        // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
-        bullet1.events.on("down", event => {
-          let dataItem = event.target.dataItem;
-          let itemBullet = dataItem.bullets.getKey(bullet1.uid);
-          itemBullet.dragStart(event.pointer);
-        });
-        // when line position changes, adjust minX/maxX of bullets so that we could only dragg vertically
-        bullet1.events.on("positionchanged", event => {
-          let dataItem = event.target.dataItem;
-          if(dataItem.bullets) {
-            let itemBullet = dataItem.bullets.getKey(bullet1.uid);
-            let column = dataItem.column;
-            itemBullet.minX = column.pixelX + column.pixelWidth / 2;
-            itemBullet.maxX = itemBullet.minX;
-            itemBullet.minY = 0;
-            itemBullet.maxY = chart.seriesContainer.pixelHeight;
-          }
-        });
-      }
-      if(draggable[y2]) {
-        bullet2.draggable = true;
-        // resize cursor when over
-        bullet2.cursorOverStyle = am4core.MouseCursorStyle.verticalResize;
-        // while dragging
-        bullet2.events.on("drag", event => {
-          let dataItem = event.target.dataItem;
-          // convert coordinate to value
-          let value = valueAxis.yToValue(event.target.pixelY);
-          // set new value
-          dataItem.valueY = value;
-          // hide tooltip not to interrupt
-          event.target.hideTooltip(0);
-          // make bullet hovered (as it might hide if mouse moves away)
-          event.target.isHover = true;
-        });
-        // on dragging stop
-        bullet2.events.on("dragstop", event => {
-          handleDragStop(event, y1, "valueY");
-        });
-        // start dragging bullet even if we hit on column not just a bullet, this will make it more friendly for touch devices
-        bullet2.events.on("down", event => {
-          let dataItem = event.target.dataItem;
-          let itemBullet = dataItem.bullets.getKey(bullet2.uid);
-          itemBullet.dragStart(event.pointer);
-        });
-        // when line position changes, adjust minX/maxX of bullets so that we could only dragg vertically
-        bullet2.events.on("positionchanged", event => {
-          let dataItem = event.target.dataItem;
-          if(dataItem.bullets) {
-            let itemBullet = dataItem.bullets.getKey(bullet2.uid);
-            let column = dataItem.column;
-            itemBullet.minX = column.pixelX + column.pixelWidth / 2;
-            itemBullet.maxX = itemBullet.minX;
-            itemBullet.minY = 0;
-            itemBullet.maxY = chart.seriesContainer.pixelHeight;
-          }
-        });
-      }
-
-      /* ~~~~\  column template  /~~~~ */
-      let columnStyle = segmentsStyles[seriesNames[index]];
-      let columnTemplate = series1.columns.template;
-      columnTemplate.width = columnStyle.width || 1; 
-      columnTemplate.fill = columnStyle.color || chart.colors.getIndex(index);
-      if(columnStyle.colorAdapter) { 
-        columnTemplate.adapter.add("fill", columnStyle.colorAdapter);
-        columnTemplate.adapter.add("stroke", columnStyle.colorAdapter);
-      }
-      columnTemplate.stroke = columnTemplate.fill;
-      columnTemplate.strokeOpacity = 1;
-      columnTemplate.column.fillOpacity = 1;
-      columnTemplate.column.strokeWidth = 1;
-      // columns hover state
-      let columnHoverState = columnTemplate.column.states.create("hover");
-      // you can change any property on hover state and it will be animated
-      columnHoverState.properties.strokeWidth = 3;
-      // trigger bullet hover state
-      columnTemplate.events.on("over", event => {
-        let dataItem = event.target.dataItem,
-          itemBullet1 = dataItem.bullets.getKey(bullet1.uid),
-          itemBullet2 = dataItem.bullets.getKey(bullet2.uid);
-        itemBullet1.children.getIndex(0).isHover = true;
-        itemBullet2.children.getIndex(0).isHover = true;
-      });
-      columnTemplate.events.on("out", event => {
-        let dataItem = event.target.dataItem,
-          itemBullet1 = dataItem.bullets.getKey(bullet1.uid),
-          itemBullet2 = dataItem.bullets.getKey(bullet2.uid);
-        itemBullet1.children.getIndex(0).isHover = false;
-        itemBullet2.children.getIndex(0).isHover = false;
-      });
-
-
-    });
+      */
 
     this.chart = chart;
 
   }
 
   componentWillUnmount() {
-    if(this.chart) {
+    if (this.chart) {
       this.chart.dispose();
     }
   }
@@ -6169,8 +6068,8 @@ class AmBoxplotChart extends React.PureComponent {
   render() {
     return (
       <div
-        id = {this.props.chartId}
-        style = {this.style()}
+        id={this.props.chartId}
+        style={this.style()}
       ></div>
     );
   }
