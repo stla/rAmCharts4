@@ -70,17 +70,22 @@ boxplotsData <- function(dat, category, value){
   # outliers data
   splittedData <- lapply(split(dat, dat[[category]], drop = TRUE), `[[`, value)
   outliersIndices <- lapply(bxpDataList, `[[`, "out")
-  outliers <- mapply(
+  outliers <- Filter(length, mapply(
     function(x, indices) x[indices],
     splittedData, outliersIndices, SIMPLIFY = FALSE
-  )
-  outliersData <- do.call(
-    rbind,
-    lapply(names(Filter(length, outliers)), function(ctgry){
-      setNames(data.frame(ctgry, outliers[[ctgry]]), c(category, "outlier"))
-    })
-  )
+  ))
+  if(length(outliers)){
+    outliersData <- do.call(
+      rbind,
+      lapply(names(outliers), function(ctgry){
+        setNames(data.frame(ctgry, outliers[[ctgry]]), c(category, "outlier"))
+      })
+    )
+    outliersList <- split(outliersData, seq_len(nrow(outliersData)))
+  }else{
+    outliersList <- NULL
+  }
 
   # return
-  list(fiveNumbersData = fiveNumbersData, outliersData = outliersData)
+  list(fiveNumbersData = fiveNumbersData, outliersList = outliersList)
 }
