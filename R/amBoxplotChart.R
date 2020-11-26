@@ -2,16 +2,13 @@
 #' @description Create a HTML widget displaying a boxplot chart.
 #'
 #' @param data a dataframe
-#' @param data2 \code{NULL} or a dataframe used to update the data with the
-#'   button; its column names must include the column names of \code{data}
-#'   given in \code{category} and \code{value}
 #' @param category name of the column of \code{data} to be used for the
 #'   category axis
 #' @param value name of the column of \code{data} to be used for the
 #'   value axis
 #' @param color the color of the boxplots; it can be given by the name of a R
 #'   color, the name of a CSS color, e.g. \code{"crimson"} or \code{"fuchsia"},
-#'   an HEX code like \code{"#FF009A"}, a RGB code like
+#'   a HEX code like \code{"#FF009A"}, a RGB code like
 #'   \code{"rgb(255,100,39)"}, or a HSL code like \code{"hsl(360,11,255)"}
 #' @param hline an optional horizontal line to add to the chart; it must be a
 #'   named list of the form \code{list(value = h, line = settings)} where
@@ -87,7 +84,6 @@
 #'   \code{"bottomleft"} or \code{"bottomright"}, the field \code{hjust}
 #'   defines the horizontal adjustment, and the field \code{vjust} defines
 #'   the vertical adjustment
-#' @template buttonTemplate
 #' @param cursor option to add a cursor on the chart; \code{FALSE} for no
 #'   cursor, \code{TRUE} for a cursor with default settings for the tooltips,
 #'   or a list of settings created with \code{\link{amTooltip}} to
@@ -132,7 +128,6 @@
 #' )
 amBoxplotChart <- function(
   data,
-  data2 = NULL,
   category,
   value,
   color = NULL,
@@ -151,7 +146,6 @@ amBoxplotChart <- function(
   scrollbarY = FALSE,
   caption = NULL,
   image = NULL,
-  button = NULL, # default
   cursor = FALSE,
   width = NULL,
   height = NULL,
@@ -164,10 +158,8 @@ amBoxplotChart <- function(
     stop("Invalid `category` argument: not found in `data`.", call. = TRUE)
   }
 
-  if(!is.null(data2) &&
-     (!is.data.frame(data2) ||
-      !all(c(category, value) %in% names(data2)))){
-    stop("Invalid `data2` argument.", call. = TRUE)
+  if(!value %in% names(data)){
+    stop("Invalid `value` argument: not found in `data`.", call. = TRUE)
   }
 
   if(is.null(yLimits)){
@@ -341,17 +333,6 @@ amBoxplotChart <- function(
     }
   }
 
-  if(is.null(button)){
-    button <- if(!is.null(data2))
-      amButton(
-        label = "Reset"
-      )
-  }else if(is.character(button)){
-    button <- amButton(
-      label = button
-    )
-  }
-
   if("tooltip" %in% class(cursor)){
     cursor <- list(tooltip = cursor)
   }else if(is.list(cursor)){
@@ -402,9 +383,7 @@ amBoxplotChart <- function(
     "AmBoxplotChart",
     list(
       data = boxplotsData(data, category, value),
-      data2 = if(!is.null(data2)) boxplotsData(data2, category, value),
       category = category,
-      value = value,
       minValue = yLimits[1L],
       maxValue = yLimits[2L],
       color = validateColor(color),
@@ -421,7 +400,6 @@ amBoxplotChart <- function(
       scrollbarY = scrollbarY,
       caption = caption,
       image = image,
-      button = button,
       cursor = cursor,
       width = width,
       height = height,

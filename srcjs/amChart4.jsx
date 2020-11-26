@@ -5811,7 +5811,6 @@ class AmBoxplotChart extends React.PureComponent {
 
     let theme = this.props.theme,
       category = this.props.category,
-      value = this.props.value,
       minValue = this.props.minValue,
       maxValue = this.props.maxValue,
       color = this.props.color,
@@ -5821,8 +5820,6 @@ class AmBoxplotChart extends React.PureComponent {
       dataCopy = HTMLWidgets.dataframeToD3(
         this.props.data.fiveNumbers
       ),
-      data2 = this.props.data2 ?
-        HTMLWidgets.dataframeToD3(this.props.data2.fiveNumbers) : null,
       outliers = this.props.data.outliers,
       hline = this.props.hline,
       xAxis = this.props.xAxis,
@@ -5938,23 +5935,6 @@ class AmBoxplotChart extends React.PureComponent {
     }
     if (this.props.scrollbarY) {
       chart.scrollbarY = new am4core.Scrollbar();
-    }
-
-
-    /* ~~~~\  button  /~~~~ */
-    if (this.props.button) {
-      let Button = chart.chartContainer.createChild(am4core.Button);
-      utils.makeButton(Button, this.props.button);
-      Button.events.on("hit", function () {
-        chart.data = data2;
-        chart.invalidateRawData();
-        if (window.Shiny) {
-          Shiny.setInputValue(
-            shinyId + ":rAmCharts4.dataframe", chart.data
-          );
-          Shiny.setInputValue(shinyId + "_change", null);
-        }
-      });
     }
 
 

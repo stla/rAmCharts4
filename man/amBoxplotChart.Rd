@@ -6,7 +6,6 @@
 \usage{
 amBoxplotChart(
   data,
-  data2 = NULL,
   category,
   value,
   color = NULL,
@@ -25,7 +24,6 @@ amBoxplotChart(
   scrollbarY = FALSE,
   caption = NULL,
   image = NULL,
-  button = NULL,
   cursor = FALSE,
   width = NULL,
   height = NULL,
@@ -37,10 +35,6 @@ amBoxplotChart(
 \arguments{
 \item{data}{a dataframe}
 
-\item{data2}{\code{NULL} or a dataframe used to update the data with the
-button; its column names must include the column names of \code{data}
-given in \code{category} and \code{value}}
-
 \item{category}{name of the column of \code{data} to be used for the
 category axis}
 
@@ -49,7 +43,7 @@ value axis}
 
 \item{color}{the color of the boxplots; it can be given by the name of a R
 color, the name of a CSS color, e.g. \code{"crimson"} or \code{"fuchsia"},
-an HEX code like \code{"#FF009A"}, a RGB code like
+a HEX code like \code{"#FF009A"}, a RGB code like
 \code{"rgb(255,100,39)"}, or a HSL code like \code{"hsl(360,11,255)"}}
 
 \item{hline}{an optional horizontal line to add to the chart; it must be a
@@ -140,10 +134,6 @@ the field \code{position} can be \code{"topleft"}, \code{"topright"},
 \code{"bottomleft"} or \code{"bottomright"}, the field \code{hjust}
 defines the horizontal adjustment, and the field \code{vjust} defines
 the vertical adjustment}
-
-\item{button}{\code{NULL} for the default, \code{FALSE} for no button,
-or a list of settings created with \code{\link{amButton}}; this button is
-used to replace the current data with \code{data2}}
 
 \item{cursor}{option to add a cursor on the chart; \code{FALSE} for no
 cursor, \code{TRUE} for a cursor with default settings for the tooltips,
