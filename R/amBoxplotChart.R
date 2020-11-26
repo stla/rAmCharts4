@@ -391,7 +391,7 @@ amBoxplotChart <- function(
     "AmBoxplotChart",
     list(
       data = boxplotsData(data, category, value),
-      data2 = boxplotsData(data2, category, value),
+      data2 = if(!is.null(data2)) boxplotsData(data2, category, value),
       category = category,
       value = value,
       minValue = yLimits[1L],
