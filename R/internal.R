@@ -69,12 +69,12 @@ boxplotsData <- function(dat, category, value){
   ), c(category, 'whiskerLwr', "hingeLwr", "median", "hingeUpr", "whiskerUpr"))
 
   # outliers data
-  splittedData <- lapply(split(dat, dat[[category]], drop = TRUE), `[[`, value)
-  outliersIndices <- lapply(bxpDataList, `[[`, "out")
-  outliers <- Filter(length, mapply(
-    function(x, indices) x[indices],
-    splittedData, outliersIndices, SIMPLIFY = FALSE
-  ))
+  # splittedData <- lapply(split(dat, dat[[category]], drop = TRUE), `[[`, value)
+  outliers <- Filter(length, lapply(bxpDataList, `[[`, "out"))
+  # outliers <- Filter(length, mapply(
+  #   function(x, indices) x[indices],
+  #   splittedData, outliersIndices, SIMPLIFY = FALSE
+  # ))
   if(length(outliers)){
     outliersData <- do.call(
       rbind,

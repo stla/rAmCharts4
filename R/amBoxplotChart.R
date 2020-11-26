@@ -39,9 +39,8 @@
 #' \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
 #' \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
 #' \code{"microchart"}
-#' @param tooltip settings of the tooltips; \code{NULL} for default,
-#'   \code{FALSE} for no tooltip, otherwise a list created with
-#'   \code{\link{amTooltip}}; this can also be just a string for the text to
+#' @param tooltip \code{TRUE} for the default tooltips,
+#'   \code{FALSE} for no tooltip, otherwise a string for the text to
 #'   display in the tooltip
 #' @param bullets settings of the bullets representing the outliers;
 #'   \code{NULL} for default, otherwise a list created with
@@ -117,7 +116,19 @@
 #' @importFrom reactR component reactMarkup
 #' @export
 #'
-#' @examples dat
+#' @examples library(rAmCharts4)
+#' set.seed(666)
+#' dat <- data.frame(
+#'   group = gl(4, 50, labels = c("A", "B", "C", "D")),
+#'   y     = rt(200, df = 3)
+#' )
+#' amBoxplotChart(
+#'   dat,
+#'   category = "group",
+#'   value = "y",
+#'   color = "maroon",
+#'   theme = "moonrisekingdom"
+#' )
 amBoxplotChart <- function(
   data,
   data2 = NULL,
@@ -130,7 +141,7 @@ amBoxplotChart <- function(
   valueFormatter = "#.",
   chartTitle = NULL,
   theme = NULL,
-  tooltip = NULL, # default
+  tooltip = TRUE, # default
   bullets = NULL, # default
   backgroundColor = NULL,
   xAxis = NULL, # default
@@ -200,7 +211,7 @@ amBoxplotChart <- function(
       valueFormatter,
       valueFormatter
     )
-    if(is.null(tooltip)){
+    if(isTRUE(tooltip)){
       tooltip <- amTooltip(
         text = tooltipText,
         auto = TRUE
@@ -208,14 +219,15 @@ amBoxplotChart <- function(
     }else if("tooltip" %in% class(tooltip)){
       if(tooltip[["text"]] == "_missing") tooltip[["text"]] <- tooltipText
     }else if(is.character(tooltip)){
-      tooltip <- amTooltip(text = tooltip, auto = FALSE)
+      tooltip <- amTooltip(text = tooltip, auto = TRUE)
     }else{
       stop("Invalid `tooltip` argument.", call. = TRUE)
     }
   }
 
   if(is.null(bullets)){
-    bullets <- amCircle()
+    bullets <- if(is.null(color)) amCircle(radius = 4)
+    else amCircle(color = color, radius = 4)
   }else if(!("bullet" %in% class(bullets))){
     stop("Invalid `bullets` argument.", call. = TRUE)
   }

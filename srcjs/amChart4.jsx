@@ -6056,6 +6056,7 @@ class AmBoxplotChart extends React.PureComponent {
 //        }        
         let bullet = bulletSeries.bullets.push(new am4charts.Bullet()),
           shape = utils.Shape(am4core, chart, 1, bullet, bulletsStyle);
+        bullet.locationY = 1; // ?
         // create bullet hover state
         let hoverState = shape.states.create("hover");
         hoverState.properties.strokeWidth = shape.strokeWidth + 2;
