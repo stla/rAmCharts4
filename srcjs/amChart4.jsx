@@ -5979,10 +5979,10 @@ class AmBoxplotChart extends React.PureComponent {
 
 
     /* ~~~~\  cursor  /~~~~ */
-    if (cursor) {
+    if (true || cursor) {
       chart.cursor = new am4charts.XYCursor();
       chart.cursor.yAxis = valueAxis;
-      chart.cursor.lineX.disabled = true;
+      //chart.cursor.lineX.disabled = true;
     }
 
 
@@ -6002,8 +6002,8 @@ class AmBoxplotChart extends React.PureComponent {
     series.defaultState.interpolationDuration = 1000;
     if(tooltips) {
       series.tooltipText = tooltips.text;
-      let tooltip = utils.Tooltip(am4core, chart, 0, tooltips);
-      series.tooltip = tooltip;
+//      let tooltip = utils.Tooltip(am4core, chart, 0, [tooltips]);
+//      series.tooltip = tooltip;
     }
 
     let medianaSeries = chart.series.push(new am4charts.StepLineSeries());
