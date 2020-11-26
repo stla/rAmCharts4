@@ -6043,6 +6043,10 @@ class AmBoxplotChart extends React.PureComponent {
     bottomSeries.strokeWidth = 2;
 
     if(outliers) {
+      let tooltipStyle = {
+        backgroundColor: series.fill,
+        pointerLength: 10
+      };
       for(let i = 0; i < outliers.length; i++) {
         let bulletSeries = chart.series.push(new am4charts.LineSeries());
         bulletSeries.strokeOpacity = 0;
@@ -6050,13 +6054,14 @@ class AmBoxplotChart extends React.PureComponent {
         bulletSeries.dataFields.categoryX = category;
 //        bulletSeries.dataFields.dateX = "date";
         bulletSeries.dataFields.valueY = "outlier";
-        bulletSeries.tooltipText = "{valueY.value}"; // TODO: insert valueFormatter
-//        if(color) {
-//          bulletSeries.fill = color;
-//        }        
+        bulletSeries.tooltipText = 
+          `{valueY.value.formatNumber('${valueFormatter}')}`; 
+        let tooltip = utils.Tooltip(am4core, chart, 1, tooltipStyle);
+        tooltip.pointerOrientation = "horizontal";
+        tooltip.dx = 0;
+        bulletSeries.tooltip = tooltip;
         let bullet = bulletSeries.bullets.push(new am4charts.Bullet()),
           shape = utils.Shape(am4core, chart, 1, bullet, bulletsStyle);
-        bullet.locationY = 1; // ?
         // create bullet hover state
         let hoverState = shape.states.create("hover");
         hoverState.properties.strokeWidth = shape.strokeWidth + 2;
