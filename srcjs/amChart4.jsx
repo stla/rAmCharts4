@@ -5822,8 +5822,8 @@ class AmBoxplotChart extends React.PureComponent {
         this.props.data.fiveNumbers
       ),
       data2 = this.props.data2 ?
-        HTMLWidgets.dataframeToD3(this.props.data2.fiveNumbers) :
-        null,
+        HTMLWidgets.dataframeToD3(this.props.data2.fiveNumbers) : null,
+      outliers = this.props.data.outliers,
       hline = this.props.hline,
       xAxis = this.props.xAxis,
       yAxis = this.props.yAxis,
@@ -5833,6 +5833,10 @@ class AmBoxplotChart extends React.PureComponent {
       cursor = this.props.cursor,
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
+
+    if(outliers) {
+      outliers = outliers.map(HTMLWidgets.dataframeToD3);
+    }
 
     if (window.Shiny) {
       if (shinyId === undefined) {
@@ -5979,7 +5983,7 @@ class AmBoxplotChart extends React.PureComponent {
 
 
     /* ~~~~\  cursor  /~~~~ */
-    if (true || cursor) {
+    if (cursor || tooltips) {
       chart.cursor = new am4charts.XYCursor();
       chart.cursor.yAxis = valueAxis;
       //chart.cursor.lineX.disabled = true;
@@ -5988,7 +5992,9 @@ class AmBoxplotChart extends React.PureComponent {
 
     /* ~~~~~~~~~~~~~~~~~~~~~ */
     let series = chart.series.push(new am4charts.CandlestickSeries());
-    series.fill = color;
+    if(color) {
+      series.fill = color;
+    }
     series.dataFields.categoryX = category;
 //    series.dataFields.dateX = "date";
     series.dataFields.valueY = "hingeUpr";
@@ -6008,13 +6014,13 @@ class AmBoxplotChart extends React.PureComponent {
 
     let medianaSeries = chart.series.push(new am4charts.StepLineSeries());
     medianaSeries.noRisers = true;
-    medianaSeries.startLocation = 0.1;
-    medianaSeries.endLocation = 0.9;
+    medianaSeries.startLocation = 0.2;
+    medianaSeries.endLocation = 0.8;
     medianaSeries.dataFields.valueY = "median";
     medianaSeries.dataFields.categoryX = category;
 //    medianaSeries.dataFields.dateX = "date";
     medianaSeries.strokeWidth = 2;
-    medianaSeries.stroke = am4core.color("#fff");
+    medianaSeries.stroke = chart.colors.getIndex(1);
 
     let topSeries = chart.series.push(new am4charts.StepLineSeries());
     topSeries.noRisers = true;
@@ -6036,15 +6042,26 @@ class AmBoxplotChart extends React.PureComponent {
     bottomSeries.stroke = chart.colors.getIndex(0);
     bottomSeries.strokeWidth = 2;
 
-      /* ~~~~\  bullet  /~~~~ 
-      let bullet1 = series1.bullets.push(new am4charts.Bullet()),
-        shape1 = utils.Shape(am4core, chart, index, bullet1, bulletsStyle[y1]);
-      bullet1.locationY = 1;
-      // create bullet hover state
-      let hoverState1 = shape1.states.create("hover");
-      hoverState1.properties.strokeWidth = shape1.strokeWidth + 2;
-      hoverState1.properties.opacity = 1; // visible when hovered
-      */
+    if(outliers) {
+      for(let i = 0; i < outliers.length; i++) {
+        let bulletSeries = chart.series.push(new am4charts.LineSeries());
+        bulletSeries.strokeOpacity = 0;
+        bulletSeries.data = outliers[i];
+        bulletSeries.dataFields.categoryX = category;
+//        bulletSeries.dataFields.dateX = "date";
+        bulletSeries.dataFields.valueY = "outlier";
+        bulletSeries.tooltipText = "{valueY.value}"; // TODO: insert valueFormatter
+//        if(color) {
+//          bulletSeries.fill = color;
+//        }        
+        let bullet = bulletSeries.bullets.push(new am4charts.Bullet()),
+          shape = utils.Shape(am4core, chart, 1, bullet, bulletsStyle);
+        // create bullet hover state
+        let hoverState = shape.states.create("hover");
+        hoverState.properties.strokeWidth = shape.strokeWidth + 2;
+        hoverState.properties.opacity = 1; // visible when hovered
+      }
+    }
 
     this.chart = chart;
 

@@ -82,7 +82,7 @@ boxplotsData <- function(dat, category, value){
         setNames(data.frame(ctgry, outliers[[ctgry]]), c(category, "outlier"))
       })
     )
-    outliersList <- split(outliersData, seq_len(nrow(outliersData)))
+    outliersList <- unname(split(outliersData, seq_len(nrow(outliersData))))
   }else{
     outliersList <- NULL
   }
