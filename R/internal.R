@@ -87,5 +87,5 @@ boxplotsData <- function(dat, category, value){
   }
 
   # return
-  list(fiveNumbersData = fiveNumbersData, outliersList = outliersList)
+  list(fiveNumbers = fiveNumbersData, outliers = outliersList)
 }
