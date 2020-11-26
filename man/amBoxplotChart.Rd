@@ -188,6 +188,7 @@ amBoxplotChart(
   category = "group",
   value = "y",
   color = "maroon",
+  valueFormatter = "#.#",
   theme = "moonrisekingdom"
 )
 }
