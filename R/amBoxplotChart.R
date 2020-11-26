@@ -202,7 +202,7 @@ amBoxplotChart <- function(
     )
     if(is.null(tooltip)){
       tooltip <- amTooltip(
-        text = tooltipText1,
+        text = tooltipText,
         auto = TRUE
       )
     }else if("tooltip" %in% class(tooltip)){
@@ -266,14 +266,12 @@ amBoxplotChart <- function(
 
   if(is.null(yAxis)){
     yAxis <- list(
-      title = if(length(seriesNames) == 1L) {
-        amText(
-          text = seriesNames,
-          fontSize = 20,
-          color = NULL,
-          fontWeight = "bold"
-        )
-      },
+      title = amText(
+        text = value,
+        fontSize = 20,
+        color = NULL,
+        fontWeight = "bold"
+      ),
       labels = amAxisLabels(
         color = NULL,
         fontSize = 18,

@@ -55,7 +55,8 @@ isPositiveInteger <- function(x){
   is.numeric(x) && (length(x) == 1L) && (floor(x) == x)
 }
 
-#' @importFrom stats setNames boxplot.stats
+#' @importFrom stats setNames
+#' @importFrom grDevices boxplot.stats
 #' @noRd
 boxplotsData <- function(dat, category, value){
   # five numbers data

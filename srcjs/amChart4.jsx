@@ -5987,15 +5987,6 @@ class AmBoxplotChart extends React.PureComponent {
 
 
     /* ~~~~~~~~~~~~~~~~~~~~~ */
-
-    c(
-      "High whisker: {highValueY.value.formatNumber('%s')}",
-      "High hinge: {valueY.value.formatNumber('%s')}",
-      "Median: {median.formatNumber('%s')}",
-      "Low hinge: {openValueY.value.formatNumber('%s')}",
-      "Low whisker: {lowValueY.value.formatNumber('%s')}"
-    )
-
     let series = chart.series.push(new am4charts.CandlestickSeries());
     series.fill = color;
     series.dataFields.categoryX = category;
