@@ -1288,7 +1288,10 @@ function (_super) {
 
     dataItem.dataContext.legendDataItem = dataItem;
     var tempMaxWidth = dataItem.label.maxWidth;
-    dataItem.label.width = undefined;
+
+    if (!(dataItem.label.width instanceof _core_utils_Percent__WEBPACK_IMPORTED_MODULE_10__["Percent"])) {
+      dataItem.label.width = undefined;
+    }
 
     if (tempMaxWidth > 0) {
       dataItem.label.maxWidth = tempMaxWidth;
@@ -1361,6 +1364,7 @@ function (_super) {
     var maxLabelWidth = 0;
     this.labels.each(function (label) {
       if (label.invalid) {
+        label.maxWidth = undefined;
         label.validate();
       }
 
@@ -1407,7 +1411,9 @@ function (_super) {
 
     this.labels.each(function (label) {
       if (_this.valueLabels.template.align == "right" || label.measuredWidth > maxAdjustedLabelWidth) {
-        label.width = Math.min(label.maxWidth, maxAdjustedLabelWidth - label.pixelMarginLeft - label.pixelMarginRight);
+        if (!(label.width instanceof _core_utils_Percent__WEBPACK_IMPORTED_MODULE_10__["Percent"])) {
+          label.width = Math.min(label.maxWidth, maxAdjustedLabelWidth - label.pixelMarginLeft - label.pixelMarginRight);
+        }
       }
     });
 
@@ -10370,7 +10376,7 @@ function (_super) {
     var label = dataItem.label;
 
     if (label && !label.disabled) {
-      // theorethically this might result problems if category text changes, the range text won't change. But otherwise range.label.text = "custom text" wont' work, which is not intuitive.
+      // theorethically this might result problems if category text changes, the range text won't change. But otherwise range.label.text = "custom text" won't work, which is not intuitive.
       if (!dataItem.isRange || label.text == undefined) {
         dataItem.text = dataItem.text;
       }
@@ -12158,7 +12164,7 @@ function (_super) {
     _super.prototype.validateDataItems.call(this);
 
     var mainBaseDuration = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["getDuration"](this.mainBaseInterval.timeUnit, this.mainBaseInterval.count);
-    this.maxZoomFactor = (this.max - this.min) / mainBaseDuration;
+    this.maxZoomFactor = Math.max(1, (this.max - this.min) / mainBaseDuration);
     this._deltaMinMax = this.baseDuration / 2; // allows to keep selection of the same size
 
     var newPeriodCount = (this.max - this.min) / baseDuration;
@@ -12194,7 +12200,7 @@ function (_super) {
 
     if (this.groupData && _core_utils_Type__WEBPACK_IMPORTED_MODULE_7__["hasValue"](difference)) {
       var mainBaseInterval = this.mainBaseInterval;
-      var modifiedDifference = difference + this.startLocation + (1 - this.endLocation) * this.baseDuration;
+      var modifiedDifference = difference + (this.startLocation + (1 - this.endLocation)) * this.baseDuration;
       var groupInterval = void 0;
 
       if (this.groupInterval) {
@@ -12234,12 +12240,12 @@ function (_super) {
     this._nextGridUnit = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["getNextUnit"](gridInterval.timeUnit); // the following is needed to avoid grid flickering while scrolling
 
     this._intervalDuration = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["getDuration"](gridInterval.timeUnit, gridInterval.count);
-    this._gridDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(this.minZoomed - _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["getDuration"](gridInterval.timeUnit, gridInterval.count)), gridInterval.timeUnit, gridInterval.count, this._firstWeekDay, this._df.utc, new Date(this.min)); // tell series start/end
+    this._gridDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(this.minZoomed - _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["getDuration"](gridInterval.timeUnit, gridInterval.count)), gridInterval.timeUnit, gridInterval.count, this._firstWeekDay, this._df.utc, new Date(this.min), this._df.timezoneMinutes); // tell series start/end
 
     _core_utils_Iterator__WEBPACK_IMPORTED_MODULE_8__["each"](this.series.iterator(), function (series) {
       if (series.baseAxis == _this) {
         var field_1 = series.getAxisField(_this);
-        var minZoomed = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(_this._minZoomed + _this.baseDuration * 0.05), _this.baseInterval.timeUnit, _this.baseInterval.count, _this._firstWeekDay, _this._df.utc).getTime();
+        var minZoomed = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(_this._minZoomed + _this.baseDuration * 0.05), _this.baseInterval.timeUnit, _this.baseInterval.count, _this._firstWeekDay, _this._df.utc, undefined, _this._df.timezoneMinutes).getTime();
         var minZoomedStr = minZoomed.toString();
         var startDataItem = series.dataItemsByAxis.getKey(_this.uid).getKey(minZoomedStr + series.currentDataSetId);
         var startIndex = 0;
@@ -12257,7 +12263,7 @@ function (_super) {
 
 
         var baseInterval = _this.baseInterval;
-        var maxZoomed = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](_core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(_this._maxZoomed), baseInterval.timeUnit, baseInterval.count, _this._firstWeekDay, _this._df.utc), baseInterval.timeUnit, baseInterval.count, _this._df.utc).getTime();
+        var maxZoomed = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](_core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(_this._maxZoomed), baseInterval.timeUnit, baseInterval.count, _this._firstWeekDay, _this._df.utc, undefined, _this._df.timezoneMinutes), baseInterval.timeUnit, baseInterval.count, _this._df.utc).getTime();
         var maxZoomedStr = maxZoomed.toString();
         var endDataItem = series.dataItemsByAxis.getKey(_this.uid).getKey(maxZoomedStr + series.currentDataSetId);
         var endIndex = series.dataItems.length;
@@ -12463,7 +12469,7 @@ function (_super) {
 
           if (date) {
             var time = date.getTime();
-            roundedDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(time), interval.timeUnit, interval.count, _this._df.firstDayOfWeek, _this._df.utc);
+            roundedDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(time), interval.timeUnit, interval.count, _this._df.firstDayOfWeek, _this._df.utc, undefined, _this._df.timezoneMinutes);
             var currentTime = roundedDate.getTime(); // changed period								
 
             if (previousTime < currentTime) {
@@ -12661,7 +12667,7 @@ function (_super) {
     _core_utils_Object__WEBPACK_IMPORTED_MODULE_11__["each"](dataItem.dates, function (key) {
       var date = dataItem.getDate(key);
       var time = date.getTime();
-      var startDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(time), interval.timeUnit, interval.count, _this._firstWeekDay, _this._df.utc);
+      var startDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(time), interval.timeUnit, interval.count, _this._firstWeekDay, _this._df.utc, undefined, _this._df.timezoneMinutes);
       var startTime = startDate.getTime();
       var endDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](new Date(startTime), interval.timeUnit, interval.count, _this._df.utc);
       dataItem.setCalculatedValue(key, startTime, "open");
@@ -12694,7 +12700,7 @@ function (_super) {
 
       }
 
-      var date = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(this.min), timeUnit, count, this._firstWeekDay, this._df.utc);
+      var date = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(this.min), timeUnit, count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes);
       var axisBreak = void 0;
 
       var _loop_1 = function _loop_1() {
@@ -12748,7 +12754,7 @@ function (_super) {
         axisBreaks.each(function (axisBreak) {
           var breakGridCount = Math.ceil(_this._gridCount * (Math.min(_this.end, axisBreak.endPosition) - Math.max(_this.start, axisBreak.startPosition)) / (_this.end - _this.start));
           axisBreak.gridInterval = _this.chooseInterval(0, axisBreak.adjustedEndValue - axisBreak.adjustedStartValue, breakGridCount);
-          var gridDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(axisBreak.adjustedStartValue), axisBreak.gridInterval.timeUnit, axisBreak.gridInterval.count, _this._firstWeekDay, _this._df.utc);
+          var gridDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(axisBreak.adjustedStartValue), axisBreak.gridInterval.timeUnit, axisBreak.gridInterval.count, _this._firstWeekDay, _this._df.utc, undefined, _this._df.timezoneMinutes);
 
           if (gridDate.getTime() > axisBreak.startDate.getTime()) {
             _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](gridDate, axisBreak.gridInterval.timeUnit, axisBreak.gridInterval.count, _this._df.utc);
@@ -12786,7 +12792,7 @@ function (_super) {
     var timeUnit = this._gridInterval.timeUnit;
     var realIntervalCount = this._gridInterval.count; // round date
 
-    _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](date, timeUnit, 1, this._firstWeekDay, this._df.utc);
+    _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](date, timeUnit, 1, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes);
     var prevTimestamp = date.getTime();
     var newDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["copy"](date); // modify date by adding intervalcount
 
@@ -12796,7 +12802,7 @@ function (_super) {
 
     if (axisBreak && axisBreak.endDate) {
       newDate = new Date(axisBreak.endDate.getTime());
-      _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](newDate, timeUnit, realIntervalCount, this._firstWeekDay, this._df.utc);
+      _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](newDate, timeUnit, realIntervalCount, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes);
 
       if (newDate.getTime() < axisBreak.endDate.getTime()) {
         _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](newDate, timeUnit, realIntervalCount, this._df.utc);
@@ -12830,7 +12836,7 @@ function (_super) {
 
   DateAxis.prototype.getBreaklessDate = function (axisBreak, timeUnit, count) {
     var date = new Date(axisBreak.endValue);
-    _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](date, timeUnit, count, this._firstWeekDay, this._df.utc);
+    _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](date, timeUnit, count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes);
     _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](date, timeUnit, count, this._df.utc);
     var timestamp = date.getTime();
     axisBreak = this.isInBreak(timestamp);
@@ -13091,7 +13097,7 @@ function (_super) {
   DateAxis.prototype.fixMin = function (value) {
     // like this because months are not equal
     var interval = this.baseInterval;
-    var startTime = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(value), interval.timeUnit, interval.count, this._firstWeekDay, this._df.utc).getTime();
+    var startTime = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(value), interval.timeUnit, interval.count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes).getTime();
     var endTime = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](new Date(startTime), interval.timeUnit, interval.count, this._df.utc).getTime();
     return startTime + (endTime - startTime) * this.startLocation;
   };
@@ -13106,7 +13112,7 @@ function (_super) {
   DateAxis.prototype.fixMax = function (value) {
     // like this because months are not equal
     var interval = this.baseInterval;
-    var startTime = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(value), interval.timeUnit, interval.count, this._firstWeekDay, this._df.utc).getTime();
+    var startTime = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(value), interval.timeUnit, interval.count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes).getTime();
     var endTime = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](new Date(startTime), interval.timeUnit, interval.count, this._df.utc).getTime();
     return startTime + (endTime - startTime) * this.endLocation;
   };
@@ -13644,7 +13650,7 @@ function (_super) {
   DateAxis.prototype.getTooltipText = function (position) {
     var text;
     var date = this.positionToDate(position);
-    date = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](date, this.baseInterval.timeUnit, this.baseInterval.count, this._firstWeekDay, this._df.utc, new Date(this.min));
+    date = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](date, this.baseInterval.timeUnit, this.baseInterval.count, this._firstWeekDay, this._df.utc, new Date(this.min), this._df.timezoneMinutes);
     this.tooltipDate = date;
 
     if (_core_utils_Type__WEBPACK_IMPORTED_MODULE_7__["hasValue"](this.tooltipDateFormat)) {
@@ -13680,7 +13686,7 @@ function (_super) {
     var timeUnit = baseInterval.timeUnit;
     var count = baseInterval.count;
     var date = this.positionToDate(position);
-    _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](date, timeUnit, count, this._firstWeekDay, this._df.utc);
+    _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](date, timeUnit, count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes);
 
     if (location > 0) {
       _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](date, timeUnit, location * count, this._df.utc);
@@ -13754,8 +13760,8 @@ function (_super) {
     }
 
     var deltaValue = value - location * this.baseDuration;
-    var date = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(value), this.baseInterval.timeUnit, this.baseInterval.count, this._firstWeekDay, this._df.utc);
-    var nextDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(value + this.baseDuration), this.baseInterval.timeUnit, this.baseInterval.count, this._firstWeekDay, this._df.utc);
+    var date = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(value), this.baseInterval.timeUnit, this.baseInterval.count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes);
+    var nextDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(value + this.baseDuration), this.baseInterval.timeUnit, this.baseInterval.count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes);
 
     if (nextDate.getTime() > date.getTime()) {
       if (Math.abs(nextDate.getTime() - deltaValue) < Math.abs(deltaValue - date.getTime())) {
@@ -13980,7 +13986,7 @@ function (_super) {
               }
             }
 
-            seriesMax = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](_core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](new Date(seriesMax), groupInterval_1.timeUnit, 1, _this._df.utc), groupInterval_1.timeUnit, 1, _this._df.firstDayOfWeek, _this._df.utc).getTime();
+            seriesMax = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](_core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](new Date(seriesMax), groupInterval_1.timeUnit, 1, _this._df.utc), groupInterval_1.timeUnit, 1, _this._df.firstDayOfWeek, _this._df.utc, undefined, _this._df.timezoneMinutes).getTime();
 
             if (seriesMin < min_1) {
               min_1 = seriesMin;
@@ -14073,7 +14079,7 @@ function (_super) {
 
     if (this.snapTooltip) {
       // rounding is not good, pen/aac4e7f66f019d36b2447f050c600c13 (no last tootltip shown)
-      var actualDate = this.positionToDate(position); //$time.round(this.positionToDate(position), this.baseInterval.timeUnit, 1, this.getFirstWeekDay(), this.dateFormatter.utc);
+      var actualDate = this.positionToDate(position); //$time.round(this.positionToDate(position), this.baseInterval.timeUnit, 1, this.getFirstWeekDay(), this.dateFormatter.utc, undefined, this._df.timezoneMinutes);
 
       var actualTime_1 = actualDate.getTime();
       var closestDate_1;
@@ -14105,7 +14111,7 @@ function (_super) {
 
       if (closestDate_1) {
         var closestTime_1 = closestDate_1.getTime();
-        closestDate_1 = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(closestTime_1), this.baseInterval.timeUnit, this.baseInterval.count, this._firstWeekDay, this._df.utc);
+        closestDate_1 = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(closestTime_1), this.baseInterval.timeUnit, this.baseInterval.count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes);
         closestTime_1 = closestDate_1.getTime();
         var tooltipLocation = this.renderer.tooltipLocation;
 
@@ -14340,9 +14346,10 @@ function (_super) {
      * If set will recalculate all timestamps in data to specific named timezone,
      * e.g. `"America/Vancouver"`, `"Australia/Sydney"`, `"UTC"`, etc.
      *
-     * IMPORTANT: do not set `timezone` on both `DateAxis` and `dateFormatter`. It
-     * will skew your results by applying timezone twice.
+     * IMPORTANT: it is no longer recommended to use this setting. Please
+     * set`timezone` on `dateFormatter`.
      *
+     * @deprecated
      * @since 4.10.1
      * @param  value Time zone
      */
@@ -15697,6 +15704,11 @@ function (_super) {
       var maxZoomed = this._maxZoomed + this._step;
       this.resetIterators();
       var dataItemsIterator_1 = this._dataItemsIterator;
+
+      if (this._step == 0) {
+        return;
+      }
+
       this._step = this.fixSmallStep(this._step);
       var i = 0;
       var precisionChanged = this._prevStepDecimalPlaces != this._stepDecimalPlaces;
@@ -16412,7 +16424,7 @@ function (_super) {
             this._minMaxAnimation = animation;
           } else {
             this.series.each(function (series) {
-              series.validate();
+              series.invalidate();
             });
           }
 
@@ -16894,7 +16906,7 @@ function (_super) {
           var minValue = _core_utils_Math__WEBPACK_IMPORTED_MODULE_6__["min"](range.value, range.endValue);
           var maxValue = _core_utils_Math__WEBPACK_IMPORTED_MODULE_6__["max"](range.value, range.endValue);
 
-          if (minValue < selectionMax) {
+          if (minValue < selectionMin) {
             selectionMin = minValue;
           }
 
@@ -26093,7 +26105,8 @@ function (_super) {
 
     var scrollbarChart = this.scrollbarChart;
     scrollbarChart.zoomOutButton.disabled = true;
-    this.chart = sourceSeries.chart; // Ensure that scrollbar chart shares the same locale as parent chart
+    this.chart = sourceSeries.chart;
+    scrollbarChart.dateFormatter.inputDateFormat = this.chart.dateFormatter.inputDateFormat; // Ensure that scrollbar chart shares the same locale as parent chart
 
     scrollbarChart.language.locale = this.chart.language.locale;
     var addXAxis = true;
@@ -36104,7 +36117,7 @@ function (_super) {
       var label = legendDataItem.label;
       var valueLabel = legendDataItem.valueLabel; // update legend
 
-      if (dataItem || notRange) {
+      if (dataItem && !dataItem.isDisposed() || notRange) {
         if (valueLabel) {
           if (legendSettings.itemValueText) {
             valueLabel.text = legendSettings.itemValueText;
@@ -39314,7 +39327,7 @@ function (_super) {
           if (openValue == closeValue) {
             var baseInterval = xAxis.baseInterval;
             var dateFormatter = xAxis.dateFormatter;
-            openValue = _core_utils_Time__WEBPACK_IMPORTED_MODULE_14__["round"](new Date(openValue), baseInterval.timeUnit, baseInterval.count, dateFormatter.firstDayOfWeek, dateFormatter.utc).getTime();
+            openValue = _core_utils_Time__WEBPACK_IMPORTED_MODULE_14__["round"](new Date(openValue), baseInterval.timeUnit, baseInterval.count, dateFormatter.firstDayOfWeek, dateFormatter.utc, undefined, dateFormatter.timezoneMinutes).getTime();
             closeValue = _core_utils_Time__WEBPACK_IMPORTED_MODULE_14__["add"](new Date(openValue), baseInterval.timeUnit, baseInterval.count, dateFormatter.utc).getTime();
           }
 
@@ -39390,7 +39403,7 @@ function (_super) {
           if (openValue == closeValue) {
             var baseInterval = yAxis.baseInterval;
             var dateFormatter = yAxis.dateFormatter;
-            openValue = _core_utils_Time__WEBPACK_IMPORTED_MODULE_14__["round"](new Date(openValue), baseInterval.timeUnit, baseInterval.count, dateFormatter.firstDayOfWeek, dateFormatter.utc).getTime();
+            openValue = _core_utils_Time__WEBPACK_IMPORTED_MODULE_14__["round"](new Date(openValue), baseInterval.timeUnit, baseInterval.count, dateFormatter.firstDayOfWeek, dateFormatter.utc, undefined, dateFormatter.timezoneMinutes).getTime();
             closeValue = _core_utils_Time__WEBPACK_IMPORTED_MODULE_14__["add"](new Date(openValue), baseInterval.timeUnit, baseInterval.count, dateFormatter.utc).getTime();
           }
 
@@ -43993,7 +44006,10 @@ function (_super) {
       _this.dataUsers.removeValue(series);
     }));
     this.handleSeriesAdded2(series);
+    this.handleLegendSeriesAdded(series);
+  };
 
+  SerialChart.prototype.handleLegendSeriesAdded = function (series) {
     if (!series.hiddenInLegend) {
       if (this.legend) {
         this.legend.addData(series);
@@ -45236,7 +45252,7 @@ function (_super) {
       dataItem = this._homeDataItem;
     }
 
-    var zoomOutButton = this.zoomOutButton; // this is needed because if there is only one fist level, it wont' be shown
+    var zoomOutButton = this.zoomOutButton; // this is needed because if there is only one fist level, it won't be shown
 
     if (zoomOutButton) {
       if (dataItem != this._homeDataItem) {
@@ -45794,6 +45810,9 @@ function (_super) {
     } else {
       return dataItem;
     }
+  };
+
+  TreeMap.prototype.handleLegendSeriesAdded = function (series) {// void
   };
 
   Object.defineProperty(TreeMap.prototype, "homeDataItem", {
@@ -47450,13 +47469,18 @@ function (_super) {
 
     if (this._panEndXRange && (behavior == "panX" || behavior == "panXY")) {
       var panEndRange = this._panEndXRange;
+      var panStartRange = this._panStartXRange;
       var delta = 0;
 
       if (panEndRange.start < 0) {
         delta = panEndRange.start;
       }
 
-      if (panEndRange.end > 1) {
+      if (panStartRange.end > 1) {
+        if (panEndRange.end > panStartRange.end) {
+          delta = panEndRange.end - panStartRange.end;
+        }
+      } else if (panEndRange.end > 1) {
         delta = panEndRange.end - 1;
       }
 
@@ -55658,7 +55682,8 @@ var options = {
   animationsEnabled: true,
   nonce: "",
   deferredDelay: 100,
-  disableHoverOnTransform: "never"
+  disableHoverOnTransform: "never",
+  pixelPerfectPrecision: 0
 };
 
 /***/ }),
@@ -58246,7 +58271,7 @@ function (_super) {
       this.maxTop = top_1 + y - pixelPaddingTop;
       this.maxBottom = bottom + y - pixelPaddingTop;
 
-      if (this.pixelPerfect) {
+      if (this.pixelPerfect && _Options__WEBPACK_IMPORTED_MODULE_17__["options"].pixelPerfectPrecision == 0) {
         x -= 0.5;
         y -= 0.5;
       }
@@ -59795,7 +59820,7 @@ function (_super) {
       value = this.getTagValueFromObject(parts, dataItem.values); // Check properties
 
       if (!_utils_Type__WEBPACK_IMPORTED_MODULE_30__["hasValue"](value) || _utils_Type__WEBPACK_IMPORTED_MODULE_30__["isObject"](value)) {
-        // isObject helps to solve problem with date axis, as for example dateX will get dateX from values object and wont't get to the dateX date.
+        // isObject helps to solve problem with date axis, as for example dateX will get dateX from values object and won't get to the dateX date.
         value = this.getTagValueFromObject(parts, dataItem);
       } // Check data context
 
@@ -61533,7 +61558,7 @@ function (_super) {
     }
 
     if (this.showTooltipOn == "hit") {
-      this.updateTooltipPosition(ev.pointer.point);
+      this.updateTooltipPosition(ev.pointer ? ev.pointer.point : undefined);
 
       this._disposers.push(_Registry__WEBPACK_IMPORTED_MODULE_18__["registry"].events.once("exitframe", function () {
         _this.showTooltip();
@@ -64496,7 +64521,7 @@ function (_super) {
       value = _utils_Type__WEBPACK_IMPORTED_MODULE_30__["toBoolean"](value);
 
       if (value) {
-        this._positionPrecision = 0;
+        this._positionPrecision = _Options__WEBPACK_IMPORTED_MODULE_17__["options"].pixelPerfectPrecision;
       } else {
         this._positionPrecision = 3;
       }
@@ -67097,7 +67122,7 @@ function () {
    * @see {@link https://docs.npmjs.com/misc/semver}
    */
 
-  System.VERSION = "4.10.9";
+  System.VERSION = "4.10.12";
   return System;
 }();
 
@@ -71525,8 +71550,9 @@ function (_super) {
                     lineInfo.bbox = lineInfo.element.getBBox();
                     lineInfo.bbox.width = Math.floor(lineInfo.bbox.width); // Increase excess characters count, just in case it still
                     // doesn't fit and we have to go at it again
+                    //excessChars = Math.ceil(excessChars * 1.05);
 
-                    excessChars = Math.ceil(excessChars * 1.1);
+                    excessChars++;
                   } // Construct the rest of the line
 
 
@@ -76748,7 +76774,7 @@ function (_super) {
     _this.thumb.role = "slider";
     _this.thumb.readerLive = "polite";
     _this.startGrip.role = "slider";
-    _this.endGrip.role = "slider"; // otherwise range changed wont' be registered
+    _this.endGrip.role = "slider"; // otherwise range changed won't be registered
 
     _this.events.once("inited", function () {
       _this._previousStart = undefined;
@@ -77446,6 +77472,7 @@ function (_super) {
     button.events.on("drag", this.handleGripDrag, this, false);
     button.events.on("dragstop", this.makeUnbusy, this, false);
     button.events.on("down", this.makeBusy, this, false);
+    button.events.on("up", this.makeUnbusy, this, false);
 
     this._disposers.push(button);
   };
@@ -78521,7 +78548,8 @@ function (_super) {
   });
   Object.defineProperty(SwitchButton.prototype, "switch", {
     /**
-     * @return Left label element
+     * @ignore
+     * @deprecated Use `switchButton` instead
      */
     get: function get() {
       return this._switchButton;
@@ -78531,9 +78559,16 @@ function (_super) {
   });
   Object.defineProperty(SwitchButton.prototype, "switchButton", {
     /**
-     * [[Label]] element to be used for left text.
+     * @return Button
+     */
+    get: function get() {
+      return this._switchButton;
+    },
+
+    /**
+     * A [[Button]] element for switch.
      *
-     * @param rigth label element
+     * @param Button
      */
     set: function set(button) {
       if (this._switchButton) {
@@ -86332,7 +86367,7 @@ function (_super) {
     element.appendChild(label); // Create interaction object
     // TODO clean this up when it's disposed
 
-    branch.interactions = Object(_interaction_Interaction__WEBPACK_IMPORTED_MODULE_4__["getInteraction"])().getInteraction(label);
+    branch.interactions = Object(_interaction_Interaction__WEBPACK_IMPORTED_MODULE_4__["getInteraction"])().getInteraction(element);
     branch.element = element; // Create interaction manager we can set event listeners to
 
     if (this.typeClickable(type)) {
@@ -86437,6 +86472,7 @@ function (_super) {
 
     if (branch.menu) {
       var submenu = this.createMenuElement(local_level);
+      branch.submenuElement = submenu;
 
       for (var len = branch.menu.length, i = 0; i < len; i++) {
         var ascendants = new _utils_List__WEBPACK_IMPORTED_MODULE_3__["List"]();
@@ -86540,6 +86576,7 @@ function (_super) {
       type: type
     }).className;
     element.setAttribute("role", "menuitem");
+    element.setAttribute("tabindex", this.tabindex.toString());
     return element;
   };
   /**
@@ -86566,9 +86603,9 @@ function (_super) {
       level: level,
       type: type
     }).className; // Accessible navigation
+    //element.setAttribute("tabindex", this.tabindex.toString());
+    //element.setAttribute("role", "menuitem");
 
-    element.setAttribute("tabindex", this.tabindex.toString());
-    element.setAttribute("role", "menuitem");
     return element;
   };
   /**
@@ -87083,9 +87120,12 @@ function (_super) {
     } // Add active class
 
 
-    _utils_DOM__WEBPACK_IMPORTED_MODULE_11__["addClass"](branch.interactions.element.parentElement, "active"); // Set expanded
+    _utils_DOM__WEBPACK_IMPORTED_MODULE_11__["addClass"](branch.element, "active"); // Set expanded
 
-    branch.interactions.element.parentElement.setAttribute("aria-expanded", "true"); // Remove current selection
+    if (branch.submenuElement) {
+      branch.submenuElement.setAttribute("aria-expanded", "true");
+    } // Remove current selection
+
 
     if (this._currentSelection && this._currentSelection !== branch && this._currentSelection.ascendants) {
       _utils_Iterator__WEBPACK_IMPORTED_MODULE_10__["each"](_utils_Iterator__WEBPACK_IMPORTED_MODULE_10__["concat"](_utils_Iterator__WEBPACK_IMPORTED_MODULE_10__["fromArray"]([this._currentSelection]), this._currentSelection.ascendants.iterator()), function (ascendant) {
@@ -87103,7 +87143,7 @@ function (_super) {
         ascendant.closeTimeout = undefined;
       }
 
-      _utils_DOM__WEBPACK_IMPORTED_MODULE_11__["addClass"](ascendant.interactions.element.parentElement, "active");
+      _utils_DOM__WEBPACK_IMPORTED_MODULE_11__["addClass"](ascendant.element, "active");
     }); // Log current selection
 
     this._currentSelection = branch; // Invoke event
@@ -87128,9 +87168,12 @@ function (_super) {
 
   ExportMenu.prototype.unselectBranch = function (branch, simple) {
     // Remove active class
-    _utils_DOM__WEBPACK_IMPORTED_MODULE_11__["removeClass"](branch.interactions.element.parentElement, "active"); // Set expanded
+    _utils_DOM__WEBPACK_IMPORTED_MODULE_11__["removeClass"](branch.element, "active"); // Set expanded
 
-    branch.interactions.element.parentElement.removeAttribute("aria-expanded"); // Remove current selection
+    if (branch.submenuElement) {
+      branch.submenuElement.removeAttribute("aria-expanded");
+    } // Remove current selection
+
 
     if (this._currentSelection == branch) {
       this._currentSelection = undefined;
@@ -87439,6 +87482,14 @@ function (_super) {
      */
 
     _this._utc = false;
+    /**
+     * If `timezone` is set, this will hold minute fraction of the timezone.
+     *
+     * @readonly
+     * @ignore
+     */
+
+    _this.timezoneMinutes = 0;
     /**
      * First day of week.
      *
@@ -88707,6 +88758,7 @@ function (_super) {
     set: function set(value) {
       if (this._timezone != value) {
         this._timezone = value;
+        this.timezoneMinutes = _utils_Time__WEBPACK_IMPORTED_MODULE_8__["getTimezoneMinutes"](value);
         this.invalidateSprite();
       }
     },
@@ -91897,8 +91949,12 @@ function (_super) {
       } // Does focused object have "hit" event?
 
 
-      if (_utils_Keyboard__WEBPACK_IMPORTED_MODULE_10__["keyboard"].isKey(ev, "enter") && this.focusedObject.sprite && this.focusedObject.sprite.events.isEnabled("hit") && !this.focusedObject.sprite.events.isEnabled("toggled")) {
-        this.focusedObject.dispatchImmediately("hit");
+      if (_utils_Keyboard__WEBPACK_IMPORTED_MODULE_10__["keyboard"].isKey(ev, "enter") && this.focusedObject.sprite && !this.focusedObject.sprite.events.isEnabled("toggled")) {
+        if (this.focusedObject.sprite.events.isEnabled("hit")) {
+          this.focusedObject.dispatchImmediately("hit");
+        } else if (this.focusedObject.sprite.showTooltipOn == "hit") {
+          this.focusedObject.dispatchImmediately("up");
+        }
       }
     }
   };
@@ -92460,7 +92516,7 @@ function (_super) {
       io.isHover = false;
       this.overObjects.removeValue(io); // Invoke event
 
-      if (io.events.isEnabled("out") && !_System__WEBPACK_IMPORTED_MODULE_11__["system"].isPaused && !io.isDisposed()) {
+      if (!io.isDisposed() && io.events.isEnabled("out") && !_System__WEBPACK_IMPORTED_MODULE_11__["system"].isPaused) {
         var imev = {
           type: "out",
           target: io,
@@ -104673,13 +104729,17 @@ function (_super) {
 
   ColorSet.prototype.processConfig = function (config) {
     if (config) {
-      // Set up axis ranges
+      // Cast colors
       if (_Type__WEBPACK_IMPORTED_MODULE_5__["hasValue"](config.list) && _Type__WEBPACK_IMPORTED_MODULE_5__["isArray"](config.list)) {
         for (var i = 0, len = config.list.length; i < len; i++) {
           if (!(config.list[i] instanceof _Color__WEBPACK_IMPORTED_MODULE_2__["Color"])) {
             config.list[i] = Object(_Color__WEBPACK_IMPORTED_MODULE_2__["color"])(config.list[i]);
           }
         }
+      }
+
+      if (_Type__WEBPACK_IMPORTED_MODULE_5__["hasValue"](config.baseColor) && !(config.baseColor instanceof _Color__WEBPACK_IMPORTED_MODULE_2__["Color"])) {
+        config.baseColor = Object(_Color__WEBPACK_IMPORTED_MODULE_2__["color"])(config.baseColor);
       }
     }
 
@@ -106269,14 +106329,20 @@ function getComputedStyle(element, property) {
  */
 
 function blur() {
-  var input = document.createElement("button");
-  input.style.position = "fixed";
-  input.style.top = "0px";
-  input.style.left = "-10000px";
-  document.body.appendChild(input);
-  input.focus();
-  input.blur();
-  document.body.removeChild(input);
+  if (document.activeElement && document.activeElement != document.body) {
+    if (document.activeElement.blur) {
+      document.activeElement.blur();
+    } else {
+      var input = document.createElement("button");
+      input.style.position = "fixed";
+      input.style.top = "0px";
+      input.style.left = "-10000px";
+      document.body.appendChild(input);
+      input.focus();
+      input.blur();
+      document.body.removeChild(input);
+    }
+  }
 }
 /**
  * Tries to focus the element.
@@ -108890,6 +108956,15 @@ function removeFromQueue(sprite) {
     }
   }
 }
+/**
+ * Checks whether the chart was not initialized fully due to setting
+ * of `onlyShowOnViewport`. If it hasn't and is now in the viewport
+ * the chart will be initialized.
+ *
+ * @since 4.9.12
+ * @param  sprite  Top-level chart object
+ */
+
 function viewPortHandler(sprite) {
   if (sprite.__disabled && _DOM__WEBPACK_IMPORTED_MODULE_16__["isElementInViewport"](sprite.htmlContainer, _Options__WEBPACK_IMPORTED_MODULE_13__["options"].viewportTarget)) {
     if (sprite.vpDisposer) {
@@ -115795,7 +115870,7 @@ var PLACEHOLDER2 = "__§§§§__";
 /*!***********************************************************************!*\
   !*** ./node_modules/@amcharts/amcharts4/.internal/core/utils/Time.js ***!
   \***********************************************************************/
-/*! exports provided: timeUnitDurations, getNextUnit, getDuration, now, getTime, copy, checkChange, add, round, setTimezone */
+/*! exports provided: timeUnitDurations, getNextUnit, getDuration, now, getTime, copy, checkChange, add, round, setTimezone, getTimezoneMinutes */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -115810,6 +115885,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "add", function() { return add; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "round", function() { return round; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "setTimezone", function() { return setTimezone; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getTimezoneMinutes", function() { return getTimezoneMinutes; });
 /* harmony import */ var _utils_Type__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/Type */ "./node_modules/@amcharts/amcharts4/.internal/core/utils/Type.js");
 
 /**
@@ -116099,7 +116175,11 @@ function add(date, unit, count, utc) {
  * @return New date
  */
 
-function round(date, unit, count, firstDateOfWeek, utc, firstDate) {
+function round(date, unit, count, firstDateOfWeek, utc, firstDate, roundMinutes) {
+  if (roundMinutes === void 0) {
+    roundMinutes = 0;
+  }
+
   if (!_utils_Type__WEBPACK_IMPORTED_MODULE_0__["isNumber"](count)) {
     count = 1;
   }
@@ -116158,7 +116238,7 @@ function round(date, unit, count, firstDateOfWeek, utc, firstDate) {
         hours = Math.floor(hours / count) * count;
       }
 
-      date.setUTCHours(hours, 0, 0, 0);
+      date.setUTCHours(hours, roundMinutes, 0, 0);
       break;
 
     case "minute":
@@ -116180,7 +116260,7 @@ function round(date, unit, count, firstDateOfWeek, utc, firstDate) {
       }
 
       date.setUTCMonth(month, 1);
-      date.setUTCHours(0, 0, 0, 0);
+      date.setUTCHours(0, roundMinutes, 0, 0);
       break;
 
     case "year":
@@ -116191,7 +116271,7 @@ function round(date, unit, count, firstDateOfWeek, utc, firstDate) {
       }
 
       date.setUTCFullYear(year, 0, 1);
-      date.setUTCHours(0, 0, 0, 0); //let nonUTCDateY = new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
+      date.setUTCHours(0, roundMinutes, 0, 0); //let nonUTCDateY = new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
       //timeZoneOffset = nonUTCDateY.getTimezoneOffset();
 
       break;
@@ -116212,7 +116292,7 @@ function round(date, unit, count, firstDateOfWeek, utc, firstDate) {
       }
 
       date.setUTCDate(wday);
-      date.setUTCHours(0, 0, 0, 0);
+      date.setUTCHours(0, roundMinutes, 0, 0);
       break;
   }
 
@@ -116246,6 +116326,20 @@ function setTimezone(date, timezone) {
     timeZone: timezone
   }));
   return d;
+}
+/**
+ * Returns minute fraction of the set timezone.
+ *
+ * @since 4.10.12
+ * @param  timezone  Timezone identifier
+ * @return           Minutes
+ */
+
+function getTimezoneMinutes(timezone) {
+  var d = new Date();
+  d.setHours(0, 0, 0, 0);
+  var d2 = setTimezone(d, timezone);
+  return d2.getMinutes();
 }
 
 /***/ }),
@@ -117317,7 +117411,7 @@ function stripTags(text) {
  */
 
 function plainText(text) {
-  return text ? stripTags(text.replace(/[\n\r]+/g, ". ")) : text;
+  return text ? stripTags(("" + text).replace(/[\n\r]+/g, ". ")) : text;
 }
 /**
  * ============================================================================
@@ -119040,7 +119134,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!**************************************************!*\
   !*** ./node_modules/@amcharts/amcharts4/core.js ***!
   \**************************************************/
-/*! exports provided: System, system, BaseObject, BaseObjectEvents, Component, Container, DataItem, Sprite, SpriteEventDispatcher, SpriteState, registry, Registry, is, options, CSVParser, DataLoader, dataLoader, DataParser, DataSource, JSONParser, SVGDefaults, Button, Circle, Ellipse, Image, Label, Line, Popup, Modal, PointedRectangle, PointedShape, Polyarc, Polygon, Polyline, Polyspline, Preloader, Rectangle, ResizeButton, CloseButton, SwitchButton, RoundedRectangle, Scrollbar, Slider, Slice, TextLink, Tooltip, Trapezoid, Triangle, WavedCircle, WavedLine, WavedRectangle, ZoomOutButton, PlayButton, Cone, Rectangle3D, Slice3D, Export, ExportMenu, DateFormatter, DurationFormatter, NumberFormatter, TextFormatter, getTextFormatter, Inertia, Interaction, getInteraction, InteractionKeyboardObject, InteractionObject, InteractionObjectEventDispatcher, MouseCursorStyle, AMElement, Group, Paper, Tension, Basis, SVGContainer, ColorModifier, LinearGradient, LinearGradientModifier, RadialGradientModifier, LinePattern, CirclePattern, Pattern, RadialGradient, RectPattern, ColorizeFilter, DesaturateFilter, DropShadowFilter, BlurFilter, Filter, FocusFilter, LightenFilter, GlobalAdapter, globalAdapter, Adapter, Animation, animate, nextFrame, readFrame, writeFrame, whenIdle, triggerIdle, Cache, cache, Color, color, isColor, castColor, ColorSet, PatternSet, InterfaceColorSet, DictionaryDisposer, Dictionary, DictionaryTemplate, Disposer, MultiDisposer, MutableValueDisposer, CounterDisposer, StyleRule, StyleClass, getElement, addClass, removeClass, blur, focus, outerHTML, isElement, copyAttributes, fixPixelPerfect, ready, EventDispatcher, TargetedEventDispatcher, ListIterator, min, max, join, Keyboard, keyboard, Language, IndexedIterable, ListGrouper, ListDisposer, List, ListTemplate, Morpher, reverse, or, Percent, percent, isPercent, Plugin, Responsive, ResponsiveBreakpoints, defaultRules, OrderedList, SortedList, OrderedListTemplate, SortedListTemplate, PX, STRING, NUMBER, DATE, DURATION, PLACEHOLDER, PLACEHOLDER2, isNaN, checkString, checkBoolean, checkNumber, checkObject, castString, castNumber, isString, isNumber, isObject, isArray, Validatable, path, colors, ease, math, array, number, object, string, time, utils, iter, type, net, create, createFromConfig, createDeferred, disposeAllCharts, useTheme, unuseTheme, unuseAllThemes, addLicense */
+/*! exports provided: System, system, BaseObject, BaseObjectEvents, Component, Container, DataItem, Sprite, SpriteEventDispatcher, SpriteState, registry, Registry, is, options, CSVParser, DataLoader, dataLoader, DataParser, DataSource, JSONParser, SVGDefaults, Button, Circle, Ellipse, Image, Label, Line, Popup, Modal, PointedRectangle, PointedShape, Polyarc, Polygon, Polyline, Polyspline, Preloader, Rectangle, ResizeButton, CloseButton, SwitchButton, RoundedRectangle, Scrollbar, Slider, Slice, TextLink, Tooltip, Trapezoid, Triangle, WavedCircle, WavedLine, WavedRectangle, ZoomOutButton, PlayButton, Cone, Rectangle3D, Slice3D, Export, ExportMenu, DateFormatter, DurationFormatter, NumberFormatter, TextFormatter, getTextFormatter, Inertia, Interaction, getInteraction, InteractionKeyboardObject, InteractionObject, InteractionObjectEventDispatcher, MouseCursorStyle, AMElement, Group, Paper, Tension, Basis, SVGContainer, ColorModifier, LinearGradient, LinearGradientModifier, RadialGradientModifier, LinePattern, CirclePattern, Pattern, RadialGradient, RectPattern, ColorizeFilter, DesaturateFilter, DropShadowFilter, BlurFilter, Filter, FocusFilter, LightenFilter, GlobalAdapter, globalAdapter, Adapter, Animation, animate, nextFrame, readFrame, writeFrame, whenIdle, triggerIdle, Cache, cache, Color, color, isColor, castColor, ColorSet, PatternSet, InterfaceColorSet, DictionaryDisposer, Dictionary, DictionaryTemplate, Disposer, MultiDisposer, MutableValueDisposer, CounterDisposer, StyleRule, StyleClass, getElement, addClass, removeClass, blur, focus, outerHTML, isElement, copyAttributes, fixPixelPerfect, ready, EventDispatcher, TargetedEventDispatcher, ListIterator, min, max, join, Keyboard, keyboard, Language, IndexedIterable, ListGrouper, ListDisposer, List, ListTemplate, Morpher, reverse, or, Percent, percent, isPercent, Plugin, Responsive, ResponsiveBreakpoints, defaultRules, OrderedList, SortedList, OrderedListTemplate, SortedListTemplate, PX, STRING, NUMBER, DATE, DURATION, PLACEHOLDER, PLACEHOLDER2, isNaN, checkString, checkBoolean, checkNumber, checkObject, castString, castNumber, isString, isNumber, isObject, isArray, Validatable, path, colors, ease, math, array, number, object, string, time, utils, iter, type, net, create, createFromConfig, createDeferred, disposeAllCharts, viewPortHandler, useTheme, unuseTheme, unuseAllThemes, addLicense */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -119540,6 +119634,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "createDeferred", function() { return _internal_core_utils_Instance__WEBPACK_IMPORTED_MODULE_120__["createDeferred"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "disposeAllCharts", function() { return _internal_core_utils_Instance__WEBPACK_IMPORTED_MODULE_120__["disposeAllCharts"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "viewPortHandler", function() { return _internal_core_utils_Instance__WEBPACK_IMPORTED_MODULE_120__["viewPortHandler"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "useTheme", function() { return _internal_core_utils_Instance__WEBPACK_IMPORTED_MODULE_120__["useTheme"]; });
 
@@ -121344,22 +121440,22 @@ class AmBarChart extends React.PureComponent {
       chart.exporting.menu.items = _utils__WEBPACK_IMPORTED_MODULE_13__["exportMenuItems"];
     }
     /* 		 ~~~~\  title  /~~~~ 
-    		let chartTitle = this.props.chartTitle;
-    		if(chartTitle) {
+        let chartTitle = this.props.chartTitle;
+        if(chartTitle) {
           //let title = chart.plotContainer.createChild(am4core.Label);
           let title = chart.titles.create();
-    			title.text = chartTitle.text;
-    			title.fill =
-    			  chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
-    			title.fontSize = chartTitle.fontSize || 22;
-    			title.fontWeight = "bold";
-    			title.fontFamily = "Tahoma";
-    			//title.y = this.props.scrollbarX ? -56 : -42;
-    			//title.x = -45;
-    			//title.horizontalCenter = "left";
-    			//title.zIndex = 100;
-    			//title.fillOpacity = 1;
-    		}
+          title.text = chartTitle.text;
+          title.fill =
+            chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
+          title.fontSize = chartTitle.fontSize || 22;
+          title.fontWeight = "bold";
+          title.fontFamily = "Tahoma";
+          //title.y = this.props.scrollbarX ? -56 : -42;
+          //title.x = -45;
+          //title.horizontalCenter = "left";
+          //title.zIndex = 100;
+          //title.fillOpacity = 1;
+        }
      */
 
     /* ~~~~\  title  /~~~~ */
@@ -121526,12 +121622,12 @@ class AmBarChart extends React.PureComponent {
     var valueAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("Y", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, yAxis, minValue, maxValue, false, theme, cursor);
     /*		let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
         valueAxis.paddingRight = yAxis.adjust || 0;
-    		if(yAxis.title && yAxis.title.text !== "") {
-    			valueAxis.title.text = yAxis.title.text;
-    			valueAxis.title.fontWeight = "bold";
-    			valueAxis.title.fontSize = yAxis.title.fontSize || 20;
-    			valueAxis.title.fill =
-    			  yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+        if(yAxis.title && yAxis.title.text !== "") {
+          valueAxis.title.text = yAxis.title.text;
+          valueAxis.title.fontWeight = "bold";
+          valueAxis.title.fontSize = yAxis.title.fontSize || 20;
+          valueAxis.title.fill =
+            yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
         }
         if(yAxis.labels && yAxis.labels.formatter) {
           valueAxis.numberFormatter = new am4core.NumberFormatter();
@@ -121564,11 +121660,11 @@ class AmBarChart extends React.PureComponent {
           yAxisLabels.fill =
             yAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");  
         }
-    		// we set fixed min/max and strictMinMax to true, as otherwise value axis will adjust min/max while dragging and it won't look smooth
-    		valueAxis.strictMinMax = true;
-    		valueAxis.min = this.props.minValue;
-    		valueAxis.max = this.props.maxValue;
-    		valueAxis.renderer.minWidth = 60;
+        // we set fixed min/max and strictMinMax to true, as otherwise value axis will adjust min/max while dragging and it won't look smooth
+        valueAxis.strictMinMax = true;
+        valueAxis.min = this.props.minValue;
+        valueAxis.max = this.props.maxValue;
+        valueAxis.renderer.minWidth = 60;
         if(cursor) {
           if(cursor.tooltip)
             valueAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
@@ -122809,7 +122905,7 @@ class AmLineChart extends React.PureComponent {
         if(xAxis.labels && xAxis.labels.formatter) {
           Xformatter = xAxis.labels.formatter;
         }
-    		if(isDate) {
+        if(isDate) {
           XAxis = chart.xAxes.push(new am4charts.DateAxis());
           XAxis.dataFields.dateX = xValue;
           if(Xformatter) {
@@ -122826,7 +122922,7 @@ class AmLineChart extends React.PureComponent {
               XAxis.periodChangeDateFormats.setKey("month", Xformatter.month[1]);
             }
           }
-    		} else {
+        } else {
           XAxis = chart.xAxes.push(new am4charts.ValueAxis());
           XAxis.dataFields.valueX = xValue;
           if(Xformatter) {
@@ -122835,18 +122931,18 @@ class AmLineChart extends React.PureComponent {
             XAxis.adjustLabelPrecision = false;
           }
         }
-    		if(xAxis) {
+        if(xAxis) {
           XAxis.paddingBottom = xAxis.adjust || 0;
-    		}
-    		XAxis.strictMinMax = true;
-    		XAxis.min = minX;
-    		XAxis.max = maxX;
-    		if(xAxis && xAxis.title && xAxis.title.text !== "") {
-      		XAxis.title.text = xAxis.title.text || xValue;
-      		XAxis.title.fontWeight = "bold";
-      		XAxis.title.fontSize = xAxis.title.fontSize || 20;
-      		XAxis.title.fill =
-      		  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+        }
+        XAxis.strictMinMax = true;
+        XAxis.min = minX;
+        XAxis.max = maxX;
+        if(xAxis && xAxis.title && xAxis.title.text !== "") {
+          XAxis.title.text = xAxis.title.text || xValue;
+          XAxis.title.fontWeight = "bold";
+          XAxis.title.fontSize = xAxis.title.fontSize || 20;
+          XAxis.title.fill =
+            xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
         }
     
         let xBreaksType; 
@@ -122929,31 +123025,31 @@ class AmLineChart extends React.PureComponent {
           gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
         YAxis.renderer.grid.template.strokeOpacity = gridLines.opacity || 0.15;
         YAxis.renderer.grid.template.strokeWidth = gridLines.width || 1;
-    		if(yAxis && yAxis.title && yAxis.title.text !== "") {
-    			YAxis.title.text = yAxis.title.text;
-    			YAxis.title.fontWeight = "bold";
-    			YAxis.title.fontSize = yAxis.title.fontSize || 20;
-    			YAxis.title.fill =
-    			  yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
-    		}
-    		if(yAxis.labels) {
-      		let yAxisLabels = YAxis.renderer.labels.template;
+        if(yAxis && yAxis.title && yAxis.title.text !== "") {
+          YAxis.title.text = yAxis.title.text;
+          YAxis.title.fontWeight = "bold";
+          YAxis.title.fontSize = yAxis.title.fontSize || 20;
+          YAxis.title.fill =
+            yAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+        }
+        if(yAxis.labels) {
+          let yAxisLabels = YAxis.renderer.labels.template;
           if(yAxis.labels.formatter) {
             YAxis.numberFormatter = new am4core.NumberFormatter();
             YAxis.numberFormatter.numberFormat = yAxis.labels.formatter;
             YAxis.adjustLabelPrecision = false;
           }
           yAxisLabels.fontSize = yAxis.labels.fontSize || 17;
-    		  yAxisLabels.rotation = yAxis.labels.rotation || 0;
-    		  yAxisLabels.fill =
-    		    yAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
-    		} else {
-    		  YAxis.renderer.labels.template.disabled = true;
-    		}
-    		// we set fixed min/max and strictMinMax to true, as otherwise value axis will adjust min/max while dragging and it won't look smooth
-    		YAxis.strictMinMax = true;
-    		YAxis.min = minY;
-    		YAxis.max = maxY;
+          yAxisLabels.rotation = yAxis.labels.rotation || 0;
+          yAxisLabels.fill =
+            yAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+        } else {
+          YAxis.renderer.labels.template.disabled = true;
+        }
+        // we set fixed min/max and strictMinMax to true, as otherwise value axis will adjust min/max while dragging and it won't look smooth
+        YAxis.strictMinMax = true;
+        YAxis.min = minY;
+        YAxis.max = maxY;
         YAxis.renderer.minWidth = 60;
         */
 
@@ -124213,28 +124309,28 @@ class AmRangeAreaChart extends React.PureComponent {
       chart.exporting.menu.items = _utils__WEBPACK_IMPORTED_MODULE_13__["exportMenuItems"];
     }
     /* 		 ~~~~\  title  /~~~~ 
-    		let chartTitle = this.props.chartTitle;
-    		//let container;
-    		if(chartTitle) {
-    			//let title = chart.plotContainer.createChild(am4core.Label);
-    			//container = chart.plotContainer.createChild(am4core.Container);
-    			//container.y = this.props.scrollbarX ? -56 : -42;
-    			//container.x = -45;
-    			//container.horizontalCenter = "left";
+        let chartTitle = this.props.chartTitle;
+        //let container;
+        if(chartTitle) {
+          //let title = chart.plotContainer.createChild(am4core.Label);
+          //container = chart.plotContainer.createChild(am4core.Container);
+          //container.y = this.props.scrollbarX ? -56 : -42;
+          //container.x = -45;
+          //container.horizontalCenter = "left";
           //let title = container.createChild(am4core.Label);
           let title = chart.titles.create();
-    			title.text = chartTitle.text;
-    			title.fill =
-    			  chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
-    			title.fontSize = chartTitle.fontSize || 22;
-    			title.fontWeight = "bold";
-    			title.fontFamily = "Tahoma";
-    			// title.y = this.props.scrollbarX ? -56 : -42;
-    			// title.x = -45;
-    			// title.horizontalCenter = "left";
-    			// title.zIndex = 100;
-    			// title.fillOpacity = 1;
-    		}
+          title.text = chartTitle.text;
+          title.fill =
+            chartTitle.color || (theme === "dark" ? "#ffffff" : "#000000");
+          title.fontSize = chartTitle.fontSize || 22;
+          title.fontWeight = "bold";
+          title.fontFamily = "Tahoma";
+          // title.y = this.props.scrollbarX ? -56 : -42;
+          // title.x = -45;
+          // title.horizontalCenter = "left";
+          // title.zIndex = 100;
+          // title.fillOpacity = 1;
+        }
      */
 
     /* ~~~~\  title  /~~~~ */
@@ -125604,29 +125700,29 @@ class AmDumbbellChart extends React.PureComponent {
 
     var categoryAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createCategoryAxis"]("X", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, chart, category, xAxis, 80, theme);
     /*		let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-    		categoryAxis.paddingBottom = xAxis.adjust || 0;
-    		categoryAxis.renderer.grid.template.location = 0;
-    		categoryAxis.renderer.cellStartLocation = 1 - 80/100;
-    		categoryAxis.renderer.cellEndLocation = 80/100;
-    		if(xAxis && xAxis.title && xAxis.title.text !== "") {
-      		categoryAxis.title.text = xAxis.title.text || category;
-      		categoryAxis.title.fontWeight = xAxis.title.fontWeight || "bold";
+        categoryAxis.paddingBottom = xAxis.adjust || 0;
+        categoryAxis.renderer.grid.template.location = 0;
+        categoryAxis.renderer.cellStartLocation = 1 - 80/100;
+        categoryAxis.renderer.cellEndLocation = 80/100;
+        if(xAxis && xAxis.title && xAxis.title.text !== "") {
+          categoryAxis.title.text = xAxis.title.text || category;
+          categoryAxis.title.fontWeight = xAxis.title.fontWeight || "bold";
           categoryAxis.title.fontSize = xAxis.title.fontSize || 20;
           categoryAxis.title.fontFamily = xAxis.title.fontFamily;
-      		categoryAxis.title.fill =
-      		  xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
-    		}
-    		let xAxisLabels = categoryAxis.renderer.labels.template;
-    		xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
-    		xAxisLabels.rotation = xAxis.labels.rotation || 0;
-    		if(xAxisLabels.rotation !== 0) {
-    		  xAxisLabels.horizontalCenter = "right";
-    		}
-    		xAxisLabels.fill =
-    		  xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
-    		categoryAxis.dataFields.category = category;
-    		categoryAxis.renderer.grid.template.disabled = true;
-    		categoryAxis.renderer.minGridDistance = 50;
+          categoryAxis.title.fill =
+            xAxis.title.color || (theme === "dark" ? "#ffffff" : "#000000");
+        }
+        let xAxisLabels = categoryAxis.renderer.labels.template;
+        xAxisLabels.fontSize = xAxis.labels.fontSize || 17;
+        xAxisLabels.rotation = xAxis.labels.rotation || 0;
+        if(xAxisLabels.rotation !== 0) {
+          xAxisLabels.horizontalCenter = "right";
+        }
+        xAxisLabels.fill =
+          xAxis.labels.color || (theme === "dark" ? "#ffffff" : "#000000");
+        categoryAxis.dataFields.category = category;
+        categoryAxis.renderer.grid.template.disabled = true;
+        categoryAxis.renderer.minGridDistance = 50;
         categoryAxis.cursorTooltipEnabled = false; 
     */
 
@@ -127089,6 +127185,299 @@ class AmStackedBarChart extends React.PureComponent {
   }
 
 }
+/* COMPONENT: BOXPLOT CHART */
+
+
+class AmBoxplotChart extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.style = this.style.bind(this);
+  }
+
+  style() {
+    if (window.Shiny && !window.FlexDashboard) {
+      return {
+        width: "100%",
+        height: "100%"
+      };
+    } else {
+      return {
+        width: this.props.width,
+        height: this.props.height
+      };
+    }
+  }
+
+  componentDidMount() {
+    var theme = this.props.theme,
+        category = this.props.category,
+        value = this.props.value,
+        minValue = this.props.minValue,
+        maxValue = this.props.maxValue,
+        color = this.props.color,
+        data = HTMLWidgets.dataframeToD3(this.props.data.fiveNumbers),
+        dataCopy = HTMLWidgets.dataframeToD3(this.props.data.fiveNumbers),
+        data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(this.props.data2.fiveNumbers) : null,
+        outliers = this.props.data.outliers,
+        hline = this.props.hline,
+        xAxis = this.props.xAxis,
+        yAxis = this.props.yAxis,
+        tooltips = this.props.tooltip,
+        valueFormatter = this.props.valueFormatter,
+        bulletsStyle = this.props.bullets,
+        cursor = this.props.cursor,
+        chartId = this.props.chartId,
+        shinyId = this.props.shinyId;
+
+    if (outliers) {
+      outliers = outliers.map(HTMLWidgets.dataframeToD3);
+    }
+
+    if (window.Shiny) {
+      if (shinyId === undefined) {
+        shinyId = $(document.getElementById(chartId)).parent().attr("id");
+      }
+
+      Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+    }
+
+    switch (theme) {
+      case "dark":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_dark__WEBPACK_IMPORTED_MODULE_4__["default"]);
+        break;
+
+      case "dataviz":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_dataviz__WEBPACK_IMPORTED_MODULE_5__["default"]);
+        break;
+
+      case "frozen":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_frozen__WEBPACK_IMPORTED_MODULE_6__["default"]);
+        break;
+
+      case "kelly":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_kelly__WEBPACK_IMPORTED_MODULE_7__["default"]);
+        break;
+
+      case "material":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_material__WEBPACK_IMPORTED_MODULE_8__["default"]);
+        break;
+
+      case "microchart":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_microchart__WEBPACK_IMPORTED_MODULE_9__["default"]);
+        break;
+
+      case "moonrisekingdom":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_moonrisekingdom__WEBPACK_IMPORTED_MODULE_10__["default"]);
+        break;
+
+      case "patterns":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_patterns__WEBPACK_IMPORTED_MODULE_11__["default"]);
+        break;
+
+      case "spiritedaway":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_spiritedaway__WEBPACK_IMPORTED_MODULE_12__["default"]);
+        break;
+    }
+
+    var chart;
+    chart = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["create"](this.props.chartId, _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYChart"]);
+    chart.data = data;
+    chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
+
+    chart.padding(50, 40, 0, 10);
+    chart.maskBullets = false; // allow bullets to go out of plot area
+
+    var chartBackgroundColor = this.props.backgroundColor || chart.background.fill;
+    chart.background.fill = chartBackgroundColor;
+    /* ~~~~\  Enable export  /~~~~ */
+
+    if (this.props.export) {
+      chart.exporting.menu = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["ExportMenu"]();
+      chart.exporting.menu.items = _utils__WEBPACK_IMPORTED_MODULE_13__["exportMenuItems"];
+    }
+    /* ~~~~\  title  /~~~~ */
+
+
+    var chartTitle = this.props.chartTitle;
+
+    if (chartTitle) {
+      var title = chart.titles.create();
+      title.text = chartTitle.text.text;
+      title.fill = chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.fontFamily = chartTitle.text.fontFamily;
+      title.align = chartTitle.align || "left";
+      title.dy = -30;
+    }
+    /* ~~~~\  caption  /~~~~ */
+
+
+    var chartCaption = this.props.caption;
+
+    if (chartCaption) {
+      var caption = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Label"]);
+      caption.text = chartCaption.text.text;
+      caption.fill = chartCaption.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.fontSize = chartCaption.text.fontSize;
+      caption.fontWeight = chartCaption.text.fontWeight;
+      caption.fontFamily = chartCaption.text.fontFamily;
+      caption.align = chartCaption.align || "right";
+    }
+    /* ~~~~\  image  /~~~~ */
+
+
+    if (this.props.image) {
+      _utils__WEBPACK_IMPORTED_MODULE_13__["Image"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, this.props.image);
+    }
+    /* ~~~~\  scrollbars  /~~~~ */
+
+
+    if (this.props.scrollbarX) {
+      chart.scrollbarX = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Scrollbar"]();
+    }
+
+    if (this.props.scrollbarY) {
+      chart.scrollbarY = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Scrollbar"]();
+    }
+    /* ~~~~\  button  /~~~~ */
+
+
+    if (this.props.button) {
+      var Button = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Button"]);
+      _utils__WEBPACK_IMPORTED_MODULE_13__["makeButton"](Button, this.props.button);
+      Button.events.on("hit", function () {
+        chart.data = data2;
+        chart.invalidateRawData();
+
+        if (window.Shiny) {
+          Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", chart.data);
+          Shiny.setInputValue(shinyId + "_change", null);
+        }
+      });
+    }
+    /* ~~~~\  category axis  /~~~~ */
+
+
+    var categoryAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createCategoryAxis"]("X", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, chart, category, xAxis, 80, theme);
+    /* ~~~~\  value axis  /~~~~ */
+
+    var valueAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("Y", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, yAxis, minValue, maxValue, false, theme, cursor);
+    /* ~~~~\  horizontal line  /~~~~ */
+
+    if (hline) {
+      var range = valueAxis.axisRanges.create();
+      range.value = hline.value;
+      range.grid.stroke = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](hline.line.color);
+      range.grid.strokeWidth = hline.line.width;
+      range.grid.strokeOpacity = hline.line.opacity;
+      range.grid.strokeDasharray = hline.line.dash;
+    }
+    /* ~~~~\  cursor  /~~~~ */
+
+
+    if (cursor || tooltips) {
+      chart.cursor = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYCursor"]();
+      chart.cursor.yAxis = valueAxis; //chart.cursor.lineX.disabled = true;
+    }
+    /* ~~~~~~~~~~~~~~~~~~~~~ */
+
+
+    var series = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["CandlestickSeries"]());
+
+    if (color) {
+      series.fill = color;
+    }
+
+    series.dataFields.categoryX = category; //    series.dataFields.dateX = "date";
+
+    series.dataFields.valueY = "hingeUpr";
+    series.dataFields.openValueY = "hingeLwr";
+    series.dataFields.lowValueY = "whiskerLwr";
+    series.dataFields.highValueY = "whiskerUpr";
+    series.simplifiedProcessing = true;
+    series.riseFromOpenState = undefined;
+    series.dropFromOpenState = undefined;
+    series.sequencedInterpolation = true;
+    series.defaultState.interpolationDuration = 1000;
+
+    if (tooltips) {
+      series.tooltipText = tooltips.text; //      let tooltip = utils.Tooltip(am4core, chart, 0, [tooltips]);
+      //      series.tooltip = tooltip;
+    }
+
+    var medianaSeries = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["StepLineSeries"]());
+    medianaSeries.noRisers = true;
+    medianaSeries.startLocation = 0.2;
+    medianaSeries.endLocation = 0.8;
+    medianaSeries.dataFields.valueY = "median";
+    medianaSeries.dataFields.categoryX = category; //    medianaSeries.dataFields.dateX = "date";
+
+    medianaSeries.strokeWidth = 2;
+    medianaSeries.stroke = chart.colors.getIndex(1);
+    var topSeries = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["StepLineSeries"]());
+    topSeries.noRisers = true;
+    topSeries.startLocation = 0.2;
+    topSeries.endLocation = 0.8;
+    topSeries.dataFields.valueY = "whiskerUpr";
+    topSeries.dataFields.categoryX = category; //    topSeries.dataFields.dateX = "date";
+
+    topSeries.stroke = chart.colors.getIndex(0);
+    topSeries.strokeWidth = 2;
+    var bottomSeries = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["StepLineSeries"]());
+    bottomSeries.noRisers = true;
+    bottomSeries.startLocation = 0.2;
+    bottomSeries.endLocation = 0.8;
+    bottomSeries.dataFields.valueY = "whiskerLwr";
+    bottomSeries.dataFields.categoryX = category; //    bottomSeries.dataFields.dateX = "date";
+
+    bottomSeries.stroke = chart.colors.getIndex(0);
+    bottomSeries.strokeWidth = 2;
+
+    if (outliers) {
+      var tooltipStyle = {
+        backgroundColor: series.fill,
+        pointerLength: 10
+      };
+
+      for (var i = 0; i < outliers.length; i++) {
+        var bulletSeries = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LineSeries"]());
+        bulletSeries.strokeOpacity = 0;
+        bulletSeries.data = outliers[i];
+        bulletSeries.dataFields.categoryX = category; //        bulletSeries.dataFields.dateX = "date";
+
+        bulletSeries.dataFields.valueY = "outlier";
+        bulletSeries.tooltipText = "{valueY.value.formatNumber('".concat(valueFormatter, "')}");
+        var tooltip = _utils__WEBPACK_IMPORTED_MODULE_13__["Tooltip"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, 1, tooltipStyle);
+        tooltip.pointerOrientation = "horizontal";
+        tooltip.dx = 0;
+        bulletSeries.tooltip = tooltip;
+        var bullet = bulletSeries.bullets.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Bullet"]()),
+            shape = _utils__WEBPACK_IMPORTED_MODULE_13__["Shape"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, 1, bullet, bulletsStyle); // create bullet hover state
+
+        var hoverState = shape.states.create("hover");
+        hoverState.properties.strokeWidth = shape.strokeWidth + 2;
+        hoverState.properties.opacity = 1; // visible when hovered
+      }
+    }
+
+    this.chart = chart;
+  }
+
+  componentWillUnmount() {
+    if (this.chart) {
+      this.chart.dispose();
+    }
+  }
+
+  render() {
+    return /*#__PURE__*/React.createElement("div", {
+      id: this.props.chartId,
+      style: this.style()
+    });
+  }
+
+}
 /* CREATE WIDGETS */
 
 
@@ -127102,7 +127491,8 @@ Object(reactR__WEBPACK_IMPORTED_MODULE_0__["reactWidget"])("amChart4", "output",
   AmDumbbellChart: AmDumbbellChart,
   AmHorizontalDumbbellChart: AmHorizontalDumbbellChart,
   AmGaugeChart: AmGaugeChart,
-  AmStackedBarChart: AmStackedBarChart
+  AmStackedBarChart: AmStackedBarChart,
+  AmBoxplotChart: AmBoxplotChart
 }, {});
 
 /***/ }),
