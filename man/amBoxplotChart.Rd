@@ -36,7 +36,7 @@ amBoxplotChart(
 \item{data}{a dataframe}
 
 \item{category}{name of the column of \code{data} to be used for the
-category axis}
+category axis; this can be a date column}
 
 \item{value}{name of the column of \code{data} to be used for the
 value axis}

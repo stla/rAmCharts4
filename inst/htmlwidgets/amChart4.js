@@ -127211,13 +127211,13 @@ class AmBoxplotChart extends React.PureComponent {
   componentDidMount() {
     var theme = this.props.theme,
         category = this.props.category,
-        value = this.props.value,
+        isDate = this.props.isDate,
+        minDate = isDate ? _utils__WEBPACK_IMPORTED_MODULE_13__["toDate"](this.props.minDate).getTime() : null,
+        maxDate = isDate ? _utils__WEBPACK_IMPORTED_MODULE_13__["toDate"](this.props.maxDate).getTime() : null,
         minValue = this.props.minValue,
         maxValue = this.props.maxValue,
         color = this.props.color,
-        data = HTMLWidgets.dataframeToD3(this.props.data.fiveNumbers),
-        dataCopy = HTMLWidgets.dataframeToD3(this.props.data.fiveNumbers),
-        data2 = this.props.data2 ? HTMLWidgets.dataframeToD3(this.props.data2.fiveNumbers) : null,
+        data = this.props.data.fiveNumbers,
         outliers = this.props.data.outliers,
         hline = this.props.hline,
         xAxis = this.props.xAxis,
@@ -127230,8 +127230,21 @@ class AmBoxplotChart extends React.PureComponent {
         shinyId = this.props.shinyId;
 
     if (outliers) {
+      if (isDate) {
+        for (var i = 0; i < outliers.length; i++) {
+          outliers[i][category] = outliers[i][category].map(_utils__WEBPACK_IMPORTED_MODULE_13__["toDate"]);
+        }
+      }
+
       outliers = outliers.map(HTMLWidgets.dataframeToD3);
     }
+
+    if (isDate) {
+      data[category] = data[category].map(_utils__WEBPACK_IMPORTED_MODULE_13__["toDate"]);
+    }
+
+    data = HTMLWidgets.dataframeToD3(data);
+    var dataCopy = data.map(row => _objectSpread({}, row)); // correct?
 
     if (window.Shiny) {
       if (shinyId === undefined) {
@@ -127340,27 +127353,18 @@ class AmBoxplotChart extends React.PureComponent {
     if (this.props.scrollbarY) {
       chart.scrollbarY = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Scrollbar"]();
     }
-    /* ~~~~\  button  /~~~~ */
+    /* ~~~~\  x-axis  /~~~~ */
 
 
-    if (this.props.button) {
-      var Button = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Button"]);
-      _utils__WEBPACK_IMPORTED_MODULE_13__["makeButton"](Button, this.props.button);
-      Button.events.on("hit", function () {
-        chart.data = data2;
-        chart.invalidateRawData();
+    var XAxis;
 
-        if (window.Shiny) {
-          Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", chart.data);
-          Shiny.setInputValue(shinyId + "_change", null);
-        }
-      });
+    if (isDate) {
+      XAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("X", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, xAxis, minDate, maxDate, true, theme, cursor, category);
+    } else {
+      XAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createCategoryAxis"]("X", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, chart, category, xAxis, 100, theme);
     }
-    /* ~~~~\  category axis  /~~~~ */
-
-
-    var categoryAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createCategoryAxis"]("X", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, chart, category, xAxis, 80, theme);
     /* ~~~~\  value axis  /~~~~ */
+
 
     var valueAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("Y", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, yAxis, minValue, maxValue, false, theme, cursor);
     /* ~~~~\  horizontal line  /~~~~ */
@@ -127380,7 +127384,7 @@ class AmBoxplotChart extends React.PureComponent {
       chart.cursor = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYCursor"]();
       chart.cursor.yAxis = valueAxis; //chart.cursor.lineX.disabled = true;
     }
-    /* ~~~~~~~~~~~~~~~~~~~~~ */
+    /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 
     var series = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["CandlestickSeries"]());
@@ -127389,7 +127393,11 @@ class AmBoxplotChart extends React.PureComponent {
       series.fill = color;
     }
 
-    series.dataFields.categoryX = category; //    series.dataFields.dateX = "date";
+    if (isDate) {
+      series.dataFields.dateX = category;
+    } else {
+      series.dataFields.categoryX = category;
+    }
 
     series.dataFields.valueY = "hingeUpr";
     series.dataFields.openValueY = "hingeLwr";
@@ -127411,7 +127419,12 @@ class AmBoxplotChart extends React.PureComponent {
     medianaSeries.startLocation = 0.2;
     medianaSeries.endLocation = 0.8;
     medianaSeries.dataFields.valueY = "median";
-    medianaSeries.dataFields.categoryX = category; //    medianaSeries.dataFields.dateX = "date";
+
+    if (isDate) {
+      medianaSeries.dataFields.dateX = category;
+    } else {
+      medianaSeries.dataFields.categoryX = category;
+    }
 
     medianaSeries.strokeWidth = 2;
     medianaSeries.stroke = chart.colors.getIndex(1);
@@ -127420,7 +127433,12 @@ class AmBoxplotChart extends React.PureComponent {
     topSeries.startLocation = 0.2;
     topSeries.endLocation = 0.8;
     topSeries.dataFields.valueY = "whiskerUpr";
-    topSeries.dataFields.categoryX = category; //    topSeries.dataFields.dateX = "date";
+
+    if (isDate) {
+      topSeries.dataFields.dateX = category;
+    } else {
+      topSeries.dataFields.categoryX = category;
+    }
 
     topSeries.stroke = chart.colors.getIndex(0);
     topSeries.strokeWidth = 2;
@@ -127429,7 +127447,12 @@ class AmBoxplotChart extends React.PureComponent {
     bottomSeries.startLocation = 0.2;
     bottomSeries.endLocation = 0.8;
     bottomSeries.dataFields.valueY = "whiskerLwr";
-    bottomSeries.dataFields.categoryX = category; //    bottomSeries.dataFields.dateX = "date";
+
+    if (isDate) {
+      bottomSeries.dataFields.dateX = category;
+    } else {
+      bottomSeries.dataFields.categoryX = category;
+    }
 
     bottomSeries.stroke = chart.colors.getIndex(0);
     bottomSeries.strokeWidth = 2;
@@ -127440,11 +127463,16 @@ class AmBoxplotChart extends React.PureComponent {
         pointerLength: 10
       };
 
-      for (var i = 0; i < outliers.length; i++) {
+      for (var _i6 = 0; _i6 < outliers.length; _i6++) {
         var bulletSeries = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LineSeries"]());
         bulletSeries.strokeOpacity = 0;
-        bulletSeries.data = outliers[i];
-        bulletSeries.dataFields.categoryX = category; //        bulletSeries.dataFields.dateX = "date";
+        bulletSeries.data = outliers[_i6];
+
+        if (isDate) {
+          bulletSeries.dataFields.dateX = category;
+        } else {
+          bulletSeries.dataFields.categoryX = category;
+        }
 
         bulletSeries.dataFields.valueY = "outlier";
         bulletSeries.tooltipText = "{valueY.value.formatNumber('".concat(valueFormatter, "')}");

@@ -3,7 +3,7 @@
 #'
 #' @param data a dataframe
 #' @param category name of the column of \code{data} to be used for the
-#'   category axis
+#'   category axis; this can be a date column
 #' @param value name of the column of \code{data} to be used for the
 #'   value axis
 #' @param color the color of the boxplots; it can be given by the name of a R
@@ -165,7 +165,7 @@ amBoxplotChart <- function(
 
   data_x <- data[[category]]
   if(lubridate::is.Date(data_x) || lubridate::is.POSIXt(data_x)){
-    xLimits <- format(range(pretty(data_x)), "%Y-%m-%d")
+    xLimits <- format(c(min(data_x), max(data_x)+1), "%Y-%m-%d")
     data[[category]] <- format(data_x, "%Y-%m-%d")
     isDate <- TRUE
   }else{
