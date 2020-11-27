@@ -11,7 +11,7 @@ amBarChart(
   values,
   valueNames = NULL,
   showValues = TRUE,
-  hline = hline,
+  hline = NULL,
   yLimits = NULL,
   expandY = 5,
   valueFormatter = "#.",

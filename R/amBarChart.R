@@ -276,7 +276,7 @@ amBarChart <- function(
   values,
   valueNames = NULL, # default
   showValues = TRUE,
-  hline = hline,
+  hline = NULL,
   yLimits = NULL,
   expandY = 5,
   valueFormatter = "#.",
