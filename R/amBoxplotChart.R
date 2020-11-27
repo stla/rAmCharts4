@@ -110,6 +110,7 @@
 #' @import htmlwidgets
 #' @importFrom shiny validateCssUnit
 #' @importFrom reactR component reactMarkup
+#' @importFrom lubridate is.Date is.POSIXt
 #' @export
 #'
 #' @examples library(rAmCharts4)
@@ -160,6 +161,15 @@ amBoxplotChart <- function(
 
   if(!value %in% names(data)){
     stop("Invalid `value` argument: not found in `data`.", call. = TRUE)
+  }
+
+  data_x <- data[[category]]
+  if(lubridate::is.Date(data_x) || lubridate::is.POSIXt(data_x)){
+    xLimits <- format(range(pretty(data_x)), "%Y-%m-%d")
+    data[[category]] <- format(data_x, "%Y-%m-%d")
+    isDate <- TRUE
+  }else{
+    isDate <- FALSE
   }
 
   if(is.null(yLimits)){
@@ -236,7 +246,8 @@ amBoxplotChart <- function(
       labels = amAxisLabels(
         color = NULL,
         fontSize = 18,
-        rotation = 0
+        rotation = 0,
+        formatter = if(isDate) amDateAxisFormatter()
       )
     )
   }else if(is.character(xAxis)){
@@ -250,7 +261,8 @@ amBoxplotChart <- function(
       labels = amAxisLabels(
         color = NULL,
         fontSize = 18,
-        rotation = 0
+        rotation = 0,
+        formatter = if(isDate) amDateAxisFormatter()
       )
     )
   }else if(is.character(xAxis[["title"]])){
@@ -265,7 +277,8 @@ amBoxplotChart <- function(
     xAxis[["labels"]] <- amAxisLabels(
       color = NULL,
       fontSize = 18,
-      rotation = 0
+      rotation = 0,
+      formatter = if(isDate) amDateAxisFormatter()
     )
   }
 
@@ -384,6 +397,9 @@ amBoxplotChart <- function(
     list(
       data = boxplotsData(data, category, value),
       category = category,
+      isDate = isDate,
+      minDate = if(isDate) xLimits[1L],
+      maxDate = if(isDate) xLimits[2L],
       minValue = yLimits[1L],
       maxValue = yLimits[2L],
       color = validateColor(color),

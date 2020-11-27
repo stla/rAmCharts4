@@ -5811,15 +5811,13 @@ class AmBoxplotChart extends React.PureComponent {
 
     let theme = this.props.theme,
       category = this.props.category,
+      isDate = this.props.isDate,
+      minDate = isDate ? utils.toDate(this.props.minDate).getTime() : null,
+      maxDate = isDate ? utils.toDate(this.props.maxDate).getTime() : null,
       minValue = this.props.minValue,
       maxValue = this.props.maxValue,
       color = this.props.color,
-      data = HTMLWidgets.dataframeToD3(
-        this.props.data.fiveNumbers
-      ),
-      dataCopy = HTMLWidgets.dataframeToD3(
-        this.props.data.fiveNumbers
-      ),
+      data = this.props.data.fiveNumbers,
       outliers = this.props.data.outliers,
       hline = this.props.hline,
       xAxis = this.props.xAxis,
@@ -5832,8 +5830,20 @@ class AmBoxplotChart extends React.PureComponent {
       shinyId = this.props.shinyId;
 
     if(outliers) {
+      if(isDate) {
+        for(let i = 0; i < outliers.length; i++){
+          outliers[i][category] = outliers[i][category].map(utils.toDate);
+        }
+      }
       outliers = outliers.map(HTMLWidgets.dataframeToD3);
     }
+
+    if(isDate) {
+      data[category] = data[category].map(utils.toDate);
+    }
+    data = HTMLWidgets.dataframeToD3(data);
+    let dataCopy = data.map(row => ({ ...row })); // correct?
+
 
     if (window.Shiny) {
       if (shinyId === undefined) {
@@ -5938,10 +5948,18 @@ class AmBoxplotChart extends React.PureComponent {
     }
 
 
-    /* ~~~~\  category axis  /~~~~ */
-    let categoryAxis = utils.createCategoryAxis(
-      "X", am4charts, chart, category, xAxis, 80, theme
-    );
+    /* ~~~~\  x-axis  /~~~~ */
+    let XAxis;
+    if(isDate) {
+      XAxis = utils.createAxis(
+        "X", am4charts, am4core, chart, xAxis,
+        minDate, maxDate, true, theme, cursor, category
+      );  
+    }else {
+      XAxis = utils.createCategoryAxis(
+        "X", am4charts, chart, category, xAxis, 80, theme
+      );  
+    }
 
 
     /* ~~~~\  value axis  /~~~~ */
@@ -5970,7 +5988,7 @@ class AmBoxplotChart extends React.PureComponent {
     }
 
 
-    /* ~~~~~~~~~~~~~~~~~~~~~ */
+    /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
     let series = chart.series.push(new am4charts.CandlestickSeries());
     if(color) {
       series.fill = color;
