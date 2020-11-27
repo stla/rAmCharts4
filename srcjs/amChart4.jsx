@@ -5957,7 +5957,7 @@ class AmBoxplotChart extends React.PureComponent {
       );  
     }else {
       XAxis = utils.createCategoryAxis(
-        "X", am4charts, chart, category, xAxis, 80, theme
+        "X", am4charts, chart, category, xAxis, 100, theme
       );  
     }
 
@@ -5993,8 +5993,11 @@ class AmBoxplotChart extends React.PureComponent {
     if(color) {
       series.fill = color;
     }
-    series.dataFields.categoryX = category;
-//    series.dataFields.dateX = "date";
+    if(isDate) {
+      series.dataFields.dateX = category;
+    } else {
+      series.dataFields.categoryX = category;
+    }    
     series.dataFields.valueY = "hingeUpr";
     series.dataFields.openValueY = "hingeLwr";
     series.dataFields.lowValueY = "whiskerLwr";
@@ -6015,8 +6018,11 @@ class AmBoxplotChart extends React.PureComponent {
     medianaSeries.startLocation = 0.2;
     medianaSeries.endLocation = 0.8;
     medianaSeries.dataFields.valueY = "median";
-    medianaSeries.dataFields.categoryX = category;
-//    medianaSeries.dataFields.dateX = "date";
+    if(isDate) {
+      medianaSeries.dataFields.dateX = category;
+    } else {
+      medianaSeries.dataFields.categoryX = category;
+    }    
     medianaSeries.strokeWidth = 2;
     medianaSeries.stroke = chart.colors.getIndex(1);
 
@@ -6025,8 +6031,11 @@ class AmBoxplotChart extends React.PureComponent {
     topSeries.startLocation = 0.2;
     topSeries.endLocation = 0.8;
     topSeries.dataFields.valueY = "whiskerUpr";
-    topSeries.dataFields.categoryX = category;
-//    topSeries.dataFields.dateX = "date";
+    if(isDate) {
+      topSeries.dataFields.dateX = category;
+    } else {
+      topSeries.dataFields.categoryX = category;
+    }    
     topSeries.stroke = chart.colors.getIndex(0);
     topSeries.strokeWidth = 2;
 
@@ -6035,8 +6044,11 @@ class AmBoxplotChart extends React.PureComponent {
     bottomSeries.startLocation = 0.2;
     bottomSeries.endLocation = 0.8;
     bottomSeries.dataFields.valueY = "whiskerLwr";
-    bottomSeries.dataFields.categoryX = category;
-//    bottomSeries.dataFields.dateX = "date";
+    if(isDate) {
+      bottomSeries.dataFields.dateX = category;
+    } else {
+      bottomSeries.dataFields.categoryX = category;
+    }    
     bottomSeries.stroke = chart.colors.getIndex(0);
     bottomSeries.strokeWidth = 2;
 
@@ -6049,8 +6061,11 @@ class AmBoxplotChart extends React.PureComponent {
         let bulletSeries = chart.series.push(new am4charts.LineSeries());
         bulletSeries.strokeOpacity = 0;
         bulletSeries.data = outliers[i];
-        bulletSeries.dataFields.categoryX = category;
-//        bulletSeries.dataFields.dateX = "date";
+        if(isDate) {
+          bulletSeries.dataFields.dateX = category;
+        } else {
+          bulletSeries.dataFields.categoryX = category;
+        }    
         bulletSeries.dataFields.valueY = "outlier";
         bulletSeries.tooltipText = 
           `{valueY.value.formatNumber('${valueFormatter}')}`; 
