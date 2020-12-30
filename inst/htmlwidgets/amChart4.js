@@ -121700,7 +121700,16 @@ class AmBarChart extends React.PureComponent {
 
     if (chartLegend) {
       chart.legend = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Legend"]();
-      chart.legend.position = chartLegend.position || "bottom";
+      var legendPosition = chartLegend.position || "bottom";
+      chart.legend.position = legendPosition;
+
+      if (legendPosition === "bottom" || legendPosition === "top") {
+        chart.legend.maxHeight = chartLegend.maxHeight;
+        chart.legend.scrollable = chartLegend.scrollable;
+      } else {
+        chart.legend.maxWidth = chartLegend.maxWidth;
+      }
+
       chart.legend.useDefaultMarker = false;
       var markerTemplate = chart.legend.markers.template;
       markerTemplate.width = chartLegend.itemsWidth || 20;
@@ -122318,7 +122327,16 @@ class AmHorizontalBarChart extends React.PureComponent {
 
     if (chartLegend) {
       chart.legend = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Legend"]();
-      chart.legend.position = chartLegend.position || "bottom";
+      var legendPosition = chartLegend.position || "bottom";
+      chart.legend.position = legendPosition;
+
+      if (legendPosition === "bottom" || legendPosition === "top") {
+        chart.legend.maxHeight = chartLegend.maxHeight;
+        chart.legend.scrollable = chartLegend.scrollable;
+      } else {
+        chart.legend.maxWidth = chartLegend.maxWidth;
+      }
+
       chart.legend.useDefaultMarker = false;
       var markerTemplate = chart.legend.markers.template;
       markerTemplate.width = chartLegend.itemsWidth || 20;
@@ -123115,7 +123133,16 @@ class AmLineChart extends React.PureComponent {
 
     if (chartLegend) {
       chart.legend = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Legend"]();
-      chart.legend.position = chartLegend.position || "bottom";
+      var legendPosition = chartLegend.position || "bottom";
+      chart.legend.position = legendPosition;
+
+      if (legendPosition === "bottom" || legendPosition === "top") {
+        chart.legend.maxHeight = chartLegend.maxHeight;
+        chart.legend.scrollable = chartLegend.scrollable;
+      } else {
+        chart.legend.maxWidth = chartLegend.maxWidth;
+      }
+
       chart.legend.useDefaultMarker = false;
       var markerTemplate = chart.legend.markers.template;
       markerTemplate.width = chartLegend.itemsWidth || 30;
@@ -124520,7 +124547,16 @@ class AmRangeAreaChart extends React.PureComponent {
 
     if (chartLegend) {
       var legend = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Legend"]();
-      legend.position = chartLegend.position || "bottom";
+      var legendPosition = chartLegend.position || "bottom";
+      legend.position = legendPosition;
+
+      if (legendPosition === "bottom" || legendPosition === "top") {
+        legend.maxHeight = chartLegend.maxHeight;
+        legend.scrollable = chartLegend.scrollable;
+      } else {
+        legend.maxWidth = chartLegend.maxWidth;
+      }
+
       legend.useDefaultMarker = false;
       legend.events.on("dataitemsvalidated", function (ev) {
         ev.target.markers.values.forEach(function (container, index) {
@@ -125242,7 +125278,16 @@ class AmRadialBarChart extends React.PureComponent {
 
     if (chartLegend) {
       chart.legend = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Legend"]();
-      chart.legend.position = chartLegend.position || "bottom";
+      var legendPosition = chartLegend.position || "bottom";
+      chart.legend.position = legendPosition;
+
+      if (legendPosition === "bottom" || legendPosition === "top") {
+        chart.legend.maxHeight = chartLegend.maxHeight;
+        chart.legend.scrollable = chartLegend.scrollable;
+      } else {
+        chart.legend.maxWidth = chartLegend.maxWidth;
+      }
+
       chart.legend.useDefaultMarker = false;
       var markerTemplate = chart.legend.markers.template;
       markerTemplate.width = chartLegend.itemsWidth || 20;
@@ -125761,7 +125806,16 @@ class AmDumbbellChart extends React.PureComponent {
 
     if (chartLegend) {
       chart.legend = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Legend"]();
-      chart.legend.position = chartLegend.position || "bottom";
+      var legendPosition = chartLegend.position || "bottom";
+      chart.legend.position = legendPosition;
+
+      if (legendPosition === "bottom" || legendPosition === "top") {
+        chart.legend.maxHeight = chartLegend.maxHeight;
+        chart.legend.scrollable = chartLegend.scrollable;
+      } else {
+        chart.legend.maxWidth = chartLegend.maxWidth;
+      }
+
       chart.legend.useDefaultMarker = false;
       var markerTemplate = chart.legend.markers.template;
       markerTemplate.width = chartLegend.itemsWidth || 20;
@@ -126252,7 +126306,16 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
 
     if (chartLegend) {
       chart.legend = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Legend"]();
-      chart.legend.position = chartLegend.position || "bottom";
+      var legendPosition = chartLegend.position || "bottom";
+      chart.legend.position = legendPosition;
+
+      if (legendPosition === "bottom" || legendPosition === "top") {
+        chart.legend.maxHeight = chartLegend.maxHeight;
+        chart.legend.scrollable = chartLegend.scrollable;
+      } else {
+        chart.legend.maxWidth = chartLegend.maxWidth;
+      }
+
       chart.legend.useDefaultMarker = false;
       var markerTemplate = chart.legend.markers.template;
       markerTemplate.width = chartLegend.itemsWidth || 20;
@@ -127079,7 +127142,16 @@ class AmStackedBarChart extends React.PureComponent {
 
     if (chartLegend) {
       chart.legend = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Legend"]();
-      chart.legend.position = chartLegend.position || "bottom";
+      var legendPosition = chartLegend.position || "bottom";
+      chart.legend.position = legendPosition;
+
+      if (legendPosition === "bottom" || legendPosition === "top") {
+        chart.legend.maxHeight = chartLegend.maxHeight;
+        chart.legend.scrollable = chartLegend.scrollable;
+      } else {
+        chart.legend.maxWidth = chartLegend.maxWidth;
+      }
+
       chart.legend.useDefaultMarker = false;
       var markerTemplate = chart.legend.markers.template;
       markerTemplate.width = chartLegend.itemsWidth || 20;

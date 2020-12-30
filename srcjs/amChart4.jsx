@@ -392,7 +392,14 @@ class AmBarChart extends React.PureComponent {
     /* ~~~~\  legend  /~~~~ */
     if (chartLegend) {
       chart.legend = new am4charts.Legend();
-      chart.legend.position = chartLegend.position || "bottom";
+      let legendPosition = chartLegend.position || "bottom";
+      chart.legend.position = legendPosition;
+      if(legendPosition === "bottom" || legendPosition === "top") {
+        chart.legend.maxHeight = chartLegend.maxHeight;
+        chart.legend.scrollable = chartLegend.scrollable;
+      } else {
+        chart.legend.maxWidth = chartLegend.maxWidth;
+      }
       chart.legend.useDefaultMarker = false;
       let markerTemplate = chart.legend.markers.template;
       markerTemplate.width = chartLegend.itemsWidth || 20;
@@ -992,7 +999,14 @@ class AmHorizontalBarChart extends React.PureComponent {
     /* ~~~~\  legend  /~~~~ */
     if (chartLegend) {
       chart.legend = new am4charts.Legend();
-      chart.legend.position = chartLegend.position || "bottom";
+      let legendPosition = chartLegend.position || "bottom";
+      chart.legend.position = legendPosition;
+      if(legendPosition === "bottom" || legendPosition === "top") {
+        chart.legend.maxHeight = chartLegend.maxHeight;
+        chart.legend.scrollable = chartLegend.scrollable;
+      } else {
+        chart.legend.maxWidth = chartLegend.maxWidth;
+      }
       chart.legend.useDefaultMarker = false;
       let markerTemplate = chart.legend.markers.template;
       markerTemplate.width = chartLegend.itemsWidth || 20;
@@ -1775,7 +1789,14 @@ class AmLineChart extends React.PureComponent {
     /* ~~~~\  legend  /~~~~ */
     if (chartLegend) {
       chart.legend = new am4charts.Legend();
-      chart.legend.position = chartLegend.position || "bottom";
+      let legendPosition = chartLegend.position || "bottom";
+      chart.legend.position = legendPosition;
+      if(legendPosition === "bottom" || legendPosition === "top") {
+        chart.legend.maxHeight = chartLegend.maxHeight;
+        chart.legend.scrollable = chartLegend.scrollable;
+      } else {
+        chart.legend.maxWidth = chartLegend.maxWidth;
+      }
       chart.legend.useDefaultMarker = false;
       let markerTemplate = chart.legend.markers.template;
       markerTemplate.width = chartLegend.itemsWidth || 30;
@@ -3141,7 +3162,14 @@ class AmRangeAreaChart extends React.PureComponent {
     /* ~~~~\  legend  /~~~~ */
     if (chartLegend) {
       let legend = new am4charts.Legend();
-      legend.position = chartLegend.position || "bottom";
+      let legendPosition = chartLegend.position || "bottom";
+      legend.position = legendPosition;
+      if(legendPosition === "bottom" || legendPosition === "top") {
+        legend.maxHeight = chartLegend.maxHeight;
+        legend.scrollable = chartLegend.scrollable;
+      } else {
+        legend.maxWidth = chartLegend.maxWidth;
+      }
       legend.useDefaultMarker = false;
       legend.events.on("dataitemsvalidated", function (ev) {
         ev.target.markers.values.forEach(function (container, index) {
@@ -3865,7 +3893,14 @@ class AmRadialBarChart extends React.PureComponent {
     /* ~~~~\  legend  /~~~~ */
     if (chartLegend) {
       chart.legend = new am4charts.Legend();
-      chart.legend.position = chartLegend.position || "bottom";
+      let legendPosition = chartLegend.position || "bottom";
+      chart.legend.position = legendPosition;
+      if(legendPosition === "bottom" || legendPosition === "top") {
+        chart.legend.maxHeight = chartLegend.maxHeight;
+        chart.legend.scrollable = chartLegend.scrollable;
+      } else {
+        chart.legend.maxWidth = chartLegend.maxWidth;
+      }
       chart.legend.useDefaultMarker = false;
       let markerTemplate = chart.legend.markers.template;
       markerTemplate.width = chartLegend.itemsWidth || 20;
@@ -4378,7 +4413,14 @@ class AmDumbbellChart extends React.PureComponent {
     /* ~~~~\  legend  /~~~~ */
     if (chartLegend) {
       chart.legend = new am4charts.Legend();
-      chart.legend.position = chartLegend.position || "bottom";
+      let legendPosition = chartLegend.position || "bottom";
+      chart.legend.position = legendPosition;
+      if(legendPosition === "bottom" || legendPosition === "top") {
+        chart.legend.maxHeight = chartLegend.maxHeight;
+        chart.legend.scrollable = chartLegend.scrollable;
+      } else {
+        chart.legend.maxWidth = chartLegend.maxWidth;
+      }
       chart.legend.useDefaultMarker = false;
       let markerTemplate = chart.legend.markers.template;
       markerTemplate.width = chartLegend.itemsWidth || 20;
@@ -4862,7 +4904,14 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
     /* ~~~~\  legend  /~~~~ */
     if (chartLegend) {
       chart.legend = new am4charts.Legend();
-      chart.legend.position = chartLegend.position || "bottom";
+      let legendPosition = chartLegend.position || "bottom";
+      chart.legend.position = legendPosition;
+      if(legendPosition === "bottom" || legendPosition === "top") {
+        chart.legend.maxHeight = chartLegend.maxHeight;
+        chart.legend.scrollable = chartLegend.scrollable;
+      } else {
+        chart.legend.maxWidth = chartLegend.maxWidth;
+      }
       chart.legend.useDefaultMarker = false;
       let markerTemplate = chart.legend.markers.template;
       markerTemplate.width = chartLegend.itemsWidth || 20;
@@ -5681,7 +5730,14 @@ class AmStackedBarChart extends React.PureComponent {
     /* ~~~~\  legend  /~~~~ */
     if (chartLegend) {
       chart.legend = new am4charts.Legend();
-      chart.legend.position = chartLegend.position || "bottom";
+      let legendPosition = chartLegend.position || "bottom";
+      chart.legend.position = legendPosition;
+      if(legendPosition === "bottom" || legendPosition === "top") {
+        chart.legend.maxHeight = chartLegend.maxHeight;
+        chart.legend.scrollable = chartLegend.scrollable;
+      } else {
+        chart.legend.maxWidth = chartLegend.maxWidth;
+      }
       chart.legend.useDefaultMarker = false;
       let markerTemplate = chart.legend.markers.template;
       markerTemplate.width = chartLegend.itemsWidth || 20;
