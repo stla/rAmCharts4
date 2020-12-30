@@ -123810,7 +123810,16 @@ class AmScatterChart extends React.PureComponent {
 
     if (chartLegend) {
       chart.legend = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Legend"]();
-      chart.legend.position = chartLegend.position || "bottom";
+      var legendPosition = chartLegend.position || "bottom";
+      chart.legend.position = legendPosition;
+
+      if (legendPosition === "bottom" || legendPosition === "top") {
+        chart.legend.maxHeight = chartLegend.maxHeight;
+        chart.legend.scrollable = chartLegend.scrollable;
+      } else {
+        chart.legend.maxWidth = chartLegend.maxWidth;
+      }
+
       chart.legend.useDefaultMarker = false;
       var markerTemplate = chart.legend.markers.template;
       markerTemplate.width = chartLegend.itemsWidth || 20;
