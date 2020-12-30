@@ -2447,7 +2447,14 @@ class AmScatterChart extends React.PureComponent {
     /* ~~~~\  legend  /~~~~ */
     if (chartLegend) {
       chart.legend = new am4charts.Legend();
-      chart.legend.position = chartLegend.position || "bottom";
+      let legendPosition = chartLegend.position || "bottom";
+      chart.legend.position = legendPosition;
+      if(legendPosition === "bottom" || legendPosition === "top") {
+        chart.legend.maxHeight = chartLegend.maxHeight;
+        chart.legend.scrollable = chartLegend.scrollable;
+      } else {
+        chart.legend.maxWidth = chartLegend.maxWidth;
+      }
       chart.legend.useDefaultMarker = false;
       let markerTemplate = chart.legend.markers.template;
       markerTemplate.width = chartLegend.itemsWidth || 20;

@@ -1,6 +1,6 @@
 Package: rAmCharts4
 Title: Interface to the JavaScript Library 'amCharts 4' 
-Version: 1.2.0
+Version: 1.2.0.9000
 Authors@R: c(
     person(given = "Stéphane",
            family = "Laurent",

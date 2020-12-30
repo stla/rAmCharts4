@@ -4,10 +4,26 @@
 \alias{amLegend}
 \title{Legend}
 \usage{
-amLegend(position = "bottom", itemsWidth = 20, itemsHeight = 20)
+amLegend(
+  position = "bottom",
+  maxHeight = NULL,
+  scrollable = FALSE,
+  maxWidth = 220,
+  itemsWidth = 20,
+  itemsHeight = 20
+)
 }
 \arguments{
 \item{position}{legend position}
+
+\item{maxHeight}{maximum height for a horizontal legend
+(\code{position = "bottom"} or \code{position = "top"})}
+
+\item{scrollable}{whether a vertical legend should be scrollable}
+
+\item{maxWidth}{maximum width for a vertical legend
+(\code{position = "left"} or \code{position = "right"}); set it to
+\code{NULL} for no limit}
 
 \item{itemsWidth}{width of the legend items}
 
