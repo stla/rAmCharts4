@@ -380,7 +380,7 @@ amBoxplotChart <- function(
   }
 
   if(is.null(chartId)){
-    chartId <- paste0("dumbbellchart-", randomString(15))
+    chartId <- paste0("boxplotchart-", randomString(15))
   }
 
   if(!is.null(hline)){

@@ -535,7 +535,7 @@ amStackedBarChart <- function(
   }
 
   if(is.null(chartId)){
-    chartId <- paste0("barchart-", randomString(15))
+    chartId <- paste0("stackedbarchart-", randomString(15))
   }
 
   if(!is.null(hline)){

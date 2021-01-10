@@ -6376,7 +6376,7 @@ class AmPieChart extends React.PureComponent {
     series.dataFields.category = category;
     //series.slices.template.cornerRadius = 5;
     series.colors.step = colorStep;
-    if(variableDepth) {
+    if(threeD && variableDepth) {
       series.dataFields.depthValue = value;
     }
     if(variableRadius) {
