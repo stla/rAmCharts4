@@ -332,3 +332,21 @@ updateAmGaugeChart <- function(session, outputId, score){
   stopifnot(is.numeric(score) && length(score) == 1L)
   session$sendCustomMessage(paste0(outputId, "gauge"), score)
 }
+
+
+
+#' Update the data of a pie chart
+#' @description Update the data of a pie chart in a Shiny app.
+#'
+#' @param session the Shiny \code{session} object
+#' @param outputId the output id passed on to \code{\link{amChart4Output}}
+#' @param data new data; if it is not valid, then nothing will happen (in order
+#'   to be valid it must have the same structure as the data passed on to
+#'   \code{\link{amPieChart}}); in this case check the JavaScript console, it
+#'   will report the encountered issue
+#'
+#' @export
+updateAmPieChart <- function(session, outputId, data){
+  stopifnot(is.data.frame(data))
+  session$sendCustomMessage(paste0(outputId, "pie"), score)
+}
