@@ -59,6 +59,19 @@
 #' @export
 #'
 #' @examples library(rAmCharts4)
+#' dat <- data.frame(
+#'   country = c(
+#'     "Lithuania", "Czechia", "Ireland", "Germany", "Australia", "Austria"
+#'   ),
+#'   value = c(260, 230, 200, 165, 139, 128)
+#' )
+#'
+#' amPieChart(
+#'   data = dat,
+#'   category = "country",
+#'   value = "value",
+#'   variableRadius = TRUE
+#' )
 amPieChart <- function(
   data,
   category,
@@ -154,10 +167,11 @@ amPieChart <- function(
 
   # describe a React component to send to the browser for rendering.
   component <- reactR::component(
-    "AmBoxplotChart",
+    "AmPieChart",
     list(
       data = data,
       category = category,
+      value = value,
       innerRadius = innerRadius,
       threeD = threeD,
       depth = depth,

@@ -1,6 +1,7 @@
 # rAmCharts4 1.2.0.9000 (xxx)
 
 * New options for legends: `maxWidth`, `maxHeight`, and `scrollable`.
+* New chart: pie chart.
 
 
 # rAmCharts4 1.2.0 (2020-11-27)
