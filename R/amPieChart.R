@@ -78,7 +78,7 @@ amPieChart <- function(
   value,
   innerRadius = 0,
   threeD = FALSE,
-  depth = 100,
+  depth = ifelse(variableDepth, 100, 10),
   colorStep = 3,
   variableRadius = FALSE,
   variableDepth = FALSE,
