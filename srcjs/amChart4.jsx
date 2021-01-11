@@ -27,6 +27,7 @@ class AmBarChart extends React.PureComponent {
   constructor(props) {
     super(props);
     this.style = this.style.bind(this);
+    this.BarChart = this.BarChart.bind(this);
   }
 
   style() {
@@ -37,8 +38,7 @@ class AmBarChart extends React.PureComponent {
     }
   }
 
-  componentDidMount() {
-
+  BarChart() {
     let theme = this.props.theme,
       threeD = this.props.threeD,
       chartLegend = this.props.legend,
@@ -394,7 +394,7 @@ class AmBarChart extends React.PureComponent {
       chart.legend = new am4charts.Legend();
       let legendPosition = chartLegend.position || "bottom";
       chart.legend.position = legendPosition;
-      if(legendPosition === "bottom" || legendPosition === "top") {
+      if (legendPosition === "bottom" || legendPosition === "top") {
         chart.legend.maxHeight = chartLegend.maxHeight;
         chart.legend.scrollable = chartLegend.scrollable;
       } else {
@@ -684,9 +684,16 @@ class AmBarChart extends React.PureComponent {
         });
       }
     });
+  }
 
-    this.chart = chart;
 
+  componentDidMount() {
+    this.chart = this.BarChart();
+  }
+
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = this.BarChart();
   }
 
   componentWillUnmount() {
@@ -698,6 +705,7 @@ class AmBarChart extends React.PureComponent {
   render() {
     return (
       <div
+        key={this.props.chartId}
         id={this.props.chartId}
         style={this.style()}
       ></div>
@@ -1001,7 +1009,7 @@ class AmHorizontalBarChart extends React.PureComponent {
       chart.legend = new am4charts.Legend();
       let legendPosition = chartLegend.position || "bottom";
       chart.legend.position = legendPosition;
-      if(legendPosition === "bottom" || legendPosition === "top") {
+      if (legendPosition === "bottom" || legendPosition === "top") {
         chart.legend.maxHeight = chartLegend.maxHeight;
         chart.legend.scrollable = chartLegend.scrollable;
       } else {
@@ -1279,6 +1287,11 @@ class AmHorizontalBarChart extends React.PureComponent {
 
   }
 
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = HorizontalBarChart();
+  }
+
   componentWillUnmount() {
     if (this.chart) {
       this.chart.dispose();
@@ -1288,6 +1301,7 @@ class AmHorizontalBarChart extends React.PureComponent {
   render() {
     return (
       <div
+        key={this.props.chartId}
         id={this.props.chartId}
         style={this.style()}
       ></div>
@@ -1791,7 +1805,7 @@ class AmLineChart extends React.PureComponent {
       chart.legend = new am4charts.Legend();
       let legendPosition = chartLegend.position || "bottom";
       chart.legend.position = legendPosition;
-      if(legendPosition === "bottom" || legendPosition === "top") {
+      if (legendPosition === "bottom" || legendPosition === "top") {
         chart.legend.maxHeight = chartLegend.maxHeight;
         chart.legend.scrollable = chartLegend.scrollable;
       } else {
@@ -2129,6 +2143,11 @@ class AmLineChart extends React.PureComponent {
 
   }
 
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = LineChart();
+  }
+
   componentWillUnmount() {
     if (this.chart) {
       this.chart.dispose();
@@ -2138,6 +2157,7 @@ class AmLineChart extends React.PureComponent {
   render() {
     return (
       <div
+        key={this.props.chartId}
         id={this.props.chartId}
         style={this.style()}
       ></div>
@@ -2470,7 +2490,7 @@ class AmScatterChart extends React.PureComponent {
       chart.legend = new am4charts.Legend();
       let legendPosition = chartLegend.position || "bottom";
       chart.legend.position = legendPosition;
-      if(legendPosition === "bottom" || legendPosition === "top") {
+      if (legendPosition === "bottom" || legendPosition === "top") {
         chart.legend.maxHeight = chartLegend.maxHeight;
         chart.legend.scrollable = chartLegend.scrollable;
       } else {
@@ -2811,6 +2831,11 @@ class AmScatterChart extends React.PureComponent {
 
   }
 
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = ScatterChart();
+  }
+
   componentWillUnmount() {
     if (this.chart) {
       this.chart.dispose();
@@ -2820,6 +2845,7 @@ class AmScatterChart extends React.PureComponent {
   render() {
     return (
       <div
+        key={this.props.chartId}
         id={this.props.chartId}
         style={this.style()}
       ></div>
@@ -3164,7 +3190,7 @@ class AmRangeAreaChart extends React.PureComponent {
       let legend = new am4charts.Legend();
       let legendPosition = chartLegend.position || "bottom";
       legend.position = legendPosition;
-      if(legendPosition === "bottom" || legendPosition === "top") {
+      if (legendPosition === "bottom" || legendPosition === "top") {
         legend.maxHeight = chartLegend.maxHeight;
         legend.scrollable = chartLegend.scrollable;
       } else {
@@ -3588,6 +3614,11 @@ class AmRangeAreaChart extends React.PureComponent {
 
   }
 
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = RangeAreaChart();
+  }
+
   componentWillUnmount() {
     if (this.chart) {
       this.chart.dispose();
@@ -3597,6 +3628,7 @@ class AmRangeAreaChart extends React.PureComponent {
   render() {
     return (
       <div
+        key={this.props.chartId}
         id={this.props.chartId}
         style={this.style()}
       ></div>
@@ -3895,7 +3927,7 @@ class AmRadialBarChart extends React.PureComponent {
       chart.legend = new am4charts.Legend();
       let legendPosition = chartLegend.position || "bottom";
       chart.legend.position = legendPosition;
-      if(legendPosition === "bottom" || legendPosition === "top") {
+      if (legendPosition === "bottom" || legendPosition === "top") {
         chart.legend.maxHeight = chartLegend.maxHeight;
         chart.legend.scrollable = chartLegend.scrollable;
       } else {
@@ -4161,6 +4193,11 @@ class AmRadialBarChart extends React.PureComponent {
 
   }
 
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = RadialBarChart();
+  }
+
   componentWillUnmount() {
     if (this.chart) {
       this.chart.dispose();
@@ -4170,6 +4207,7 @@ class AmRadialBarChart extends React.PureComponent {
   render() {
     return (
       <div
+        key={this.props.chartId}
         id={this.props.chartId}
         style={this.style()}
       ></div>
@@ -4415,7 +4453,7 @@ class AmDumbbellChart extends React.PureComponent {
       chart.legend = new am4charts.Legend();
       let legendPosition = chartLegend.position || "bottom";
       chart.legend.position = legendPosition;
-      if(legendPosition === "bottom" || legendPosition === "top") {
+      if (legendPosition === "bottom" || legendPosition === "top") {
         chart.legend.maxHeight = chartLegend.maxHeight;
         chart.legend.scrollable = chartLegend.scrollable;
       } else {
@@ -4679,6 +4717,11 @@ class AmDumbbellChart extends React.PureComponent {
 
   }
 
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = DumbbellChart();
+  }
+
   componentWillUnmount() {
     if (this.chart) {
       this.chart.dispose();
@@ -4688,6 +4731,7 @@ class AmDumbbellChart extends React.PureComponent {
   render() {
     return (
       <div
+        key={this.props.chartId}
         id={this.props.chartId}
         style={this.style()}
       ></div>
@@ -4906,7 +4950,7 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
       chart.legend = new am4charts.Legend();
       let legendPosition = chartLegend.position || "bottom";
       chart.legend.position = legendPosition;
-      if(legendPosition === "bottom" || legendPosition === "top") {
+      if (legendPosition === "bottom" || legendPosition === "top") {
         chart.legend.maxHeight = chartLegend.maxHeight;
         chart.legend.scrollable = chartLegend.scrollable;
       } else {
@@ -5137,6 +5181,11 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
 
   }
 
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = HorizontalDumbbellChart();
+  }
+
   componentWillUnmount() {
     if (this.chart) {
       this.chart.dispose();
@@ -5146,6 +5195,7 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
   render() {
     return (
       <div
+        key={this.props.chartId}
         id={this.props.chartId}
         style={this.style()}
       ></div>
@@ -5442,6 +5492,11 @@ class AmGaugeChart extends React.PureComponent {
 
   }
 
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = GaugeChart();
+  }
+
   componentWillUnmount() {
     if (this.chart) {
       this.chart.dispose();
@@ -5451,6 +5506,7 @@ class AmGaugeChart extends React.PureComponent {
   render() {
     return (
       <div
+        key={this.props.chartId}
         id={this.props.chartId}
         style={this.style()}
       ></div>
@@ -5732,7 +5788,7 @@ class AmStackedBarChart extends React.PureComponent {
       chart.legend = new am4charts.Legend();
       let legendPosition = chartLegend.position || "bottom";
       chart.legend.position = legendPosition;
-      if(legendPosition === "bottom" || legendPosition === "top") {
+      if (legendPosition === "bottom" || legendPosition === "top") {
         chart.legend.maxHeight = chartLegend.maxHeight;
         chart.legend.scrollable = chartLegend.scrollable;
       } else {
@@ -5836,6 +5892,11 @@ class AmStackedBarChart extends React.PureComponent {
 
   }
 
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = StackedBarChart();
+  }
+
   componentWillUnmount() {
     if (this.chart) {
       this.chart.dispose();
@@ -5845,6 +5906,7 @@ class AmStackedBarChart extends React.PureComponent {
   render() {
     return (
       <div
+        key={this.props.chartId}
         id={this.props.chartId}
         style={this.style()}
       ></div>
@@ -5892,16 +5954,16 @@ class AmBoxplotChart extends React.PureComponent {
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
-    if(outliers) {
-      if(isDate) {
-        for(let i = 0; i < outliers.length; i++){
+    if (outliers) {
+      if (isDate) {
+        for (let i = 0; i < outliers.length; i++) {
           outliers[i][category] = outliers[i][category].map(utils.toDate);
         }
       }
       outliers = outliers.map(HTMLWidgets.dataframeToD3);
     }
 
-    if(isDate) {
+    if (isDate) {
       data[category] = data[category].map(utils.toDate);
     }
     data = HTMLWidgets.dataframeToD3(data);
@@ -6013,15 +6075,15 @@ class AmBoxplotChart extends React.PureComponent {
 
     /* ~~~~\  x-axis  /~~~~ */
     let XAxis;
-    if(isDate) {
+    if (isDate) {
       XAxis = utils.createAxis(
         "X", am4charts, am4core, chart, xAxis,
         minDate, maxDate, true, theme, cursor, category
-      );  
-    }else {
+      );
+    } else {
       XAxis = utils.createCategoryAxis(
         "X", am4charts, chart, category, xAxis, 100, theme
-      );  
+      );
     }
 
 
@@ -6053,14 +6115,14 @@ class AmBoxplotChart extends React.PureComponent {
 
     /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
     let series = chart.series.push(new am4charts.CandlestickSeries());
-    if(color) {
+    if (color) {
       series.fill = color;
     }
-    if(isDate) {
+    if (isDate) {
       series.dataFields.dateX = category;
     } else {
       series.dataFields.categoryX = category;
-    }    
+    }
     series.dataFields.valueY = "hingeUpr";
     series.dataFields.openValueY = "hingeLwr";
     series.dataFields.lowValueY = "whiskerLwr";
@@ -6070,10 +6132,10 @@ class AmBoxplotChart extends React.PureComponent {
     series.dropFromOpenState = undefined;
     series.sequencedInterpolation = true;
     series.defaultState.interpolationDuration = 1000;
-    if(tooltips) {
+    if (tooltips) {
       series.tooltipText = tooltips.text;
-//      let tooltip = utils.Tooltip(am4core, chart, 0, [tooltips]);
-//      series.tooltip = tooltip;
+      //      let tooltip = utils.Tooltip(am4core, chart, 0, [tooltips]);
+      //      series.tooltip = tooltip;
     }
 
     let medianaSeries = chart.series.push(new am4charts.StepLineSeries());
@@ -6081,11 +6143,11 @@ class AmBoxplotChart extends React.PureComponent {
     medianaSeries.startLocation = 0.2;
     medianaSeries.endLocation = 0.8;
     medianaSeries.dataFields.valueY = "median";
-    if(isDate) {
+    if (isDate) {
       medianaSeries.dataFields.dateX = category;
     } else {
       medianaSeries.dataFields.categoryX = category;
-    }    
+    }
     medianaSeries.strokeWidth = 2;
     medianaSeries.stroke = chart.colors.getIndex(1);
 
@@ -6094,11 +6156,11 @@ class AmBoxplotChart extends React.PureComponent {
     topSeries.startLocation = 0.2;
     topSeries.endLocation = 0.8;
     topSeries.dataFields.valueY = "whiskerUpr";
-    if(isDate) {
+    if (isDate) {
       topSeries.dataFields.dateX = category;
     } else {
       topSeries.dataFields.categoryX = category;
-    }    
+    }
     topSeries.stroke = chart.colors.getIndex(0);
     topSeries.strokeWidth = 2;
 
@@ -6107,31 +6169,31 @@ class AmBoxplotChart extends React.PureComponent {
     bottomSeries.startLocation = 0.2;
     bottomSeries.endLocation = 0.8;
     bottomSeries.dataFields.valueY = "whiskerLwr";
-    if(isDate) {
+    if (isDate) {
       bottomSeries.dataFields.dateX = category;
     } else {
       bottomSeries.dataFields.categoryX = category;
-    }    
+    }
     bottomSeries.stroke = chart.colors.getIndex(0);
     bottomSeries.strokeWidth = 2;
 
-    if(outliers) {
+    if (outliers) {
       let tooltipStyle = {
         backgroundColor: series.fill,
         pointerLength: 10
       };
-      for(let i = 0; i < outliers.length; i++) {
+      for (let i = 0; i < outliers.length; i++) {
         let bulletSeries = chart.series.push(new am4charts.LineSeries());
         bulletSeries.strokeOpacity = 0;
         bulletSeries.data = outliers[i];
-        if(isDate) {
+        if (isDate) {
           bulletSeries.dataFields.dateX = category;
         } else {
           bulletSeries.dataFields.categoryX = category;
-        }    
+        }
         bulletSeries.dataFields.valueY = "outlier";
-        bulletSeries.tooltipText = 
-          `{valueY.value.formatNumber('${valueFormatter}')}`; 
+        bulletSeries.tooltipText =
+          `{valueY.value.formatNumber('${valueFormatter}')}`;
         let tooltip = utils.Tooltip(am4core, chart, 1, tooltipStyle);
         tooltip.pointerOrientation = "horizontal";
         tooltip.dx = 0;
@@ -6149,6 +6211,11 @@ class AmBoxplotChart extends React.PureComponent {
 
   }
 
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = BoxplotChart();
+  }
+
   componentWillUnmount() {
     if (this.chart) {
       this.chart.dispose();
@@ -6158,6 +6225,7 @@ class AmBoxplotChart extends React.PureComponent {
   render() {
     return (
       <div
+        key={this.props.chartId}
         id={this.props.chartId}
         style={this.style()}
       ></div>
@@ -6341,7 +6409,7 @@ class AmPieChart extends React.PureComponent {
       chart.legend = new am4charts.Legend();
       let legendPosition = chartLegend.position || "bottom";
       chart.legend.position = legendPosition;
-      if(legendPosition === "bottom" || legendPosition === "top") {
+      if (legendPosition === "bottom" || legendPosition === "top") {
         chart.legend.maxHeight = chartLegend.maxHeight;
         chart.legend.scrollable = chartLegend.scrollable;
       } else {
@@ -6366,10 +6434,10 @@ class AmPieChart extends React.PureComponent {
     series.dataFields.category = category;
     //series.slices.template.cornerRadius = 5;
     series.colors.step = colorStep;
-    if(threeD && variableDepth) {
+    if (threeD && variableDepth) {
       series.dataFields.depthValue = value;
     }
-    if(variableRadius) {
+    if (variableRadius) {
       series.dataFields.radiusValue = value;
     }
     series.hiddenState.properties.endAngle = -90;
