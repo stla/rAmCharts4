@@ -109,11 +109,63 @@ dat <- data.frame(
   ),
   value = c(260, 230, 200, 165, 139, 128)
 )
-
 amPieChart(
   data = dat,
   category = "country",
   value = "value",
   variableRadius = TRUE
 )
+
+# shiny app demonstrating the options ####
+library(rAmCharts4)
+library(shiny)
+
+dat <- data.frame(
+  country = c(
+    "Lithuania", "Czechia", "Ireland", "Germany", "Australia", "Austria"
+  ),
+  value = c(260, 230, 200, 165, 139, 128)
+)
+
+ui <- fluidPage(
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput(
+        "innerRadius", "Inner radius", min = 0, max = 60, value = 0, step = 20
+      ),
+      checkboxInput("variableRadius", "Variable radius", TRUE),
+      checkboxInput("threeD", "3D"),
+      conditionalPanel(
+        "input.threeD",
+        checkboxInput("variableDepth", "Variable depth")
+      )
+    ),
+    mainPanel(
+      amChart4Output("piechart", height = "500px")
+    )
+  )
+)
+
+server <- function(input, output, session){
+
+  piechart <- reactive({
+    amPieChart(
+      data = dat,
+      category = "country",
+      value = "value",
+      innerRadius = input[["innerRadius"]],
+      threeD = input[["threeD"]],
+      variableDepth = input[["variableDepth"]],
+      depth = ifelse(input[["variableDepth"]], 300, 10),
+      variableRadius = input[["variableRadius"]],
+      theme = "dark"
+    )
+  })
+
+  output[["piechart"]] <- renderAmChart4({
+    piechart()
+  })
+}
+
+shinyApp(ui, server)
 }
