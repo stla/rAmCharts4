@@ -6174,6 +6174,7 @@ class AmPieChart extends React.PureComponent {
   constructor(props) {
     super(props);
     this.style = this.style.bind(this);
+    this.PieChart = this.PieChart.bind(this);
   }
 
   style() {
@@ -6184,8 +6185,7 @@ class AmPieChart extends React.PureComponent {
     }
   }
 
-  componentDidMount() {
-
+  PieChart() {
     let theme = this.props.theme,
       threeD = this.props.threeD,
       chartLegend = this.props.legend,
@@ -6353,16 +6353,6 @@ class AmPieChart extends React.PureComponent {
       markerTemplate.height = chartLegend.itemsHeight || 20;
       // markerTemplate.strokeWidth = 1;
       // markerTemplate.strokeOpacity = 1;
-      chart.legend.itemContainers.template.events.on("over", function (ev) {
-        ev.target.dataItem.dataContext.columns.each(function (x) {
-          x.column.isHover = true;
-        })
-      });
-      chart.legend.itemContainers.template.events.on("out", function (ev) {
-        ev.target.dataItem.dataContext.columns.each(function (x) {
-          x.column.isHover = false;
-        })
-      });
     }
 
     let series;
@@ -6384,7 +6374,13 @@ class AmPieChart extends React.PureComponent {
     }
     series.hiddenState.properties.endAngle = -90;
 
-    this.chart = chart;
+    return chart;
+
+  }
+
+  componentDidMount() {
+
+    this.chart = this.PieChart();
 
   }
 
@@ -6394,9 +6390,17 @@ class AmPieChart extends React.PureComponent {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.chart) {
+      this.chart.dispose();
+      this.chart = this.PieChart();
+    }
+  }
+
   render() {
     return (
       <div
+        key={this.props.chartId}
         id={this.props.chartId}
         style={this.style()}
       ></div>
