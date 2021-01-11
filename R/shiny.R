@@ -348,5 +348,5 @@ updateAmGaugeChart <- function(session, outputId, score){
 #' @export
 updateAmPieChart <- function(session, outputId, data){
   stopifnot(is.data.frame(data))
-  session$sendCustomMessage(paste0(outputId, "pie"), score)
+  session$sendCustomMessage(paste0(outputId, "pie"), data)
 }
