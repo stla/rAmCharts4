@@ -10,6 +10,8 @@
 
 ![](https://raw.githubusercontent.com/stla/rAmCharts4/master/inst/screenshots/rAmCharts4_stackedBarChart.gif)
 
+![](https://raw.githubusercontent.com/stla/rAmCharts4/master/inst/screenshots/rAmCharts4_pieChart.gif)
+
 ___
 
 # __Copies of license agreements__
