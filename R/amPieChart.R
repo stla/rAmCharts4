@@ -123,7 +123,9 @@
 #'   })
 #' }
 #'
-#' shinyApp(ui, server)
+#' if(interactive()){
+#'   shinyApp(ui, server)
+#' }
 amPieChart <- function(
   data,
   category,

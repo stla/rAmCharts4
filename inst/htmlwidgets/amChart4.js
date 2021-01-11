@@ -121326,6 +121326,7 @@ class AmBarChart extends React.PureComponent {
   constructor(props) {
     super(props);
     this.style = this.style.bind(this);
+    this.BarChart = this.BarChart.bind(this);
   }
 
   style() {
@@ -121342,7 +121343,7 @@ class AmBarChart extends React.PureComponent {
     }
   }
 
-  componentDidMount() {
+  BarChart() {
     var theme = this.props.theme,
         threeD = this.props.threeD,
         chartLegend = this.props.legend,
@@ -122011,7 +122012,15 @@ class AmBarChart extends React.PureComponent {
         });
       }
     });
-    this.chart = chart;
+  }
+
+  componentDidMount() {
+    this.chart = this.BarChart();
+  }
+
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = this.BarChart();
   }
 
   componentWillUnmount() {
@@ -122022,6 +122031,7 @@ class AmBarChart extends React.PureComponent {
 
   render() {
     return /*#__PURE__*/React.createElement("div", {
+      key: this.props.chartId,
       id: this.props.chartId,
       style: this.style()
     });
@@ -122035,6 +122045,7 @@ class AmHorizontalBarChart extends React.PureComponent {
   constructor(props) {
     super(props);
     this.style = this.style.bind(this);
+    this.HorizontalBarChart = this.HorizontalBarChart.bind(this);
   }
 
   style() {
@@ -122051,7 +122062,7 @@ class AmHorizontalBarChart extends React.PureComponent {
     }
   }
 
-  componentDidMount() {
+  HorizontalBarChart() {
     var theme = this.props.theme,
         threeD = this.props.threeD,
         chartLegend = this.props.legend,
@@ -122615,7 +122626,15 @@ class AmHorizontalBarChart extends React.PureComponent {
         });
       }
     });
-    this.chart = chart;
+  }
+
+  componentDidMount() {
+    this.chart = this.HorizontalBarChart();
+  }
+
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = this.HorizontalBarChart();
   }
 
   componentWillUnmount() {
@@ -122626,6 +122645,7 @@ class AmHorizontalBarChart extends React.PureComponent {
 
   render() {
     return /*#__PURE__*/React.createElement("div", {
+      key: this.props.chartId,
       id: this.props.chartId,
       style: this.style()
     });
@@ -122640,6 +122660,7 @@ class AmLineChart extends React.PureComponent {
     super(props);
     this.style = this.style.bind(this);
     this.toggleHover = this.toggleHover.bind(this);
+    this.LineChart = this.LineChart.bind(this);
   }
 
   style() {
@@ -122662,7 +122683,7 @@ class AmLineChart extends React.PureComponent {
     });
   }
 
-  componentDidMount() {
+  LineChart() {
     var theme = this.props.theme,
         chartLegend = this.props.legend,
         xValue = this.props.xValue,
@@ -123486,8 +123507,15 @@ class AmLineChart extends React.PureComponent {
       }
     });
     /* end of forEach */
+  }
 
-    this.chart = chart;
+  componentDidMount() {
+    this.chart = this.LineChart();
+  }
+
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = this.LineChart();
   }
 
   componentWillUnmount() {
@@ -123498,6 +123526,7 @@ class AmLineChart extends React.PureComponent {
 
   render() {
     return /*#__PURE__*/React.createElement("div", {
+      key: this.props.chartId,
       id: this.props.chartId,
       style: this.style()
     });
@@ -123511,6 +123540,7 @@ class AmScatterChart extends React.PureComponent {
   constructor(props) {
     super(props);
     this.style = this.style.bind(this);
+    this.ScatterChart = this.ScatterChart.bind(this);
   }
 
   style() {
@@ -123527,7 +123557,7 @@ class AmScatterChart extends React.PureComponent {
     }
   }
 
-  componentDidMount() {
+  ScatterChart() {
     var theme = this.props.theme,
         chartLegend = this.props.legend,
         xValue = this.props.xValue,
@@ -124192,8 +124222,15 @@ class AmScatterChart extends React.PureComponent {
       }
     });
     /* end of forEach */
+  }
 
-    this.chart = chart;
+  componentDidMount() {
+    this.chart = this.ScatterChart();
+  }
+
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = this.ScatterChart();
   }
 
   componentWillUnmount() {
@@ -124204,6 +124241,7 @@ class AmScatterChart extends React.PureComponent {
 
   render() {
     return /*#__PURE__*/React.createElement("div", {
+      key: this.props.chartId,
       id: this.props.chartId,
       style: this.style()
     });
@@ -124218,6 +124256,7 @@ class AmRangeAreaChart extends React.PureComponent {
     super(props);
     this.style = this.style.bind(this);
     this.toggleHover = this.toggleHover.bind(this);
+    this.RangeAreaChart = this.RangeAreaChart.bind(this);
   }
 
   style() {
@@ -124240,7 +124279,7 @@ class AmRangeAreaChart extends React.PureComponent {
     series.wasHover = over;
   }
 
-  componentDidMount() {
+  RangeAreaChart() {
     var theme = this.props.theme,
         chartLegend = this.props.legend,
         xValue = this.props.xValue,
@@ -124969,8 +125008,15 @@ class AmRangeAreaChart extends React.PureComponent {
       });
     });
     /* end of forEach */
+  }
 
-    this.chart = chart;
+  componentDidMount() {
+    this.chart = this.RangeAreaChart();
+  }
+
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = this.RangeAreaChart();
   }
 
   componentWillUnmount() {
@@ -124981,6 +125027,7 @@ class AmRangeAreaChart extends React.PureComponent {
 
   render() {
     return /*#__PURE__*/React.createElement("div", {
+      key: this.props.chartId,
       id: this.props.chartId,
       style: this.style()
     });
@@ -124994,6 +125041,7 @@ class AmRadialBarChart extends React.PureComponent {
   constructor(props) {
     super(props);
     this.style = this.style.bind(this);
+    this.RadialBarChart = this.RadialBarChart.bind(this);
   }
 
   style() {
@@ -125010,7 +125058,7 @@ class AmRadialBarChart extends React.PureComponent {
     }
   }
 
-  componentDidMount() {
+  RadialBarChart() {
     var theme = this.props.theme,
         chartLegend = this.props.legend,
         category = this.props.category,
@@ -125556,7 +125604,15 @@ class AmRadialBarChart extends React.PureComponent {
         });
       }
     });
-    this.chart = chart;
+  }
+
+  componentDidMount() {
+    this.chart = this.RadialBarChart();
+  }
+
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = this.RadialBarChart();
   }
 
   componentWillUnmount() {
@@ -125567,6 +125623,7 @@ class AmRadialBarChart extends React.PureComponent {
 
   render() {
     return /*#__PURE__*/React.createElement("div", {
+      key: this.props.chartId,
       id: this.props.chartId,
       style: this.style()
     });
@@ -125580,6 +125637,7 @@ class AmDumbbellChart extends React.PureComponent {
   constructor(props) {
     super(props);
     this.style = this.style.bind(this);
+    this.DumbbellChart = this.DumbbellChart.bind(this);
   }
 
   style() {
@@ -125596,7 +125654,7 @@ class AmDumbbellChart extends React.PureComponent {
     }
   }
 
-  componentDidMount() {
+  DumbbellChart() {
     var theme = this.props.theme,
         chartLegend = this.props.legend,
         category = this.props.category,
@@ -126083,7 +126141,15 @@ class AmDumbbellChart extends React.PureComponent {
         itemBullet2.children.getIndex(0).isHover = false;
       });
     });
-    this.chart = chart;
+  }
+
+  componentDidMount() {
+    this.chart = this.DumbbellChart();
+  }
+
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = this.DumbbellChart();
   }
 
   componentWillUnmount() {
@@ -126094,6 +126160,7 @@ class AmDumbbellChart extends React.PureComponent {
 
   render() {
     return /*#__PURE__*/React.createElement("div", {
+      key: this.props.chartId,
       id: this.props.chartId,
       style: this.style()
     });
@@ -126107,6 +126174,7 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
   constructor(props) {
     super(props);
     this.style = this.style.bind(this);
+    this.HorizontalDumbbellChart = this.HorizontalDumbbellChart.bind(this);
   }
 
   style() {
@@ -126123,7 +126191,7 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
     }
   }
 
-  componentDidMount() {
+  HorizontalDumbbellChart() {
     var theme = this.props.theme,
         chartLegend = this.props.legend,
         category = this.props.category,
@@ -126550,7 +126618,15 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
         itemBullet2.children.getIndex(0).isHover = false;
       });
     });
-    this.chart = chart;
+  }
+
+  componentDidMount() {
+    this.chart = this.HorizontalDumbbellChart();
+  }
+
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = this.HorizontalDumbbellChart();
   }
 
   componentWillUnmount() {
@@ -126561,6 +126637,7 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
 
   render() {
     return /*#__PURE__*/React.createElement("div", {
+      key: this.props.chartId,
       id: this.props.chartId,
       style: this.style()
     });
@@ -126586,6 +126663,7 @@ class AmGaugeChart extends React.PureComponent {
   constructor(props) {
     super(props);
     this.style = this.style.bind(this);
+    this.GaugeChart = this.GaugeChart.bind(this);
   }
 
   style() {
@@ -126602,7 +126680,7 @@ class AmGaugeChart extends React.PureComponent {
     }
   }
 
-  componentDidMount() {
+  GaugeChart() {
     var theme = this.props.theme,
         score = this.props.score,
         minScore = this.props.minScore,
@@ -126852,8 +126930,15 @@ class AmGaugeChart extends React.PureComponent {
         clockHand.showValue(score, 1000, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["ease"].cubicOut);
       });
     }
+  }
 
-    this.chart = chart;
+  componentDidMount() {
+    this.chart = this.GaugeChart();
+  }
+
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = this.GaugeChart();
   }
 
   componentWillUnmount() {
@@ -126864,6 +126949,7 @@ class AmGaugeChart extends React.PureComponent {
 
   render() {
     return /*#__PURE__*/React.createElement("div", {
+      key: this.props.chartId,
       id: this.props.chartId,
       style: this.style()
     });
@@ -126877,6 +126963,7 @@ class AmStackedBarChart extends React.PureComponent {
   constructor(props) {
     super(props);
     this.style = this.style.bind(this);
+    this.StackedBarChart = this.StackedBarChart.bind(this);
   }
 
   style() {
@@ -126893,7 +126980,7 @@ class AmStackedBarChart extends React.PureComponent {
     }
   }
 
-  componentDidMount() {
+  StackedBarChart() {
     var theme = this.props.theme,
         threeD = this.props.threeD,
         chartLegend = this.props.legend,
@@ -127249,7 +127336,15 @@ class AmStackedBarChart extends React.PureComponent {
 
       columnHoverState.properties.fillOpacity = 1;
     });
-    this.chart = chart;
+  }
+
+  componentDidMount() {
+    this.chart = this.StackedBarChart();
+  }
+
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = this.StackedBarChart();
   }
 
   componentWillUnmount() {
@@ -127260,6 +127355,7 @@ class AmStackedBarChart extends React.PureComponent {
 
   render() {
     return /*#__PURE__*/React.createElement("div", {
+      key: this.props.chartId,
       id: this.props.chartId,
       style: this.style()
     });
@@ -127273,6 +127369,7 @@ class AmBoxplotChart extends React.PureComponent {
   constructor(props) {
     super(props);
     this.style = this.style.bind(this);
+    this.BoxplotChart = this.BoxplotChart.bind(this);
   }
 
   style() {
@@ -127289,7 +127386,7 @@ class AmBoxplotChart extends React.PureComponent {
     }
   }
 
-  componentDidMount() {
+  BoxplotChart() {
     var theme = this.props.theme,
         category = this.props.category,
         isDate = this.props.isDate,
@@ -127569,8 +127666,15 @@ class AmBoxplotChart extends React.PureComponent {
         hoverState.properties.opacity = 1; // visible when hovered
       }
     }
+  }
 
-    this.chart = chart;
+  componentDidMount() {
+    this.chart = this.BoxplotChart();
+  }
+
+  componentDidUpdate() {
+    this.chart.dispose();
+    this.chart = this.BoxplotChart();
   }
 
   componentWillUnmount() {
@@ -127581,6 +127685,7 @@ class AmBoxplotChart extends React.PureComponent {
 
   render() {
     return /*#__PURE__*/React.createElement("div", {
+      key: this.props.chartId,
       id: this.props.chartId,
       style: this.style()
     });
