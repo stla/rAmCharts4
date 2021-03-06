@@ -1,6 +1,6 @@
 #' Called by HTMLWidgets to produce the widget's root element.
 #' @noRd
-amChart4_html <- function(id, style, class, ...) {
+widget_html.amChart4 <- function(id, style, class, ...) {
   htmltools::tagList(
     # Necessary for RStudio viewer version < 1.2
     reactR::html_dependency_corejs(),

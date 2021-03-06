@@ -1,3 +1,9 @@
+# rAmCharts4 1.3.1 (2021-03-06)
+
+* Updated 'amcharts4'.
+* Compliance with the new 'htmlwidgets' convention.
+
+
 # rAmCharts4 1.3.0 (2021-01-11)
 
 * New options for legends: `maxWidth`, `maxHeight`, and `scrollable`.

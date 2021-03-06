@@ -12240,12 +12240,12 @@ function (_super) {
     this._nextGridUnit = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["getNextUnit"](gridInterval.timeUnit); // the following is needed to avoid grid flickering while scrolling
 
     this._intervalDuration = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["getDuration"](gridInterval.timeUnit, gridInterval.count);
-    this._gridDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(this.minZoomed - _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["getDuration"](gridInterval.timeUnit, gridInterval.count)), gridInterval.timeUnit, gridInterval.count, this._firstWeekDay, this._df.utc, new Date(this.min), this._df.timezoneMinutes); // tell series start/end
+    this._gridDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(this.minZoomed - _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["getDuration"](gridInterval.timeUnit, gridInterval.count)), gridInterval.timeUnit, gridInterval.count, this._firstWeekDay, this._df.utc, new Date(this.min), this._df.timezoneMinutes, this._df.timezone); // tell series start/end
 
     _core_utils_Iterator__WEBPACK_IMPORTED_MODULE_8__["each"](this.series.iterator(), function (series) {
       if (series.baseAxis == _this) {
         var field_1 = series.getAxisField(_this);
-        var minZoomed = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(_this._minZoomed + _this.baseDuration * 0.05), _this.baseInterval.timeUnit, _this.baseInterval.count, _this._firstWeekDay, _this._df.utc, undefined, _this._df.timezoneMinutes).getTime();
+        var minZoomed = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(_this._minZoomed + _this.baseDuration * 0.05), _this.baseInterval.timeUnit, _this.baseInterval.count, _this._firstWeekDay, _this._df.utc, undefined, _this._df.timezoneMinutes, _this._df.timezone).getTime();
         var minZoomedStr = minZoomed.toString();
         var startDataItem = series.dataItemsByAxis.getKey(_this.uid).getKey(minZoomedStr + series.currentDataSetId);
         var startIndex = 0;
@@ -12263,7 +12263,7 @@ function (_super) {
 
 
         var baseInterval = _this.baseInterval;
-        var maxZoomed = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](_core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(_this._maxZoomed), baseInterval.timeUnit, baseInterval.count, _this._firstWeekDay, _this._df.utc, undefined, _this._df.timezoneMinutes), baseInterval.timeUnit, baseInterval.count, _this._df.utc).getTime();
+        var maxZoomed = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](_core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(_this._maxZoomed), baseInterval.timeUnit, baseInterval.count, _this._firstWeekDay, _this._df.utc, undefined, _this._df.timezoneMinutes, _this._df.timezone), baseInterval.timeUnit, baseInterval.count, _this._df.utc).getTime();
         var maxZoomedStr = maxZoomed.toString();
         var endDataItem = series.dataItemsByAxis.getKey(_this.uid).getKey(maxZoomedStr + series.currentDataSetId);
         var endIndex = series.dataItems.length;
@@ -12381,6 +12381,8 @@ function (_super) {
   DateAxis.prototype.postProcessSeriesDataItems = function (series) {
     var _this = this;
 
+    this._firstWeekDay = this.getFirstWeekDay();
+
     if (series) {
       this.seriesGroupUpdate(series);
     } else {
@@ -12469,7 +12471,7 @@ function (_super) {
 
           if (date) {
             var time = date.getTime();
-            roundedDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(time), interval.timeUnit, interval.count, _this._df.firstDayOfWeek, _this._df.utc, undefined, _this._df.timezoneMinutes);
+            roundedDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(time), interval.timeUnit, interval.count, _this._df.firstDayOfWeek, _this._df.utc, undefined, _this._df.timezoneMinutes, _this._df.timezone);
             var currentTime = roundedDate.getTime(); // changed period								
 
             if (previousTime < currentTime) {
@@ -12667,7 +12669,7 @@ function (_super) {
     _core_utils_Object__WEBPACK_IMPORTED_MODULE_11__["each"](dataItem.dates, function (key) {
       var date = dataItem.getDate(key);
       var time = date.getTime();
-      var startDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(time), interval.timeUnit, interval.count, _this._firstWeekDay, _this._df.utc, undefined, _this._df.timezoneMinutes);
+      var startDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(time), interval.timeUnit, interval.count, _this._firstWeekDay, _this._df.utc, undefined, _this._df.timezoneMinutes, _this._df.timezone);
       var startTime = startDate.getTime();
       var endDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](new Date(startTime), interval.timeUnit, interval.count, _this._df.utc);
       dataItem.setCalculatedValue(key, startTime, "open");
@@ -12700,7 +12702,7 @@ function (_super) {
 
       }
 
-      var date = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(this.min), timeUnit, count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes);
+      var date = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(this.min), timeUnit, count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes, this._df.timezone);
       var axisBreak = void 0;
 
       var _loop_1 = function _loop_1() {
@@ -12754,7 +12756,7 @@ function (_super) {
         axisBreaks.each(function (axisBreak) {
           var breakGridCount = Math.ceil(_this._gridCount * (Math.min(_this.end, axisBreak.endPosition) - Math.max(_this.start, axisBreak.startPosition)) / (_this.end - _this.start));
           axisBreak.gridInterval = _this.chooseInterval(0, axisBreak.adjustedEndValue - axisBreak.adjustedStartValue, breakGridCount);
-          var gridDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(axisBreak.adjustedStartValue), axisBreak.gridInterval.timeUnit, axisBreak.gridInterval.count, _this._firstWeekDay, _this._df.utc, undefined, _this._df.timezoneMinutes);
+          var gridDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(axisBreak.adjustedStartValue), axisBreak.gridInterval.timeUnit, axisBreak.gridInterval.count, _this._firstWeekDay, _this._df.utc, undefined, _this._df.timezoneMinutes, _this._df.timezone);
 
           if (gridDate.getTime() > axisBreak.startDate.getTime()) {
             _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](gridDate, axisBreak.gridInterval.timeUnit, axisBreak.gridInterval.count, _this._df.utc);
@@ -12792,7 +12794,7 @@ function (_super) {
     var timeUnit = this._gridInterval.timeUnit;
     var realIntervalCount = this._gridInterval.count; // round date
 
-    _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](date, timeUnit, 1, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes);
+    _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](date, timeUnit, 1, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes, this._df.timezone);
     var prevTimestamp = date.getTime();
     var newDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["copy"](date); // modify date by adding intervalcount
 
@@ -12802,7 +12804,7 @@ function (_super) {
 
     if (axisBreak && axisBreak.endDate) {
       newDate = new Date(axisBreak.endDate.getTime());
-      _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](newDate, timeUnit, realIntervalCount, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes);
+      _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](newDate, timeUnit, realIntervalCount, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes, this._df.timezone);
 
       if (newDate.getTime() < axisBreak.endDate.getTime()) {
         _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](newDate, timeUnit, realIntervalCount, this._df.utc);
@@ -12836,7 +12838,7 @@ function (_super) {
 
   DateAxis.prototype.getBreaklessDate = function (axisBreak, timeUnit, count) {
     var date = new Date(axisBreak.endValue);
-    _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](date, timeUnit, count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes);
+    _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](date, timeUnit, count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes, this._df.timezone);
     _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](date, timeUnit, count, this._df.utc);
     var timestamp = date.getTime();
     axisBreak = this.isInBreak(timestamp);
@@ -13097,7 +13099,7 @@ function (_super) {
   DateAxis.prototype.fixMin = function (value) {
     // like this because months are not equal
     var interval = this.baseInterval;
-    var startTime = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(value), interval.timeUnit, interval.count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes).getTime();
+    var startTime = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(value), interval.timeUnit, interval.count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes, this._df.timezone).getTime();
     var endTime = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](new Date(startTime), interval.timeUnit, interval.count, this._df.utc).getTime();
     return startTime + (endTime - startTime) * this.startLocation;
   };
@@ -13112,7 +13114,7 @@ function (_super) {
   DateAxis.prototype.fixMax = function (value) {
     // like this because months are not equal
     var interval = this.baseInterval;
-    var startTime = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(value), interval.timeUnit, interval.count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes).getTime();
+    var startTime = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(value), interval.timeUnit, interval.count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes, this._df.timezone).getTime();
     var endTime = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](new Date(startTime), interval.timeUnit, interval.count, this._df.utc).getTime();
     return startTime + (endTime - startTime) * this.endLocation;
   };
@@ -13650,7 +13652,7 @@ function (_super) {
   DateAxis.prototype.getTooltipText = function (position) {
     var text;
     var date = this.positionToDate(position);
-    date = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](date, this.baseInterval.timeUnit, this.baseInterval.count, this._firstWeekDay, this._df.utc, new Date(this.min), this._df.timezoneMinutes);
+    date = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](date, this.baseInterval.timeUnit, this.baseInterval.count, this._firstWeekDay, this._df.utc, new Date(this.min), this._df.timezoneMinutes, this._df.timezone);
     this.tooltipDate = date;
 
     if (_core_utils_Type__WEBPACK_IMPORTED_MODULE_7__["hasValue"](this.tooltipDateFormat)) {
@@ -13686,7 +13688,7 @@ function (_super) {
     var timeUnit = baseInterval.timeUnit;
     var count = baseInterval.count;
     var date = this.positionToDate(position);
-    _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](date, timeUnit, count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes);
+    _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](date, timeUnit, count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes, this._df.timezone);
 
     if (location > 0) {
       _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](date, timeUnit, location * count, this._df.utc);
@@ -13760,8 +13762,8 @@ function (_super) {
     }
 
     var deltaValue = value - location * this.baseDuration;
-    var date = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(value), this.baseInterval.timeUnit, this.baseInterval.count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes);
-    var nextDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(value + this.baseDuration), this.baseInterval.timeUnit, this.baseInterval.count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes);
+    var date = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(value), this.baseInterval.timeUnit, this.baseInterval.count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes, this._df.timezone);
+    var nextDate = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(value + this.baseDuration), this.baseInterval.timeUnit, this.baseInterval.count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes, this._df.timezone);
 
     if (nextDate.getTime() > date.getTime()) {
       if (Math.abs(nextDate.getTime() - deltaValue) < Math.abs(deltaValue - date.getTime())) {
@@ -13986,7 +13988,7 @@ function (_super) {
               }
             }
 
-            seriesMax = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](_core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](new Date(seriesMax), groupInterval_1.timeUnit, 1, _this._df.utc), groupInterval_1.timeUnit, 1, _this._df.firstDayOfWeek, _this._df.utc, undefined, _this._df.timezoneMinutes).getTime();
+            seriesMax = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](_core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["add"](new Date(seriesMax), groupInterval_1.timeUnit, 1, _this._df.utc), groupInterval_1.timeUnit, 1, _this._df.firstDayOfWeek, _this._df.utc, undefined, _this._df.timezoneMinutes, _this._df.timezone).getTime();
 
             if (seriesMin < min_1) {
               min_1 = seriesMin;
@@ -14079,7 +14081,7 @@ function (_super) {
 
     if (this.snapTooltip) {
       // rounding is not good, pen/aac4e7f66f019d36b2447f050c600c13 (no last tootltip shown)
-      var actualDate = this.positionToDate(position); //$time.round(this.positionToDate(position), this.baseInterval.timeUnit, 1, this.getFirstWeekDay(), this.dateFormatter.utc, undefined, this._df.timezoneMinutes);
+      var actualDate = this.positionToDate(position); //$time.round(this.positionToDate(position), this.baseInterval.timeUnit, 1, this.getFirstWeekDay(), this.dateFormatter.utc, undefined, this._df.timezoneMinutes, this._df.timezone);
 
       var actualTime_1 = actualDate.getTime();
       var closestDate_1;
@@ -14111,7 +14113,7 @@ function (_super) {
 
       if (closestDate_1) {
         var closestTime_1 = closestDate_1.getTime();
-        closestDate_1 = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(closestTime_1), this.baseInterval.timeUnit, this.baseInterval.count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes);
+        closestDate_1 = _core_utils_Time__WEBPACK_IMPORTED_MODULE_6__["round"](new Date(closestTime_1), this.baseInterval.timeUnit, this.baseInterval.count, this._firstWeekDay, this._df.utc, undefined, this._df.timezoneMinutes, this._df.timezone);
         closestTime_1 = closestDate_1.getTime();
         var tooltipLocation = this.renderer.tooltipLocation;
 
@@ -15752,6 +15754,7 @@ function (_super) {
         }
 
         i++;
+        var oldValue = value_1;
 
         if (!this.logarithmic) {
           value_1 += this._step;
@@ -15769,9 +15772,15 @@ function (_super) {
 
         if (stepPower < 1) {
           // exponent is less then 1 too. Count decimals of exponent
-          var decCount = Math.round(Math.abs(Math.log(Math.abs(stepPower)) * Math.LOG10E)) + 2; // round value to avoid floating point issues
+          var decCount = Math.round(Math.abs(Math.log(Math.abs(stepPower)) * Math.LOG10E)) + 2;
+          decCount = Math.min(13, decCount); // round value to avoid floating point issues
 
-          value_1 = _core_utils_Math__WEBPACK_IMPORTED_MODULE_6__["round"](value_1, decCount);
+          value_1 = _core_utils_Math__WEBPACK_IMPORTED_MODULE_6__["ceil"](value_1, decCount);
+
+          if (oldValue == value_1) {
+            value_1 = maxZoomed;
+            break;
+          }
         }
       }
 
@@ -16396,7 +16405,16 @@ function (_super) {
       max = this._adapterO.apply("max", max);
     }
 
-    this._step = minMaxStep.step; // checking isNumber is good when all series are hidden
+    this._step = minMaxStep.step;
+
+    if (!_core_utils_Type__WEBPACK_IMPORTED_MODULE_9__["isNumber"](min) && !_core_utils_Type__WEBPACK_IMPORTED_MODULE_9__["isNumber"](max)) {
+      this.start = 0;
+      this.end = 1;
+      this.renderer.labels.each(function (label) {
+        label.dataItem.text = "";
+      });
+    } // checking isNumber is good when all series are hidden
+
 
     if ((this._minAdjusted != min || this._maxAdjusted != max) && _core_utils_Type__WEBPACK_IMPORTED_MODULE_9__["isNumber"](min) && _core_utils_Type__WEBPACK_IMPORTED_MODULE_9__["isNumber"](max)) {
       var animation = this._minMaxAnimation;
@@ -16561,17 +16579,19 @@ function (_super) {
         max = 10;
       }
 
-      min = Math.pow(10, Math.floor(Math.log(Math.abs(min)) * Math.LOG10E));
-      max = Math.pow(10, Math.ceil(Math.log(Math.abs(max)) * Math.LOG10E));
-
       if (this.strictMinMax) {
         if (this._minDefined > 0) {
           min = this._minDefined;
+        } else {
+          min = min;
         }
 
         if (this._maxDefined > 0) {
-          max = this._maxDefined;
+          max = max;
         }
+      } else {
+        min = Math.pow(10, Math.floor(Math.log(Math.abs(min)) * Math.LOG10E));
+        max = Math.pow(10, Math.ceil(Math.log(Math.abs(max)) * Math.LOG10E));
       }
     } // repeat diff, exponent and power again with rounded values
     //difference = this.adjustDifference(min, max);
@@ -17065,6 +17085,9 @@ function (_super) {
     set: function set(value) {
       if (this.setPropertyValue("logarithmic", value)) {
         this.invalidate();
+        this.series.each(function (series) {
+          series.invalidateDataItems();
+        });
       }
     },
     enumerable: true,
@@ -17111,7 +17134,7 @@ function (_super) {
      * to 70%.
      *
      * @since 4.1.1
-     * @default flase
+     * @default false
      * @param  value  Preseve zoom after data update?
      */
     set: function set(value) {
@@ -27255,6 +27278,28 @@ function (_super) {
     enumerable: true,
     configurable: true
   });
+  Object.defineProperty(ColumnSeriesDataItem.prototype, "height", {
+    get: function get() {
+      var height = this.properties.height;
+
+      if (this._adapterO) {
+        height = this._adapterO.apply("height", height);
+      }
+
+      return height;
+    },
+    set: function set(value) {
+      if (this.properties.height != value) {
+        this.properties.height = value;
+
+        if (this.component) {
+          this.component.validateDataElement(this);
+        }
+      }
+    },
+    enumerable: true,
+    configurable: true
+  });
   Object.defineProperty(ColumnSeriesDataItem.prototype, "rangesColumns", {
     /**
      * A dictionary storing axes ranges columns by axis uid
@@ -27621,6 +27666,18 @@ function (_super) {
 
       if (diw instanceof _core_utils_Percent__WEBPACK_IMPORTED_MODULE_11__["Percent"]) {
         percentWidth = diw.value * 100;
+      }
+    }
+
+    var dih = dataItem.height;
+
+    if (_core_utils_Type__WEBPACK_IMPORTED_MODULE_16__["hasValue"](dih)) {
+      if (_core_utils_Type__WEBPACK_IMPORTED_MODULE_16__["isNumber"](dih)) {
+        pixelHeight = dih;
+      }
+
+      if (dih instanceof _core_utils_Percent__WEBPACK_IMPORTED_MODULE_11__["Percent"]) {
+        percentHeight = dih.value * 100;
       }
     } // two category axes
 
@@ -28493,6 +28550,7 @@ function (_super) {
     if (dataItem.column) {
       dataItem.column.dx = this.dx;
       dataItem.column.dy = this.dy;
+      dataItem.column.visible = this.visible;
     }
   };
   /**
@@ -33122,7 +33180,7 @@ function (_super) {
 
   PieSeries.prototype.validateDataElement = function (dataItem) {
     if (this.pixelRadius > 0) {
-      if (this.ignoreZeroValues && dataItem.value == 0) {
+      if (this.ignoreZeroValues && (dataItem.value == 0 || dataItem.value == null)) {
         dataItem.__disabled = true;
       } else {
         dataItem.__disabled = false;
@@ -33927,7 +33985,7 @@ function (_super) {
     var linkWidth = sliceLink.pixelWidth;
     var linkHeight = sliceLink.pixelHeight;
 
-    if (dataItem.value == 0 && this.ignoreZeroValues) {
+    if ((dataItem.value == 0 || dataItem.value == null) && this.ignoreZeroValues) {
       dataItem.__disabled = true;
     } else {
       dataItem.__disabled = false;
@@ -35331,6 +35389,7 @@ function (_super) {
         bullet.focusable = true;
       }
     });
+    this.invalidate();
   };
   /**
    * removes bullets
@@ -37000,6 +37059,9 @@ function (_super) {
           this.fillSprite.path = path;
         }
       }
+    } else {
+      this.strokeSprite.path = "";
+      this.fillSprite.path = "";
     }
   };
 
@@ -43238,6 +43300,8 @@ function (_super) {
   SankeyDiagram.prototype.validateData = function () {
     var _this = this;
 
+    this._valueHeight = undefined;
+
     _super.prototype.validateData.call(this);
 
     this._levelCount = 0;
@@ -44386,7 +44450,9 @@ function (_super) {
 
     _this.rows = [];
     _this.className = "TreeMapDataItem";
-    _this.values.value = {};
+    _this.values.value = {
+      workingValue: 0
+    };
     _this.values.x0 = {};
     _this.values.y0 = {};
     _this.values.x1 = {};
@@ -47445,6 +47511,10 @@ function (_super) {
         start: xAxis.start,
         end: xAxis.end
       };
+
+      if (xAxis.renderer.inversed) {
+        this._panStartXRange = _core_utils_Math__WEBPACK_IMPORTED_MODULE_16__["invertRange"](this._panStartXRange);
+      }
     }
 
     var yAxis = this.yAxes.getIndex(0);
@@ -47454,6 +47524,10 @@ function (_super) {
         start: yAxis.start,
         end: yAxis.end
       };
+
+      if (yAxis.renderer.inversed) {
+        this._panStartYRange = _core_utils_Math__WEBPACK_IMPORTED_MODULE_16__["invertRange"](this._panStartYRange);
+      }
     }
   };
   /**
@@ -47753,7 +47827,7 @@ function (_super) {
    */
 
 
-  XYChart.prototype.zoomAxes = function (axes, range, instantly, round, declination) {
+  XYChart.prototype.zoomAxes = function (axes, range, instantly, round, declination, stop) {
     var realRange = {
       start: 0,
       end: 1
@@ -47762,32 +47836,35 @@ function (_super) {
 
     if (!this.dataInvalid) {
       _core_utils_Iterator__WEBPACK_IMPORTED_MODULE_17__["each"](axes.iterator(), function (axis) {
-        if (axis.zoomable) {
-          if (axis.renderer.inversed) {
-            range = _core_utils_Math__WEBPACK_IMPORTED_MODULE_16__["invertRange"](range);
-          }
-
-          axis.hideTooltip(0);
-
-          if (round) {
-            //let diff = range.end - range.start;
-            if (axis instanceof _axes_CategoryAxis__WEBPACK_IMPORTED_MODULE_9__["CategoryAxis"]) {
-              var cellWidth = axis.getCellEndPosition(0) - axis.getCellStartPosition(0);
-              range.start = axis.roundPosition(range.start + cellWidth / 2 - axis.startLocation * cellWidth, axis.startLocation);
-              range.end = axis.roundPosition(range.end - cellWidth / 2 + (1 - axis.endLocation) * cellWidth, axis.endLocation);
-            } else {
-              range.start = axis.roundPosition(range.start + 0.0001, 0, axis.startLocation);
-              range.end = axis.roundPosition(range.end + 0.0001, 0, axis.endLocation);
+        if (stop && 1 / (range.end - range.start) >= axis.maxZoomFactor) {// void
+        } else {
+          if (axis.zoomable) {
+            if (axis.renderer.inversed) {
+              range = _core_utils_Math__WEBPACK_IMPORTED_MODULE_16__["invertRange"](range);
             }
+
+            axis.hideTooltip(0);
+
+            if (round) {
+              //let diff = range.end - range.start;
+              if (axis instanceof _axes_CategoryAxis__WEBPACK_IMPORTED_MODULE_9__["CategoryAxis"]) {
+                var cellWidth = axis.getCellEndPosition(0) - axis.getCellStartPosition(0);
+                range.start = axis.roundPosition(range.start + cellWidth / 2 - axis.startLocation * cellWidth, axis.startLocation);
+                range.end = axis.roundPosition(range.end - cellWidth / 2 + (1 - axis.endLocation) * cellWidth, axis.endLocation);
+              } else {
+                range.start = axis.roundPosition(range.start + 0.0001, 0, axis.startLocation);
+                range.end = axis.roundPosition(range.end + 0.0001, 0, axis.endLocation);
+              }
+            }
+
+            var axisRange = axis.zoom(range, instantly, instantly, declination);
+
+            if (axis.renderer.inversed) {
+              axisRange = _core_utils_Math__WEBPACK_IMPORTED_MODULE_16__["invertRange"](axisRange);
+            }
+
+            realRange = axisRange;
           }
-
-          var axisRange = axis.zoom(range, instantly, instantly, declination);
-
-          if (axis.renderer.inversed) {
-            axisRange = _core_utils_Math__WEBPACK_IMPORTED_MODULE_16__["invertRange"](axisRange);
-          }
-
-          realRange = axisRange;
         }
       });
     }
@@ -47940,7 +48017,7 @@ function (_super) {
         this.zoomAxes(this.xAxes, {
           start: newStartX,
           end: newEndX
-        });
+        }, undefined, undefined, undefined, true);
       }
 
       if (mouseWheelBehavior == "zoomY" || mouseWheelBehavior == "zoomXY") {
@@ -47953,7 +48030,7 @@ function (_super) {
         this.zoomAxes(this.yAxes, {
           start: newStartY,
           end: newEndY
-        });
+        }, undefined, undefined, undefined, true);
       }
     }
   };
@@ -67122,7 +67199,7 @@ function () {
    * @see {@link https://docs.npmjs.com/misc/semver}
    */
 
-  System.VERSION = "4.10.12";
+  System.VERSION = "4.10.16";
   return System;
 }();
 
@@ -71671,13 +71748,13 @@ function (_super) {
 
       if (this.maxWidth) {
         fo.attr({
-          width: this.maxWidth
+          width: this.maxWidth - this.pixelPaddingLeft - this.pixelPaddingRight
         });
       }
 
       if (this.maxHeight) {
         fo.attr({
-          height: this.maxHeight
+          height: this.maxHeight - this.pixelPaddingTop - this.pixelPaddingBottom
         });
       } // Create line element
       //let lineElement: HTMLElement = this.getHTMLLineElement(getTextFormatter().format(this.html, output));
@@ -71696,10 +71773,10 @@ function (_super) {
         width: clientWidth,
         height: clientHeight
       }; // Set exact dimensions of foreignObject so it is sized exactly as
-      // the content within
+      // the content within (add one pixel to width so it does not wrap)
 
       fo.attr({
-        width: clientWidth,
+        width: clientWidth + 1,
         height: clientHeight
       }); // Check if maybe we need to hide the whole label if it doesn't fit
 
@@ -83171,11 +83248,11 @@ function (_super) {
     var dimParams = "";
 
     if (width) {
-      dimParams += "width=\"" + Math.round(width * scale) + "px\" ";
+      dimParams += "width=\"" + Math.round(width * (scale || 1)) + "px\" ";
     }
 
     if (height) {
-      dimParams += "height=\"" + Math.round(height * scale) + "px\" ";
+      dimParams += "height=\"" + Math.round(height * (scale || 1)) + "px\" ";
     } // Apply font settings
 
 
@@ -83683,6 +83760,7 @@ function (_super) {
           case 1:
             XLSX = _a.sent();
             wbOptions = this.adapter.apply("xlsxWorkbookOptions", {
+              xlsx: XLSX,
               options: {
                 bookType: "xlsx",
                 bookSST: false,
@@ -83690,6 +83768,7 @@ function (_super) {
               }
             }).options;
             sheetName = this.normalizeExcelSheetName(this.adapter.apply("xlsxSheetName", {
+              xlsx: XLSX,
               name: this.title || this.language.translate("Data")
             }).name);
             wb = {
@@ -83749,6 +83828,7 @@ function (_super) {
             wb.Sheets[sheetName] = XLSX.utils.aoa_to_sheet(data); // Apply adapters
 
             wb = this.adapter.apply("xlsxWorkbook", {
+              xlsx: XLSX,
               workbook: wb,
               options: options
             }).workbook;
@@ -86374,7 +86454,7 @@ function (_super) {
       //branch.interactions.clickable = true;
       // TODO clean this up when it's disposed
       branch.interactions.events.on("hit", function (ev) {
-        if (_this.events.isEnabled("hit")) {
+        if (_this.events.isEnabled("hit") && !_this.isDisposed()) {
           var event_1 = {
             "type": "hit",
             "event": ev.event,
@@ -86444,6 +86524,10 @@ function (_super) {
     }); // TODO clean this up when it's disposed
 
     branch.interactions.events.on("out", function (ev) {
+      if (_this.isDisposed()) {
+        return;
+      }
+
       if (!ev.pointer.touch) {
         _this.delayUnselectBranch(branch);
       }
@@ -87068,6 +87152,10 @@ function (_super) {
   ExportMenu.prototype.close = function () {
     var _this = this;
 
+    if (this.isDisposed()) {
+      return;
+    }
+
     if (this._ignoreNextClose) {
       this._ignoreNextClose = false;
       return;
@@ -87111,7 +87199,11 @@ function (_super) {
 
 
   ExportMenu.prototype.selectBranch = function (branch) {
-    var _this = this; // Cancel previous closure
+    var _this = this;
+
+    if (this.isDisposed()) {
+      return;
+    } // Cancel previous closure
 
 
     if (branch.closeTimeout) {
@@ -87167,7 +87259,11 @@ function (_super) {
 
 
   ExportMenu.prototype.unselectBranch = function (branch, simple) {
-    // Remove active class
+    if (this.isDisposed()) {
+      return;
+    } // Remove active class
+
+
     _utils_DOM__WEBPACK_IMPORTED_MODULE_11__["removeClass"](branch.element, "active"); // Set expanded
 
     if (branch.submenuElement) {
@@ -87200,7 +87296,11 @@ function (_super) {
 
 
   ExportMenu.prototype.delayUnselectBranch = function (branch, simple) {
-    var _this = this; // Schedule branch unselection
+    var _this = this;
+
+    if (this.isDisposed()) {
+      return;
+    } // Schedule branch unselection
 
 
     if (branch.closeTimeout) {
@@ -87231,7 +87331,11 @@ function (_super) {
 
 
   ExportMenu.prototype.moveSelection = function (key) {
-    // Check if there's a current selection
+    if (this.isDisposed()) {
+      return;
+    } // Check if there's a current selection
+
+
     if (!this._currentSelection) {
       return;
     }
@@ -88280,7 +88384,7 @@ function (_super) {
           break;
 
         case "i":
-          reg += "([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})\.([0-9]{3})[0-9]*([Zz]?)";
+          reg += "([0-9]{4})-?([0-9]{2})-?([0-9]{2})T?([0-9]{2}):?([0-9]{2}):?([0-9]{2})\.?([0-9]{0,3})([zZ]|[+\-][0-9]{2}:?[0-9]{2}|$)";
           parsedIndexes.iso = index;
           indexAdjust += 7;
           break;
@@ -88468,31 +88572,11 @@ function (_super) {
 
 
       if (parsedIndexes.zone > -1) {
-        var zone = matches[parsedIndexes.zone].replace(/:/, "");
-        var match = _utils_Type__WEBPACK_IMPORTED_MODULE_7__["getValue"](zone.match(/([+\-]?)([0-9]{2})([0-9]{2})/));
-        var dir = match[1];
-        var hour = match[2];
-        var minute = match[3];
-        var offset = parseInt(hour) * 60 + parseInt(minute); // Adjust offset
-        // Making it negative does not seem to make sense, but it's right
-        // because of how JavaScript calculates GTM offsets
-
-        if (dir == "+") {
-          offset *= -1;
-        } // Check the difference in offset
-
-
-        var originalOffset = new Date().getTimezoneOffset();
-        var diff = offset - originalOffset;
-        resValues.offset = diff;
+        resValues.offset = this.resolveTimezoneOffset(new Date(resValues.year, resValues.month, resValues.day), matches[parsedIndexes.zone]);
       } // ISO
 
 
       if (parsedIndexes.iso > -1) {
-        if (matches[parsedIndexes.iso + 7] == "Z" || matches[parsedIndexes.iso + 7] == "z") {
-          resValues.utc = true;
-        }
-
         resValues.year = _utils_Type__WEBPACK_IMPORTED_MODULE_7__["toNumber"](matches[parsedIndexes.iso + 0]);
         resValues.month = _utils_Type__WEBPACK_IMPORTED_MODULE_7__["toNumber"](matches[parsedIndexes.iso + 1]) - 1;
         resValues.day = _utils_Type__WEBPACK_IMPORTED_MODULE_7__["toNumber"](matches[parsedIndexes.iso + 2]);
@@ -88500,6 +88584,12 @@ function (_super) {
         resValues.minute = _utils_Type__WEBPACK_IMPORTED_MODULE_7__["toNumber"](matches[parsedIndexes.iso + 4]);
         resValues.second = _utils_Type__WEBPACK_IMPORTED_MODULE_7__["toNumber"](matches[parsedIndexes.iso + 5]);
         resValues.millisecond = _utils_Type__WEBPACK_IMPORTED_MODULE_7__["toNumber"](matches[parsedIndexes.iso + 6]);
+
+        if (matches[parsedIndexes.iso + 7] == "Z" || matches[parsedIndexes.iso + 7] == "z") {
+          resValues.utc = true;
+        } else if (matches[parsedIndexes.iso + 7] != "") {
+          resValues.offset = this.resolveTimezoneOffset(new Date(resValues.year, resValues.month, resValues.day), matches[parsedIndexes.iso + 7]);
+        }
       } // Create Date object
 
 
@@ -88515,6 +88605,31 @@ function (_super) {
     }
 
     return res;
+  };
+
+  DateFormatter.prototype.resolveTimezoneOffset = function (date, zone) {
+    var value = zone.match(/([+\-]?)([0-9]{2}):?([0-9]{2})/);
+
+    if (value) {
+      var match = _utils_Type__WEBPACK_IMPORTED_MODULE_7__["getValue"](zone.match(/([+\-]?)([0-9]{2}):?([0-9]{2})/));
+      var dir = match[1];
+      var hour = match[2];
+      var minute = match[3];
+      var offset = parseInt(hour) * 60 + parseInt(minute); // Adjust offset
+      // Making it negative does not seem to make sense, but it's right
+      // because of how JavaScript calculates GMT offsets
+
+      if (dir == "+") {
+        offset *= -1;
+      } // Check the difference in offset
+
+
+      var originalOffset = (date || new Date()).getTimezoneOffset();
+      var diff = offset - originalOffset;
+      return diff;
+    }
+
+    return 0;
   };
   /**
    * Resolves month name (i.e. "December") into a month number (11).
@@ -93951,7 +94066,7 @@ function (_super) {
 
   Interaction.prototype.applyCursorDownStyle = function (io, pointer) {
     // Not applicable for touch pointers since they don't display a cursor
-    if (pointer.touch) {
+    if (pointer && pointer.touch) {
       return;
     }
 
@@ -93976,7 +94091,7 @@ function (_super) {
 
   Interaction.prototype.restoreCursorDownStyle = function (io, pointer) {
     // Not applicable for touch pointers since they don't display a cursor
-    if (pointer.touch) {
+    if (pointer && pointer.touch) {
       return;
     }
 
@@ -96629,6 +96744,10 @@ function getGhostPaper() {
     // ghost is used to draw elements while real paper is not yet created or Sprite doesn't know parent yet
     var ghostDiv = document.createElement("div");
     ghostDiv.hidden = true;
+    ghostDiv.style.width = "1px";
+    ghostDiv.style.height = "1px";
+    ghostDiv.style.position = "absolute";
+    ghostDiv.style.zIndex = "-1000000";
     document.body.appendChild(ghostDiv);
     var ghostSvgContainer = new _SVGContainer__WEBPACK_IMPORTED_MODULE_2__["SVGContainer"](ghostDiv, true);
     ghostPaper = new Paper(ghostSvgContainer.SVGContainer, "ghost");
@@ -116172,10 +116291,12 @@ function add(date, unit, count, utc) {
  * @param unit             Time unit
  * @param count            Number of units to round to
  * @param firstDateOfWeek  First day of week
+ * @param roundMinutes     Minutes to round to (some timezones use non-whole hour)
+ * @param timezone         Use specific named timezone when rounding
  * @return New date
  */
 
-function round(date, unit, count, firstDateOfWeek, utc, firstDate, roundMinutes) {
+function round(date, unit, count, firstDateOfWeek, utc, firstDate, roundMinutes, timezone) {
   if (roundMinutes === void 0) {
     roundMinutes = 0;
   }
@@ -116185,6 +116306,10 @@ function round(date, unit, count, firstDateOfWeek, utc, firstDate, roundMinutes)
   }
 
   var timeZoneOffset = 0;
+
+  if (timezone && ["day", "month", "week", "year"].indexOf(unit) != -1) {
+    date = setTimezone(date, timezone);
+  }
 
   if (!utc && unit != "millisecond") {
     timeZoneOffset = date.getTimezoneOffset();
@@ -117133,9 +117258,20 @@ function splitTextByCharCount(text, maxChars, fullWords, rtl) {
   if (fullWords) {
     // Split by words first
     // Split by spacing
-    var currentIndex = -1;
-    var tmpText = text.replace(/([,;:!?\\\/\.]+[\s]+|[\s])/g, _Strings__WEBPACK_IMPORTED_MODULE_5__["PLACEHOLDER"] + "$1" + _Strings__WEBPACK_IMPORTED_MODULE_5__["PLACEHOLDER"]);
-    var words = tmpText.split(_Strings__WEBPACK_IMPORTED_MODULE_5__["PLACEHOLDER"]); // Process each word
+    var currentIndex = -1; //let tmpText = text.replace(/([,;:!?\\\/\.]+[\s]+|[\s])/g, $strings.PLACEHOLDER + "$1" + $strings.PLACEHOLDER);
+
+    var tmpText = text.replace(/([,;:!?\\\/\.]+|[\s])/g, _Strings__WEBPACK_IMPORTED_MODULE_5__["PLACEHOLDER"] + "$1" + _Strings__WEBPACK_IMPORTED_MODULE_5__["PLACEHOLDER"]);
+    var words = tmpText.split(_Strings__WEBPACK_IMPORTED_MODULE_5__["PLACEHOLDER"]); // Glue end-of-word punctuation to the word itself
+
+    for (var i = 1; i < words.length; i++) {
+      var word = words[i];
+
+      if ((word == "." || word == ",") && words[i - 1].match(/[\w]+$/)) {
+        words[i - 1] += word;
+        words[i] = "";
+      }
+    } // Process each word
+
 
     for (var i = 0; i < words.length; i++) {
       // Get word and symbol count
