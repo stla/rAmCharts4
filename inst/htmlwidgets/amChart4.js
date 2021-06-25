@@ -1413,6 +1413,7 @@ function (_super) {
       if (_this.valueLabels.template.align == "right" || label.measuredWidth > maxAdjustedLabelWidth) {
         if (!(label.width instanceof _core_utils_Percent__WEBPACK_IMPORTED_MODULE_10__["Percent"])) {
           label.width = Math.min(label.maxWidth, maxAdjustedLabelWidth - label.pixelMarginLeft - label.pixelMarginRight);
+          label.maxWidth = label.width;
         }
       }
     });
@@ -6292,11 +6293,11 @@ function (_super) {
      *
      * ```TypeScript
      * categoryAxis.renderer.ticks.template.disabled = false;
-     * categoryAxis.renderer.ticks.template.strokeOpacty = 0.5;
+     * categoryAxis.renderer.ticks.template.strokeOpacity = 0.5;
      * ```
      * ```JavaScript
      * categoryAxis.renderer.ticks.template.disabled = false;
-     * categoryAxis.renderer.ticks.template.strokeOpacty = 0.5;
+     * categoryAxis.renderer.ticks.template.strokeOpacity = 0.5;
      * ```
      * ```JSON
      * {
@@ -6306,7 +6307,7 @@ function (_super) {
      *     "renderer": {
      *       "ticks": {
      *         "disabled": false,
-     *         "strokeOpacty": 0.5
+     *         "strokeOpacity": 0.5
      *       }
      *     }
      *   }]
@@ -15775,7 +15776,7 @@ function (_super) {
           var decCount = Math.round(Math.abs(Math.log(Math.abs(stepPower)) * Math.LOG10E)) + 2;
           decCount = Math.min(13, decCount); // round value to avoid floating point issues
 
-          value_1 = _core_utils_Math__WEBPACK_IMPORTED_MODULE_6__["ceil"](value_1, decCount);
+          value_1 = _core_utils_Math__WEBPACK_IMPORTED_MODULE_6__["round"](value_1, decCount); // ceil causes problems: https://codepen.io/team/amcharts/pen/XWMjZwy?editors=1010
 
           if (oldValue == value_1) {
             value_1 = maxZoomed;
@@ -16750,6 +16751,8 @@ function (_super) {
      * from 100 to 200, we will now have axis displaying from 50 to 200 because
      * we asked to expand minimum value by 50% (0.5).
      *
+     * NOTE: this setting is not compatible with `strictMinMax`.
+     *
      * @param {number}
      */
     set: function set(value) {
@@ -16777,6 +16780,8 @@ function (_super) {
      * E.g.: 0.5 will mean half of the current range. If we have axis displaying
      * from 100 to 200, we will now have axis displaying from 100 to 250 because
      * we asked to expand maximum value by 50% (0.5).
+     *
+     * NOTE: this setting is not compatible with `strictMinMax`.
      *
      * @param {number}
      */
@@ -19036,7 +19041,8 @@ function (_super) {
 
     _this.behavior = "zoomX";
     _this.maxPanOut = 0.1;
-    var interfaceColors = new _core_utils_InterfaceColorSet__WEBPACK_IMPORTED_MODULE_9__["InterfaceColorSet"](); // Create selection element
+    var interfaceColors = new _core_utils_InterfaceColorSet__WEBPACK_IMPORTED_MODULE_9__["InterfaceColorSet"]();
+    _this.snapOnPan = true; // Create selection element
 
     var selection = _this.createChild(_core_Sprite__WEBPACK_IMPORTED_MODULE_2__["Sprite"]);
 
@@ -19961,11 +19967,32 @@ function (_super) {
     enumerable: true,
     configurable: true
   });
+  Object.defineProperty(XYCursor.prototype, "snapOnPan", {
+    /**
+     * Should zoom selection "snap" into equal categories/intervals after panning
+     * the chart? (when `behavior == "panX"`)
+     *
+     * @default true
+     * @since 4.10.17
+     * @return Snap on pan?
+     */
+    get: function get() {
+      return this.getPropertyValue("snapOnPan");
+    },
+
+    /**
+     * @param value Snap on pan?
+     */
+    set: function set(value) {
+      this.setPropertyValue("snapOnPan", value);
+    },
+    enumerable: true,
+    configurable: true
+  });
   /**
-   * [handleSnap description]
+   * Snaps the zoom selection after chart is panned.
    *
    * @ignore
-   * @todo Description
    */
 
   XYCursor.prototype.handleSnap = function (series) {
@@ -22746,11 +22773,13 @@ function (_super) {
     this.outgoingDataItems.each(function (dataItem) {
       if (!dataItem.toNode || dataItem.toNode && !dataItem.toNode.isHidden) {
         dataItem.setWorkingValue("value", dataItem.getValue("value"), duration);
+        dataItem.link.show();
       }
     });
     this.incomingDataItems.each(function (dataItem) {
       if (!dataItem.fromNode || dataItem.fromNode && !dataItem.fromNode.isHidden) {
         dataItem.setWorkingValue("value", dataItem.getValue("value"), duration);
+        dataItem.link.show();
       }
     });
     return animation;
@@ -22768,9 +22797,11 @@ function (_super) {
 
     this.outgoingDataItems.each(function (dataItem) {
       dataItem.setWorkingValue("value", 0, duration);
+      dataItem.link.hide();
     });
     this.incomingDataItems.each(function (dataItem) {
       dataItem.setWorkingValue("value", 0, duration);
+      dataItem.link.hide();
     });
     return animation;
   };
@@ -23191,7 +23222,7 @@ function (_super) {
         y: tl.y + 0.5 * h
       };
       var qp1 = _core_rendering_Path__WEBPACK_IMPORTED_MODULE_6__["lineTo"](br);
-      var qp2 = "";
+      var qp2 = _core_rendering_Path__WEBPACK_IMPORTED_MODULE_6__["lineTo"](tl);
 
       if (ed != 0) {
         qp1 = _core_rendering_Path__WEBPACK_IMPORTED_MODULE_6__["quadraticCurveTo"](br, cpr);
@@ -23231,7 +23262,7 @@ function (_super) {
         x: tb.x + 0.5 * w
       };
       var qp1 = _core_rendering_Path__WEBPACK_IMPORTED_MODULE_6__["lineTo"](bt);
-      var qp2 = "";
+      var qp2 = _core_rendering_Path__WEBPACK_IMPORTED_MODULE_6__["lineTo"](tb);
 
       if (ed != 0) {
         qp1 = _core_rendering_Path__WEBPACK_IMPORTED_MODULE_6__["quadraticCurveTo"](bt, cpr);
@@ -34254,6 +34285,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _core_utils_Percent__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../core/utils/Percent */ "./node_modules/@amcharts/amcharts4/.internal/core/utils/Percent.js");
 /* harmony import */ var _core_utils_Iterator__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../core/utils/Iterator */ "./node_modules/@amcharts/amcharts4/.internal/core/utils/Iterator.js");
 /* harmony import */ var _core_utils_Array__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../core/utils/Array */ "./node_modules/@amcharts/amcharts4/.internal/core/utils/Array.js");
+/* harmony import */ var _core_utils_Type__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../core/utils/Type */ "./node_modules/@amcharts/amcharts4/.internal/core/utils/Type.js");
 /**
  * Radar column series module.
  */
@@ -34264,6 +34296,7 @@ __webpack_require__.r(__webpack_exports__);
  * ============================================================================
  * @hidden
  */
+
 
 
 
@@ -34476,6 +34509,17 @@ function (_super) {
         x: this.yAxis.getX(dataItem, yOpenField, endLocation, "valueY"),
         y: this.yAxis.getY(dataItem, yOpenField, endLocation, "valueY")
       });
+
+      if (_core_utils_Type__WEBPACK_IMPORTED_MODULE_12__["isNumber"](width)) {
+        var abs = Math.abs(tRadius - bRadius);
+
+        if (abs > width) {
+          var d = (abs - width) / 2;
+          tRadius += d;
+          bRadius -= d;
+        }
+      }
+
       lAngle = this.xAxis.getAngle(dataItem, xField, dataItem.locations[xField], "valueX");
       rAngle = this.xAxis.getAngle(dataItem, xOpenField, dataItem.locations[xOpenField], "valueX");
     }
@@ -39389,7 +39433,7 @@ function (_super) {
           if (openValue == closeValue) {
             var baseInterval = xAxis.baseInterval;
             var dateFormatter = xAxis.dateFormatter;
-            openValue = _core_utils_Time__WEBPACK_IMPORTED_MODULE_14__["round"](new Date(openValue), baseInterval.timeUnit, baseInterval.count, dateFormatter.firstDayOfWeek, dateFormatter.utc, undefined, dateFormatter.timezoneMinutes).getTime();
+            openValue = _core_utils_Time__WEBPACK_IMPORTED_MODULE_14__["round"](new Date(openValue), baseInterval.timeUnit, baseInterval.count, dateFormatter.firstDayOfWeek, dateFormatter.utc, undefined, dateFormatter.timezoneMinutes, dateFormatter.timezone).getTime();
             closeValue = _core_utils_Time__WEBPACK_IMPORTED_MODULE_14__["add"](new Date(openValue), baseInterval.timeUnit, baseInterval.count, dateFormatter.utc).getTime();
           }
 
@@ -39465,7 +39509,7 @@ function (_super) {
           if (openValue == closeValue) {
             var baseInterval = yAxis.baseInterval;
             var dateFormatter = yAxis.dateFormatter;
-            openValue = _core_utils_Time__WEBPACK_IMPORTED_MODULE_14__["round"](new Date(openValue), baseInterval.timeUnit, baseInterval.count, dateFormatter.firstDayOfWeek, dateFormatter.utc, undefined, dateFormatter.timezoneMinutes).getTime();
+            openValue = _core_utils_Time__WEBPACK_IMPORTED_MODULE_14__["round"](new Date(openValue), baseInterval.timeUnit, baseInterval.count, dateFormatter.firstDayOfWeek, dateFormatter.utc, undefined, dateFormatter.timezoneMinutes, dateFormatter.timezone).getTime();
             closeValue = _core_utils_Time__WEBPACK_IMPORTED_MODULE_14__["add"](new Date(openValue), baseInterval.timeUnit, baseInterval.count, dateFormatter.utc).getTime();
           }
 
@@ -39663,16 +39707,18 @@ function (_super) {
   XYSeries.prototype.show = function (duration) {
     var _this = this;
 
-    if (this.appeared && this.xAxis instanceof _axes_DateAxis__WEBPACK_IMPORTED_MODULE_8__["DateAxis"] && this.xAxis.groupData) {
-      this._tmin.setKey(this.yAxis.uid, undefined);
+    if (this.isHidden) {
+      if (this.appeared && this.xAxis instanceof _axes_DateAxis__WEBPACK_IMPORTED_MODULE_8__["DateAxis"] && this.xAxis.groupData) {
+        this._tmin.setKey(this.yAxis.uid, undefined);
 
-      this._tmax.setKey(this.yAxis.uid, undefined);
-    }
+        this._tmax.setKey(this.yAxis.uid, undefined);
+      }
 
-    if (this.appeared && this.yAxis instanceof _axes_DateAxis__WEBPACK_IMPORTED_MODULE_8__["DateAxis"] && this.yAxis.groupData) {
-      this._tmin.setKey(this.xAxis.uid, undefined);
+      if (this.appeared && this.yAxis instanceof _axes_DateAxis__WEBPACK_IMPORTED_MODULE_8__["DateAxis"] && this.yAxis.groupData) {
+        this._tmin.setKey(this.xAxis.uid, undefined);
 
-      this._tmax.setKey(this.xAxis.uid, undefined);
+        this._tmax.setKey(this.xAxis.uid, undefined);
+      }
     }
 
     var fields;
@@ -44096,11 +44142,13 @@ function (_super) {
             series.showOnInit = true;
           }
 
-          series.events.once("datavalidated", function () {
-            if (series.data == _this.data) {
-              series._data = [];
-            }
-          });
+          if (!series.isDisposed()) {
+            series.events.once("datavalidated", function () {
+              if (series.data == _this.data) {
+                series._data = [];
+              }
+            });
+          }
         }
       }));
     }
@@ -45661,6 +45709,15 @@ function (_super) {
 
       var valueLeft = sums[k] - valueOffset,
           valueRight = value - valueLeft;
+
+      if (value == 0) {
+        var node = nodes.getIndex(i);
+        node.x0 = x0;
+        node.y0 = y0;
+        node.x1 = x1;
+        node.y1 = y1;
+        return;
+      }
 
       if (x1 - x0 > y1 - y0) {
         var xk = (x0 * valueRight + x1 * valueLeft) / value;
@@ -47561,7 +47618,7 @@ function (_super) {
       this.zoomAxes(this.xAxes, {
         start: panEndRange.start - delta,
         end: panEndRange.end - delta
-      }, false, true);
+      }, false, cursor.snapOnPan);
       this._panEndXRange = undefined;
       this._panStartXRange = undefined;
     }
@@ -47581,7 +47638,7 @@ function (_super) {
       this.zoomAxes(this.yAxes, {
         start: panEndRange.start - delta,
         end: panEndRange.end - delta
-      }, false, true);
+      }, false, cursor.snapOnPan);
       this._panEndYRange = undefined;
       this._panStartYRange = undefined;
     }
@@ -47834,13 +47891,23 @@ function (_super) {
     };
     this.showSeriesTooltip(); // hides
 
+    var originalRange = range;
+
     if (!this.dataInvalid) {
       _core_utils_Iterator__WEBPACK_IMPORTED_MODULE_17__["each"](axes.iterator(), function (axis) {
-        if (stop && 1 / (range.end - range.start) >= axis.maxZoomFactor) {// void
+        var maxZoomFactor = axis.maxZoomFactor;
+
+        if (_core_utils_Type__WEBPACK_IMPORTED_MODULE_18__["isNumber"](axis.minZoomCount)) {
+          maxZoomFactor = maxZoomFactor / axis.minZoomCount;
+        }
+
+        if (stop && 1 / (range.end - range.start) >= maxZoomFactor) {// void
         } else {
           if (axis.zoomable) {
             if (axis.renderer.inversed) {
-              range = _core_utils_Math__WEBPACK_IMPORTED_MODULE_16__["invertRange"](range);
+              range = _core_utils_Math__WEBPACK_IMPORTED_MODULE_16__["invertRange"](originalRange);
+            } else {
+              range = originalRange;
             }
 
             axis.hideTooltip(0);
@@ -49747,15 +49814,15 @@ function () {
   BaseObject.prototype.processEvents = function (item, config) {
     var _this = this;
 
-    if (_utils_Type__WEBPACK_IMPORTED_MODULE_13__["isObject"](config)) {
+    if (_utils_Type__WEBPACK_IMPORTED_MODULE_13__["isArray"](config)) {
+      _utils_Array__WEBPACK_IMPORTED_MODULE_11__["each"](config, function (entry, index) {
+        item.on(entry.type, entry.callback, _this);
+      });
+    } else if (_utils_Type__WEBPACK_IMPORTED_MODULE_13__["isObject"](config)) {
       _utils_Object__WEBPACK_IMPORTED_MODULE_12__["each"](config, function (key, entry) {
         if (!item.has(key, entry)) {
           item.on(key, entry);
         }
-      });
-    } else if (_utils_Type__WEBPACK_IMPORTED_MODULE_13__["isArray"](config)) {
-      _utils_Array__WEBPACK_IMPORTED_MODULE_11__["each"](config, function (entry, index) {
-        item.on(entry.type, entry.callback, _this);
       });
     }
   };
@@ -49920,6 +49987,7 @@ function () {
 
 
     var itemCount = item.length;
+    var extraCount = 0;
     _utils_Array__WEBPACK_IMPORTED_MODULE_11__["each"](configValue, function (entry, index) {
       if (_utils_Type__WEBPACK_IMPORTED_MODULE_13__["isObject"](entry)) {
         // An object.
@@ -49938,6 +50006,7 @@ function () {
           item.push(entry);
           return;
         } else {
+          extraCount++;
           listItem = _this.createEntryInstance(entry);
 
           if (parent) {
@@ -49966,7 +50035,7 @@ function () {
     }); // Truncate the list if it contains less items than the config
     // array
 
-    while (configValue.length > item.length) {
+    while (configValue.length + extraCount < item.length) {
       item.pop();
     }
   };
@@ -51261,18 +51330,18 @@ function (_super) {
   Component.prototype.setData = function (value) {
     // array might be the same, but there might be items added
     // todo: check if array changed, toString maybe?
-    //if (this._data != value) {
-    this._parseDataFrom = 0;
-    this.disposeData();
-    this._data = value;
+    if (!this.isDisposed()) {
+      this._parseDataFrom = 0;
+      this.disposeData();
+      this._data = value;
 
-    if (value && value.length > 0) {
-      this.invalidateData();
-    } else {
-      this.dispatchImmediately("beforedatavalidated");
-      this.dispatch("datavalidated");
-    } //}
-
+      if (value && value.length > 0) {
+        this.invalidateData();
+      } else {
+        this.dispatchImmediately("beforedatavalidated");
+        this.dispatch("datavalidated");
+      }
+    }
   };
   /**
    * Returns (creates if necessary) a [[DataSource]] bound to any specific
@@ -67199,7 +67268,7 @@ function () {
    * @see {@link https://docs.npmjs.com/misc/semver}
    */
 
-  System.VERSION = "4.10.16";
+  System.VERSION = "4.10.20";
   return System;
 }();
 
@@ -71039,6 +71108,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_Type__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../utils/Type */ "./node_modules/@amcharts/amcharts4/.internal/core/utils/Type.js");
 /* harmony import */ var _utils_DOM__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../utils/DOM */ "./node_modules/@amcharts/amcharts4/.internal/core/utils/DOM.js");
 /* harmony import */ var _utils_Responsive__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../utils/Responsive */ "./node_modules/@amcharts/amcharts4/.internal/core/utils/Responsive.js");
+/* harmony import */ var _Options__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../Options */ "./node_modules/@amcharts/amcharts4/.internal/core/Options.js");
 /**
  * Text class deals with all text placed on chart.
  */
@@ -71049,6 +71119,7 @@ __webpack_require__.r(__webpack_exports__);
  * ============================================================================
  * @hidden
  */
+
 
 
 
@@ -71468,12 +71539,11 @@ function (_super) {
 
             lineInfo.text = chunk.text;
             lineInfo.style = Object(_formatters_TextFormatter__WEBPACK_IMPORTED_MODULE_3__["getTextFormatter"])().translateStyleShortcuts(currentFormat);
-            var tspan = this.getSvgElement(lineInfo.text, lineInfo.style);
 
             if (this.textPathElement) {
-              this.textPathElement.add(tspan);
+              this.getSvgElement(lineInfo.text, lineInfo.style, this.textPathElement);
             } else {
-              lineInfo.element.add(tspan);
+              this.getSvgElement(lineInfo.text, lineInfo.style, lineInfo.element);
             }
 
             this.getLineBBox(lineInfo);
@@ -72551,12 +72621,29 @@ function (_super) {
     configurable: true
   }); // temp, replacing textFormatter method
 
-  Label.prototype.getSvgElement = function (text, style) {
+  Label.prototype.getSvgElement = function (text, style, parent) {
     var element = this.paper.add("tspan");
     element.textContent = text;
 
     if (style) {
-      element.node.setAttribute("style", style);
+      if (_Options__WEBPACK_IMPORTED_MODULE_11__["options"].nonce && parent) {
+        //element.node.setAttribute("nonce", "test123");
+        var classid = "amcharts_element_style_" + btoa(style).replace(/[^\w]*/g, "");
+        element.node.setAttribute("class", classid);
+        var defs = document.createElementNS(_utils_DOM__WEBPACK_IMPORTED_MODULE_9__["SVGNS"], "defs");
+        parent.node.appendChild(defs);
+        var e = document.createElement("style");
+        e.type = "text/css";
+        e.innerHTML = "." + classid + " { " + style + "}";
+        e.setAttribute("nonce", _Options__WEBPACK_IMPORTED_MODULE_11__["options"].nonce);
+        defs.appendChild(e);
+      } else {
+        element.node.setAttribute("style", style);
+      }
+    }
+
+    if (parent) {
+      parent.add(element);
     }
 
     return element;
@@ -81093,6 +81180,11 @@ function loadStylesheet(doc, url, f) {
         case 3:
           s = doc.createElement("style");
           s.textContent = response.response;
+
+          if (_Options__WEBPACK_IMPORTED_MODULE_14__["options"].nonce != "") {
+            s.setAttribute("nonce", _Options__WEBPACK_IMPORTED_MODULE_14__["options"].nonce);
+          }
+
           doc.head.appendChild(s);
           _a.label = 4;
 
@@ -81926,6 +82018,13 @@ function (_super) {
                           case 1:
                             after = a[2];
                             fullUrl = _utils_Utils__WEBPACK_IMPORTED_MODULE_21__["joinUrl"](topUrl, a[1]);
+
+                            if (this.webFontFilter && !fullUrl.match(this.webFontFilter)) {
+                              return [2
+                              /*return*/
+                              , null];
+                            }
+
                             _a.label = 2;
 
                           case 2:
@@ -84303,7 +84402,7 @@ function (_super) {
 
         dataFields = this.adapter.apply("formatDataFields", {
           dataFields: this.dataFields,
-          format: "csv"
+          format: "json"
         }).dataFields;
 
         if (!this._dynamicDataFields) {
@@ -84896,6 +84995,8 @@ function (_super) {
      * ```JavaScript
      * chart.exporting.extraSprites.push(chart2);
      * ```
+     *
+     * IMPORTANT: This setting is ignored when exporting to SVG format.
      *
      * @since 4.2.0
      * @param value Sprite
@@ -85904,6 +86005,11 @@ function (_super) {
       // Set up menu
       if (_utils_Type__WEBPACK_IMPORTED_MODULE_19__["hasValue"](config.menu) && !_utils_Type__WEBPACK_IMPORTED_MODULE_19__["hasValue"](config.menu.type)) {
         config.menu.type = "ExportMenu";
+      }
+
+      if (_utils_Type__WEBPACK_IMPORTED_MODULE_19__["hasValue"](config.dataFields) && _utils_Type__WEBPACK_IMPORTED_MODULE_19__["isObject"](config.dataFields)) {
+        this.dataFields = config.dataFields;
+        delete config.dataFields;
       }
     }
 
@@ -108840,6 +108946,8 @@ function createChild(htmlElement, classType) {
     htmlContainer = document.createElement("div");
     htmlContainer.style.width = "200px";
     htmlContainer.style.height = "200px";
+    htmlContainer.style.top = "0";
+    htmlContainer.style.left = "0";
     htmlContainer.style.visibility = "hidden";
     htmlContainer.style.position = "absolute";
     document.body.appendChild(htmlContainer);
@@ -112594,7 +112702,7 @@ function getArcPoint(radius, arc) {
  */
 
 function isInRectangle(point, rectangle) {
-  if (point.x >= rectangle.x && point.x <= rectangle.x + rectangle.width && point.y > rectangle.y && point.y < rectangle.y + rectangle.height) {
+  if (point.x >= rectangle.x && point.x <= rectangle.x + rectangle.width && point.y >= rectangle.y && point.y <= rectangle.y + rectangle.height) {
     return true;
   }
 
@@ -117625,7 +117733,10 @@ function numberToString(value) {
 function anyToDate(value) {
   if (_utils_Type__WEBPACK_IMPORTED_MODULE_3__["isDate"](value)) {
     // TODO maybe don't create a new Date ?
-    return new Date(value);
+    var date = new Date(value); // This is needed because IE does not copy over milliseconds
+
+    date.setMilliseconds(value.getMilliseconds());
+    return date;
   } else if (_utils_Type__WEBPACK_IMPORTED_MODULE_3__["isNumber"](value)) {
     return new Date(value);
   } else {
@@ -120929,7 +121040,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /*!*****************************************!*\
   !*** ./node_modules/tslib/tslib.es6.js ***!
   \*****************************************/
-/*! exports provided: __extends, __assign, __rest, __decorate, __param, __metadata, __awaiter, __generator, __createBinding, __exportStar, __values, __read, __spread, __spreadArrays, __await, __asyncGenerator, __asyncDelegator, __asyncValues, __makeTemplateObject, __importStar, __importDefault, __classPrivateFieldGet, __classPrivateFieldSet */
+/*! exports provided: __extends, __assign, __rest, __decorate, __param, __metadata, __awaiter, __generator, __createBinding, __exportStar, __values, __read, __spread, __spreadArrays, __spreadArray, __await, __asyncGenerator, __asyncDelegator, __asyncValues, __makeTemplateObject, __importStar, __importDefault, __classPrivateFieldGet, __classPrivateFieldSet */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -120948,6 +121059,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__read", function() { return __read; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__spread", function() { return __spread; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__spreadArrays", function() { return __spreadArrays; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__spreadArray", function() { return __spreadArray; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__await", function() { return __await; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__asyncGenerator", function() { return __asyncGenerator; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__asyncDelegator", function() { return __asyncDelegator; });
@@ -120988,6 +121100,8 @@ var _extendStatics = function extendStatics(d, b) {
 };
 
 function __extends(d, b) {
+  if (typeof b !== "function" && b !== null) throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+
   _extendStatics(d, b);
 
   function __() {
@@ -121243,6 +121357,8 @@ function __read(o, n) {
 
   return ar;
 }
+/** @deprecated */
+
 function __spread() {
   for (var ar = [], i = 0; i < arguments.length; i++) {
     ar = ar.concat(__read(arguments[i]));
@@ -121250,6 +121366,8 @@ function __spread() {
 
   return ar;
 }
+/** @deprecated */
+
 function __spreadArrays() {
   for (var s = 0, i = 0, il = arguments.length; i < il; i++) {
     s += arguments[i].length;
@@ -121263,7 +121381,15 @@ function __spreadArrays() {
 
   return r;
 }
-;
+function __spreadArray(to, from, pack) {
+  if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+    if (ar || !(i in from)) {
+      if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+      ar[i] = from[i];
+    }
+  }
+  return to.concat(ar || from);
+}
 function __await(v) {
   return this instanceof __await ? (this.v = v, this) : new __await(v);
 }
@@ -121388,20 +121514,16 @@ function __importDefault(mod) {
     default: mod
   };
 }
-function __classPrivateFieldGet(receiver, privateMap) {
-  if (!privateMap.has(receiver)) {
-    throw new TypeError("attempted to get private field on non-instance");
-  }
-
-  return privateMap.get(receiver);
+function __classPrivateFieldGet(receiver, state, kind, f) {
+  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+  return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 }
-function __classPrivateFieldSet(receiver, privateMap, value) {
-  if (!privateMap.has(receiver)) {
-    throw new TypeError("attempted to set private field on non-instance");
-  }
-
-  privateMap.set(receiver, value);
-  return value;
+function __classPrivateFieldSet(receiver, state, value, kind, f) {
+  if (kind === "m") throw new TypeError("Private method is not writable");
+  if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+  if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+  return kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value), value;
 }
 
 /***/ }),
@@ -121432,7 +121554,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./utils */ "./srcjs/utils/index.js");
 /* harmony import */ var regression__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! regression */ "./node_modules/regression/dist/regression.js");
 /* harmony import */ var regression__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(regression__WEBPACK_IMPORTED_MODULE_14__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
@@ -122155,7 +122277,10 @@ class AmBarChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
+
     this.chart = this.BarChart();
   }
 
@@ -122769,7 +122894,10 @@ class AmHorizontalBarChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
+
     this.chart = this.HorizontalBarChart();
   }
 
@@ -123650,7 +123778,10 @@ class AmLineChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
+
     this.chart = this.LineChart();
   }
 
@@ -124365,7 +124496,10 @@ class AmScatterChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
+
     this.chart = this.ScatterChart();
   }
 
@@ -125151,7 +125285,10 @@ class AmRangeAreaChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
+
     this.chart = this.RangeAreaChart();
   }
 
@@ -125747,7 +125884,10 @@ class AmRadialBarChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
+
     this.chart = this.RadialBarChart();
   }
 
@@ -126284,7 +126424,10 @@ class AmDumbbellChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
+
     this.chart = this.DumbbellChart();
   }
 
@@ -126761,7 +126904,10 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
+
     this.chart = this.HorizontalDumbbellChart();
   }
 
@@ -127073,7 +127219,10 @@ class AmGaugeChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
+
     this.chart = this.GaugeChart();
   }
 
@@ -127479,7 +127628,10 @@ class AmStackedBarChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
+
     this.chart = this.StackedBarChart();
   }
 
@@ -127809,7 +127961,10 @@ class AmBoxplotChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
+
     this.chart = this.BoxplotChart();
   }
 
@@ -128056,8 +128211,9 @@ class AmPieChart extends React.PureComponent {
   componentDidUpdate(prevProps, prevState) {
     if (this.chart) {
       this.chart.dispose();
-      this.chart = this.PieChart();
     }
+
+    this.chart = this.PieChart();
   }
 
   render() {

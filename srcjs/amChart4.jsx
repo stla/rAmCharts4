@@ -692,7 +692,9 @@ class AmBarChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
     this.chart = this.BarChart();
   }
 
@@ -1290,7 +1292,9 @@ class AmHorizontalBarChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
     this.chart = this.HorizontalBarChart();
   }
 
@@ -2147,7 +2151,9 @@ class AmLineChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
     this.chart = this.LineChart();
   }
 
@@ -2837,7 +2843,9 @@ class AmScatterChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
     this.chart = this.ScatterChart();
   }
 
@@ -3620,7 +3628,9 @@ class AmRangeAreaChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
     this.chart = this.RangeAreaChart();
   }
 
@@ -4201,7 +4211,9 @@ class AmRadialBarChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
     this.chart = this.RadialBarChart();
   }
 
@@ -4727,7 +4739,9 @@ class AmDumbbellChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
     this.chart = this.DumbbellChart();
   }
 
@@ -5192,7 +5206,9 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
     this.chart = this.HorizontalDumbbellChart();
   }
 
@@ -5505,7 +5521,9 @@ class AmGaugeChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
     this.chart = this.GaugeChart();
   }
 
@@ -5907,7 +5925,9 @@ class AmStackedBarChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
     this.chart = this.StackedBarChart();
   }
 
@@ -6228,7 +6248,9 @@ class AmBoxplotChart extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    this.chart.dispose();
+    if (this.chart) {
+      this.chart.dispose();
+    }
     this.chart = this.BoxplotChart();
   }
 
@@ -6477,8 +6499,8 @@ class AmPieChart extends React.PureComponent {
   componentDidUpdate(prevProps, prevState) {
     if (this.chart) {
       this.chart.dispose();
-      this.chart = this.PieChart();
     }
+    this.chart = this.PieChart();
   }
 
   render() {

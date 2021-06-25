@@ -1,3 +1,9 @@
+# rAmCharts4 1.3.2 (2021-06-25)
+
+* Updated 'amcharts4'.
+* Attempt to fix bug #10.
+
+
 # rAmCharts4 1.3.1 (2021-03-06)
 
 * Updated 'amcharts4'.
