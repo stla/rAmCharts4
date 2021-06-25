@@ -27,7 +27,6 @@ URL: https://github.com/stla/rAmCharts4
 BugReports: https://github.com/stla/rAmCharts4/issues
 License: GPL-3 
 Encoding: UTF-8
-LazyData: true
 Imports: 
     htmltools,
     htmlwidgets (>= 1.5.3),
