@@ -6533,7 +6533,7 @@ class AmPercentageBarChart extends React.PureComponent {
     }
   }
 
-  PercntageBarChart() {
+  PercentageBarChart() {
     let theme = this.props.theme,
       chartLegend = this.props.legend,
       category = this.props.category,
@@ -6643,6 +6643,36 @@ class AmPercentageBarChart extends React.PureComponent {
     }
 
 
+    /* ~~~~\  legend  /~~~~ */
+    if (chartLegend) {
+      chart.legend = new am4charts.Legend();
+      let legendPosition = chartLegend.position || "bottom";
+      chart.legend.position = legendPosition;
+      if (legendPosition === "bottom" || legendPosition === "top") {
+        chart.legend.maxHeight = chartLegend.maxHeight;
+        chart.legend.scrollable = chartLegend.scrollable;
+      } else {
+        chart.legend.maxWidth = chartLegend.maxWidth;
+      }
+      chart.legend.useDefaultMarker = false;
+      let markerTemplate = chart.legend.markers.template;
+      markerTemplate.width = chartLegend.itemsWidth || 20;
+      markerTemplate.height = chartLegend.itemsHeight || 20;
+      // markerTemplate.strokeWidth = 1;
+      // markerTemplate.strokeOpacity = 1;
+      chart.legend.itemContainers.template.events.on("over", function (ev) {
+        ev.target.dataItem.dataContext.columns.each(function (x) {
+          x.column.isHover = true;
+        })
+      });
+      chart.legend.itemContainers.template.events.on("out", function (ev) {
+        ev.target.dataItem.dataContext.columns.each(function (x) {
+          x.column.isHover = false;
+        })
+      });
+    }
+
+
     /* ~~~~\  category axis  /~~~~ */
     let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
     categoryAxis.dataFields.category = category;
@@ -6664,7 +6694,7 @@ class AmPercentageBarChart extends React.PureComponent {
       series.columns.template.width = am4core.percent(80);
       series.columns.template.tooltipText =
         "{name}: {valueY.totalPercent.formatNumber('#.00')}%";
-      series.name = valueNames[i];
+      series.name = valueNames[values[i]];
       series.dataFields.categoryX = category;
       series.dataFields.valueY = values[i];
       series.dataFields.valueYShow = "totalPercent";
@@ -6678,7 +6708,7 @@ class AmPercentageBarChart extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.chart = this.AmPercentageBarChart();
+    this.chart = this.PercentageBarChart();
   }
 
   componentWillUnmount() {
@@ -6691,7 +6721,7 @@ class AmPercentageBarChart extends React.PureComponent {
     if (this.chart) {
       this.chart.dispose();
     }
-    this.chart = this.AmPercentageBarChart();
+    this.chart = this.PercentageBarChart();
   }
 
   render() {

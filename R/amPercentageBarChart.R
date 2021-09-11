@@ -90,7 +90,6 @@ amPercentageBarChart <- function(
   hline = NULL,
   chartTitle = NULL,
   theme = NULL,
-  draggable = FALSE,
   backgroundColor = NULL,
   xAxis = NULL, # default
   yAxis = NULL, # default
