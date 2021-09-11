@@ -1,3 +1,8 @@
+# rAmCharts4 1.4.0 (2021-09-11)
+
+Added the 100% stacked bar chart (`amPercentageBarChart`).
+
+
 # rAmCharts4 1.3.2 (2021-06-25)
 
 * Updated 'amcharts4'.
