@@ -6515,6 +6515,196 @@ class AmPieChart extends React.PureComponent {
 }
 
 
+/* COMPONENT: 100% STACKED BAR CHART */
+
+class AmPercentageBarChart extends React.PureComponent {
+
+  constructor(props) {
+    super(props);
+    this.style = this.style.bind(this);
+    this.PercentageBarChart = this.PercentageBarChart.bind(this);
+  }
+
+  style() {
+    if (window.Shiny && !window.FlexDashboard) {
+      return { width: "100%", height: "100%" };
+    } else {
+      return { width: this.props.width, height: this.props.height };
+    }
+  }
+
+  PercntageBarChart() {
+    let theme = this.props.theme,
+      chartLegend = this.props.legend,
+      category = this.props.category,
+      categories = this.props.data[category],
+      values = this.props.values,
+      hline = this.props.hline,
+      data = HTMLWidgets.dataframeToD3(
+        this.props.data
+      ),
+      valueNames = this.props.valueNames,
+      xAxis = this.props.xAxis,
+      yAxis = this.props.yAxis,
+      chartId = this.props.chartId,
+      shinyId = this.props.shinyId;
+
+    if (window.Shiny) {
+      if (shinyId === undefined) {
+        shinyId = $(document.getElementById(chartId)).parent().attr("id");
+      }
+      Shiny.setInputValue(
+        shinyId + ":rAmCharts4.dataframe", dataCopy
+      );
+    }
+
+    switch (theme) {
+      case "dark":
+        am4core.useTheme(am4themes_dark);
+        break;
+      case "dataviz":
+        am4core.useTheme(am4themes_dataviz);
+        break;
+      case "frozen":
+        am4core.useTheme(am4themes_frozen);
+        break;
+      case "kelly":
+        am4core.useTheme(am4themes_kelly);
+        break;
+      case "material":
+        am4core.useTheme(am4themes_material);
+        break;
+      case "microchart":
+        am4core.useTheme(am4themes_microchart);
+        break;
+      case "moonrisekingdom":
+        am4core.useTheme(am4themes_moonrisekingdom);
+        break;
+      case "patterns":
+        am4core.useTheme(am4themes_patterns);
+        break;
+      case "spiritedaway":
+        am4core.useTheme(am4themes_spiritedaway);
+        break;
+    }
+
+    let chart = am4core.create(this.props.chartId, am4charts.XYChart);
+
+    chart.data = data;
+
+    chart.colors.step = 2;
+
+    chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
+    chart.padding(50, 40, 0, 10);
+    let chartBackgroundColor =
+      this.props.backgroundColor || chart.background.fill;
+    chart.background.fill = chartBackgroundColor;
+
+
+    /* ~~~~\  Enable export  /~~~~ */
+    if (this.props.export) {
+      chart.exporting.menu = new am4core.ExportMenu();
+      chart.exporting.menu.items = utils.exportMenuItems;
+    }
+
+
+    /* ~~~~\  title  /~~~~ */
+    let chartTitle = this.props.chartTitle;
+    if (chartTitle) {
+      let title = chart.titles.create();
+      title.text = chartTitle.text.text;
+      title.fill =
+        chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.fontFamily = chartTitle.text.fontFamily;
+      title.align = chartTitle.align || "left";
+      title.dy = -30;
+    }
+
+
+    /* ~~~~\  caption  /~~~~ */
+    let chartCaption = this.props.caption;
+    if (chartCaption) {
+      let caption = chart.chartContainer.createChild(am4core.Label);
+      caption.text = chartCaption.text.text;
+      caption.fill =
+        chartCaption.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.fontSize = chartCaption.text.fontSize;
+      caption.fontWeight = chartCaption.text.fontWeight;
+      caption.fontFamily = chartCaption.text.fontFamily;
+      caption.align = chartCaption.align || "right";
+    }
+
+
+    /* ~~~~\  image  /~~~~ */
+    if (this.props.image) {
+      utils.Image(am4core, chart, this.props.image);
+    }
+
+
+    /* ~~~~\  category axis  /~~~~ */
+    let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+    categoryAxis.dataFields.category = category;
+    categoryAxis.renderer.grid.template.location = 0;
+    
+
+    /* ~~~~\  value axis  /~~~~ */
+    let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    valueAxis.min = 0;
+    valueAxis.max = 100;
+    valueAxis.strictMinMax = true;
+    valueAxis.calculateTotals = true;
+    valueAxis.renderer.minWidth = 50;
+
+
+    /* ~~~~\  chart  /~~~~ */
+    for(let i = 0; i < values.length; i++){
+      let series = chart.series.push(new am4charts.ColumnSeries());
+      series.columns.template.width = am4core.percent(80);
+      series.columns.template.tooltipText =
+        "{name}: {valueY.totalPercent.formatNumber('#.00')}%";
+      series.name = valueNames[i];
+      series.dataFields.categoryX = category;
+      series.dataFields.valueY = values[i];
+      series.dataFields.valueYShow = "totalPercent";
+      series.dataItems.template.locations.categoryX = 0.5;
+      series.stacked = true;
+      series.tooltip.pointerOrientation = "vertical";
+    }
+
+    return chart;
+
+  }
+
+  componentDidMount() {
+    this.chart = this.AmPercentageBarChart();
+  }
+
+  componentWillUnmount() {
+    if (this.chart) {
+      this.chart.dispose();
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.chart) {
+      this.chart.dispose();
+    }
+    this.chart = this.AmPercentageBarChart();
+  }
+
+  render() {
+    return (
+      <div
+        key={this.props.chartId}
+        id={this.props.chartId}
+        style={this.style()}
+      ></div>
+    );
+  }
+
+}
 
 
 /* CREATE WIDGETS */
@@ -6534,7 +6724,8 @@ reactWidget(
     AmGaugeChart: AmGaugeChart,
     AmStackedBarChart: AmStackedBarChart,
     AmBoxplotChart: AmBoxplotChart,
-    AmPieChart: AmPieChart
+    AmPieChart: AmPieChart,
+    AmPercentageBarChart: AmPercentageBarChart
   },
   {}
 );
