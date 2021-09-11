@@ -6692,11 +6692,9 @@ class AmPercentageBarChart extends React.PureComponent {
     
 
     /* ~~~~\  value axis  /~~~~ */
-    /* ~~~~\  y-axis  /~~~~ */
     let valueAxis = utils.createAxis(
       "Y", am4charts, am4core, chart, yAxis, 0, 100, false, theme, false
     );
-
 //    let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
 //    valueAxis.min = 0;
 //    valueAxis.max = 100;
