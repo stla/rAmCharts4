@@ -126,3 +126,22 @@ chart is displayed in Shiny, in which case the id is given by the Shiny id}
 \description{
 Create a HTML widget displaying a 100\% stacked bar chart.
 }
+\examples{
+library(rAmCharts4)
+
+dat <- data.frame(
+  category = c("A", "B", "C"),
+  v1 = c(1, 2, 3),
+  v2 = c(9, 5, 7)
+)
+
+amPercentageBarChart(
+  dat,
+  category = "category",
+  values = c("v1", "v2"),
+  valueNames = c("Value1", "Value2"),
+  yAxis = "Percentage",
+  theme = "dataviz",
+  legend = amLegend(position = "right")
+)
+}

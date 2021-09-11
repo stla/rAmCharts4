@@ -82,6 +82,23 @@
 #' @importFrom reactR component reactMarkup
 #' @importFrom stats setNames
 #' @export
+#' @examples library(rAmCharts4)
+#'
+#' dat <- data.frame(
+#'   category = c("A", "B", "C"),
+#'   v1 = c(1, 2, 3),
+#'   v2 = c(9, 5, 7)
+#' )
+#'
+#' amPercentageBarChart(
+#'   dat,
+#'   category = "category",
+#'   values = c("v1", "v2"),
+#'   valueNames = c("Value1", "Value2"),
+#'   yAxis = "Percentage",
+#'   theme = "dataviz",
+#'   legend = amLegend(position = "right")
+#' )
 amPercentageBarChart <- function(
   data,
   category,
