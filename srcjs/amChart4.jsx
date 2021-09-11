@@ -6410,7 +6410,7 @@ class AmPieChart extends React.PureComponent {
     }
 
 
-    /* ~~~~\  Shiny message handler for stacked bar chart  /~~~~ */
+    /* ~~~~\  Shiny message handler for pie chart  /~~~~ */
     if (window.Shiny) {
       Shiny.addCustomMessageHandler(
         shinyId + "pie",
@@ -6643,6 +6643,15 @@ class AmPercentageBarChart extends React.PureComponent {
     }
 
 
+    /* ~~~~\  scrollbars  /~~~~ */
+    if (this.props.scrollbarX) {
+      chart.scrollbarX = new am4core.Scrollbar();
+    }
+    if (this.props.scrollbarY) {
+      chart.scrollbarY = new am4core.Scrollbar();
+    }
+
+
     /* ~~~~\  legend  /~~~~ */
     if (chartLegend) {
       chart.legend = new am4charts.Legend();
@@ -6674,18 +6683,37 @@ class AmPercentageBarChart extends React.PureComponent {
 
 
     /* ~~~~\  category axis  /~~~~ */
-    let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-    categoryAxis.dataFields.category = category;
-    categoryAxis.renderer.grid.template.location = 0;
+    let categoryAxis = utils.createCategoryAxis(
+      "X", am4charts, chart, category, xAxis, 95, theme
+    );
+//    let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+//    categoryAxis.dataFields.category = category;
+//    categoryAxis.renderer.grid.template.location = 0;
     
 
     /* ~~~~\  value axis  /~~~~ */
-    let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-    valueAxis.min = 0;
-    valueAxis.max = 100;
-    valueAxis.strictMinMax = true;
+    /* ~~~~\  y-axis  /~~~~ */
+    let valueAxis = utils.createAxis(
+      "Y", am4charts, am4core, chart, yAxis, 0, 100, false, theme, false
+    );
+
+//    let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+//    valueAxis.min = 0;
+//    valueAxis.max = 100;
+//    valueAxis.strictMinMax = true;
     valueAxis.calculateTotals = true;
     valueAxis.renderer.minWidth = 50;
+
+
+    /* ~~~~\  horizontal line  /~~~~ */
+    if (hline) {
+      let range = valueAxis.axisRanges.create();
+      range.value = hline.value;
+      range.grid.stroke = am4core.color(hline.line.color);
+      range.grid.strokeWidth = hline.line.width;
+      range.grid.strokeOpacity = hline.line.opacity;
+      range.grid.strokeDasharray = hline.line.dash;
+    }
 
 
     /* ~~~~\  chart  /~~~~ */
@@ -6701,6 +6729,11 @@ class AmPercentageBarChart extends React.PureComponent {
       series.dataItems.template.locations.categoryX = 0.5;
       series.stacked = true;
       series.tooltip.pointerOrientation = "vertical";
+      let bullet = series.bullets.push(new am4charts.LabelBullet());
+      bullet.interactionsEnabled = false;
+      bullet.label.text = "{valueY.totalPercent.formatNumber('#.00')}%";
+      bullet.locationY = 0.5;
+      bullet.label.fill = am4core.color("#ffffff");
     }
 
     return chart;

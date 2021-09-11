@@ -95,7 +95,7 @@ amPercentageBarChart <- function(
   yAxis = NULL, # default
   scrollbarX = FALSE,
   scrollbarY = FALSE,
-  legend = NULL, # default
+  legend = TRUE,
   caption = NULL,
   image = NULL,
   width = NULL,

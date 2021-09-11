@@ -128126,7 +128126,7 @@ class AmPieChart extends React.PureComponent {
     if (this.props.image) {
       _utils__WEBPACK_IMPORTED_MODULE_13__["Image"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, this.props.image);
     }
-    /* ~~~~\  Shiny message handler for stacked bar chart  /~~~~ */
+    /* ~~~~\  Shiny message handler for pie chart  /~~~~ */
 
 
     if (window.Shiny) {
@@ -128225,6 +128225,260 @@ class AmPieChart extends React.PureComponent {
   }
 
 }
+/* COMPONENT: 100% STACKED BAR CHART */
+
+
+class AmPercentageBarChart extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.style = this.style.bind(this);
+    this.PercentageBarChart = this.PercentageBarChart.bind(this);
+  }
+
+  style() {
+    if (window.Shiny && !window.FlexDashboard) {
+      return {
+        width: "100%",
+        height: "100%"
+      };
+    } else {
+      return {
+        width: this.props.width,
+        height: this.props.height
+      };
+    }
+  }
+
+  PercentageBarChart() {
+    var theme = this.props.theme,
+        chartLegend = this.props.legend,
+        category = this.props.category,
+        categories = this.props.data[category],
+        values = this.props.values,
+        hline = this.props.hline,
+        data = HTMLWidgets.dataframeToD3(this.props.data),
+        valueNames = this.props.valueNames,
+        xAxis = this.props.xAxis,
+        yAxis = this.props.yAxis,
+        chartId = this.props.chartId,
+        shinyId = this.props.shinyId;
+
+    if (window.Shiny) {
+      if (shinyId === undefined) {
+        shinyId = $(document.getElementById(chartId)).parent().attr("id");
+      }
+
+      Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+    }
+
+    switch (theme) {
+      case "dark":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_dark__WEBPACK_IMPORTED_MODULE_4__["default"]);
+        break;
+
+      case "dataviz":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_dataviz__WEBPACK_IMPORTED_MODULE_5__["default"]);
+        break;
+
+      case "frozen":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_frozen__WEBPACK_IMPORTED_MODULE_6__["default"]);
+        break;
+
+      case "kelly":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_kelly__WEBPACK_IMPORTED_MODULE_7__["default"]);
+        break;
+
+      case "material":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_material__WEBPACK_IMPORTED_MODULE_8__["default"]);
+        break;
+
+      case "microchart":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_microchart__WEBPACK_IMPORTED_MODULE_9__["default"]);
+        break;
+
+      case "moonrisekingdom":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_moonrisekingdom__WEBPACK_IMPORTED_MODULE_10__["default"]);
+        break;
+
+      case "patterns":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_patterns__WEBPACK_IMPORTED_MODULE_11__["default"]);
+        break;
+
+      case "spiritedaway":
+        _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["useTheme"](_amcharts_amcharts4_themes_spiritedaway__WEBPACK_IMPORTED_MODULE_12__["default"]);
+        break;
+    }
+
+    var chart = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["create"](this.props.chartId, _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["XYChart"]);
+    chart.data = data;
+    chart.colors.step = 2;
+    chart.hiddenState.properties.opacity = 0; // this makes initial fade in effect
+
+    chart.padding(50, 40, 0, 10);
+    var chartBackgroundColor = this.props.backgroundColor || chart.background.fill;
+    chart.background.fill = chartBackgroundColor;
+    /* ~~~~\  Enable export  /~~~~ */
+
+    if (this.props.export) {
+      chart.exporting.menu = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["ExportMenu"]();
+      chart.exporting.menu.items = _utils__WEBPACK_IMPORTED_MODULE_13__["exportMenuItems"];
+    }
+    /* ~~~~\  title  /~~~~ */
+
+
+    var chartTitle = this.props.chartTitle;
+
+    if (chartTitle) {
+      var title = chart.titles.create();
+      title.text = chartTitle.text.text;
+      title.fill = chartTitle.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      title.fontSize = chartTitle.text.fontSize || 22;
+      title.fontWeight = chartTitle.text.fontWeight || "bold";
+      title.fontFamily = chartTitle.text.fontFamily;
+      title.align = chartTitle.align || "left";
+      title.dy = -30;
+    }
+    /* ~~~~\  caption  /~~~~ */
+
+
+    var chartCaption = this.props.caption;
+
+    if (chartCaption) {
+      var caption = chart.chartContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Label"]);
+      caption.text = chartCaption.text.text;
+      caption.fill = chartCaption.text.color || (theme === "dark" ? "#ffffff" : "#000000");
+      caption.fontSize = chartCaption.text.fontSize;
+      caption.fontWeight = chartCaption.text.fontWeight;
+      caption.fontFamily = chartCaption.text.fontFamily;
+      caption.align = chartCaption.align || "right";
+    }
+    /* ~~~~\  image  /~~~~ */
+
+
+    if (this.props.image) {
+      _utils__WEBPACK_IMPORTED_MODULE_13__["Image"](_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, this.props.image);
+    }
+    /* ~~~~\  scrollbars  /~~~~ */
+
+
+    if (this.props.scrollbarX) {
+      chart.scrollbarX = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Scrollbar"]();
+    }
+
+    if (this.props.scrollbarY) {
+      chart.scrollbarY = new _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Scrollbar"]();
+    }
+    /* ~~~~\  legend  /~~~~ */
+
+
+    if (chartLegend) {
+      chart.legend = new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["Legend"]();
+      var legendPosition = chartLegend.position || "bottom";
+      chart.legend.position = legendPosition;
+
+      if (legendPosition === "bottom" || legendPosition === "top") {
+        chart.legend.maxHeight = chartLegend.maxHeight;
+        chart.legend.scrollable = chartLegend.scrollable;
+      } else {
+        chart.legend.maxWidth = chartLegend.maxWidth;
+      }
+
+      chart.legend.useDefaultMarker = false;
+      var markerTemplate = chart.legend.markers.template;
+      markerTemplate.width = chartLegend.itemsWidth || 20;
+      markerTemplate.height = chartLegend.itemsHeight || 20; // markerTemplate.strokeWidth = 1;
+      // markerTemplate.strokeOpacity = 1;
+
+      chart.legend.itemContainers.template.events.on("over", function (ev) {
+        ev.target.dataItem.dataContext.columns.each(function (x) {
+          x.column.isHover = true;
+        });
+      });
+      chart.legend.itemContainers.template.events.on("out", function (ev) {
+        ev.target.dataItem.dataContext.columns.each(function (x) {
+          x.column.isHover = false;
+        });
+      });
+    }
+    /* ~~~~\  category axis  /~~~~ */
+
+
+    var categoryAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createCategoryAxis"]("X", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, chart, category, xAxis, 95, theme); //    let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+    //    categoryAxis.dataFields.category = category;
+    //    categoryAxis.renderer.grid.template.location = 0;
+
+    /* ~~~~\  value axis  /~~~~ */
+
+    /* ~~~~\  y-axis  /~~~~ */
+
+    var valueAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("Y", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, yAxis, 0, 100, false, theme, false); //    let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    //    valueAxis.min = 0;
+    //    valueAxis.max = 100;
+    //    valueAxis.strictMinMax = true;
+
+    valueAxis.calculateTotals = true;
+    valueAxis.renderer.minWidth = 50;
+    /* ~~~~\  horizontal line  /~~~~ */
+
+    if (hline) {
+      var range = valueAxis.axisRanges.create();
+      range.value = hline.value;
+      range.grid.stroke = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"](hline.line.color);
+      range.grid.strokeWidth = hline.line.width;
+      range.grid.strokeOpacity = hline.line.opacity;
+      range.grid.strokeDasharray = hline.line.dash;
+    }
+    /* ~~~~\  chart  /~~~~ */
+
+
+    for (var i = 0; i < values.length; i++) {
+      var series = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["ColumnSeries"]());
+      series.columns.template.width = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["percent"](80);
+      series.columns.template.tooltipText = "{name}: {valueY.totalPercent.formatNumber('#.00')}%";
+      series.name = valueNames[values[i]];
+      series.dataFields.categoryX = category;
+      series.dataFields.valueY = values[i];
+      series.dataFields.valueYShow = "totalPercent";
+      series.dataItems.template.locations.categoryX = 0.5;
+      series.stacked = true;
+      series.tooltip.pointerOrientation = "vertical";
+      var bullet = series.bullets.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LabelBullet"]());
+      bullet.interactionsEnabled = false;
+      bullet.label.text = "{valueY.totalPercent.formatNumber('#.00')}%";
+      bullet.locationY = 0.5;
+      bullet.label.fill = _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["color"]("#ffffff");
+    }
+
+    return chart;
+  }
+
+  componentDidMount() {
+    this.chart = this.PercentageBarChart();
+  }
+
+  componentWillUnmount() {
+    if (this.chart) {
+      this.chart.dispose();
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.chart) {
+      this.chart.dispose();
+    }
+
+    this.chart = this.PercentageBarChart();
+  }
+
+  render() {
+    return /*#__PURE__*/React.createElement("div", {
+      key: this.props.chartId,
+      id: this.props.chartId,
+      style: this.style()
+    });
+  }
+
+}
 /* CREATE WIDGETS */
 
 
@@ -128240,7 +128494,8 @@ Object(reactR__WEBPACK_IMPORTED_MODULE_0__["reactWidget"])("amChart4", "output",
   AmGaugeChart: AmGaugeChart,
   AmStackedBarChart: AmStackedBarChart,
   AmBoxplotChart: AmBoxplotChart,
-  AmPieChart: AmPieChart
+  AmPieChart: AmPieChart,
+  AmPercentageBarChart: AmPercentageBarChart
 }, {});
 
 /***/ }),

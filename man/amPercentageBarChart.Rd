@@ -17,7 +17,7 @@ amPercentageBarChart(
   yAxis = NULL,
   scrollbarX = FALSE,
   scrollbarY = FALSE,
-  legend = NULL,
+  legend = TRUE,
   caption = NULL,
   image = NULL,
   width = NULL,
