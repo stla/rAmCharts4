@@ -128267,8 +128267,6 @@ class AmPercentageBarChart extends React.PureComponent {
       if (shinyId === undefined) {
         shinyId = $(document.getElementById(chartId)).parent().attr("id");
       }
-
-      Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
     }
 
     switch (theme) {
@@ -128400,6 +128398,65 @@ class AmPercentageBarChart extends React.PureComponent {
         });
       });
     }
+    /* ~~~~\  Shiny message handler for percentage bar chart  /~~~~ */
+
+
+    if (window.Shiny) {
+      Shiny.addCustomMessageHandler(shinyId + "percentage", function (newdata) {
+        var tail = " is missing in the data you supplied!"; // check that the received data has the 'category' column
+
+        if (!newdata.hasOwnProperty(category)) {
+          console.warn("updateAmPercentageBarChart: column \"".concat(category, "\"") + tail);
+          return null;
+        } // check that the received data has the necessary categories
+
+
+        var ok = true,
+            i = 0;
+
+        while (ok && i < categories.length) {
+          ok = newdata[category].indexOf(categories[i]) > -1;
+
+          if (!ok) {
+            console.warn("updateAmPercentageBarChart: category \"".concat(categories[i], "\"") + tail);
+          }
+
+          i++;
+        }
+
+        if (!ok) {
+          return null;
+        } // check that the received data has the necessary 'values' columns
+
+
+        i = 0;
+
+        while (ok && i < values.length) {
+          ok = newdata.hasOwnProperty(values[i]);
+
+          if (!ok) {
+            console.warn("updateAmPercentageBarChart: column \"".concat(values[i], "\"") + tail);
+          }
+
+          i++;
+        }
+
+        if (!ok) {
+          return null;
+        } // update chart data
+
+
+        var tnewdata = HTMLWidgets.dataframeToD3(newdata);
+
+        for (var r = 0; r < data.length; ++r) {
+          for (var v = 0; v < values.length; ++v) {
+            chart.data[r][values[v]] = tnewdata[r][values[v]];
+          }
+        }
+
+        chart.invalidateRawData();
+      });
+    }
     /* ~~~~\  category axis  /~~~~ */
 
 
@@ -128408,8 +128465,6 @@ class AmPercentageBarChart extends React.PureComponent {
     //    categoryAxis.renderer.grid.template.location = 0;
 
     /* ~~~~\  value axis  /~~~~ */
-
-    /* ~~~~\  y-axis  /~~~~ */
 
     var valueAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("Y", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, yAxis, 0, 100, false, theme, false); //    let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
     //    valueAxis.min = 0;

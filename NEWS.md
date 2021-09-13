@@ -1,3 +1,10 @@
+# rAmCharts4 1.4.1
+
+* Fixed a bug: `amPercentageBarChart` did not work with Shiny
+* New function `updateAmPercentageBarChart`, to update the date of a 100% 
+stacked bar chart in Shiny.
+
+
 # rAmCharts4 1.4.0 (2021-09-11)
 
 Added the 100% stacked bar chart (`amPercentageBarChart`).
