@@ -222,9 +222,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var ChartDataItem =
-/** @class */
-function (_super) {
+var ChartDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ChartDataItem, _super);
   /**
    * Constructor
@@ -259,9 +257,7 @@ function (_super) {
  * @see {@link IChartAdapters} for a list of available Adapters
  */
 
-var Chart =
-/** @class */
-function (_super) {
+var Chart = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Chart, _super);
   /**
    * Constructor
@@ -376,8 +372,11 @@ function (_super) {
       var chartContainer = this.chartContainer;
       chartContainer.x = undefined;
       chartContainer.y = undefined;
-      legend.x = undefined;
-      legend.y = undefined;
+
+      if (legend.position != "absolute") {
+        legend.x = undefined;
+        legend.y = undefined;
+      }
 
       switch (legend.position) {
         case "left":
@@ -398,6 +397,11 @@ function (_super) {
         case "bottom":
           chartAndLegendContainer.layout = "vertical";
           legend.toFront();
+          break;
+
+        case "absolute":
+          legend.isMeasured = false;
+          break;
       }
     }
   };
@@ -783,9 +787,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var LegendDataItem =
-/** @class */
-function (_super) {
+var LegendDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(LegendDataItem, _super);
   /**
    * Constructor
@@ -1054,9 +1056,7 @@ function (_super) {
  * a set of settings for the legend.
  */
 
-var LegendSettings =
-/** @class */
-function () {
+var LegendSettings = function () {
   function LegendSettings() {
     /**
      * Should marker be created for each legend item.
@@ -1083,9 +1083,7 @@ function () {
  * @see {@link ILegendAdapters} for a list of available Adapters
  */
 
-var Legend =
-/** @class */
-function (_super) {
+var Legend = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Legend, _super);
   /**
    * Constructor
@@ -1823,9 +1821,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var AxisDataItem =
-/** @class */
-function (_super) {
+var AxisDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(AxisDataItem, _super);
   /**
    * Constructor
@@ -2414,9 +2410,7 @@ var AxisItemLocation;
  */
 
 
-var Axis =
-/** @class */
-function (_super) {
+var Axis = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Axis, _super);
   /**
    * Constructor
@@ -3859,17 +3853,17 @@ function (_super) {
       return 0;
     } // last
     else if (a == "title") {
-        return 1;
-      } else if (b == "title") {
-        return -1;
-      } // first
-      else if (a == "component") {
-          return -1;
-        } else if (b == "component") {
-          return 1;
-        } else {
-          return _super.prototype.configOrder.call(this, a, b);
-        }
+      return 1;
+    } else if (b == "title") {
+      return -1;
+    } // first
+    else if (a == "component") {
+      return -1;
+    } else if (b == "component") {
+      return 1;
+    } else {
+      return _super.prototype.configOrder.call(this, a, b);
+    }
   };
 
   Object.defineProperty(Axis.prototype, "startLocation", {
@@ -4091,9 +4085,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var AxisBreak =
-/** @class */
-function (_super) {
+var AxisBreak = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(AxisBreak, _super);
   /**
    * Constructor
@@ -4534,9 +4526,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var AxisBullet =
-/** @class */
-function (_super) {
+var AxisBullet = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(AxisBullet, _super);
 
   function AxisBullet() {
@@ -4697,9 +4687,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var AxisFill =
-/** @class */
-function (_super) {
+var AxisFill = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(AxisFill, _super);
   /**
    * Constructor.
@@ -4915,9 +4903,7 @@ __webpack_require__.r(__webpack_exports__);
  * @todo Needs description
  */
 
-var AxisFillCircular =
-/** @class */
-function (_super) {
+var AxisFillCircular = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(AxisFillCircular, _super);
   /**
    * Constructor.
@@ -5071,9 +5057,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var AxisLabel =
-/** @class */
-function (_super) {
+var AxisLabel = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(AxisLabel, _super);
   /**
    * Constructor
@@ -5214,9 +5198,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IAxisLabelCircularAdapters} for a list of available Adapters
  */
 
-var AxisLabelCircular =
-/** @class */
-function (_super) {
+var AxisLabelCircular = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(AxisLabelCircular, _super);
   /**
    * Constructor
@@ -5583,9 +5565,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IAxisLineAdapters} for a list of available Adapters
  */
 
-var AxisLine =
-/** @class */
-function (_super) {
+var AxisLine = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(AxisLine, _super);
   /**
    * Constructor
@@ -5686,9 +5666,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IAxisRendererAdapters} for a list of available Adapters
  */
 
-var AxisRenderer =
-/** @class */
-function (_super) {
+var AxisRenderer = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(AxisRenderer, _super);
   /**
    * Constructor.
@@ -6770,9 +6748,7 @@ __webpack_require__.r(__webpack_exports__);
  * A renderer for circular axis.
  */
 
-var AxisRendererCircular =
-/** @class */
-function (_super) {
+var AxisRendererCircular = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(AxisRendererCircular, _super);
   /**
    * Constructor.
@@ -7002,6 +6978,11 @@ function (_super) {
 
     if (this.axisRendererY) {
       var realRadius = _core_utils_Math__WEBPACK_IMPORTED_MODULE_7__["fitToRange"](this.axisRendererY.positionToCoordinate(position2), 0, Infinity);
+
+      if (realRadius == 0) {
+        realRadius = 0.000001;
+      }
+
       var point = {
         x: realRadius * _core_utils_Math__WEBPACK_IMPORTED_MODULE_7__["cos"](angle),
         y: realRadius * _core_utils_Math__WEBPACK_IMPORTED_MODULE_7__["sin"](angle)
@@ -7406,9 +7387,7 @@ __webpack_require__.r(__webpack_exports__);
  * A renderer for radial axis.
  */
 
-var AxisRendererRadial =
-/** @class */
-function (_super) {
+var AxisRendererRadial = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(AxisRendererRadial, _super);
   /**
    * Constructor.
@@ -8146,9 +8125,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IAxisRendererAdapters} for a list of available Adapters
  */
 
-var AxisRendererX =
-/** @class */
-function (_super) {
+var AxisRendererX = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(AxisRendererX, _super);
   /**
    * Constructor.
@@ -8262,11 +8239,11 @@ function (_super) {
         }
       } // bottom
       else {
-          if (this.inside) {
-            bby = -bigNum;
-            bbh = bigNum;
-          }
+        if (this.inside) {
+          bby = -bigNum;
+          bbh = bigNum;
         }
+      }
 
       this.axis.updateTooltip("vertical", {
         x: bbx,
@@ -8730,9 +8707,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IAxisRendererX3DAdapters} for a list of available Adapters
  */
 
-var AxisRendererX3D =
-/** @class */
-function (_super) {
+var AxisRendererX3D = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(AxisRendererX3D, _super);
   /**
    * Constructor.
@@ -8925,9 +8900,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IAxisRendererYAdapters} for a list of available Adapters
  */
 
-var AxisRendererY =
-/** @class */
-function (_super) {
+var AxisRendererY = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(AxisRendererY, _super);
   /**
    * Constructor.
@@ -9068,11 +9041,11 @@ function (_super) {
         }
       } // left
       else {
-          if (!this.inside) {
-            bbx = -bigNum;
-            bbw = bigNum;
-          }
+        if (!this.inside) {
+          bbx = -bigNum;
+          bbw = bigNum;
         }
+      }
 
       this.axis.updateTooltip("horizontal", {
         x: bbx,
@@ -9554,9 +9527,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IAxisRendererY3DAdapters} for a list of available Adapters
  */
 
-var AxisRendererY3D =
-/** @class */
-function (_super) {
+var AxisRendererY3D = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(AxisRendererY3D, _super);
   /**
    * Constructor.
@@ -9722,9 +9693,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IAxisTickAdapters} for a list of available Adapters
  */
 
-var AxisTick =
-/** @class */
-function (_super) {
+var AxisTick = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(AxisTick, _super);
 
   function AxisTick() {
@@ -9888,9 +9857,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var CategoryAxisDataItem =
-/** @class */
-function (_super) {
+var CategoryAxisDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(CategoryAxisDataItem, _super);
   /**
    * Constructor
@@ -10024,9 +9991,7 @@ function (_super) {
  * @important
  */
 
-var CategoryAxis =
-/** @class */
-function (_super) {
+var CategoryAxis = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(CategoryAxis, _super);
   /**
    * Constructor
@@ -10517,9 +10482,9 @@ function (_super) {
             startIndex += (breakEndIndex - breakStartIndex) * (1 - breakSize);
           } // value to the left of break start
           else if (index < breakStartIndex) {} // value within break
-            else {
-                index = breakStartIndex + (index - breakStartIndex) * breakSize;
-              }
+          else {
+            index = breakStartIndex + (index - breakStartIndex) * breakSize;
+          }
         }
 
         return true;
@@ -11014,11 +10979,11 @@ function (_super) {
           startIndex += (breakEndIndex - breakStartIndex) * (1 - breakSize);
         } // position to the left of break start
         else if (position < breakStartPosition) {} // value within break
-          else {
-              var breakPosition = (position - breakStartPosition) / (breakEndPosition - breakStartPosition);
-              index = breakStartIndex + Math.round(breakPosition * (breakEndIndex - breakStartIndex));
-              return false;
-            }
+        else {
+          var breakPosition = (position - breakStartPosition) / (breakEndPosition - breakStartPosition);
+          index = breakStartIndex + Math.round(breakPosition * (breakEndIndex - breakStartIndex));
+          return false;
+        }
 
         return true;
       });
@@ -11249,9 +11214,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link ICategoryAxisBreakAdapters} for a list of available Adapters
  */
 
-var CategoryAxisBreak =
-/** @class */
-function (_super) {
+var CategoryAxisBreak = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(CategoryAxisBreak, _super);
   /**
    * Constructor
@@ -11547,9 +11510,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var DateAxisDataItem =
-/** @class */
-function (_super) {
+var DateAxisDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(DateAxisDataItem, _super);
   /**
    * Constructor
@@ -11651,9 +11612,7 @@ function (_super) {
  * @important
  */
 
-var DateAxis =
-/** @class */
-function (_super) {
+var DateAxis = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(DateAxis, _super);
   /**
    * Constructor
@@ -13657,7 +13616,7 @@ function (_super) {
     this.tooltipDate = date;
 
     if (_core_utils_Type__WEBPACK_IMPORTED_MODULE_7__["hasValue"](this.tooltipDateFormat)) {
-      text = this._df.format(date, this.tooltipDateFormat);
+      text = this._df.format(date, this.tooltipDateFormat, ["day", "month", "week", "year"].indexOf(this.baseInterval.timeUnit) == -1);
     } else {
       var dateFormat = this.dateFormats.getKey(this.baseInterval.timeUnit);
 
@@ -13925,8 +13884,10 @@ function (_super) {
     var _this = this;
 
     if (!this.groupData) {
-      var start = (startValue - this.min) / (this.max - this.min);
-      var end = (endValue - this.min) / (this.max - this.min);
+      //let start: number = (startValue - this.min) / (this.max - this.min);
+      //let end: number = (endValue - this.min) / (this.max - this.min);
+      var start = this.valueToPosition(startValue);
+      var end = this.valueToPosition(endValue);
       this.zoom({
         start: start,
         end: end
@@ -14475,9 +14436,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var DateAxisBreak =
-/** @class */
-function (_super) {
+var DateAxisBreak = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(DateAxisBreak, _super);
   /**
    * Constructor
@@ -14603,9 +14562,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var DurationAxisDataItem =
-/** @class */
-function (_super) {
+var DurationAxisDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(DurationAxisDataItem, _super);
   /**
    * Constructor
@@ -14665,9 +14622,7 @@ function (_super) {
  * @important
  */
 
-var DurationAxis =
-/** @class */
-function (_super) {
+var DurationAxis = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(DurationAxis, _super);
   /**
    * Constructor
@@ -14965,9 +14920,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var Grid =
-/** @class */
-function (_super) {
+var Grid = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Grid, _super);
   /**
    * Constructor
@@ -15127,9 +15080,7 @@ __webpack_require__.r(__webpack_exports__);
  * @todo Review: container is better, as we'll be able to attach something to the GridCircular, also with 3d charts we might need some additional elements
  */
 
-var GridCircular =
-/** @class */
-function (_super) {
+var GridCircular = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(GridCircular, _super);
   /**
    * Constructor
@@ -15256,9 +15207,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var ValueAxisDataItem =
-/** @class */
-function (_super) {
+var ValueAxisDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ValueAxisDataItem, _super);
   /**
    * Constructor
@@ -15357,9 +15306,7 @@ function (_super) {
  * @important
  */
 
-var ValueAxis =
-/** @class */
-function (_super) {
+var ValueAxis = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ValueAxis, _super);
   /**
    * Constructor
@@ -15615,6 +15562,13 @@ function (_super) {
     _super.prototype.validate.call(this);
 
     this.getMinMax();
+
+    if (!_core_utils_Type__WEBPACK_IMPORTED_MODULE_9__["isNumber"](this._minAdjusted)) {
+      this.dataItems.each(function (dataItem) {
+        dataItem.value = null;
+      });
+    }
+
     this.fixAxisBreaks();
     this.calculateZoom();
     this.validateAxisElements();
@@ -16053,9 +16007,9 @@ function (_super) {
                   min_1 += (endValue - startValue) * (1 - breakSize); // todo: maybe this can be done differently?
                 } // value to the left of break start
                 else if (value < startValue) {} // value within break
-                  else {
-                      value = startValue + (value - startValue) * breakSize;
-                    }
+                else {
+                  value = startValue + (value - startValue) * breakSize;
+                }
               }
             }
 
@@ -16150,11 +16104,11 @@ function (_super) {
                   min += (breakEndValue - breakStartValue) * (1 - breakSize);
                 } // position to the left of break start
                 else if (position < breakStartPosition) {} // value within break
-                  else {
-                      var breakPosition = (position - breakStartPosition) / (breakEndPosition - breakStartPosition);
-                      value_2 = breakStartValue + breakPosition * (breakEndValue - breakStartValue);
-                      return false;
-                    }
+                else {
+                  var breakPosition = (position - breakStartPosition) / (breakEndPosition - breakStartPosition);
+                  value_2 = breakStartValue + breakPosition * (breakEndValue - breakStartValue);
+                  return false;
+                }
               }
 
               return true;
@@ -17811,9 +17765,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var ValueAxisBreak =
-/** @class */
-function (_super) {
+var ValueAxisBreak = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ValueAxisBreak, _super);
   /**
    * Constructor
@@ -17935,9 +17887,7 @@ __webpack_require__.r(__webpack_exports__);
  * @todo Should we allow changing `_generalBehavior`?
  */
 
-var Cursor =
-/** @class */
-function (_super) {
+var Cursor = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Cursor, _super);
   /**
    * Constructor
@@ -18396,9 +18346,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IRadarCursorAdapters} for a list of available Adapters
  */
 
-var RadarCursor =
-/** @class */
-function (_super) {
+var RadarCursor = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(RadarCursor, _super);
   /**
    * Constructor
@@ -18531,10 +18479,10 @@ function (_super) {
               }
             } // ccw
             else {
-                if (arc > 0) {
-                  arc -= 360;
-                }
+              if (arc > 0) {
+                arc -= 360;
               }
+            }
 
             angle -= arc / 2;
             path = _core_rendering_Path__WEBPACK_IMPORTED_MODULE_4__["moveTo"]({
@@ -19003,9 +18951,7 @@ __webpack_require__.r(__webpack_exports__);
  * @todo Add description, examples
  */
 
-var XYCursor =
-/** @class */
-function (_super) {
+var XYCursor = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(XYCursor, _super);
   /**
    * Constructor
@@ -19999,9 +19945,11 @@ function (_super) {
     if (!this.downPoint) {
       var x = series.getTooltipX() + series.xAxis.pixelX;
       var y = series.getTooltipY() + series.yAxis.pixelY;
+      var xAxis = series.xAxis;
+      var yAxis = series.yAxis;
 
-      if (this.xAxis) {
-        if (this.xAxis.renderer.opposite) {
+      if (xAxis) {
+        if (xAxis.renderer.opposite) {
           y -= this.pixelHeight;
         }
       }
@@ -20015,8 +19963,8 @@ function (_super) {
       var yy = y;
       x -= this.pixelWidth;
 
-      if (this.yAxis) {
-        if (this.yAxis.renderer.opposite) {
+      if (yAxis) {
+        if (yAxis.renderer.opposite) {
           x += this.pixelWidth;
         }
       }
@@ -20024,8 +19972,6 @@ function (_super) {
       var tooltip = series.tooltip;
       var duration = tooltip.animationDuration;
       var easing = tooltip.animationEasing;
-      var xAxis = series.xAxis;
-      var yAxis = series.yAxis;
 
       if (xAxis instanceof _axes_ValueAxis__WEBPACK_IMPORTED_MODULE_4__["ValueAxis"] && !(xAxis instanceof _axes_DateAxis__WEBPACK_IMPORTED_MODULE_5__["DateAxis"]) && yAxis instanceof _axes_ValueAxis__WEBPACK_IMPORTED_MODULE_4__["ValueAxis"] && !(yAxis instanceof _axes_DateAxis__WEBPACK_IMPORTED_MODULE_5__["DateAxis"])) {
         series.yAxis.showTooltipAtPosition(this.yPosition);
@@ -20038,16 +19984,12 @@ function (_super) {
         if (series.baseAxis == series.yAxis) {
           series.xAxis.showTooltipAtPosition(this.xPosition);
         }
-      }
+      } //	this.lineX.animate([{ property: "y", to: y }], duration, easing);
+      //	this.lineY.animate([{ property: "x", to: x }], duration, easing);
 
-      this.lineX.animate([{
-        property: "y",
-        to: y
-      }], duration, easing);
-      this.lineY.animate([{
-        property: "x",
-        to: x
-      }], duration, easing);
+
+      this.lineY.x = x;
+      this.lineX.y = y;
 
       if (!this.xAxis) {
         this.lineX.animate([{
@@ -20134,9 +20076,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var Bullet =
-/** @class */
-function (_super) {
+var Bullet = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Bullet, _super);
   /**
    * Constructor
@@ -20377,9 +20317,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var Candlestick =
-/** @class */
-function (_super) {
+var Candlestick = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Candlestick, _super);
   /**
    * Constructor
@@ -20481,9 +20419,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var ChordLink =
-/** @class */
-function (_super) {
+var ChordLink = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ChordLink, _super);
   /**
    * Constructor
@@ -20704,9 +20640,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var ChordNode =
-/** @class */
-function (_super) {
+var ChordNode = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ChordNode, _super);
   /**
    * Constructor
@@ -20963,9 +20897,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var CircleBullet =
-/** @class */
-function (_super) {
+var CircleBullet = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(CircleBullet, _super);
   /**
    * Constructor
@@ -21074,9 +21006,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var ClockHand =
-/** @class */
-function (_super) {
+var ClockHand = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ClockHand, _super);
   /**
    * Constructor
@@ -21513,9 +21443,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var Column =
-/** @class */
-function (_super) {
+var Column = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Column, _super);
   /**
    * Constructor
@@ -21690,9 +21618,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var Column3D =
-/** @class */
-function (_super) {
+var Column3D = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Column3D, _super);
   /**
    * Constructor
@@ -21823,9 +21749,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var ConeColumn =
-/** @class */
-function (_super) {
+var ConeColumn = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ConeColumn, _super);
   /**
    * Constructor
@@ -21931,9 +21855,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var CurvedColumn =
-/** @class */
-function (_super) {
+var CurvedColumn = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(CurvedColumn, _super);
   /**
    * Constructor
@@ -22141,9 +22063,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var ErrorBullet =
-/** @class */
-function (_super) {
+var ErrorBullet = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ErrorBullet, _super);
   /**
    * Constructor
@@ -22279,9 +22199,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var FlowDiagramLink =
-/** @class */
-function (_super) {
+var FlowDiagramLink = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(FlowDiagramLink, _super);
   /**
    * Constructor
@@ -22716,9 +22634,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var FlowDiagramNode =
-/** @class */
-function (_super) {
+var FlowDiagramNode = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(FlowDiagramNode, _super);
   /**
    * Constructor
@@ -23146,9 +23062,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var FunnelSlice =
-/** @class */
-function (_super) {
+var FunnelSlice = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(FunnelSlice, _super);
   /**
    * Constructor
@@ -23512,9 +23426,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IFunnelTickAdapters} for a list of available Adapters
  */
 
-var FunnelTick =
-/** @class */
-function (_super) {
+var FunnelTick = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(FunnelTick, _super);
   /**
    * Constructor
@@ -23786,9 +23698,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var HeatLegend =
-/** @class */
-function (_super) {
+var HeatLegend = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(HeatLegend, _super);
   /**
    * Constructor
@@ -24151,26 +24061,26 @@ function (_super) {
         }
       } // VERTICAL
       else {
-          if (!_core_utils_Type__WEBPACK_IMPORTED_MODULE_11__["hasValue"](this.height)) {
-            this.height = 200;
-          }
-
-          this.width = undefined;
-          this.layout = "horizontal";
-          markerContainer.width = undefined;
-          markerContainer.height = Object(_core_utils_Percent__WEBPACK_IMPORTED_MODULE_6__["percent"])(100);
-          valueAxis.height = Object(_core_utils_Percent__WEBPACK_IMPORTED_MODULE_6__["percent"])(100);
-          valueAxis.width = undefined;
-          valueAxis.tooltip.pointerOrientation = "horizontal";
-
-          if (!(valueAxis.renderer instanceof _charts_axes_AxisRendererY__WEBPACK_IMPORTED_MODULE_9__["AxisRendererY"])) {
-            valueAxis.renderer = new _charts_axes_AxisRendererY__WEBPACK_IMPORTED_MODULE_9__["AxisRendererY"]();
-          }
-
-          valueAxis.renderer.inside = true;
-          valueAxis.renderer.labels.template.inside = true;
-          this.markerContainer.reverseOrder = true;
+        if (!_core_utils_Type__WEBPACK_IMPORTED_MODULE_11__["hasValue"](this.height)) {
+          this.height = 200;
         }
+
+        this.width = undefined;
+        this.layout = "horizontal";
+        markerContainer.width = undefined;
+        markerContainer.height = Object(_core_utils_Percent__WEBPACK_IMPORTED_MODULE_6__["percent"])(100);
+        valueAxis.height = Object(_core_utils_Percent__WEBPACK_IMPORTED_MODULE_6__["percent"])(100);
+        valueAxis.width = undefined;
+        valueAxis.tooltip.pointerOrientation = "horizontal";
+
+        if (!(valueAxis.renderer instanceof _charts_axes_AxisRendererY__WEBPACK_IMPORTED_MODULE_9__["AxisRendererY"])) {
+          valueAxis.renderer = new _charts_axes_AxisRendererY__WEBPACK_IMPORTED_MODULE_9__["AxisRendererY"]();
+        }
+
+        valueAxis.renderer.inside = true;
+        valueAxis.renderer.labels.template.inside = true;
+        this.markerContainer.reverseOrder = true;
+      }
 
       var renderer = valueAxis.renderer;
       renderer.grid.template.disabled = true;
@@ -24367,9 +24277,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var LabelBullet =
-/** @class */
-function (_super) {
+var LabelBullet = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(LabelBullet, _super);
   /**
    * Constructor
@@ -24492,9 +24400,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var NavigationBarDataItem =
-/** @class */
-function (_super) {
+var NavigationBarDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(NavigationBarDataItem, _super);
   /**
    * Constructor
@@ -24551,9 +24457,7 @@ function (_super) {
  * @important
  */
 
-var NavigationBar =
-/** @class */
-function (_super) {
+var NavigationBar = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(NavigationBar, _super);
   /**
    * Constructor
@@ -24716,9 +24620,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var OHLC =
-/** @class */
-function (_super) {
+var OHLC = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(OHLC, _super);
   /**
    * Constructor
@@ -24826,9 +24728,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IPieTickAdapters} for a list of available Adapters
  */
 
-var PieTick =
-/** @class */
-function (_super) {
+var PieTick = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PieTick, _super);
   /**
    * Constructor
@@ -25005,9 +24905,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var RadarColumn =
-/** @class */
-function (_super) {
+var RadarColumn = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(RadarColumn, _super);
   /**
    * Constructor
@@ -25143,9 +25041,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var SankeyLink =
-/** @class */
-function (_super) {
+var SankeyLink = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(SankeyLink, _super);
   /**
    * Constructor
@@ -25577,9 +25473,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var SankeyNode =
-/** @class */
-function (_super) {
+var SankeyNode = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(SankeyNode, _super);
   /**
    * Constructor
@@ -25901,9 +25795,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var Tick =
-/** @class */
-function (_super) {
+var Tick = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Tick, _super);
   /**
    * Constructor
@@ -26040,9 +25932,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var XYChartScrollbar =
-/** @class */
-function (_super) {
+var XYChartScrollbar = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(XYChartScrollbar, _super);
   /**
    * Constructor
@@ -26674,9 +26564,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var CandlestickSeriesDataItem =
-/** @class */
-function (_super) {
+var CandlestickSeriesDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(CandlestickSeriesDataItem, _super);
   /**
    * Defines a type of [[Component]] this data item is used for
@@ -26841,9 +26729,7 @@ function (_super) {
  * @important
  */
 
-var CandlestickSeries =
-/** @class */
-function (_super) {
+var CandlestickSeries = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(CandlestickSeries, _super);
   /**
    * Constructor
@@ -27216,9 +27102,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var ColumnSeriesDataItem =
-/** @class */
-function (_super) {
+var ColumnSeriesDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ColumnSeriesDataItem, _super);
   /**
    * Constructor
@@ -27365,9 +27249,7 @@ function (_super) {
  * @important
  */
 
-var ColumnSeries =
-/** @class */
-function (_super) {
+var ColumnSeries = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ColumnSeries, _super);
   /**
    * Constructor
@@ -27828,59 +27710,59 @@ function (_super) {
       }
     } // horizontal bars
     else {
-        if (!dataItem.hasValue(this._xValueFields)) {
-          return;
-        }
+      if (!dataItem.hasValue(this._xValueFields)) {
+        return;
+      }
 
-        if (!_core_utils_Type__WEBPACK_IMPORTED_MODULE_16__["isNaN"](percentHeight)) {
-          var offset = _core_utils_Math__WEBPACK_IMPORTED_MODULE_12__["round"]((endLocation - startLocation) * (1 - percentHeight / 100) / 2, 5);
-          startLocation += offset;
-          endLocation -= offset;
-        }
+      if (!_core_utils_Type__WEBPACK_IMPORTED_MODULE_16__["isNaN"](percentHeight)) {
+        var offset = _core_utils_Math__WEBPACK_IMPORTED_MODULE_12__["round"]((endLocation - startLocation) * (1 - percentHeight / 100) / 2, 5);
+        startLocation += offset;
+        endLocation -= offset;
+      }
 
-        t = this.yAxis.getY(dataItem, yOpenField, startLocation);
-        b = this.yAxis.getY(dataItem, yField, endLocation); // in case height is set in pixels
+      t = this.yAxis.getY(dataItem, yOpenField, startLocation);
+      b = this.yAxis.getY(dataItem, yField, endLocation); // in case height is set in pixels
 
-        if (_core_utils_Type__WEBPACK_IMPORTED_MODULE_16__["isNaN"](percentHeight)) {
-          var offset = (b - t - pixelHeight) / 2;
-          b -= offset;
-          t += offset;
-        } // in case height is set in pixels
+      if (_core_utils_Type__WEBPACK_IMPORTED_MODULE_16__["isNaN"](percentHeight)) {
+        var offset = (b - t - pixelHeight) / 2;
+        b -= offset;
+        t += offset;
+      } // in case height is set in pixels
 
 
-        if (!_core_utils_Type__WEBPACK_IMPORTED_MODULE_16__["isNaN"](maxHeight) && maxHeight < Math.abs(b - t)) {
-          var offset = (b - t - maxHeight) / 2;
-          b -= offset;
-          t += offset;
-        }
+      if (!_core_utils_Type__WEBPACK_IMPORTED_MODULE_16__["isNaN"](maxHeight) && maxHeight < Math.abs(b - t)) {
+        var offset = (b - t - maxHeight) / 2;
+        b -= offset;
+        t += offset;
+      }
 
-        var rightLocation = dataItem.locations[xField];
-        var leftLocation = dataItem.locations[xOpenField]; // otherwise gantt chart will start items in the middle of a cell
+      var rightLocation = dataItem.locations[xField];
+      var leftLocation = dataItem.locations[xOpenField]; // otherwise gantt chart will start items in the middle of a cell
 
-        if (this.xAxis instanceof _axes_ValueAxis__WEBPACK_IMPORTED_MODULE_6__["ValueAxis"]) {
-          if (this.dataFields[this.xField] != this.dataFields[this.xOpenField]) {
-            rightLocation = 0;
-            leftLocation = 0;
-          }
-        }
-
-        r = this.xAxis.getX(dataItem, xField, rightLocation);
-        l = this.xAxis.getX(dataItem, xOpenField, leftLocation); // used to save location for bullets, but it's not a good approach
-        // dataItem.locations[yField] = startLocation + (endLocation - startLocation) / 2;
-
-        var axisLenght = Math.ceil(this.xAxis.axisLength);
-
-        if (r < 0 && l < 0 || r > axisLenght && l > axisLenght) {
-          outOfBounds = true;
-        }
-
-        r = this.fixHorizontalCoordinate(r);
-        l = this.fixHorizontalCoordinate(l);
-
-        if (Math.abs(t - b) - paddingTop - paddingBottom == 0) {
-          outOfBounds = true;
+      if (this.xAxis instanceof _axes_ValueAxis__WEBPACK_IMPORTED_MODULE_6__["ValueAxis"]) {
+        if (this.dataFields[this.xField] != this.dataFields[this.xOpenField]) {
+          rightLocation = 0;
+          leftLocation = 0;
         }
       }
+
+      r = this.xAxis.getX(dataItem, xField, rightLocation);
+      l = this.xAxis.getX(dataItem, xOpenField, leftLocation); // used to save location for bullets, but it's not a good approach
+      // dataItem.locations[yField] = startLocation + (endLocation - startLocation) / 2;
+
+      var axisLenght = Math.ceil(this.xAxis.axisLength);
+
+      if (r < 0 && l < 0 || r > axisLenght && l > axisLenght) {
+        outOfBounds = true;
+      }
+
+      r = this.fixHorizontalCoordinate(r);
+      l = this.fixHorizontalCoordinate(l);
+
+      if (Math.abs(t - b) - paddingTop - paddingBottom == 0) {
+        outOfBounds = true;
+      }
+    }
 
     var w = Math.abs(r - l);
     var h = Math.abs(b - t);
@@ -28492,9 +28374,7 @@ __webpack_require__.r(__webpack_exports__);
  * @hidden
  */
 
-var ColumnSeries3DDataItem =
-/** @class */
-function (_super) {
+var ColumnSeries3DDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ColumnSeries3DDataItem, _super);
   /**
    * Constructor
@@ -28531,9 +28411,7 @@ function (_super) {
  * @important
  */
 
-var ColumnSeries3D =
-/** @class */
-function (_super) {
+var ColumnSeries3D = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ColumnSeries3D, _super);
   /**
    * Constructor
@@ -28717,9 +28595,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var ConeSeriesDataItem =
-/** @class */
-function (_super) {
+var ConeSeriesDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ConeSeriesDataItem, _super);
   /**
    * Constructor
@@ -28756,9 +28632,7 @@ function (_super) {
  * @important
  */
 
-var ConeSeries =
-/** @class */
-function (_super) {
+var ConeSeries = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ConeSeries, _super);
   /**
    * Constructor
@@ -28896,9 +28770,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var CurvedColumnSeriesDataItem =
-/** @class */
-function (_super) {
+var CurvedColumnSeriesDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(CurvedColumnSeriesDataItem, _super);
   /**
    * Constructor
@@ -28934,9 +28806,7 @@ function (_super) {
  * @important
  */
 
-var CurvedColumnSeries =
-/** @class */
-function (_super) {
+var CurvedColumnSeries = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(CurvedColumnSeries, _super);
   /**
    * Constructor
@@ -29066,9 +28936,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var FunnelSeriesDataItem =
-/** @class */
-function (_super) {
+var FunnelSeriesDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(FunnelSeriesDataItem, _super);
   /**
    * Constructor
@@ -29144,9 +29012,7 @@ function (_super) {
  * @important
  */
 
-var FunnelSeries =
-/** @class */
-function (_super) {
+var FunnelSeries = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(FunnelSeries, _super);
   /**
    * Constructor
@@ -29523,10 +29389,10 @@ function (_super) {
                   }
                 } // horizontal
                 else {
-                    if (label.pixelX + label.measuredWidth > lastX) {
-                      label.x = Math.min(1000000, lastX - label.measuredWidth);
-                    }
+                  if (label.pixelX + label.measuredWidth > lastX) {
+                    label.x = Math.min(1000000, lastX - label.measuredWidth);
                   }
+                }
 
                 lastY = label.pixelY;
                 lastX = label.pixelX;
@@ -29550,10 +29416,10 @@ function (_super) {
                   }
                 } // horizontal
                 else {
-                    if (label.pixelX < lastX) {
-                      label.x = Math.min(1000000, lastX);
-                    }
+                  if (label.pixelX < lastX) {
+                    label.x = Math.min(1000000, lastX);
                   }
+                }
 
                 lastY += label.measuredHeight;
                 lastX += label.measuredWidth;
@@ -29821,10 +29687,10 @@ function (_super) {
         labelsContainer.height = Object(_core_utils_Percent__WEBPACK_IMPORTED_MODULE_10__["percent"])(100);
       } //align
       else {
-          labelsContainer.height = undefined;
-          labelsContainer.width = undefined;
-          labelsContainer.margin(10, 10, 10, 10);
-        }
+        labelsContainer.height = undefined;
+        labelsContainer.width = undefined;
+        labelsContainer.margin(10, 10, 10, 10);
+      }
     }
 
     this.labelsOpposite = this.labelsOpposite;
@@ -29876,23 +29742,23 @@ function (_super) {
             labelAlign = "right";
           } // bottom
           else {
-              this.ticks.template.locationY = 1;
-              labelTemplate.horizontalCenter = "right";
-              labelValign = "bottom";
-            }
+            this.ticks.template.locationY = 1;
+            labelTemplate.horizontalCenter = "right";
+            labelValign = "bottom";
+          }
         } // non oposite (right/top)
         else {
-            this.labelsContainer.toBack(); // right
+          this.labelsContainer.toBack(); // right
 
-            if (this.orientation == "vertical") {
-              this.ticks.template.locationX = 0;
-              labelAlign = "left";
-            } // top
-            else {
-                labelValign = "top";
-                this.ticks.template.locationY = 0;
-              }
+          if (this.orientation == "vertical") {
+            this.ticks.template.locationX = 0;
+            labelAlign = "left";
+          } // top
+          else {
+            labelValign = "top";
+            this.ticks.template.locationY = 0;
           }
+        }
       }
 
       labelTemplate.align = labelAlign;
@@ -29994,9 +29860,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var LineSeriesDataItem =
-/** @class */
-function (_super) {
+var LineSeriesDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(LineSeriesDataItem, _super);
   /**
    * Constructor
@@ -30030,9 +29894,7 @@ function (_super) {
  * @important
  */
 
-var LineSeries =
-/** @class */
-function (_super) {
+var LineSeries = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(LineSeries, _super);
   /**
    * Constructor
@@ -30905,9 +30767,7 @@ __webpack_require__.r(__webpack_exports__);
  * @todo Example
  */
 
-var LineSeriesSegment =
-/** @class */
-function (_super) {
+var LineSeriesSegment = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(LineSeriesSegment, _super);
   /**
    * Constructor
@@ -31097,9 +30957,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var OHLCSeriesDataItem =
-/** @class */
-function (_super) {
+var OHLCSeriesDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(OHLCSeriesDataItem, _super);
   /**
    * Defines a type of [[Component]] this data item is used for
@@ -31142,9 +31000,7 @@ function (_super) {
  * @important
  */
 
-var OHLCSeries =
-/** @class */
-function (_super) {
+var OHLCSeries = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(OHLCSeries, _super);
   /**
    * Constructor
@@ -31413,9 +31269,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var PercentSeriesDataItem =
-/** @class */
-function (_super) {
+var PercentSeriesDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PercentSeriesDataItem, _super);
   /**
    * Constructor
@@ -31727,9 +31581,7 @@ function (_super) {
  * @see {@link IPercentSeriesAdapters} for a list of available Adapters
  */
 
-var PercentSeries =
-/** @class */
-function (_super) {
+var PercentSeries = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PercentSeries, _super);
   /**
    * Constructor
@@ -32478,9 +32330,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var PictorialStackedSeriesDataItem =
-/** @class */
-function (_super) {
+var PictorialStackedSeriesDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PictorialStackedSeriesDataItem, _super);
   /**
    * Constructor
@@ -32517,9 +32367,7 @@ function (_super) {
  * @important
  */
 
-var PictorialStackedSeries =
-/** @class */
-function (_super) {
+var PictorialStackedSeries = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PictorialStackedSeries, _super);
   /**
    * Constructor
@@ -32943,9 +32791,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var PieSeriesDataItem =
-/** @class */
-function (_super) {
+var PieSeriesDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PieSeriesDataItem, _super);
   /**
    * Constructor
@@ -33027,9 +32873,7 @@ function (_super) {
  * @important
  */
 
-var PieSeries =
-/** @class */
-function (_super) {
+var PieSeries = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PieSeries, _super);
   /**
    * Constructor
@@ -33256,13 +33100,13 @@ function (_super) {
             this._rightItems.push(dataItem);
           } // left half
           else {
-              x -= arcRect.x * this.pixelRadius;
-              label.horizontalCenter = "right";
+            x -= arcRect.x * this.pixelRadius;
+            label.horizontalCenter = "right";
 
-              this._leftItems.push(dataItem);
+            this._leftItems.push(dataItem);
 
-              x *= -1;
-            }
+            x *= -1;
+          }
 
           var distance = slice.radius + tick.length + labelRadius;
           point = {
@@ -33553,9 +33397,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var PieSeries3DDataItem =
-/** @class */
-function (_super) {
+var PieSeries3DDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PieSeries3DDataItem, _super);
   /**
    * Constructor
@@ -33612,9 +33454,7 @@ function (_super) {
  * @important
  */
 
-var PieSeries3D =
-/** @class */
-function (_super) {
+var PieSeries3D = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PieSeries3D, _super);
   /**
    * Constructor
@@ -33701,8 +33541,8 @@ function (_super) {
         slice.toFront();
       } //q2 || q3
       else if (startAngle >= 90) {
-          slice.toBack();
-        }
+        slice.toBack();
+      }
     }
   };
 
@@ -33822,9 +33662,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var PyramidSeriesDataItem =
-/** @class */
-function (_super) {
+var PyramidSeriesDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PyramidSeriesDataItem, _super);
   /**
    * Constructor
@@ -33861,9 +33699,7 @@ function (_super) {
  * @important
  */
 
-var PyramidSeries =
-/** @class */
-function (_super) {
+var PyramidSeries = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PyramidSeries, _super);
   /**
    * Constructor
@@ -34322,9 +34158,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var RadarColumnSeriesDataItem =
-/** @class */
-function (_super) {
+var RadarColumnSeriesDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(RadarColumnSeriesDataItem, _super);
   /**
    * Constructor
@@ -34361,9 +34195,7 @@ function (_super) {
  * @important
  */
 
-var RadarColumnSeries =
-/** @class */
-function (_super) {
+var RadarColumnSeries = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(RadarColumnSeries, _super);
   /**
    * Constructor
@@ -34723,9 +34555,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var RadarSeriesDataItem =
-/** @class */
-function (_super) {
+var RadarSeriesDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(RadarSeriesDataItem, _super);
   /**
    * Constructor
@@ -34770,9 +34600,7 @@ function (_super) {
  * @important
  */
 
-var RadarSeries =
-/** @class */
-function (_super) {
+var RadarSeries = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(RadarSeries, _super);
   /**
    * Constructor
@@ -35064,9 +34892,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var SeriesDataItem =
-/** @class */
-function (_super) {
+var SeriesDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(SeriesDataItem, _super);
   /**
    * Constructor
@@ -35151,9 +34977,7 @@ function (_super) {
  * @todo Separate axis-related stuff to some other class so that MapSeries would not have unrelated stuff
  */
 
-var Series =
-/** @class */
-function (_super) {
+var Series = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Series, _super);
   /**
    * Constructor
@@ -36406,8 +36230,8 @@ function (_super) {
                               anyChild[property_1] = anyChild[property_1];
                             } // giveup here
                             else if (child instanceof _core_Container__WEBPACK_IMPORTED_MODULE_6__["Container"]) {
-                                child.deepInvalidate();
-                              }
+                              child.deepInvalidate();
+                            }
                           });
                         }
                       });
@@ -36438,8 +36262,8 @@ function (_super) {
                           anyChild[property_1] = anyChild[property_1];
                         } // givup here
                         else if (child instanceof _core_Container__WEBPACK_IMPORTED_MODULE_6__["Container"]) {
-                            child.deepInvalidate();
-                          }
+                          child.deepInvalidate();
+                        }
                       });
                     }
                   });
@@ -36637,12 +36461,12 @@ function (_super) {
       return 0;
     } // Must come last
     else if (a == "heatRules") {
-        return 1;
-      } else if (b == "heatRules") {
-        return -1;
-      } else {
-        return _super.prototype.configOrder.call(this, a, b);
-      }
+      return 1;
+    } else if (b == "heatRules") {
+      return -1;
+    } else {
+      return _super.prototype.configOrder.call(this, a, b);
+    }
   };
   /**
    * Sets `visibility` property:
@@ -36721,9 +36545,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var StepLineSeriesDataItem =
-/** @class */
-function (_super) {
+var StepLineSeriesDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(StepLineSeriesDataItem, _super);
   /**
    * Constructor
@@ -36760,9 +36582,7 @@ function (_super) {
  * @important
  */
 
-var StepLineSeries =
-/** @class */
-function (_super) {
+var StepLineSeries = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(StepLineSeries, _super);
   /**
    * Constructor
@@ -37037,9 +36857,7 @@ __webpack_require__.r(__webpack_exports__);
  * @todo Example
  */
 
-var StepLineSeriesSegment =
-/** @class */
-function (_super) {
+var StepLineSeriesSegment = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(StepLineSeriesSegment, _super);
   /**
    * Constructor
@@ -37174,9 +36992,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var TreeMapSeriesDataItem =
-/** @class */
-function (_super) {
+var TreeMapSeriesDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(TreeMapSeriesDataItem, _super);
   /**
    * Constructor
@@ -37317,9 +37133,7 @@ function (_super) {
  * @important
  */
 
-var TreeMapSeries =
-/** @class */
-function (_super) {
+var TreeMapSeries = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(TreeMapSeries, _super);
   /**
    * Constructor
@@ -37602,9 +37416,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var XYSeriesDataItem =
-/** @class */
-function (_super) {
+var XYSeriesDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(XYSeriesDataItem, _super);
   /**
    * Constructor
@@ -37984,9 +37796,7 @@ function (_super) {
  * @important
  */
 
-var XYSeries =
-/** @class */
-function (_super) {
+var XYSeries = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(XYSeries, _super);
   /**
    * Constructor
@@ -38840,6 +38650,7 @@ function (_super) {
 
     if (scrollbarSeries) {
       this.scrollbarSeries.addData(rawDataItem, removeCount, true);
+      this.scrollbarSeries._parseDataFrom = this._parseDataFrom;
     }
   };
 
@@ -39977,6 +39788,8 @@ function (_super) {
               if (value >= 0 && prevRealValue >= 0 || value < 0 && prevRealValue < 0) {
                 dataItem.setCalculatedValue(field_2, prevValue, "stack");
                 return false;
+              } else if (!prevSeries.stacked) {
+                return false;
               }
             } else {
               dataItem.setCalculatedValue(field_2, prevValue, "stack");
@@ -40525,9 +40338,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var ChordDiagramDataItem =
-/** @class */
-function (_super) {
+var ChordDiagramDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ChordDiagramDataItem, _super);
   /**
    * Constructor
@@ -40564,9 +40375,7 @@ function (_super) {
  * @important
  */
 
-var ChordDiagram =
-/** @class */
-function (_super) {
+var ChordDiagram = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ChordDiagram, _super);
   /**
    * Constructor
@@ -40964,9 +40773,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var FlowDiagramDataItem =
-/** @class */
-function (_super) {
+var FlowDiagramDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(FlowDiagramDataItem, _super);
   /**
    * Constructor
@@ -41108,9 +40915,7 @@ function (_super) {
  * @important
  */
 
-var FlowDiagram =
-/** @class */
-function (_super) {
+var FlowDiagram = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(FlowDiagram, _super);
   /**
    * Constructor
@@ -41584,9 +41389,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var GaugeChartDataItem =
-/** @class */
-function (_super) {
+var GaugeChartDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(GaugeChartDataItem, _super);
   /**
    * Constructor
@@ -41623,9 +41426,7 @@ function (_super) {
  * @important
  */
 
-var GaugeChart =
-/** @class */
-function (_super) {
+var GaugeChart = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(GaugeChart, _super);
   /**
    * Constructor
@@ -41698,12 +41499,12 @@ function (_super) {
       return 0;
     } // Must come last
     else if (a == "hands") {
-        return 1;
-      } else if (b == "hands") {
-        return -1;
-      } else {
-        return _super.prototype.configOrder.call(this, a, b);
-      }
+      return 1;
+    } else if (b == "hands") {
+      return -1;
+    } else {
+      return _super.prototype.configOrder.call(this, a, b);
+    }
   };
 
   return GaugeChart;
@@ -41765,9 +41566,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var PercentChartDataItem =
-/** @class */
-function (_super) {
+var PercentChartDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PercentChartDataItem, _super);
   /**
    * Constructor
@@ -41804,9 +41603,7 @@ function (_super) {
  * @see {@link https://www.amcharts.com/docs/v4/chart-types/sliced-chart/} for Sliced chart documentation
  */
 
-var PercentChart =
-/** @class */
-function (_super) {
+var PercentChart = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PercentChart, _super);
   /**
    * Constructor
@@ -41976,9 +41773,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var PieChartDataItem =
-/** @class */
-function (_super) {
+var PieChartDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PieChartDataItem, _super);
   /**
    * Constructor
@@ -42091,9 +41886,7 @@ function (_super) {
  * @important
  */
 
-var PieChart =
-/** @class */
-function (_super) {
+var PieChart = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PieChart, _super);
   /**
    * Constructor
@@ -42489,9 +42282,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var PieChart3DDataItem =
-/** @class */
-function (_super) {
+var PieChart3DDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PieChart3DDataItem, _super);
   /**
    * Constructor
@@ -42604,9 +42395,7 @@ function (_super) {
  * @important
  */
 
-var PieChart3D =
-/** @class */
-function (_super) {
+var PieChart3D = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PieChart3D, _super);
   /**
    * Constructor
@@ -42761,9 +42550,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var RadarChartDataItem =
-/** @class */
-function (_super) {
+var RadarChartDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(RadarChartDataItem, _super);
   /**
    * Constructor
@@ -42800,9 +42587,7 @@ function (_super) {
  * @important
  */
 
-var RadarChart =
-/** @class */
-function (_super) {
+var RadarChart = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(RadarChart, _super);
   /**
    * Constructor
@@ -43272,9 +43057,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var SankeyDiagramDataItem =
-/** @class */
-function (_super) {
+var SankeyDiagramDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(SankeyDiagramDataItem, _super);
   /**
    * Constructor
@@ -43311,9 +43094,7 @@ function (_super) {
  * @important
  */
 
-var SankeyDiagram =
-/** @class */
-function (_super) {
+var SankeyDiagram = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(SankeyDiagram, _super);
   /**
    * Constructor
@@ -43918,9 +43699,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var SerialChartDataItem =
-/** @class */
-function (_super) {
+var SerialChartDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(SerialChartDataItem, _super);
   /**
    * Constructor
@@ -43957,9 +43736,7 @@ function (_super) {
  * @see {@link ISerialChartAdapters} for a list of available Adapters
  */
 
-var SerialChart =
-/** @class */
-function (_super) {
+var SerialChart = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(SerialChart, _super);
   /**
    * Constructor
@@ -44315,9 +44092,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var SlicedChartDataItem =
-/** @class */
-function (_super) {
+var SlicedChartDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(SlicedChartDataItem, _super);
   /**
    * Constructor
@@ -44354,9 +44129,7 @@ function (_super) {
  * @important
  */
 
-var SlicedChart =
-/** @class */
-function (_super) {
+var SlicedChart = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(SlicedChart, _super);
   /**
    * Constructor
@@ -44478,9 +44251,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var TreeMapDataItem =
-/** @class */
-function (_super) {
+var TreeMapDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(TreeMapDataItem, _super);
   /**
    * Constructor
@@ -44911,9 +44682,7 @@ function (_super) {
  * @see {@link https://www.amcharts.com/docs/v4/chart-types/treemap/} for documentation
  */
 
-var TreeMap =
-/** @class */
-function (_super) {
+var TreeMap = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(TreeMap, _super);
   /**
    * Constructor
@@ -46110,9 +45879,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var XYChartDataItem =
-/** @class */
-function (_super) {
+var XYChartDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(XYChartDataItem, _super);
   /**
    * Constructor
@@ -46266,9 +46033,7 @@ function (_super) {
  * @important
  */
 
-var XYChart =
-/** @class */
-function (_super) {
+var XYChart = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(XYChart, _super);
   /**
    * Constructor
@@ -47098,10 +46863,12 @@ function (_super) {
 
               if (series.xAxis != closestSeries.xAxis) {
                 series.xAxis.hideTooltip();
+                exceptAxes_1.push(series.xAxis);
               }
 
               if (series.yAxis != closestSeries.yAxis) {
                 series.yAxis.hideTooltip();
+                exceptAxes_1.push(series.yAxis);
               }
             }
           });
@@ -48345,24 +48112,24 @@ function (_super) {
       return 0;
     } // Must come last
     else if (a == "scrollbarX") {
-        return 1;
-      } else if (b == "scrollbarX") {
-        return -1;
-      } else if (a == "scrollbarY") {
-        return 1;
-      } else if (b == "scrollbarY") {
-        return -1;
-      } else if (a == "cursor") {
-        return 1;
-      } else if (b == "cursor") {
-        return -1;
-      } else if (a == "series") {
-        return 1;
-      } else if (b == "series") {
-        return -1;
-      } else {
-        return _super.prototype.configOrder.call(this, a, b);
-      }
+      return 1;
+    } else if (b == "scrollbarX") {
+      return -1;
+    } else if (a == "scrollbarY") {
+      return 1;
+    } else if (b == "scrollbarY") {
+      return -1;
+    } else if (a == "cursor") {
+      return 1;
+    } else if (b == "cursor") {
+      return -1;
+    } else if (a == "series") {
+      return 1;
+    } else if (b == "series") {
+      return -1;
+    } else {
+      return _super.prototype.configOrder.call(this, a, b);
+    }
   };
   /**
    * Creates a new Series of type suitable for this chart.
@@ -48704,9 +48471,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link DataItem}
  */
 
-var XYChart3DDataItem =
-/** @class */
-function (_super) {
+var XYChart3DDataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(XYChart3DDataItem, _super);
 
   function XYChart3DDataItem() {
@@ -48739,9 +48504,7 @@ function (_super) {
  * @important
  */
 
-var XYChart3D =
-/** @class */
-function (_super) {
+var XYChart3D = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(XYChart3D, _super);
   /**
    * Constructor
@@ -48883,7 +48646,7 @@ function (_super) {
 
 
   XYChart3D.prototype.fixLayout = function () {
-    this.chartContainer.marginTop = -this.dy3D;
+    this.chartContainer.paddingTop = -this.dy3D;
     this.chartContainer.paddingRight = this.dx3D;
 
     if (this.scrollbarX) {
@@ -49080,9 +48843,7 @@ __webpack_require__.r(__webpack_exports__);
  * handling cache, etc.
  */
 
-var BaseObject =
-/** @class */
-function () {
+var BaseObject = function () {
   //protected _classes: { [index: string]: any } = {};
 
   /**
@@ -50057,12 +49818,12 @@ function () {
     } // Language must come first, so it's all set up when the rest of the
     // elements are being instantiated
     else if (a == "language") {
-        return -1;
-      } else if (b == "language") {
-        return 1;
-      } else {
-        return 0;
-      }
+      return -1;
+    } else if (b == "language") {
+      return 1;
+    } else {
+      return 0;
+    }
   };
   /**
    * Checks if field should be just assigned as is, without any checking when
@@ -50200,9 +49961,7 @@ function () {
  * [[BaseObject]] directly.
  */
 
-var BaseObjectEvents =
-/** @class */
-function (_super) {
+var BaseObjectEvents = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(BaseObjectEvents, _super);
   /**
    * Constructor
@@ -50384,9 +50143,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var Component =
-/** @class */
-function (_super) {
+var Component = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Component, _super);
   /**
    * Constructor
@@ -51673,23 +51430,23 @@ function (_super) {
         }
       } // most likely we are dragging right, so we modify left
       else {
-          if (this.maxZoomCount > 0) {
-            // add to the end
-            if (1 / (end - start) < minZoomFactor) {
-              start = end - 1 / minZoomFactor;
-            }
-          } // remove from start
-
-
-          if (1 / (end - start) > maxZoomFactor) {
-            start = end - 1 / maxZoomFactor;
+        if (this.maxZoomCount > 0) {
+          // add to the end
+          if (1 / (end - start) < minZoomFactor) {
+            start = end - 1 / minZoomFactor;
           }
+        } // remove from start
 
-          if (start < 0 && end - start < 1 / maxZoomFactor) {
-            //start = 0;
-            end = start + 1 / maxZoomFactor;
-          }
+
+        if (1 / (end - start) > maxZoomFactor) {
+          start = end - 1 / maxZoomFactor;
         }
+
+        if (start < 0 && end - start < 1 / maxZoomFactor) {
+          //start = 0;
+          end = start + 1 / maxZoomFactor;
+        }
+      }
 
       if (start < -declination) {
         start = -declination;
@@ -52530,9 +52287,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var Container =
-/** @class */
-function (_super) {
+var Container = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Container, _super);
   /**
    * Constructor
@@ -53262,25 +53017,25 @@ function (_super) {
           }
         } // if child is not valid
         else {
-            // tell child what maximum width/ height it can occupy
-            if (child.isMeasured) {
-              if (_utils_Type__WEBPACK_IMPORTED_MODULE_14__["isNumber"](child.relativeWidth)) {
-                if (child.maxWidth != maxWidth) {
-                  // need to check this because of allValid
-                  child.maxWidth = maxWidth;
-                  allValid = false;
-                }
+          // tell child what maximum width/ height it can occupy
+          if (child.isMeasured) {
+            if (_utils_Type__WEBPACK_IMPORTED_MODULE_14__["isNumber"](child.relativeWidth)) {
+              if (child.maxWidth != maxWidth) {
+                // need to check this because of allValid
+                child.maxWidth = maxWidth;
+                allValid = false;
               }
+            }
 
-              if (_utils_Type__WEBPACK_IMPORTED_MODULE_14__["isNumber"](child.relativeHeight)) {
-                if (child.maxHeight != maxHeight) {
-                  // need to check this because of allValid
-                  child.maxHeight = maxHeight;
-                  allValid = false;
-                }
+            if (_utils_Type__WEBPACK_IMPORTED_MODULE_14__["isNumber"](child.relativeHeight)) {
+              if (child.maxHeight != maxHeight) {
+                // need to check this because of allValid
+                child.maxHeight = maxHeight;
+                allValid = false;
               }
             }
           }
+        }
       });
     }
 
@@ -54694,9 +54449,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var DataItem =
-/** @class */
-function (_super) {
+var DataItem = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(DataItem, _super);
   /**
    * Constructor
@@ -55872,9 +55625,7 @@ __webpack_require__.r(__webpack_exports__);
  * @ignore Exclude from docs
  */
 
-var Registry =
-/** @class */
-function () {
+var Registry = function () {
   function Registry() {
     var _this = this;
     /**
@@ -56402,9 +56153,7 @@ var visualProperties = ["fill", "fillOpacity", "stroke", "strokeOpacity", "strok
  * @important
  */
 
-var Sprite =
-/** @class */
-function (_super) {
+var Sprite = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Sprite, _super);
   /**
    * Constructor:
@@ -58129,17 +57878,17 @@ function (_super) {
         this._clipPath.y = point.y;
       } // Sprite
       else {
-          if (mask.element && mask.element != this._clipElement) {
-            this._clipElement = mask.element;
+        if (mask.element && mask.element != this._clipElement) {
+          this._clipElement = mask.element;
 
-            this._clipPath.add(this._clipElement);
-          }
-
-          this._clipPath.scale = mask.scale;
-          this._clipPath.x = mask.pixelX;
-          this._clipPath.y = mask.pixelY;
-          this._clipPath.rotation = mask.rotation;
+          this._clipPath.add(this._clipElement);
         }
+
+        this._clipPath.scale = mask.scale;
+        this._clipPath.x = mask.pixelX;
+        this._clipPath.y = mask.pixelY;
+        this._clipPath.rotation = mask.rotation;
+      }
     }
   };
   /**
@@ -65880,12 +65629,12 @@ function (_super) {
       return 0;
     } // Must come last
     else if (a == "tooltipColorSource") {
-        return 1;
-      } else if (b == "tooltipColorSource") {
-        return -1;
-      } else {
-        return _super.prototype.configOrder.call(this, a, b);
-      }
+      return 1;
+    } else if (b == "tooltipColorSource") {
+      return -1;
+    } else {
+      return _super.prototype.configOrder.call(this, a, b);
+    }
   };
 
   Object.defineProperty(Sprite.prototype, "isHidden", {
@@ -66146,9 +65895,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var SpriteEventDispatcher =
-/** @class */
-function (_super) {
+var SpriteEventDispatcher = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(SpriteEventDispatcher, _super);
 
   function SpriteEventDispatcher() {
@@ -66472,9 +66219,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var SpriteState =
-/** @class */
-function (_super) {
+var SpriteState = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(SpriteState, _super);
   /**
    * Constructor
@@ -66801,9 +66546,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var System =
-/** @class */
-function () {
+var System = function () {
   /**
    * Performs initialization of the System object.
    *
@@ -67268,7 +67011,7 @@ function () {
    * @see {@link https://docs.npmjs.com/misc/semver}
    */
 
-  System.VERSION = "4.10.20";
+  System.VERSION = "4.10.22";
   return System;
 }();
 
@@ -67323,9 +67066,7 @@ var separators = [",", ";", "\t"];
  * @important
  */
 
-var CSVParser =
-/** @class */
-function (_super) {
+var CSVParser = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(CSVParser, _super);
 
   function CSVParser() {
@@ -67619,9 +67360,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IDataLoaderAdapters} for a list of available Adapters
  */
 
-var DataLoader =
-/** @class */
-function () {
+var DataLoader = function () {
   function DataLoader() {
     /**
      * Adapter.
@@ -67803,9 +67542,7 @@ __webpack_require__.r(__webpack_exports__);
  * Base class for the data parsers.
  */
 
-var DataParser =
-/** @class */
-function () {
+var DataParser = function () {
   function DataParser() {}
   /**
    * A "placeholder" function for real parsers to override.
@@ -68013,9 +67750,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IDataSourceAdapters} for a list of available Adapters
  */
 
-var DataSource =
-/** @class */
-function (_super) {
+var DataSource = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(DataSource, _super);
   /**
    * Constructor
@@ -68639,9 +68374,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var JSONParser =
-/** @class */
-function (_super) {
+var JSONParser = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(JSONParser, _super);
 
   function JSONParser() {
@@ -68767,9 +68500,7 @@ __webpack_require__.r(__webpack_exports__);
  * Defines a class that holds default properties for new SVG elements
  */
 
-var SVGDefaults =
-/** @class */
-function () {
+var SVGDefaults = function () {
   function SVGDefaults() {}
 
   SVGDefaults.opacity = 1;
@@ -68837,9 +68568,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IConeAdapters} for a list of available Adapters
  */
 
-var Cone =
-/** @class */
-function (_super) {
+var Cone = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Cone, _super);
   /**
    * Constructor
@@ -69084,9 +68813,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IRectangle3DAdapters} for a list of available Adapters
  */
 
-var Rectangle3D =
-/** @class */
-function (_super) {
+var Rectangle3D = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Rectangle3D, _super);
   /**
    * Constructor
@@ -69380,9 +69107,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link ISlice3DAdapters} for a list of available Adapters
  */
 
-var Slice3D =
-/** @class */
-function (_super) {
+var Slice3D = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Slice3D, _super);
   /**
    * Constructor
@@ -69829,9 +69554,7 @@ __webpack_require__.r(__webpack_exports__);
  * @ignore Exclude from docs
  */
 
-var AmChartsLogo =
-/** @class */
-function (_super) {
+var AmChartsLogo = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(AmChartsLogo, _super);
   /**
    * Constructor
@@ -69999,9 +69722,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IButtonAdapters} for a list of available Adapters
  */
 
-var Button =
-/** @class */
-function (_super) {
+var Button = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Button, _super);
   /**
    * Constructor
@@ -70237,9 +69958,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link ICircleAdapters} for a list of available Adapters
  */
 
-var Circle =
-/** @class */
-function (_super) {
+var Circle = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Circle, _super);
   /**
    * Constructor
@@ -70393,9 +70112,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link ICloseButtonAdapters} for a list of available Adapters
  */
 
-var CloseButton =
-/** @class */
-function (_super) {
+var CloseButton = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(CloseButton, _super);
   /**
    * Constructor
@@ -70532,9 +70249,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IEllipseAdapters} for a list of available Adapters
  */
 
-var Ellipse =
-/** @class */
-function (_super) {
+var Ellipse = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Ellipse, _super);
   /**
    * Constructor
@@ -70676,9 +70391,7 @@ __webpack_require__.r(__webpack_exports__);
  * @since 4.4.0
  */
 
-var Grip =
-/** @class */
-function (_super) {
+var Grip = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Grip, _super);
   /**
    * Constructor
@@ -70939,9 +70652,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IImageAdapters} for a list of available Adapters
  */
 
-var Image =
-/** @class */
-function (_super) {
+var Image = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Image, _super);
   /**
    * Constructor
@@ -71173,9 +70884,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var Label =
-/** @class */
-function (_super) {
+var Label = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Label, _super);
   /**
    * Constructor
@@ -71677,7 +71386,7 @@ function (_super) {
                       splitLines = _utils_Utils__WEBPACK_IMPORTED_MODULE_7__["splitTextByCharCount"](chunk.text, maxChars, true, this.rtl);
                     } else {
                       // Don't split mid-word
-                      splitLines = _utils_Utils__WEBPACK_IMPORTED_MODULE_7__["splitTextByCharCount"](chunk.text, maxChars, true, this.rtl); // Check if the first word is too long
+                      splitLines = _utils_Utils__WEBPACK_IMPORTED_MODULE_7__["splitTextByCharCount"](chunk.text, maxChars, true, this.rtl, false); // Check if the first word is too long
 
                       if (splitLines[0].length > maxChars || maxChars === 1) {
                         // Yes - move the whole chunk to the next line
@@ -71690,7 +71399,13 @@ function (_super) {
 
 
                     if (excessChars > 0) {
-                      lastNode.textContent = Object(_formatters_TextFormatter__WEBPACK_IMPORTED_MODULE_3__["getTextFormatter"])().cleanUp(_utils_Utils__WEBPACK_IMPORTED_MODULE_7__["trim"](splitLines.shift()));
+                      var lineText_1 = splitLines.shift();
+
+                      if (firstChunk) {
+                        lineText_1 = _utils_Utils__WEBPACK_IMPORTED_MODULE_7__["trim"](lineText_1);
+                      }
+
+                      lastNode.textContent = Object(_formatters_TextFormatter__WEBPACK_IMPORTED_MODULE_3__["getTextFormatter"])().cleanUp(lineText_1);
                     } // Measure again, just in case
 
 
@@ -72774,9 +72489,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link ILineAdapters} for a list of available Adapters
  */
 
-var Line =
-/** @class */
-function (_super) {
+var Line = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Line, _super);
   /**
    * Constructor
@@ -73019,9 +72732,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link https://www.amcharts.com/docs/v4/concepts/popups-and-modals/} For examples and docs on Popups and Modals.
  */
 
-var Modal =
-/** @class */
-function (_super) {
+var Modal = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Modal, _super);
   /**
    * Constructor
@@ -73097,9 +72808,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IPlayButtonAdapters} for a list of available Adapters
  */
 
-var PlayButton =
-/** @class */
-function (_super) {
+var PlayButton = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PlayButton, _super);
   /**
    * Constructor
@@ -73225,9 +72934,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IPointedRectangleAdapters} for a list of available Adapters
  */
 
-var PointedRectangle =
-/** @class */
-function (_super) {
+var PointedRectangle = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PointedRectangle, _super);
   /**
    * Constructor
@@ -73400,9 +73107,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IPointedShapeAdapters} for a list of available Adapters
  */
 
-var PointedShape =
-/** @class */
-function (_super) {
+var PointedShape = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PointedShape, _super);
   /**
    * Constructor
@@ -73570,9 +73275,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IPolyarcAdapters} for a list of available Adapters
  */
 
-var Polyarc =
-/** @class */
-function (_super) {
+var Polyarc = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Polyarc, _super);
   /**
    * Constructor
@@ -73761,9 +73464,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IPolygonAdapters} for a list of available Adapters
  */
 
-var Polygon =
-/** @class */
-function (_super) {
+var Polygon = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Polygon, _super);
   /**
    * Constructor
@@ -74077,9 +73778,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IPolylineAdapters} for a list of available Adapters
  */
 
-var Polyline =
-/** @class */
-function (_super) {
+var Polyline = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Polyline, _super);
   /**
    * Constructor
@@ -74314,9 +74013,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IPolysplineAdapters} for a list of available Adapters
  */
 
-var Polyspline =
-/** @class */
-function (_super) {
+var Polyspline = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Polyspline, _super);
   /**
    * Constructor
@@ -74682,9 +74379,7 @@ __webpack_require__.r(__webpack_exports__);
  * @todo Positioning over whole window
  */
 
-var Popup =
-/** @class */
-function (_super) {
+var Popup = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Popup, _super);
   /**
    * Constructor
@@ -75879,9 +75574,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IPreloaderAdapters} for a list of available Adapters
  */
 
-var Preloader =
-/** @class */
-function (_super) {
+var Preloader = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Preloader, _super);
   /**
    * Constructor
@@ -76123,9 +75816,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IQuadraticCurveAdapters} for a list of available Adapters
  */
 
-var QuadraticCurve =
-/** @class */
-function (_super) {
+var QuadraticCurve = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(QuadraticCurve, _super);
   /**
    * Constructor
@@ -76287,9 +75978,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IRectangleAdapters} for a list of available Adapters
  */
 
-var Rectangle =
-/** @class */
-function (_super) {
+var Rectangle = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Rectangle, _super);
   /**
    * Constructor
@@ -76431,9 +76120,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IResizeButtonAdapters} for a list of available Adapters
  */
 
-var ResizeButton =
-/** @class */
-function (_super) {
+var ResizeButton = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ResizeButton, _super);
   /**
    * Constructor
@@ -76576,9 +76263,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IRoundedRectangleAdapters} for a list of available Adapters
  */
 
-var RoundedRectangle =
-/** @class */
-function (_super) {
+var RoundedRectangle = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(RoundedRectangle, _super);
   /**
    * Constructor
@@ -76851,9 +76536,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IScrollbarAdapters} for a list of available Adapters
  */
 
-var Scrollbar =
-/** @class */
-function (_super) {
+var Scrollbar = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Scrollbar, _super);
   /**
    * Construtor
@@ -77975,9 +77658,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link ISliceAdapters} for a list of available Adapters
  */
 
-var Slice =
-/** @class */
-function (_super) {
+var Slice = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Slice, _super);
   /**
    * Constructor
@@ -78275,6 +77956,7 @@ function (_super) {
      */
     set: function set(value) {
       this.setPropertyValue("shiftRadius", value);
+      value = this.getPropertyValue("shiftRadius");
       this.dx = value * this.radius * this.ix;
       this.dy = value * this.radiusY * this.iy;
     },
@@ -78423,9 +78105,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link ISliderAdapters} for a list of available Adapters
  */
 
-var Slider =
-/** @class */
-function (_super) {
+var Slider = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Slider, _super);
   /**
    * Constructor
@@ -78566,9 +78246,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link ISwitchButtonAdapters} for a list of available Adapters
  */
 
-var SwitchButton =
-/** @class */
-function (_super) {
+var SwitchButton = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(SwitchButton, _super);
   /**
    * Constructor
@@ -78832,9 +78510,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link ITextLinkAdapters} for a list of available Adapters
  */
 
-var TextLink =
-/** @class */
-function (_super) {
+var TextLink = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(TextLink, _super);
   /**
    * Constructor
@@ -78934,9 +78610,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link ITooltipAdapters} for a list of available Adapters
  */
 
-var Tooltip =
-/** @class */
-function (_super) {
+var Tooltip = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Tooltip, _super);
   /**
    * Constructor
@@ -79394,26 +79068,26 @@ function (_super) {
       }
     } // vertical pointer
     else {
-        if (boundingRect) {
-          textX = _utils_Math__WEBPACK_IMPORTED_MODULE_8__["fitToRange"](0, boundingRect.x - x + textW / 2, boundingRect.x - x + boundingRect.width - textW / 2);
-        }
+      if (boundingRect) {
+        textX = _utils_Math__WEBPACK_IMPORTED_MODULE_8__["fitToRange"](0, boundingRect.x - x + textW / 2, boundingRect.x - x + boundingRect.width - textW / 2);
+      }
 
-        if (pointerOrientation == "vertical") {
-          if (boundingRect && y > boundingRect.y + textH + pointerLength) {
-            textY = -textH - pointerLength;
-            this._verticalOrientation = "up";
-          } else {
-            textY = pointerLength;
-            this._verticalOrientation = "down";
-          }
-        } else if (pointerOrientation == "down") {
+      if (pointerOrientation == "vertical") {
+        if (boundingRect && y > boundingRect.y + textH + pointerLength) {
           textY = -textH - pointerLength;
           this._verticalOrientation = "up";
         } else {
           textY = pointerLength;
           this._verticalOrientation = "down";
         }
+      } else if (pointerOrientation == "down") {
+        textY = -textH - pointerLength;
+        this._verticalOrientation = "up";
+      } else {
+        textY = pointerLength;
+        this._verticalOrientation = "down";
       }
+    }
 
     if (boundingRect) {
       textY = _utils_Math__WEBPACK_IMPORTED_MODULE_8__["fitToRange"](textY, boundingRect.y - y, boundingRect.y + boundingRect.height - textH - y);
@@ -79721,9 +79395,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link ITrapezoidAdapters} for a list of available Adapters
  */
 
-var Trapezoid =
-/** @class */
-function (_super) {
+var Trapezoid = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Trapezoid, _super);
   /**
    * Constructor
@@ -79996,9 +79668,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link ITriangleAdapters} for a list of available Adapters
  */
 
-var Triangle =
-/** @class */
-function (_super) {
+var Triangle = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Triangle, _super);
   /**
    * Constructor
@@ -80171,9 +79841,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IWavedCircleAdapters} for a list of available Adapters
  */
 
-var WavedCircle =
-/** @class */
-function (_super) {
+var WavedCircle = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(WavedCircle, _super);
   /**
    * Constructor
@@ -80409,9 +80077,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IWavedLineAdapters} for a list of available Adapters
  */
 
-var WavedLine =
-/** @class */
-function (_super) {
+var WavedLine = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(WavedLine, _super);
   /**
    * Constructor
@@ -80565,9 +80231,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IWavedRectangleAdapters} for a list of available Adapters
  */
 
-var WavedRectangle =
-/** @class */
-function (_super) {
+var WavedRectangle = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(WavedRectangle, _super);
   /**
    * Constructor
@@ -80873,9 +80537,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link IZoomOutButtonAdapters} for a list of available Adapters
  */
 
-var ZoomOutButton =
-/** @class */
-function (_super) {
+var ZoomOutButton = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ZoomOutButton, _super);
   /**
    * Constructor
@@ -81384,9 +81046,7 @@ function eachStylesheets(f) {
  */
 
 
-var Export =
-/** @class */
-function (_super) {
+var Export = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Export, _super);
   /**
    * Constructor
@@ -81550,7 +81210,8 @@ function (_super) {
 
     _this._formatOptions.setKey("csv", {
       addColumnNames: true,
-      emptyAs: ""
+      emptyAs: "",
+      addBOM: true
     });
 
     _this._formatOptions.setKey("xlsx", {
@@ -81887,7 +81548,7 @@ function (_super) {
 
                 return [2
                 /*return*/
-                , this.download(data, this.filePrefix + "." + type)];
+                , this.download(data, this.filePrefix + "." + type, options && options.addBOM)];
               }
             } else {
               // Throw exception?
@@ -84517,7 +84178,11 @@ function (_super) {
    */
 
 
-  Export.prototype.download = function (uri, fileName) {
+  Export.prototype.download = function (uri, fileName, addBOM) {
+    if (addBOM === void 0) {
+      addBOM = false;
+    }
+
     return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
       var parts, contentType, decoded, blob_1, chars, i, charCode, blob, link_1, parts, contentType, decoded, blob_2, url_2, chars, i, charCode, blob, url_3, link, parts, contentType, iframe, idoc;
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
@@ -84576,6 +84241,10 @@ function (_super) {
               , false];
             }
           } else {
+            if (addBOM) {
+              uri = "\ufeff" + uri;
+            }
+
             blob_2 = new Blob([uri], {
               type: contentType
             });
@@ -84597,6 +84266,10 @@ function (_super) {
           for (i = 0; i < uri.length; ++i) {
             charCode = uri.charCodeAt(i);
             chars[i] = charCode;
+          }
+
+          if (addBOM) {
+            chars = [0xEF, 0xBB, 0xBF].concat(chars);
           }
 
           blob = new Blob([new Uint8Array(chars)], {
@@ -86252,9 +85925,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var ExportMenu =
-/** @class */
-function (_super) {
+var ExportMenu = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ExportMenu, _super);
   /**
    * Constructor
@@ -87665,9 +87336,7 @@ __webpack_require__.r(__webpack_exports__);
  * @todo Escape a.m./p.m. properly when used in RegEx
  */
 
-var DateFormatter =
-/** @class */
-function (_super) {
+var DateFormatter = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(DateFormatter, _super);
   /**
    * Constructor
@@ -87784,7 +87453,7 @@ function (_super) {
    * @return Formatted date string
    */
 
-  DateFormatter.prototype.format = function (source, format) {
+  DateFormatter.prototype.format = function (source, format, applyTimezone) {
     // No language?
     if (!this.language) {
       if (this.sprite) {
@@ -87831,7 +87500,7 @@ function (_super) {
 
       if (_utils_Type__WEBPACK_IMPORTED_MODULE_7__["hasValue"](this.timezoneOffset)) {
         date.setMinutes(date.getMinutes() + date.getTimezoneOffset() - this.timezoneOffset);
-      } else if (_utils_Type__WEBPACK_IMPORTED_MODULE_7__["hasValue"](this.timezone)) {
+      } else if (_utils_Type__WEBPACK_IMPORTED_MODULE_7__["hasValue"](this.timezone) && applyTimezone !== false) {
         date = _utils_Time__WEBPACK_IMPORTED_MODULE_8__["setTimezone"](date, this.timezone);
       } // Check if it's a valid date
 
@@ -89090,9 +88759,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link https://www.amcharts.com/docs/v4/concepts/formatters/formatting-duration/} Tutorial on duration formatting
  */
 
-var DurationFormatter =
-/** @class */
-function (_super) {
+var DurationFormatter = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(DurationFormatter, _super);
   /**
    * Constructor
@@ -89773,9 +89440,7 @@ __webpack_require__.r(__webpack_exports__);
  * @todo Apply translations to suffixes/prefixes
  */
 
-var NumberFormatter =
-/** @class */
-function (_super) {
+var NumberFormatter = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(NumberFormatter, _super);
   /**
    * Constructor
@@ -90702,9 +90367,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var TextFormatter =
-/** @class */
-function (_super) {
+var TextFormatter = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(TextFormatter, _super);
   /**
    * Constructor
@@ -91194,9 +90857,7 @@ __webpack_require__.r(__webpack_exports__);
  * decreasing speed.
  */
 
-var Inertia =
-/** @class */
-function (_super) {
+var Inertia = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Inertia, _super);
   /**
    * Constructor
@@ -91412,9 +91073,7 @@ __webpack_require__.r(__webpack_exports__);
 * @see {@link IInteractionEvents} for a list of available events
 */
 
-var Interaction =
-/** @class */
-function (_super) {
+var Interaction = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Interaction, _super);
   /**
    * Constructor. Sets up universal document-wide move events to handle stuff
@@ -94610,9 +94269,7 @@ __webpack_require__.r(__webpack_exports__);
  * @ignore Exclude from docs
  */
 
-var InteractionKeyboardObject =
-/** @class */
-function () {
+var InteractionKeyboardObject = function () {
   /**
    * Constructor.
    *
@@ -94676,8 +94333,8 @@ function () {
       accelleration = 1;
     } // If CTRL is pressed we increase speed by x2
     else if (this.keyboardEvent.ctrlKey) {
-        speed *= 2;
-      } // Get elapsed time
+      speed *= 2;
+    } // Get elapsed time
 
 
     var ms = new Date().getTime() - this._startedOn;
@@ -94785,9 +94442,7 @@ __webpack_require__.r(__webpack_exports__);
  * `interaction.getInteraction(element: HTMLElement)`
  */
 
-var InteractionObject =
-/** @class */
-function (_super) {
+var InteractionObject = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(InteractionObject, _super);
   /**
    * Constructor
@@ -95721,9 +95376,7 @@ __webpack_require__.r(__webpack_exports__);
  * but can turn into something else moving forward.
  */
 
-var InteractionObjectEventDispatcher =
-/** @class */
-function (_super) {
+var InteractionObjectEventDispatcher = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(InteractionObjectEventDispatcher, _super);
 
   function InteractionObjectEventDispatcher() {
@@ -95873,9 +95526,7 @@ __webpack_require__.r(__webpack_exports__);
  * Defines static methods that hold style list for various mouse cursor styles,
  * maintaining browser compatibility.
  */
-var MouseCursorStyle =
-/** @class */
-function () {
+var MouseCursorStyle = function () {
   function MouseCursorStyle() {}
   /**
    * Styles for "grab" mouse cursor.
@@ -95995,9 +95646,7 @@ __webpack_require__.r(__webpack_exports__);
  * All visual elements extend this class.
  */
 
-var AMElement =
-/** @class */
-function () {
+var AMElement = function () {
   /**
    * Constructor creates a new element or uses the one that was passed in.
    *
@@ -96548,9 +96197,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/SVG/Element/g} About `<g>` element
  */
 
-var Group =
-/** @class */
-function (_super) {
+var Group = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Group, _super);
   /**
    * Constructor.
@@ -96730,9 +96377,7 @@ __webpack_require__.r(__webpack_exports__);
  * Use its methods like `addGroup` and `append` to add elements to the paper.
  */
 
-var Paper =
-/** @class */
-function () {
+var Paper = function () {
   /**
    * Creates main `<svg>` container and related elements.
    *
@@ -97177,10 +96822,10 @@ function arc(startAngle, arc, radius, innerRadius, radiusY, cornerRadius, innerC
     path = moveTo(b0);
   } // otherwise start from a
   else {
-      path = moveTo(a0);
-      path += lineTo(b0);
-      path += arcToPoint(b1, cornerRadius, cornerRadiusY, true);
-    } // draw arc
+    path = moveTo(a0);
+    path += lineTo(b0);
+    path += arcToPoint(b1, cornerRadius, cornerRadiusY, true);
+  } // draw arc
 
 
   path += arcTo(startAngle + crAngle, arc - 2 * crAngle, radius, radiusY); // draw inner arc
@@ -97191,10 +96836,10 @@ function arc(startAngle, arc, radius, innerRadius, radiusY, cornerRadius, innerC
       path += moveTo(d0);
     } // draw line otherwise
     else {
-        path += arcToPoint(c0, cornerRadius, cornerRadiusY, true);
-        path += lineTo(d0);
-        path += arcToPoint(d1, innerCornerRadius, innerCornerRadiusY, true);
-      }
+      path += arcToPoint(c0, cornerRadius, cornerRadiusY, true);
+      path += lineTo(d0);
+      path += arcToPoint(d1, innerCornerRadius, innerCornerRadiusY, true);
+    }
 
     path += arcTo(endAngle - crInnerAngle, -(arc - 2 * crInnerAngle), innerRadius, innerRadiusY);
 
@@ -97430,9 +97075,7 @@ var svgContainers = [];
  * A class used to create an HTML wrapper for the SVG contents.
  */
 
-var SVGContainer =
-/** @class */
-function () {
+var SVGContainer = function () {
   /**
    * Constructor
    *
@@ -97887,9 +97530,7 @@ __webpack_require__.r(__webpack_exports__);
  * @todo Description
  */
 
-var Tension =
-/** @class */
-function () {
+var Tension = function () {
   /**
    * Constructor.
    *
@@ -98040,9 +97681,7 @@ function wavedLine(point1, point2, waveLength, waveHeight, tension, adjustWaveLe
   return d;
 }
 
-var Monotone =
-/** @class */
-function () {
+var Monotone = function () {
   function Monotone(reversed, info) {
     this._reversed = reversed;
     this._closed = info.closed;
@@ -98193,9 +97832,7 @@ function slope3(x0, x1, y0, y1, x2, y2) {
   return (sign(s0) + sign(s1)) * Math.min(Math.abs(s0), Math.abs(s1), 0.5 * Math.abs(p)) || 0;
 }
 
-var MonotoneX =
-/** @class */
-function (_super) {
+var MonotoneX = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(MonotoneX, _super);
 
   function MonotoneX(info) {
@@ -98207,9 +97844,7 @@ function (_super) {
 
 
 
-var MonotoneY =
-/** @class */
-function (_super) {
+var MonotoneY = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(MonotoneY, _super);
 
   function MonotoneY(info) {
@@ -98225,9 +97860,7 @@ function (_super) {
  * @todo Description
  */
 
-var Basis =
-/** @class */
-function () {
+var Basis = function () {
   /**
    * Constructor.
    *
@@ -98438,9 +98071,7 @@ __webpack_require__.r(__webpack_exports__);
  * Circular pattern
  */
 
-var CirclePattern =
-/** @class */
-function (_super) {
+var CirclePattern = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(CirclePattern, _super);
   /**
    * Constructor
@@ -98546,9 +98177,7 @@ __webpack_require__.r(__webpack_exports__);
  * @ignore Exclude from docs
  */
 
-var ColorModifier =
-/** @class */
-function (_super) {
+var ColorModifier = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ColorModifier, _super);
   /**
    * Constructor
@@ -98662,9 +98291,7 @@ __webpack_require__.r(__webpack_exports__);
  * ```
  */
 
-var GradientModifier =
-/** @class */
-function (_super) {
+var GradientModifier = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(GradientModifier, _super);
   /**
    * Constructor.
@@ -98891,9 +98518,7 @@ __webpack_require__.r(__webpack_exports__);
  * Line pattern.
  */
 
-var LinePattern =
-/** @class */
-function (_super) {
+var LinePattern = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(LinePattern, _super);
   /**
    * Constructor
@@ -99068,9 +98693,7 @@ __webpack_require__.r(__webpack_exports__);
  * Linear gradient class.
  */
 
-var LinearGradient =
-/** @class */
-function (_super) {
+var LinearGradient = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(LinearGradient, _super);
   /**
    * Constructor.
@@ -99365,9 +98988,7 @@ __webpack_require__.r(__webpack_exports__);
  * ```
  */
 
-var LinearGradientModifier =
-/** @class */
-function (_super) {
+var LinearGradientModifier = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(LinearGradientModifier, _super);
   /**
    * Constructor.
@@ -99458,9 +99079,7 @@ __webpack_require__.r(__webpack_exports__);
  * Base class to define patterns.
  */
 
-var Pattern =
-/** @class */
-function (_super) {
+var Pattern = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Pattern, _super); //public propertyValues = new Dictionary<PatternProperties, any>();
 
   /**
@@ -100078,9 +99697,7 @@ __webpack_require__.r(__webpack_exports__);
  * Radial gradient class.
  */
 
-var RadialGradient =
-/** @class */
-function (_super) {
+var RadialGradient = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(RadialGradient, _super);
   /**
    * Constructor
@@ -100431,9 +100048,7 @@ __webpack_require__.r(__webpack_exports__);
  * ```
  */
 
-var RadialGradientModifier =
-/** @class */
-function (_super) {
+var RadialGradientModifier = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(RadialGradientModifier, _super);
   /**
    * Constructor.
@@ -100510,9 +100125,7 @@ __webpack_require__.r(__webpack_exports__);
  * Rectangular pattern
  */
 
-var RectPattern =
-/** @class */
-function (_super) {
+var RectPattern = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(RectPattern, _super);
   /**
    * Constructor
@@ -100644,9 +100257,7 @@ __webpack_require__.r(__webpack_exports__);
  * Creates a "Blur" filter.
  */
 
-var BlurFilter =
-/** @class */
-function (_super) {
+var BlurFilter = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(BlurFilter, _super);
   /**
    * Constructor
@@ -100758,9 +100369,7 @@ __webpack_require__.r(__webpack_exports__);
  * Creates a "Colorize" filter.
  */
 
-var ColorizeFilter =
-/** @class */
-function (_super) {
+var ColorizeFilter = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ColorizeFilter, _super);
   /**
    * Constructor
@@ -100925,9 +100534,7 @@ __webpack_require__.r(__webpack_exports__);
  * Creats a "Desaturate" filter
  */
 
-var DesaturateFilter =
-/** @class */
-function (_super) {
+var DesaturateFilter = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(DesaturateFilter, _super);
   /**
    * Constructor
@@ -101040,9 +100647,7 @@ __webpack_require__.r(__webpack_exports__);
  * Creats a "Drop Shadow" filter.
  */
 
-var DropShadowFilter =
-/** @class */
-function (_super) {
+var DropShadowFilter = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(DropShadowFilter, _super);
   /**
    * Constructor
@@ -101322,9 +100927,7 @@ __webpack_require__.r(__webpack_exports__);
  * @todo Example
  */
 
-var Filter =
-/** @class */
-function (_super) {
+var Filter = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Filter, _super);
   /**
    * Constructor
@@ -101671,9 +101274,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link https://www.amcharts.com/docs/v4/tutorials/changing-appearance-of-focused-items/} cusomizing focus appearance
  */
 
-var FocusFilter =
-/** @class */
-function (_super) {
+var FocusFilter = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(FocusFilter, _super);
   /**
    * Constructor
@@ -101881,9 +101482,7 @@ __webpack_require__.r(__webpack_exports__);
  * Creates a "Lighten" filter.
  */
 
-var LightenFilter =
-/** @class */
-function (_super) {
+var LightenFilter = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(LightenFilter, _super);
   /**
    * Constructor
@@ -102062,9 +101661,7 @@ __webpack_require__.r(__webpack_exports__);
  * @ignore Exclude from docs
  */
 
-var GlobalAdapter =
-/** @class */
-function () {
+var GlobalAdapter = function () {
   function GlobalAdapter() {
     /**
      * Callback id iterator.
@@ -102224,9 +101821,7 @@ var globalAdapter = new GlobalAdapter();
  * @important
  */
 
-var Adapter =
-/** @class */
-function () {
+var Adapter = function () {
   /**
    * Constructor, sets the object referece this Adapter should be used for.
    *
@@ -102645,9 +102240,7 @@ function getHybridProperty(property, type) {
   return type + property.charAt(0).toUpperCase() + property.substr(1);
 }
 
-var AnimationDisposer =
-/** @class */
-function () {
+var AnimationDisposer = function () {
   function AnimationDisposer(array) {
     this._disposer = new _utils_Disposer__WEBPACK_IMPORTED_MODULE_3__["Disposer"](function () {
       while (array.length !== 0) {
@@ -102675,9 +102268,7 @@ function () {
  * @see {@link IAnimationEvents} for a list of available events
  */
 
-var Animation =
-/** @class */
-function (_super) {
+var Animation = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Animation, _super);
   /**
    * Constructor
@@ -103533,11 +103124,11 @@ function add(array, element, index) {
     array.push(element);
   } // Add to the beginning of array if index is 0
   else if (index === 0) {
-      array.unshift(element);
-    } // Add to indicated place if index is set
-    else {
-        array.splice(index, 0, element);
-      }
+    array.unshift(element);
+  } // Add to indicated place if index is set
+  else {
+    array.splice(index, 0, element);
+  }
 }
 /**
  * Removes `element` from `array` (if it exists) and then inserts `element` at
@@ -103563,8 +103154,8 @@ function replace(array, element, index) {
     array.push(element);
   } // add to indicated place if index is set
   else {
-      array.splice(index, 0, element);
-    }
+    array.splice(index, 0, element);
+  }
 }
 /**
  * Wraps `input` in an array, if it isn't already an array.
@@ -103997,9 +103588,7 @@ __webpack_require__.r(__webpack_exports__);
  * @todo Garbage collector
  */
 
-var Cache =
-/** @class */
-function () {
+var Cache = function () {
   function Cache() {
     /**
      * Storage for cache items.
@@ -104163,9 +103752,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link https://www.amcharts.com/docs/v4/concepts/colors/} for color-related info
  */
 
-var Color =
-/** @class */
-function () {
+var Color = function () {
   /**
    * Constructor
    *
@@ -104510,9 +104097,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link https://www.amcharts.com/docs/v4/concepts/colors/} for color-related info
  */
 
-var ColorSet =
-/** @class */
-function (_super) {
+var ColorSet = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ColorSet, _super);
   /**
    * Constructor
@@ -105807,11 +105392,11 @@ function rgb(color, alpha) {
     rgb = namedColors[color];
   } // Hex code?
   else if (color.charAt(0) === "#") {
-      rgb = hexToRgb(color);
-    } // rgb() format?
-    else if (color.match(/^rgba?\(/)) {
-        rgb = rgbaToRgb(color);
-      } // Was not able to resolve?
+    rgb = hexToRgb(color);
+  } // rgb() format?
+  else if (color.match(/^rgba?\(/)) {
+    rgb = rgbaToRgb(color);
+  } // Was not able to resolve?
 
 
   if (!rgb) {
@@ -106484,7 +106069,10 @@ function addClass(element, className) {
   }
 
   if (element.classList) {
-    element.classList.add(className);
+    var classes = className.split(" ");
+    _Array__WEBPACK_IMPORTED_MODULE_5__["each"](classes, function (name) {
+      element.classList.add(name);
+    });
   } else {
     var currentClassName = element.getAttribute("class");
 
@@ -106836,9 +106424,7 @@ function appendStylesheet(root, selector) {
  */
 
 
-var StyleRule =
-/** @class */
-function (_super) {
+var StyleRule = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(StyleRule, _super);
   /**
    * Constructor.
@@ -106939,9 +106525,7 @@ var styleId = 0;
  * @todo Description
  */
 
-var StyleClass =
-/** @class */
-function (_super) {
+var StyleClass = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(StyleClass, _super);
   /**
    * Constructor.
@@ -107145,9 +106729,7 @@ __webpack_require__.r(__webpack_exports__);
  * method on all its items.
  */
 
-var DictionaryDisposer =
-/** @class */
-function (_super) {
+var DictionaryDisposer = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(DictionaryDisposer, _super);
 
   function DictionaryDisposer(dict) {
@@ -107178,9 +106760,7 @@ function (_super) {
  * You might call it an "associative list" or "associative array".
  */
 
-var Dictionary =
-/** @class */
-function () {
+var Dictionary = function () {
   /**
    * Constructor
    */
@@ -107531,9 +107111,7 @@ function () {
  * other attributes), inserted into the list and returned.
  */
 
-var DictionaryTemplate =
-/** @class */
-function (_super) {
+var DictionaryTemplate = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(DictionaryTemplate, _super);
   /**
    * Constructor
@@ -107641,9 +107219,7 @@ __webpack_require__.r(__webpack_exports__);
  * @ignore Exclude from docs
  */
 
-var Disposer =
-/** @class */
-function () {
+var Disposer = function () {
   /**
    * Constructor.
    *
@@ -107686,9 +107262,7 @@ function () {
  * @ignore Exclude from docs
  */
 
-var MultiDisposer =
-/** @class */
-function (_super) {
+var MultiDisposer = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(MultiDisposer, _super);
 
   function MultiDisposer(disposers) {
@@ -107713,9 +107287,7 @@ function (_super) {
  * @todo Description
  */
 
-var MutableValueDisposer =
-/** @class */
-function (_super) {
+var MutableValueDisposer = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(MutableValueDisposer, _super);
   /**
    * Constructor.
@@ -107777,9 +107349,7 @@ function (_super) {
  * @todo Description
  */
 
-var CounterDisposer =
-/** @class */
-function (_super) {
+var CounterDisposer = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(CounterDisposer, _super);
 
   function CounterDisposer() {
@@ -108279,9 +107849,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var EventDispatcher =
-/** @class */
-function () {
+var EventDispatcher = function () {
   /**
    * Constructor
    */
@@ -108793,9 +108361,7 @@ function () {
  * @important
  */
 
-var TargetedEventDispatcher =
-/** @class */
-function (_super) {
+var TargetedEventDispatcher = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(TargetedEventDispatcher, _super);
   /**
    * Constructor
@@ -109625,9 +109191,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link https://www.amcharts.com/docs/v4/concepts/colors/} for color-related info
  */
 
-var InterfaceColorSet =
-/** @class */
-function (_super) {
+var InterfaceColorSet = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(InterfaceColorSet, _super);
   /**
    * Constructor
@@ -110113,9 +109677,7 @@ function join(iter, separator) {
  * @todo Description
  */
 
-var ListIterator =
-/** @class */
-function () {
+var ListIterator = function () {
   /**
    * Constructor
    *
@@ -110215,9 +109777,7 @@ __webpack_require__.r(__webpack_exports__);
  * Do not instantiate this class directly, but rather use `keyboard` variable.
  */
 
-var Keyboard =
-/** @class */
-function () {
+var Keyboard = function () {
   function Keyboard() {}
   /**
    * Returns a named key based on information contained in the event or
@@ -110452,9 +110012,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var Language =
-/** @class */
-function (_super) {
+var Language = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Language, _super);
   /**
    * Constructor
@@ -110780,9 +110338,7 @@ __webpack_require__.r(__webpack_exports__);
  * @todo Description
  */
 
-var IndexedIterable =
-/** @class */
-function () {
+var IndexedIterable = function () {
   /**
    * Constructor.
    *
@@ -110873,9 +110429,7 @@ function () {
  * @ignore Exclude from docs
  */
 
-var ListGrouper =
-/** @class */
-function (_super) {
+var ListGrouper = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ListGrouper, _super);
   /**
    * Constructor.
@@ -111007,9 +110561,7 @@ function (_super) {
  * on all its items.
  */
 
-var ListDisposer =
-/** @class */
-function (_super) {
+var ListDisposer = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ListDisposer, _super);
 
   function ListDisposer(list, disposeOnRemove) {
@@ -111063,9 +110615,7 @@ function checkBounds(index, len) {
  */
 
 
-var List =
-/** @class */
-function () {
+var List = function () {
   /**
    * Constructor
    *
@@ -111698,9 +111248,7 @@ function () {
  * other attributes), inserted into the list and returned.
  */
 
-var ListTemplate =
-/** @class */
-function (_super) {
+var ListTemplate = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ListTemplate, _super);
   /**
    * Constructor
@@ -112756,9 +112304,7 @@ __webpack_require__.r(__webpack_exports__);
  * Morpher can be used to morph one polygon to some other polygon.
  */
 
-var Morpher =
-/** @class */
-function (_super) {
+var Morpher = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Morpher, _super);
   /**
    * Constructor.
@@ -113920,9 +113466,7 @@ __webpack_require__.r(__webpack_exports__);
  * @see {@link https://www.amcharts.com/docs/v4/concepts/colors/} for color-related info
  */
 
-var PatternSet =
-/** @class */
-function (_super) {
+var PatternSet = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(PatternSet, _super);
   /**
    * Constructor
@@ -114234,9 +113778,7 @@ __webpack_require__.r(__webpack_exports__);
  * }
  * ```
  */
-var Percent =
-/** @class */
-function () {
+var Percent = function () {
   /**
    * Constructor.
    *
@@ -114369,9 +113911,7 @@ __webpack_require__.r(__webpack_exports__);
  *
  * @since 4.2.2
  */
-var Plugin =
-/** @class */
-function () {
+var Plugin = function () {
   /**
    * Constructor
    */
@@ -114447,9 +113987,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var Native =
-/** @class */
-function () {
+var Native = function () {
   function Native() {
     var _this = this;
 
@@ -114487,9 +114025,7 @@ function () {
   return Native;
 }();
 
-var Raf =
-/** @class */
-function () {
+var Raf = function () {
   function Raf() {
     this._targets = [];
   }
@@ -114558,9 +114094,7 @@ function makeSensor() {
   return observer;
 }
 
-var ResizeSensor =
-/** @class */
-function () {
+var ResizeSensor = function () {
   function ResizeSensor(element, callback) {
     this._disposed = false;
     this._sensor = makeSensor();
@@ -114681,9 +114215,7 @@ __webpack_require__.r(__webpack_exports__);
  * @important
  */
 
-var Responsive =
-/** @class */
-function (_super) {
+var Responsive = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Responsive, _super);
   /**
    * Constructor
@@ -115192,9 +114724,7 @@ defaultRules.events.on("inserted", function (ev) {
  * @todo description
  */
 
-var ResponsiveBreakpoints =
-/** @class */
-function () {
+var ResponsiveBreakpoints = function () {
   function ResponsiveBreakpoints() {} // Breakpoint functions (for use in `relevant` clause of the responsive rules)
 
 
@@ -115359,9 +114889,7 @@ __webpack_require__.r(__webpack_exports__);
  * Ordered list contains values of any type in an indexed array.
  */
 
-var OrderedList =
-/** @class */
-function () {
+var OrderedList = function () {
   /**
    * Constructor
    *
@@ -115711,9 +115239,7 @@ function () {
  * [[SortedList]].
  */
 
-var SortedList =
-/** @class */
-function (_super) {
+var SortedList = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(SortedList, _super);
   /**
    * Constructor.
@@ -115801,9 +115327,7 @@ function (_super) {
  * other attributes), inserted into the list and returned.
  */
 
-var OrderedListTemplate =
-/** @class */
-function (_super) {
+var OrderedListTemplate = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(OrderedListTemplate, _super);
   /**
    * Constructor
@@ -115890,9 +115414,7 @@ function (_super) {
  * other attributes), inserted into the list and returned.
  */
 
-var SortedListTemplate =
-/** @class */
-function (_super) {
+var SortedListTemplate = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(SortedListTemplate, _super);
   /**
    * Constructor
@@ -117354,7 +116876,7 @@ function escapeForRgex(value) {
  * @return An array of split text
  */
 
-function splitTextByCharCount(text, maxChars, fullWords, rtl) {
+function splitTextByCharCount(text, maxChars, fullWords, rtl, fullWordFallback) {
   // Maybe the text fits?
   if (text.length <= maxChars) {
     return [text];
@@ -117389,10 +116911,10 @@ function splitTextByCharCount(text, maxChars, fullWords, rtl) {
       if (wordLength === 0) {
         continue;
       } // Check word length
-      //if ((wordLength > maxChars) && fullWords !== true) {
 
 
-      if (wordLength > maxChars) {
+      if (wordLength > maxChars && (fullWords !== true || fullWordFallback != false)) {
+        //if (wordLength > maxChars) {
         // A single word is longer than allowed symbol count
         // Break it up
         if (rtl) {
@@ -117449,7 +116971,7 @@ function splitTextByCharCount(text, maxChars, fullWords, rtl) {
   // set.
 
 
-  if (res.length == 1 && fullWords && res[0].length > maxChars) {
+  if (res.length == 1 && fullWords && fullWordFallback && res[0].length > maxChars) {
     res = [];
   }
 
@@ -118420,9 +117942,7 @@ __webpack_require__.r(__webpack_exports__);
  * @ignore Exclude from docs
  */
 
-var Validatable =
-/** @class */
-function (_super) {
+var Validatable = function (_super) {
   Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(Validatable, _super);
 
   function Validatable() {
@@ -121388,7 +120908,7 @@ function __spreadArray(to, from, pack) {
       ar[i] = from[i];
     }
   }
-  return to.concat(ar || from);
+  return to.concat(ar || Array.prototype.slice.call(from));
 }
 function __await(v) {
   return this instanceof __await ? (this.v = v, this) : new __await(v);
@@ -129069,14 +128589,29 @@ var Image = function Image(am4core, chart, settings) {
 var exportMenuItems = [{
   "label": "Export",
   "menu": [{
-    "type": "png",
-    "label": "PNG"
+    "label": "Image",
+    "menu": [{
+      "type": "png",
+      "label": "PNG"
+    }, {
+      "type": "jpg",
+      "label": "JPG"
+    }, {
+      "type": "svg",
+      "label": "SVG"
+    }]
   }, {
-    "type": "jpg",
-    "label": "JPG"
-  }, {
-    "type": "svg",
-    "label": "SVG"
+    "label": "Data",
+    "menu": [{
+      "type": "json",
+      "label": "JSON"
+    }, {
+      "type": "csv",
+      "label": "CSV"
+    }, {
+      "type": "html",
+      "label": "HTML"
+    }]
   }, {
     "label": "Print",
     "type": "print"

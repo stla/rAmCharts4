@@ -83,12 +83,12 @@ export const Shape = function(am4core, chart, index, bullet, shapeConfig) {
   shape.horizontalCenter = "middle";
   shape.verticalCenter = "middle";
   shape.fill = shapeConfig.color || chart.colors.getIndex(index);
-  shape.fillOpacity = typeof shapeConfig.opacity === "number" ? 
+  shape.fillOpacity = typeof shapeConfig.opacity === "number" ?
     shapeConfig.opacity : 1;
   shape.strokeWidth = shapeConfig.strokeWidth;
   shape.stroke = shapeConfig.strokeColor ||
     chart.colors.getIndex(index).lighten(-0.5);
-  shape.strokeOpacity = typeof shapeConfig.strokeOpacity === "number" ? 
+  shape.strokeOpacity = typeof shapeConfig.strokeOpacity === "number" ?
     shapeConfig.strokeOpacity : 1;
   if(shapeConfig.colorAdapter) {
     try {
@@ -244,7 +244,7 @@ export const createGridLines =
 
 
 export const createAxis = function(
-  XY, am4charts, am4core, chart, axisSettings, 
+  XY, am4charts, am4core, chart, axisSettings,
   min, max, isDate, theme, cursor, xValue
 ){
 
@@ -256,13 +256,13 @@ export const createAxis = function(
 
   if(isDate) {
     switch(XY) {
-      case "X": 
+      case "X":
         Axis = chart.xAxes.push(new am4charts.DateAxis());
         Axis.dataFields.dateX = xValue;
         break;
-      case "Y": 
+      case "Y":
         Axis = chart.yAxes.push(new am4charts.DateAxis());
-        break;  
+        break;
     }
     if(Formatter) {
       Axis.dateFormats.setKey("day", Formatter.day[0]);
@@ -280,13 +280,13 @@ export const createAxis = function(
     }
   } else {
     switch(XY) {
-      case "X": 
+      case "X":
         Axis = chart.xAxes.push(new am4charts.ValueAxis());
         Axis.dataFields.valueX = xValue;
         break;
-      case "Y": 
+      case "Y":
         Axis = chart.yAxes.push(new am4charts.ValueAxis());
-        break;  
+        break;
     }
     if(Formatter) {
       Axis.numberFormatter = new am4core.NumberFormatter();
@@ -299,12 +299,12 @@ export const createAxis = function(
 
   if(axisSettings) {
     switch(XY) {
-      case "X": 
+      case "X":
         Axis.paddingBottom = axisSettings.adjust || 0;
         break;
-      case "Y": 
+      case "Y":
         Axis.paddingRight = axisSettings.adjust || 0;
-        break;  
+        break;
     }
   }
 
@@ -321,10 +321,10 @@ export const createAxis = function(
       axisSettings.title.color || (theme === "dark" ? "#ffffff" : "#000000");
   }
 
-  let BreaksType; 
-  if(axisSettings.breaks) { 
-    BreaksType = 
-      typeof axisSettings.breaks === "number" ? "interval" : 
+  let BreaksType;
+  if(axisSettings.breaks) {
+    BreaksType =
+      typeof axisSettings.breaks === "number" ? "interval" :
       (Array.isArray(axisSettings.breaks) ? "timeInterval" : "breaks");
   }
 
@@ -333,14 +333,14 @@ export const createAxis = function(
       Axis.renderer.minGridDistance = axisSettings.breaks;
     Axis.renderer.grid.template.stroke =
       axisSettings.gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
-    Axis.renderer.grid.template.strokeOpacity = 
-      typeof axisSettings.gridLines.opacity === "number" ? 
+    Axis.renderer.grid.template.strokeOpacity =
+      typeof axisSettings.gridLines.opacity === "number" ?
         axisSettings.gridLines.opacity : 0.2;
-    Axis.renderer.grid.template.strokeWidth = 
+    Axis.renderer.grid.template.strokeWidth =
       typeof axisSettings.gridLines.width === "number" ?
         axisSettings.gridLines.width : 1;
     if(axisSettings.gridLines.dash) {
-      Axis.renderer.grid.template.strokeDasharray = 
+      Axis.renderer.grid.template.strokeDasharray =
         axisSettings.gridLines.dash;
     }
   } else {
@@ -356,7 +356,7 @@ export const createAxis = function(
       Axis.endLocation = 0.5; // ??
     }
     createGridLines(
-      Axis, axisSettings.breaks, axisSettings.gridLines, 
+      Axis, axisSettings.breaks, axisSettings.gridLines,
       axisSettings.labels, theme, isDate
     );
   } else {
@@ -424,14 +424,14 @@ export const createCategoryAxis = function(
   let categoryAxis;
 
   switch(XY) {
-    case "X": 
+    case "X":
       categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
       categoryAxis.paddingBottom = axisSettings.adjust || 0;
       break;
-    case "Y": 
+    case "Y":
       categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
       categoryAxis.paddingRight = axisSettings.adjust || 0;
-      break;  
+      break;
   }
 
   categoryAxis.dataFields.category = category;
@@ -470,13 +470,13 @@ export const createCategoryAxis = function(
     axisGrid.location = 0.5;
     axisGrid.stroke =
       axisSettings.gridLines.color || (theme === "dark" ? "#ffffff" : "#000000");
-    axisGrid.strokeOpacity = 
-      typeof axisSettings.gridLines.opacity === "number" ? 
+    axisGrid.strokeOpacity =
+      typeof axisSettings.gridLines.opacity === "number" ?
         axisSettings.gridLines.opacity : 0.2;
-    axisGrid.strokeWidth = 
+    axisGrid.strokeWidth =
       typeof axisSettings.gridLines.width === "number" ?
         axisSettings.gridLines.width : 1;
-    if(axisSettings.gridLines.dash) 
+    if(axisSettings.gridLines.dash)
       axisGrid.strokeDasharray = axisSettings.gridLines.dash;
   } else {
     categoryAxis.renderer.grid.template.disabled = true;
@@ -526,14 +526,26 @@ export const exportMenuItems = [
   {
     "label": "Export",
     "menu": [
-      { "type": "png", "label": "PNG" },
-      { "type": "jpg", "label": "JPG" },
-      { "type": "svg", "label": "SVG" },
-      { "label": "Print", "type": "print" }
+      {
+        "label": "Image",
+        "menu": [
+          { "type": "png", "label": "PNG" },
+          { "type": "jpg", "label": "JPG" },
+          { "type": "svg", "label": "SVG" }
+        ]
+      }, {
+        "label": "Data",
+        "menu": [
+          { "type": "json", "label": "JSON" },
+          { "type": "csv", "label": "CSV" },
+          { "type": "html", "label": "HTML" }
+        ]
+      }, {
+        "label": "Print", "type": "print"
+      }
     ]
   }
 ];
-
 
 export const makeButton = function(Button, settings) {
   Button.label.text = settings.label.text;
