@@ -121396,6 +121396,8 @@ class AmBarChart extends React.PureComponent {
     categoryAxis.renderer.grid.template.disabled = true;
     categoryAxis.renderer.minGridDistance = 50;
     categoryAxis.cursorTooltipEnabled = false;
+    categoryAxis.events.on("startchanged", _utils__WEBPACK_IMPORTED_MODULE_13__["onAxisZoomed"]);
+    categoryAxis.events.on("endchanged", _utils__WEBPACK_IMPORTED_MODULE_13__["onAxisZoomed"]);
     /* ~~~~\  value axis  /~~~~ */
 
     var valueAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("Y", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, yAxis, minValue, maxValue, false, theme, cursor);
@@ -122093,6 +122095,8 @@ class AmHorizontalBarChart extends React.PureComponent {
     categoryAxis.renderer.minGridDistance = 50; //		categoryAxis.numberFormatter.numberFormat = valueFormatter;
 
     categoryAxis.cursorTooltipEnabled = false;
+    categoryAxis.events.on("startchanged", _utils__WEBPACK_IMPORTED_MODULE_13__["onAxisZoomed"]);
+    categoryAxis.events.on("endchanged", _utils__WEBPACK_IMPORTED_MODULE_13__["onAxisZoomed"]);
     /* ~~~~\  value axis  /~~~~ */
 
     var valueAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("X", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, xAxis, minValue, maxValue, false, theme, cursor);
@@ -122723,6 +122727,8 @@ class AmLineChart extends React.PureComponent {
 
 
     var XAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("X", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, xAxis, minX, maxX, isDate, theme, cursor, xValue);
+    XAxis.events.on("startchanged", _utils__WEBPACK_IMPORTED_MODULE_13__["onAxisZoomed"]);
+    XAxis.events.on("endchanged", _utils__WEBPACK_IMPORTED_MODULE_13__["onAxisZoomed"]);
     /*
         let XAxis, Xformatter;
         if(xAxis.labels && xAxis.labels.formatter) {
@@ -123597,6 +123603,8 @@ class AmScatterChart extends React.PureComponent {
 
 
     var XAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("X", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, xAxis, minX, maxX, isDate, theme, cursor, xValue);
+    XAxis.events.on("startchanged", _utils__WEBPACK_IMPORTED_MODULE_13__["onAxisZoomed"]);
+    XAxis.events.on("endchanged", _utils__WEBPACK_IMPORTED_MODULE_13__["onAxisZoomed"]);
     /* ~~~~\  y-axis  /~~~~ */
 
     var YAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("Y", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, yAxis, minY, maxY, false, theme, cursor);
@@ -124319,6 +124327,8 @@ class AmRangeAreaChart extends React.PureComponent {
 
 
     var XAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("X", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, xAxis, minX, maxX, isDate, theme, cursor, xValue);
+    XAxis.events.on("startchanged", _utils__WEBPACK_IMPORTED_MODULE_13__["onAxisZoomed"]);
+    XAxis.events.on("endchanged", _utils__WEBPACK_IMPORTED_MODULE_13__["onAxisZoomed"]);
     /* ~~~~\  y-axis  /~~~~ */
 
     var YAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("Y", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, yAxis, minY, maxY, false, theme, cursor);
@@ -125607,6 +125617,8 @@ class AmDumbbellChart extends React.PureComponent {
 
 
     var categoryAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createCategoryAxis"]("X", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, chart, category, xAxis, 80, theme);
+    categoryAxis.events.on("startchanged", _utils__WEBPACK_IMPORTED_MODULE_13__["onAxisZoomed"]);
+    categoryAxis.events.on("endchanged", _utils__WEBPACK_IMPORTED_MODULE_13__["onAxisZoomed"]);
     /*		let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
         categoryAxis.paddingBottom = xAxis.adjust || 0;
         categoryAxis.renderer.grid.template.location = 0;
@@ -126147,6 +126159,8 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
 
 
     var categoryAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createCategoryAxis"]("Y", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, chart, category, yAxis, 80, theme);
+    categoryAxis.events.on("startchanged", _utils__WEBPACK_IMPORTED_MODULE_13__["onAxisZoomed"]);
+    categoryAxis.events.on("endchanged", _utils__WEBPACK_IMPORTED_MODULE_13__["onAxisZoomed"]);
     /* ~~~~\  value axis  /~~~~ */
 
     var valueAxis = _utils__WEBPACK_IMPORTED_MODULE_13__["createAxis"]("X", _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, xAxis, minValue, maxValue, false, theme, cursor);
@@ -128079,7 +128093,7 @@ Object(reactR__WEBPACK_IMPORTED_MODULE_0__["reactWidget"])("amChart4", "output",
 /*!******************************!*\
   !*** ./srcjs/utils/index.js ***!
   \******************************/
-/*! exports provided: toUTCtime, toDate, subset, isLightColor, Tooltip, Shape, createGridLines, createAxis, createCategoryAxis, Image, exportMenuItems, makeButton, fontSizeToPixels */
+/*! exports provided: toUTCtime, toDate, subset, isLightColor, Tooltip, Shape, createGridLines, createAxis, createCategoryAxis, Image, exportMenuItems, makeButton, fontSizeToPixels, onAxisZoomed */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -128097,6 +128111,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "exportMenuItems", function() { return exportMenuItems; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "makeButton", function() { return makeButton; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fontSizeToPixels", function() { return fontSizeToPixels; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "onAxisZoomed", function() { return onAxisZoomed; });
 /* jshint esversion: 6 */
 var toUTCtime = function toUTCtime(string) {
   var ymd = string.split("-");
@@ -128642,6 +128657,13 @@ var fontSizeToPixels = function fontSizeToPixels(referenceFontSize, fontSize) {
   } else {
     return referenceFontSize * value;
   }
+};
+var onAxisZoomed = function onAxisZoomed(event) {
+  event.target.series.each(function (s) {
+    s.bulletsContainer.children.each(function (b) {
+      b.dispatch("positionchanged");
+    });
+  });
 };
 
 /***/ }),

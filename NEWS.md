@@ -1,4 +1,9 @@
-# rAmCharts4 1.4.1
+# rAmCharts4 1.4.1.9000 (2021-10-)
+
+Fixed a bug: bullets were unresponsive on zooming.
+
+
+# rAmCharts4 1.4.1 (2021-09-30)
 
 * Fixed a bug: `amPercentageBarChart` did not work with Shiny.
 * New function `updateAmPercentageBarChart`, to update the data of a 100% 

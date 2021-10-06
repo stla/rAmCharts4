@@ -307,6 +307,9 @@ class AmBarChart extends React.PureComponent {
     categoryAxis.renderer.minGridDistance = 50;
     categoryAxis.cursorTooltipEnabled = false;
 
+    categoryAxis.events.on("startchanged", utils.onAxisZoomed);
+    categoryAxis.events.on("endchanged", utils.onAxisZoomed);
+    
     /* ~~~~\  value axis  /~~~~ */
     let valueAxis = utils.createAxis(
       "Y", am4charts, am4core, chart, yAxis,
@@ -980,6 +983,9 @@ class AmHorizontalBarChart extends React.PureComponent {
     //		categoryAxis.numberFormatter.numberFormat = valueFormatter;
     categoryAxis.cursorTooltipEnabled = false;
 
+    categoryAxis.events.on("startchanged", utils.onAxisZoomed);
+    categoryAxis.events.on("endchanged", utils.onAxisZoomed);
+
     /* ~~~~\  value axis  /~~~~ */
     let valueAxis = utils.createAxis(
       "X", am4charts, am4core, chart, xAxis,
@@ -1594,6 +1600,9 @@ class AmLineChart extends React.PureComponent {
       "X", am4charts, am4core, chart, xAxis,
       minX, maxX, isDate, theme, cursor, xValue
     );
+
+    XAxis.events.on("startchanged", utils.onAxisZoomed);
+    XAxis.events.on("endchanged", utils.onAxisZoomed);
     /*
         let XAxis, Xformatter;
         if(xAxis.labels && xAxis.labels.formatter) {
@@ -2443,6 +2452,9 @@ class AmScatterChart extends React.PureComponent {
       minX, maxX, isDate, theme, cursor, xValue
     );
 
+    XAxis.events.on("startchanged", utils.onAxisZoomed);
+    XAxis.events.on("endchanged", utils.onAxisZoomed);
+
     /* ~~~~\  y-axis  /~~~~ */
     let YAxis = utils.createAxis(
       "Y", am4charts, am4core, chart, yAxis, minY, maxY, false, theme, cursor
@@ -3145,6 +3157,9 @@ class AmRangeAreaChart extends React.PureComponent {
       "X", am4charts, am4core, chart, xAxis,
       minX, maxX, isDate, theme, cursor, xValue
     );
+
+    XAxis.events.on("startchanged", utils.onAxisZoomed);
+    XAxis.events.on("endchanged", utils.onAxisZoomed);
 
     /* ~~~~\  y-axis  /~~~~ */
     let YAxis = utils.createAxis(
@@ -4413,6 +4428,10 @@ class AmDumbbellChart extends React.PureComponent {
     let categoryAxis = utils.createCategoryAxis(
       "X", am4charts, chart, category, xAxis, 80, theme
     );
+
+    categoryAxis.events.on("startchanged", utils.onAxisZoomed);
+    categoryAxis.events.on("endchanged", utils.onAxisZoomed);
+
     /*		let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
         categoryAxis.paddingBottom = xAxis.adjust || 0;
         categoryAxis.renderer.grid.template.location = 0;
@@ -4941,6 +4960,9 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
     let categoryAxis = utils.createCategoryAxis(
       "Y", am4charts, chart, category, yAxis, 80, theme
     );
+
+    categoryAxis.events.on("startchanged", utils.onAxisZoomed);
+    categoryAxis.events.on("endchanged", utils.onAxisZoomed);
 
     /* ~~~~\  value axis  /~~~~ */
     let valueAxis = utils.createAxis(

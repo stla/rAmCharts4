@@ -573,3 +573,11 @@ export const fontSizeToPixels = function(referenceFontSize, fontSize) {
     return referenceFontSize * value;
   }
 };
+
+export const onAxisZoomed = function(event) {
+  event.target.series.each(function(s) {
+    s.bulletsContainer.children.each(function(b) {
+      b.dispatch("positionchanged");
+    });
+  });
+}
