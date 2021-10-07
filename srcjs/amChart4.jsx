@@ -1377,6 +1377,7 @@ class AmLineChart extends React.PureComponent {
       alwaysShowBullets = this.props.alwaysShowBullets,
       lineStyles = this.props.lineStyle,
       cursor = this.props.cursor,
+      zoomButtons = this.props.zoomButtons,
       chartId = this.props.chartId,
       shinyId = this.props.shinyId;
 
@@ -1941,6 +1942,7 @@ class AmLineChart extends React.PureComponent {
       }
     }
 
+
     /* 
       trigger the "positionchanged" event on bullets when a resizing occurs, 
       otherwise bullets are unresponsive  
@@ -1954,6 +1956,36 @@ class AmLineChart extends React.PureComponent {
     });
 
 
+    /* ~~~~\  zoom buttons  /~~~~ */
+    if(zoomButtons){
+      let buttonContainer = chart.plotContainer.createChild(am4core.Container);
+      buttonContainer.shouldClone = false;
+      buttonContainer.align = zoomButtons.halign;
+      buttonContainer.valign = zoomButtons.valign;
+      buttonContainer.zIndex = Number.MAX_SAFE_INTEGER;
+      buttonContainer.marginTop = zoomButtons.marginTop;
+      buttonContainer.marginLeft = zoomButtons.marginLeft;
+      buttonContainer.layout = "horizontal";
+      let zoomInButton = buttonContainer.createChild(am4core.Button);
+      zoomInButton.label.text = "+";
+      zoomInButton.events.on("hit", function(ev) {
+        let diff = XAxis.maxZoomed - XAxis.minZoomed;
+        let delta = diff * zoomButtons.zoomFactor;
+        if(isDate){
+          XAxis.zoomToDates(
+            new Date(XAxis.minZoomed + delta), new Date(XAxis.maxZoomed - delta)
+          );
+        }else{
+          XAxis.zoomToValues(
+            XAxis.minZoomed + delta, XAxis.maxZoomed - delta
+          );
+        }
+      });
+
+      
+    }
+
+    /* ~~~~\                         /~~~~ */
     yValues.forEach(function (value, index) {
 
       let lineStyle = lineStyles[value];
