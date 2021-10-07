@@ -1964,7 +1964,16 @@ class AmLineChart extends React.PureComponent {
       buttonContainer.valign = zoomButtons.valign;
       buttonContainer.zIndex = Number.MAX_SAFE_INTEGER;
       buttonContainer.marginTop = zoomButtons.marginTop;
-      buttonContainer.marginLeft = zoomButtons.marginLeft;
+      if(zoomButtons.valign === "top"){
+        buttonContainer.marginTop = zoomButtons.marginV;
+      }else{
+        buttonContainer.marginBottom = zoomButtons.marginV;
+      }
+      if(zoomButtons.halign === "left"){
+        buttonContainer.marginLeft = zoomButtons.marginH;
+      }else{
+        buttonContainer.marginRight = zoomButtons.marginH;
+      }
       buttonContainer.layout = "horizontal";
       let zoomInButton = buttonContainer.createChild(am4core.Button);
       zoomInButton.label.text = "+";
