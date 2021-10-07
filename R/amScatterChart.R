@@ -170,6 +170,8 @@
 #'   given a string, which performs a modification of a string named
 #'   \code{text}; see the first example of \code{\link{amLineChart}}
 #'   for an example of \code{modifier}
+#' @param zoomButtons a Boolean value, or a list created with
+#'   \code{\link{amZoomButtons}}
 #' @param width the width of the chart, e.g. \code{"600px"} or \code{"80\%"};
 #' ignored if the chart is displayed in Shiny, in which case the width is
 #' given in \code{\link{amChart4Output}}
@@ -359,6 +361,7 @@ amScatterChart <- function(
   image = NULL,
   button = NULL, # default
   cursor = FALSE,
+  zoomButtons = FALSE,
   width = NULL,
   height = NULL,
   export = FALSE,
@@ -934,6 +937,14 @@ amScatterChart <- function(
     cursor <- list(dateFormat = Xformatter)
   }
 
+  if(!isFALSE(zoomButtons)){
+    if(isTRUE(zoomButtons)){
+      zoomButtons <- amZoomButtons()
+    }else if(!inherits(zoomButtons, "zoomButtons")){
+      stop("Invalid argument `zoomButtons`.")
+    }
+  }
+
   if(is.null(width)){
     width <- "100%"
   }else{
@@ -1002,6 +1013,7 @@ amScatterChart <- function(
       legend = legend,
       caption = caption,
       cursor = cursor,
+      zoomButtons = zoomButtons,
       image = image,
       button = button,
       width = width,
