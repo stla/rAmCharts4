@@ -36,6 +36,7 @@ amLineChart(
   image = NULL,
   button = NULL,
   cursor = FALSE,
+  zoomButtons = FALSE,
   width = NULL,
   height = NULL,
   export = FALSE,
@@ -275,6 +276,9 @@ values displayed in the tooltips; a modifier is some JavaScript code
 given a string, which performs a modification of a string named
 \code{text}, e.g. \code{"text = '[font-style:italic]' + text + '[/]';"};
 see the first example for an example of \code{modifier}}
+
+\item{zoomButtons}{a Boolean value, or a list created with
+\code{\link{amZoomButtons}}}
 
 \item{width}{the width of the chart, e.g. \code{"600px"} or \code{"80\%"};
 ignored if the chart is displayed in Shiny, in which case the width is

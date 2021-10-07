@@ -177,6 +177,8 @@
 #'   given a string, which performs a modification of a string named
 #'   \code{text}, e.g. \code{"text = '[font-style:italic]' + text + '[/]';"};
 #'   see the first example for an example of \code{modifier}
+#' @param zoomButtons a Boolean value, or a list created with
+#'   \code{\link{amZoomButtons}}
 #' @param width the width of the chart, e.g. \code{"600px"} or \code{"80\%"};
 #'   ignored if the chart is displayed in Shiny, in which case the width is
 #'   given in \code{\link{amChart4Output}}
@@ -382,6 +384,7 @@ amLineChart <- function(
   image = NULL,
   button = NULL, # default
   cursor = FALSE,
+  zoomButtons = FALSE,
   width = NULL,
   height = NULL,
   export = FALSE,
@@ -1039,6 +1042,14 @@ amLineChart <- function(
     cursor <- list(dateFormat = Xformatter)
   }
 
+  if(!isFALSE(zoomButtons)){
+    if(isTRUE(zoomButtons)){
+      zoomButtons <- amZoomButtons()
+    }else if(!inherits(zoomButtons, "zoomButtons")){
+      stop("Invalid argument `zoomButtons`.")
+    }
+  }
+
   if(is.null(width)){
     width <- "100%"
   }else{
@@ -1113,6 +1124,7 @@ amLineChart <- function(
       image = image,
       button = button,
       cursor = cursor,
+      zoomButtons = zoomButtons,
       width = width,
       height = height,
       export = export,
