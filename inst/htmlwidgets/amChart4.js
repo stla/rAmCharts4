@@ -122498,6 +122498,7 @@ class AmLineChart extends React.PureComponent {
         alwaysShowBullets = this.props.alwaysShowBullets,
         lineStyles = this.props.lineStyle,
         cursor = this.props.cursor,
+        zoomButtons = this.props.zoomButtons,
         chartId = this.props.chartId,
         shinyId = this.props.shinyId;
 
@@ -123093,6 +123094,57 @@ class AmLineChart extends React.PureComponent {
         });
       });
     });
+    /* ~~~~\  zoom buttons  /~~~~ */
+
+    if (zoomButtons) {
+      var buttonContainer = chart.plotContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Container"]);
+      buttonContainer.shouldClone = false;
+      buttonContainer.align = zoomButtons.halign;
+      buttonContainer.valign = zoomButtons.valign;
+      buttonContainer.zIndex = Number.MAX_SAFE_INTEGER;
+      buttonContainer.marginTop = zoomButtons.marginTop;
+
+      if (zoomButtons.valign === "top") {
+        buttonContainer.marginTop = zoomButtons.marginV;
+      } else {
+        buttonContainer.marginBottom = zoomButtons.marginV;
+      }
+
+      if (zoomButtons.halign === "left") {
+        buttonContainer.marginLeft = zoomButtons.marginH;
+      } else {
+        buttonContainer.marginRight = zoomButtons.marginH;
+      }
+
+      buttonContainer.layout = "horizontal";
+      var zoomInButton = buttonContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Button"]);
+      zoomInButton.label.text = "+";
+      zoomInButton.events.on("hit", function (ev) {
+        var diff = XAxis.maxZoomed - XAxis.minZoomed;
+        var delta = diff * zoomButtons.zoomFactor;
+
+        if (isDate) {
+          XAxis.zoomToDates(new Date(XAxis.minZoomed + delta), new Date(XAxis.maxZoomed - delta));
+        } else {
+          XAxis.zoomToValues(XAxis.minZoomed + delta, XAxis.maxZoomed - delta);
+        }
+      });
+      var zoomOutButton = buttonContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Button"]);
+      zoomOutButton.label.text = "-";
+      zoomOutButton.events.on("hit", function (ev) {
+        var diff = XAxis.maxZoomed - XAxis.minZoomed;
+        var delta = diff * zoomButtons.zoomFactor;
+
+        if (isDate) {
+          XAxis.zoomToDates(new Date(XAxis.minZoomed - delta), new Date(XAxis.maxZoomed + delta));
+        } else {
+          XAxis.zoomToValues(XAxis.minZoomed - delta, XAxis.maxZoomed + delta);
+        }
+      });
+    }
+    /* ~~~~\                         /~~~~ */
+
+
     yValues.forEach(function (value, index) {
       var lineStyle = lineStyles[value];
       var series = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LineSeries"]());
@@ -123376,6 +123428,7 @@ class AmScatterChart extends React.PureComponent {
         draggable = this.props.draggable,
         pointsStyle = this.props.pointsStyle,
         cursor = this.props.cursor,
+        zoomButtons = this.props.zoomButtons,
         chartId = this.props.chartId,
         shinyId = this.props.shinyId;
 
@@ -123817,6 +123870,57 @@ class AmScatterChart extends React.PureComponent {
         });
       });
     });
+    /* ~~~~\  zoom buttons  /~~~~ */
+
+    if (zoomButtons) {
+      var buttonContainer = chart.plotContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Container"]);
+      buttonContainer.shouldClone = false;
+      buttonContainer.align = zoomButtons.halign;
+      buttonContainer.valign = zoomButtons.valign;
+      buttonContainer.zIndex = Number.MAX_SAFE_INTEGER;
+      buttonContainer.marginTop = zoomButtons.marginTop;
+
+      if (zoomButtons.valign === "top") {
+        buttonContainer.marginTop = zoomButtons.marginV;
+      } else {
+        buttonContainer.marginBottom = zoomButtons.marginV;
+      }
+
+      if (zoomButtons.halign === "left") {
+        buttonContainer.marginLeft = zoomButtons.marginH;
+      } else {
+        buttonContainer.marginRight = zoomButtons.marginH;
+      }
+
+      buttonContainer.layout = "horizontal";
+      var zoomInButton = buttonContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Button"]);
+      zoomInButton.label.text = "+";
+      zoomInButton.events.on("hit", function (ev) {
+        var diff = XAxis.maxZoomed - XAxis.minZoomed;
+        var delta = diff * zoomButtons.zoomFactor;
+
+        if (isDate) {
+          XAxis.zoomToDates(new Date(XAxis.minZoomed + delta), new Date(XAxis.maxZoomed - delta));
+        } else {
+          XAxis.zoomToValues(XAxis.minZoomed + delta, XAxis.maxZoomed - delta);
+        }
+      });
+      var zoomOutButton = buttonContainer.createChild(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__["Button"]);
+      zoomOutButton.label.text = "-";
+      zoomOutButton.events.on("hit", function (ev) {
+        var diff = XAxis.maxZoomed - XAxis.minZoomed;
+        var delta = diff * zoomButtons.zoomFactor;
+
+        if (isDate) {
+          XAxis.zoomToDates(new Date(XAxis.minZoomed - delta), new Date(XAxis.maxZoomed + delta));
+        } else {
+          XAxis.zoomToValues(XAxis.minZoomed - delta, XAxis.maxZoomed + delta);
+        }
+      });
+    }
+    /* ~~~~\                         /~~~~ */
+
+
     yValues.forEach(function (value, index) {
       var series = chart.series.push(new _amcharts_amcharts4_charts__WEBPACK_IMPORTED_MODULE_2__["LineSeries"]());
       series.bulletsContainer.parent = chart.seriesContainer;
