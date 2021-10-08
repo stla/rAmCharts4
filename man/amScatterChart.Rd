@@ -430,5 +430,6 @@ amScatterChart(
   yAxis = "y",
   Xformatter = "#.###",
   Yformatter = "#.",
-  theme = "kelly")
+  theme = "kelly",
+  zoomButtons = TRUE)
 }

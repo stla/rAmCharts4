@@ -330,7 +330,8 @@
 #'   yAxis = "y",
 #'   Xformatter = "#.###",
 #'   Yformatter = "#.",
-#'   theme = "kelly")
+#'   theme = "kelly",
+#'   zoomButtons = TRUE)
 amScatterChart <- function(
   data,
   data2 = NULL,
