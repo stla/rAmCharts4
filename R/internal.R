@@ -52,7 +52,11 @@ validateColor <- function(color){
 }
 
 isPositiveInteger <- function(x){
-  is.numeric(x) && (length(x) == 1L) && (floor(x) == x)
+  is.numeric(x) && (length(x) == 1L) && (!is.na(x)) && (floor(x) == x)
+}
+
+isNumber <- function(x){
+  is.numeric(x) && (length(x) == 1L) && (!is.na(x))
 }
 
 #' @importFrom stats setNames

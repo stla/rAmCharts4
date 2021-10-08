@@ -9,7 +9,7 @@ amZoomButtons(
   valign = "top",
   marginH = 5,
   marginV = 5,
-  zoomFactor = 0.2
+  zoomFactor = 0.1
 )
 }
 \arguments{
