@@ -1,4 +1,4 @@
-# rAmCharts4 1.4.1.9000 (2021-10-)
+# rAmCharts4 1.5.0 (2021-10-10)
 
 * Fixed a bug: bullets were unresponsive on zooming.
 * New option "zoom buttons" for the line chart and the scatter chart.
