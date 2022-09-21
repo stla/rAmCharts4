@@ -16,7 +16,7 @@ import * as utils from "./utils";
 import regression from "regression";
 
 am4core.options.queue = true;
-
+//am4core.options.onlyShowOnViewport = true;
 am4core.useTheme(am4themes_animated);
 
 
@@ -687,6 +687,8 @@ class AmBarChart extends React.PureComponent {
         });
       }
     });
+
+    return chart;
   }
 
 
@@ -1290,6 +1292,8 @@ class AmHorizontalBarChart extends React.PureComponent {
         });
       }
     });
+
+    return chart;
 
   }
 
@@ -2208,6 +2212,8 @@ class AmLineChart extends React.PureComponent {
 
     }); /* end of forEach */
 
+    return chart;
+
   }
 
   componentDidMount() {
@@ -2957,6 +2963,7 @@ class AmScatterChart extends React.PureComponent {
 
     }); /* end of forEach */
 
+    return chart;
   }
 
   componentDidMount() {
@@ -3745,6 +3752,7 @@ class AmRangeAreaChart extends React.PureComponent {
 
     }); /* end of forEach */
 
+    return chart;
   }
 
   componentDidMount() {
@@ -4328,6 +4336,7 @@ class AmRadialBarChart extends React.PureComponent {
       }
     });
 
+    return chart;
   }
 
   componentDidMount() {
@@ -4860,6 +4869,7 @@ class AmDumbbellChart extends React.PureComponent {
 
     });
 
+    return chart;
   }
 
   componentDidMount() {
@@ -5330,6 +5340,8 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
 
     });
 
+    return chart;
+
   }
 
   componentDidMount() {
@@ -5645,6 +5657,7 @@ class AmGaugeChart extends React.PureComponent {
       );
     }
 
+    return chart;
   }
 
   componentDidMount() {
@@ -6049,6 +6062,7 @@ class AmStackedBarChart extends React.PureComponent {
       columnHoverState.properties.fillOpacity = 1;
     });
 
+    return chart;
   }
 
   componentDidMount() {
@@ -6372,6 +6386,7 @@ class AmBoxplotChart extends React.PureComponent {
       }
     }
 
+    return chart;
   }
 
   componentDidMount() {
@@ -6612,7 +6627,6 @@ class AmPieChart extends React.PureComponent {
     series.hiddenState.properties.endAngle = -90;
 
     return chart;
-
   }
 
   componentDidMount() {
@@ -6917,7 +6931,6 @@ class AmPercentageBarChart extends React.PureComponent {
     }
 
     return chart;
-
   }
 
   componentDidMount() {
