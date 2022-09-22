@@ -18,11 +18,11 @@ amGaugeChart(
   axisLabelsFont = amFont(fontSize = "1.2em"),
   scoreFont = amFont(fontSize = "6em"),
   scoreLabelFont = amFont(fontSize = "2em"),
-  hand = amHand(innerRadius = 45, width = 8, color = "slategray", strokeColor =
-    "black"),
+  hand = amHand(innerRadius = 45, width = 8, color = "slategray", strokeColor = "black"),
   gridLines = FALSE,
   chartTitle = NULL,
   theme = NULL,
+  animated = TRUE,
   backgroundColor = NULL,
   caption = NULL,
   image = NULL,
@@ -92,6 +92,8 @@ and \code{align}, can be \code{"left"}, \code{"right"} or \code{"center"}}
 \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
 \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
 \code{"microchart"}}
+
+\item{animated}{Boolean, whether to animate the rendering of the graphic}
 
 \item{backgroundColor}{a color for the chart background; it can be given by
 the name of a R color, the name of a CSS

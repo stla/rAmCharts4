@@ -21,6 +21,7 @@ amLineChart(
   trend = FALSE,
   chartTitle = NULL,
   theme = NULL,
+  animated = TRUE,
   draggable = FALSE,
   tooltip = NULL,
   bullets = NULL,
@@ -169,6 +170,8 @@ and \code{align}, can be \code{"left"}, \code{"right"} or \code{"center"}}
 \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
 \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
 \code{"microchart"}}
+
+\item{animated}{Boolean, whether to animate the rendering of the graphic}
 
 \item{draggable}{\code{TRUE}/\code{FALSE} to enable/disable dragging of
 all lines, otherwise a named list of the form

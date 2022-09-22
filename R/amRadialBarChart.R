@@ -242,6 +242,7 @@ amRadialBarChart <- function(
   valueFormatter = "#.",
   chartTitle = NULL,
   theme = NULL,
+  animated = TRUE,
   draggable = FALSE,
   tooltip = NULL, # default
   columnStyle = NULL, # default

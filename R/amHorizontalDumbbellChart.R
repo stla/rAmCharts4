@@ -183,6 +183,7 @@ amHorizontalDumbbellChart <- function(
   valueFormatter = "#.",
   chartTitle = NULL,
   theme = NULL,
+  animated = TRUE,
   draggable = FALSE,
   tooltip = NULL, # default
   segmentsStyle = NULL, # default

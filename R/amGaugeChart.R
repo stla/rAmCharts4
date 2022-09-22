@@ -107,6 +107,7 @@ amGaugeChart <- function(
   gridLines = FALSE,
   chartTitle = NULL,
   theme = NULL,
+  animated = TRUE,
   backgroundColor = NULL,
   caption = NULL,
   image = NULL,

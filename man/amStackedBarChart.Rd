@@ -17,6 +17,7 @@ amStackedBarChart(
   valueFormatter = "#.",
   chartTitle = NULL,
   theme = NULL,
+  animated = TRUE,
   tooltip = NULL,
   threeD = FALSE,
   backgroundColor = NULL,
@@ -98,6 +99,8 @@ and \code{align}, can be \code{"left"}, \code{"right"} or \code{"center"}}
 \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
 \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
 \code{"microchart"}}
+
+\item{animated}{Boolean, whether to animate the rendering of the graphic}
 
 \item{tooltip}{settings of the tooltips; \code{NULL} for default,
 \code{FALSE} for no tooltip, otherwise a named list of the form

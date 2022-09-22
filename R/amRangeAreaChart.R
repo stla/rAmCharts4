@@ -264,6 +264,7 @@ amRangeAreaChart <- function(
   Yformatter = "#.",
   chartTitle = NULL,
   theme = NULL,
+  animated = TRUE,
   draggable = FALSE,
   tooltip = NULL, # default
   bullets = NULL, # default

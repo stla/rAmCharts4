@@ -15,6 +15,7 @@ amBoxplotChart(
   valueFormatter = "#.",
   chartTitle = NULL,
   theme = NULL,
+  animated = TRUE,
   tooltip = TRUE,
   bullets = NULL,
   backgroundColor = NULL,
@@ -77,6 +78,8 @@ and \code{align}, can be \code{"left"}, \code{"right"} or \code{"center"}}
 \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
 \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
 \code{"microchart"}}
+
+\item{animated}{Boolean, whether to animate the rendering of the graphic}
 
 \item{tooltip}{\code{TRUE} for the default tooltips,
 \code{FALSE} for no tooltip, otherwise a string for the text to

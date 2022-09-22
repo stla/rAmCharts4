@@ -135,6 +135,7 @@ amBoxplotChart <- function(
   valueFormatter = "#.",
   chartTitle = NULL,
   theme = NULL,
+  animated = TRUE,
   tooltip = TRUE, # default
   bullets = NULL, # default
   backgroundColor = NULL,

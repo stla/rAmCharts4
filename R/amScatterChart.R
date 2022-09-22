@@ -346,6 +346,7 @@ amScatterChart <- function(
   trend = FALSE,
   chartTitle = NULL,
   theme = NULL,
+  animated = TRUE,
   draggable = FALSE,
   tooltip = NULL, # default
   pointsStyle = NULL, # default

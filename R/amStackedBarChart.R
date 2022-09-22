@@ -199,6 +199,7 @@ amStackedBarChart <- function(
   valueFormatter = "#.",
   chartTitle = NULL,
   theme = NULL,
+  animated = TRUE,
   tooltip = NULL, # default
   threeD = FALSE,
   backgroundColor = NULL,
