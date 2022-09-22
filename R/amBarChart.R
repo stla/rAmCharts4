@@ -42,10 +42,7 @@
 #'   a list of settings created with \code{\link{amText}}, or a list with two
 #'   fields: \code{text}, a list of settings created with \code{\link{amText}},
 #'   and \code{align}, can be \code{"left"}, \code{"right"} or \code{"center"}
-#' @param theme theme, \code{NULL} or one of \code{"dataviz"},
-#'   \code{"material"}, \code{"kelly"}, \code{"dark"}, \code{"moonrisekingdom"},
-#'   \code{"frozen"}, \code{"spiritedaway"}, \code{"patterns"},
-#'   \code{"microchart"}
+#' @template themeTemplate
 #' @param draggable \code{TRUE}/\code{FALSE} to enable/disable dragging of
 #'   all bars, otherwise a named list of the form
 #'   \code{list(value1 = TRUE, value2 = FALSE, ...)} to enable/disable the
