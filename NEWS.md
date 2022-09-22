@@ -1,3 +1,10 @@
+# rAmCharts4 1.6.0 (2022-09-22)
+
+* Upgraded 'amcharts4'.
+* It is now possible to turn off the animation of the graphics rendering.
+* The chart JavaScript object is now accessible with `htmlwidgets::onRender`.
+
+
 # rAmCharts4 1.5.0 (2021-10-10)
 
 * Fixed a bug: bullets were unresponsive on zooming.
