@@ -699,6 +699,7 @@ amRangeAreaChart <- function(
       vline = vline,
       chartTitle = chartTitle,
       theme = theme,
+      animated = animated,
       draggable = draggable,
       tooltip = tooltip,
       bullets = bullets,

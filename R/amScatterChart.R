@@ -1001,6 +1001,7 @@ amScatterChart <- function(
       vline = vline,
       chartTitle = chartTitle,
       theme = theme,
+      animated = animated,
       draggable = draggable,
       tooltip = tooltip,
       pointsStyle = pointsStyle,

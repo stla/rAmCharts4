@@ -1107,6 +1107,7 @@ amLineChart <- function(
       Yformatter = Yformatter,
       chartTitle = chartTitle,
       theme = theme,
+      animated = animated,
       draggable = draggable,
       tooltip = tooltip,
       bullets = bullets,

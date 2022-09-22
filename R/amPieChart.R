@@ -232,6 +232,7 @@ amPieChart <- function(
       variableDepth = variableDepth,
       chartTitle = chartTitle,
       theme = theme,
+      animated = animated,
       backgroundColor = validateColor(backgroundColor),
       caption = caption,
       legend = legend,

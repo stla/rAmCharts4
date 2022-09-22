@@ -337,6 +337,7 @@ amPercentageBarChart <- function(
       hline = hline,
       chartTitle = chartTitle,
       theme = theme,
+      animated = animated,
       backgroundColor = validateColor(backgroundColor),
       xAxis = xAxis,
       yAxis = yAxis,

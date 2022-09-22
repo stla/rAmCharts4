@@ -405,6 +405,7 @@ amBoxplotChart <- function(
       valueFormatter = valueFormatter,
       chartTitle = chartTitle,
       theme = theme,
+      animated = animated,
       tooltip = tooltip,
       bullets = bullets,
       backgroundColor = validateColor(backgroundColor),

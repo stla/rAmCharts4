@@ -560,6 +560,7 @@ amStackedBarChart <- function(
       valueFormatter = valueFormatter,
       chartTitle = chartTitle,
       theme = theme,
+      animated = animated,
       tooltip = tooltip,
       threeD = threeD,
       backgroundColor = validateColor(backgroundColor),

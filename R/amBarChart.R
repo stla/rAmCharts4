@@ -737,6 +737,7 @@ amBarChart <- function(
       valueFormatter = valueFormatter,
       chartTitle = chartTitle,
       theme = theme,
+      animated = animated,
       draggable = draggable,
       tooltip = tooltip,
       columnStyle = columnStyle,

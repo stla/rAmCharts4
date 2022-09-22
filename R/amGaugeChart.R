@@ -214,6 +214,7 @@ amGaugeChart <- function(
       gridLines = gridLines,
       chartTitle = chartTitle,
       theme = theme,
+      animated = animated,
       backgroundColor = validateColor(backgroundColor),
       caption = caption,
       image = image,
