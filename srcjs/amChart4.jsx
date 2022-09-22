@@ -17,7 +17,7 @@ import regression from "regression";
 
 am4core.options.queue = true;
 //am4core.options.onlyShowOnViewport = true;
-am4core.useTheme(am4themes_animated);
+//am4core.useTheme(am4themes_animated);
 
 
 /* COMPONENT: VERTICAL BAR CHART */
@@ -39,7 +39,8 @@ class AmBarChart extends React.PureComponent {
   }
 
   BarChart() {
-    let theme = this.props.theme,
+    let theme = this.props.theme, 
+      animated = this.props.animated, 
       threeD = this.props.threeD,
       chartLegend = this.props.legend,
       category = this.props.category,
@@ -80,6 +81,10 @@ class AmBarChart extends React.PureComponent {
       Shiny.setInputValue(
         shinyId + ":rAmCharts4.dataframe", dataCopy
       );
+    }
+
+    if(animated) {
+      am4core.useTheme(am4themes_animated);
     }
 
     switch (theme) {
@@ -740,7 +745,7 @@ class AmHorizontalBarChart extends React.PureComponent {
   }
 
   HorizontalBarChart() {
-    let theme = this.props.theme,
+    let theme = this.props.theme, animated = this.props.animated, 
       threeD = this.props.threeD,
       chartLegend = this.props.legend,
       category = this.props.category,
@@ -781,6 +786,10 @@ class AmHorizontalBarChart extends React.PureComponent {
       Shiny.setInputValue(
         shinyId + ":rAmCharts4.dataframe", dataCopy
       );
+    }
+
+    if(animated) {
+      am4core.useTheme(am4themes_animated);
     }
 
     switch (theme) {
@@ -1352,7 +1361,7 @@ class AmLineChart extends React.PureComponent {
   }
 
   LineChart() {
-    let theme = this.props.theme,
+    let theme = this.props.theme, animated = this.props.animated, 
       chartLegend = this.props.legend,
       xValue = this.props.xValue,
       yValues = this.props.yValues,
@@ -1420,6 +1429,9 @@ class AmLineChart extends React.PureComponent {
       }
     }
 
+    if(animated) {
+      am4core.useTheme(am4themes_animated);
+    }
 
     switch (theme) {
       case "dark":
@@ -2264,7 +2276,7 @@ class AmScatterChart extends React.PureComponent {
   }
 
   ScatterChart() {
-    let theme = this.props.theme,
+    let theme = this.props.theme, animated = this.props.animated, 
       chartLegend = this.props.legend,
       xValue = this.props.xValue,
       yValues = this.props.yValues,
@@ -2330,6 +2342,10 @@ class AmScatterChart extends React.PureComponent {
           shinyId + ":rAmCharts4.dataframe", dataCopy
         );
       }
+    }
+
+    if(animated) {
+      am4core.useTheme(am4themes_animated);
     }
 
     switch (theme) {
@@ -3021,7 +3037,7 @@ class AmRangeAreaChart extends React.PureComponent {
   }
 
   RangeAreaChart() {
-    let theme = this.props.theme,
+    let theme = this.props.theme, animated = this.props.animated, 
       chartLegend = this.props.legend,
       xValue = this.props.xValue,
       yValues = this.props.yValues,
@@ -3077,6 +3093,9 @@ class AmRangeAreaChart extends React.PureComponent {
       }
     }
 
+    if(animated) {
+      am4core.useTheme(am4themes_animated);
+    }
 
     switch (theme) {
       case "dark":
@@ -3804,7 +3823,7 @@ class AmRadialBarChart extends React.PureComponent {
   }
 
   RadialBarChart() {
-    let theme = this.props.theme,
+    let theme = this.props.theme, animated = this.props.animated, 
       chartLegend = this.props.legend,
       category = this.props.category,
       categories = this.props.data[category],
@@ -3843,6 +3862,10 @@ class AmRadialBarChart extends React.PureComponent {
       Shiny.setInputValue(
         shinyId + ":rAmCharts4.dataframe", dataCopy
       );
+    }
+
+    if(animated) {
+      am4core.useTheme(am4themes_animated);
     }
 
     switch (theme) {
@@ -4388,7 +4411,7 @@ class AmDumbbellChart extends React.PureComponent {
   }
 
   DumbbellChart() {
-    let theme = this.props.theme,
+    let theme = this.props.theme, animated = this.props.animated, 
       chartLegend = this.props.legend,
       category = this.props.category,
       values = this.props.values,
@@ -4424,6 +4447,10 @@ class AmDumbbellChart extends React.PureComponent {
       Shiny.setInputValue(
         shinyId + ":rAmCharts4.dataframe", dataCopy
       );
+    }
+
+    if(animated) {
+      am4core.useTheme(am4themes_animated);
     }
 
     switch (theme) {
@@ -4921,7 +4948,7 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
   }
 
   HorizontalDumbbellChart() {
-    let theme = this.props.theme,
+    let theme = this.props.theme, animated = this.props.animated, 
       chartLegend = this.props.legend,
       category = this.props.category,
       values = this.props.values,
@@ -4957,6 +4984,10 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
       Shiny.setInputValue(
         shinyId + ":rAmCharts4.dataframe", dataCopy
       );
+    }
+
+    if(animated) {
+      am4core.useTheme(am4themes_animated);
     }
 
     switch (theme) {
@@ -5404,7 +5435,7 @@ class AmGaugeChart extends React.PureComponent {
   }
 
   GaugeChart() {
-    let theme = this.props.theme,
+    let theme = this.props.theme, animated = this.props.animated, 
       score = this.props.score,
       minScore = this.props.minScore,
       maxScore = this.props.maxScore,
@@ -5427,6 +5458,10 @@ class AmGaugeChart extends React.PureComponent {
       if (shinyId === undefined) {
         shinyId = $(document.getElementById(chartId)).parent().attr("id");
       }
+    }
+
+    if(animated) {
+      am4core.useTheme(am4themes_animated);
     }
 
     switch (theme) {
@@ -5709,7 +5744,7 @@ class AmStackedBarChart extends React.PureComponent {
   }
 
   StackedBarChart() {
-    let theme = this.props.theme,
+    let theme = this.props.theme, animated = this.props.animated, 
       threeD = this.props.threeD,
       chartLegend = this.props.legend,
       category = this.props.category,
@@ -5747,6 +5782,10 @@ class AmStackedBarChart extends React.PureComponent {
       Shiny.setInputValue(
         shinyId + ":rAmCharts4.dataframe", dataCopy
       );
+    }
+
+    if(animated) {
+      am4core.useTheme(am4themes_animated);
     }
 
     switch (theme) {
@@ -6113,7 +6152,7 @@ class AmBoxplotChart extends React.PureComponent {
   }
 
   BoxplotChart() {
-    let theme = this.props.theme,
+    let theme = this.props.theme, animated = this.props.animated, 
       category = this.props.category,
       isDate = this.props.isDate,
       minDate = isDate ? utils.toDate(this.props.minDate).getTime() : null,
@@ -6156,6 +6195,10 @@ class AmBoxplotChart extends React.PureComponent {
       Shiny.setInputValue(
         shinyId + ":rAmCharts4.dataframe", dataCopy
       );
+    }
+
+    if(animated) {
+      am4core.useTheme(am4themes_animated);
     }
 
     switch (theme) {
@@ -6438,7 +6481,7 @@ class AmPieChart extends React.PureComponent {
   }
 
   PieChart() {
-    let theme = this.props.theme,
+    let theme = this.props.theme, animated = this.props.animated, 
       threeD = this.props.threeD,
       chartLegend = this.props.legend,
       category = this.props.category,
@@ -6464,6 +6507,10 @@ class AmPieChart extends React.PureComponent {
       Shiny.setInputValue(
         shinyId + ":rAmCharts4.dataframe", dataCopy
       );
+    }
+
+    if(animated) {
+      am4core.useTheme(am4themes_animated);
     }
 
     switch (theme) {
@@ -6679,7 +6726,7 @@ class AmPercentageBarChart extends React.PureComponent {
   }
 
   PercentageBarChart() {
-    let theme = this.props.theme,
+    let theme = this.props.theme, animated = this.props.animated, 
       chartLegend = this.props.legend,
       category = this.props.category,
       categories = this.props.data[category],
@@ -6698,6 +6745,10 @@ class AmPercentageBarChart extends React.PureComponent {
       if (shinyId === undefined) {
         shinyId = $(document.getElementById(chartId)).parent().attr("id");
       }
+    }
+
+    if(animated) {
+      am4core.useTheme(am4themes_animated);
     }
 
     switch (theme) {

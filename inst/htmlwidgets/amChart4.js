@@ -122255,8 +122255,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
-_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__.options.queue = true;
-_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__.useTheme(_amcharts_amcharts4_themes_animated__WEBPACK_IMPORTED_MODULE_3__["default"]);
+_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__.options.queue = true; //am4core.options.onlyShowOnViewport = true;
+//am4core.useTheme(am4themes_animated);
+
 /* COMPONENT: VERTICAL BAR CHART */
 
 class AmBarChart extends React.PureComponent {
@@ -122282,6 +122283,7 @@ class AmBarChart extends React.PureComponent {
 
   BarChart() {
     var theme = this.props.theme,
+        animated = this.props.animated,
         threeD = this.props.threeD,
         chartLegend = this.props.legend,
         category = this.props.category,
@@ -122315,6 +122317,10 @@ class AmBarChart extends React.PureComponent {
       }
 
       Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+    }
+
+    if (animated) {
+      _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__.useTheme(_amcharts_amcharts4_themes_animated__WEBPACK_IMPORTED_MODULE_3__["default"]);
     }
 
     switch (theme) {
@@ -122951,6 +122957,7 @@ class AmBarChart extends React.PureComponent {
         });
       }
     });
+    return chart;
   }
 
   componentDidMount() {
@@ -123006,6 +123013,7 @@ class AmHorizontalBarChart extends React.PureComponent {
 
   HorizontalBarChart() {
     var theme = this.props.theme,
+        animated = this.props.animated,
         threeD = this.props.threeD,
         chartLegend = this.props.legend,
         category = this.props.category,
@@ -123039,6 +123047,10 @@ class AmHorizontalBarChart extends React.PureComponent {
       }
 
       Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+    }
+
+    if (animated) {
+      _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__.useTheme(_amcharts_amcharts4_themes_animated__WEBPACK_IMPORTED_MODULE_3__["default"]);
     }
 
     switch (theme) {
@@ -123570,6 +123582,7 @@ class AmHorizontalBarChart extends React.PureComponent {
         });
       }
     });
+    return chart;
   }
 
   componentDidMount() {
@@ -123632,6 +123645,7 @@ class AmLineChart extends React.PureComponent {
 
   LineChart() {
     var theme = this.props.theme,
+        animated = this.props.animated,
         chartLegend = this.props.legend,
         xValue = this.props.xValue,
         yValues = this.props.yValues,
@@ -123691,6 +123705,10 @@ class AmLineChart extends React.PureComponent {
       } else {
         Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
       }
+    }
+
+    if (animated) {
+      _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__.useTheme(_amcharts_amcharts4_themes_animated__WEBPACK_IMPORTED_MODULE_3__["default"]);
     }
 
     switch (theme) {
@@ -124508,6 +124526,8 @@ class AmLineChart extends React.PureComponent {
       }
     });
     /* end of forEach */
+
+    return chart;
   }
 
   componentDidMount() {
@@ -124563,6 +124583,7 @@ class AmScatterChart extends React.PureComponent {
 
   ScatterChart() {
     var theme = this.props.theme,
+        animated = this.props.animated,
         chartLegend = this.props.legend,
         xValue = this.props.xValue,
         yValues = this.props.yValues,
@@ -124620,6 +124641,10 @@ class AmScatterChart extends React.PureComponent {
       } else {
         Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
       }
+    }
+
+    if (animated) {
+      _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__.useTheme(_amcharts_amcharts4_themes_animated__WEBPACK_IMPORTED_MODULE_3__["default"]);
     }
 
     switch (theme) {
@@ -125280,6 +125305,8 @@ class AmScatterChart extends React.PureComponent {
       }
     });
     /* end of forEach */
+
+    return chart;
   }
 
   componentDidMount() {
@@ -125342,6 +125369,7 @@ class AmRangeAreaChart extends React.PureComponent {
 
   RangeAreaChart() {
     var theme = this.props.theme,
+        animated = this.props.animated,
         chartLegend = this.props.legend,
         xValue = this.props.xValue,
         yValues = this.props.yValues,
@@ -125388,6 +125416,10 @@ class AmRangeAreaChart extends React.PureComponent {
       } else {
         Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
       }
+    }
+
+    if (animated) {
+      _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__.useTheme(_amcharts_amcharts4_themes_animated__WEBPACK_IMPORTED_MODULE_3__["default"]);
     }
 
     switch (theme) {
@@ -126071,6 +126103,8 @@ class AmRangeAreaChart extends React.PureComponent {
       });
     });
     /* end of forEach */
+
+    return chart;
   }
 
   componentDidMount() {
@@ -126126,6 +126160,7 @@ class AmRadialBarChart extends React.PureComponent {
 
   RadialBarChart() {
     var theme = this.props.theme,
+        animated = this.props.animated,
         chartLegend = this.props.legend,
         category = this.props.category,
         categories = this.props.data[category],
@@ -126157,6 +126192,10 @@ class AmRadialBarChart extends React.PureComponent {
       }
 
       Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+    }
+
+    if (animated) {
+      _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__.useTheme(_amcharts_amcharts4_themes_animated__WEBPACK_IMPORTED_MODULE_3__["default"]);
     }
 
     switch (theme) {
@@ -126670,6 +126709,7 @@ class AmRadialBarChart extends React.PureComponent {
         });
       }
     });
+    return chart;
   }
 
   componentDidMount() {
@@ -126725,6 +126765,7 @@ class AmDumbbellChart extends React.PureComponent {
 
   DumbbellChart() {
     var theme = this.props.theme,
+        animated = this.props.animated,
         chartLegend = this.props.legend,
         category = this.props.category,
         values = this.props.values,
@@ -126753,6 +126794,10 @@ class AmDumbbellChart extends React.PureComponent {
       }
 
       Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+    }
+
+    if (animated) {
+      _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__.useTheme(_amcharts_amcharts4_themes_animated__WEBPACK_IMPORTED_MODULE_3__["default"]);
     }
 
     switch (theme) {
@@ -127212,6 +127257,7 @@ class AmDumbbellChart extends React.PureComponent {
         itemBullet2.children.getIndex(0).isHover = false;
       });
     });
+    return chart;
   }
 
   componentDidMount() {
@@ -127267,6 +127313,7 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
 
   HorizontalDumbbellChart() {
     var theme = this.props.theme,
+        animated = this.props.animated,
         chartLegend = this.props.legend,
         category = this.props.category,
         values = this.props.values,
@@ -127295,6 +127342,10 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
       }
 
       Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+    }
+
+    if (animated) {
+      _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__.useTheme(_amcharts_amcharts4_themes_animated__WEBPACK_IMPORTED_MODULE_3__["default"]);
     }
 
     switch (theme) {
@@ -127694,6 +127745,7 @@ class AmHorizontalDumbbellChart extends React.PureComponent {
         itemBullet2.children.getIndex(0).isHover = false;
       });
     });
+    return chart;
   }
 
   componentDidMount() {
@@ -127761,6 +127813,7 @@ class AmGaugeChart extends React.PureComponent {
 
   GaugeChart() {
     var theme = this.props.theme,
+        animated = this.props.animated,
         score = this.props.score,
         minScore = this.props.minScore,
         maxScore = this.props.maxScore,
@@ -127783,6 +127836,10 @@ class AmGaugeChart extends React.PureComponent {
       if (shinyId === undefined) {
         shinyId = $(document.getElementById(chartId)).parent().attr("id");
       }
+    }
+
+    if (animated) {
+      _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__.useTheme(_amcharts_amcharts4_themes_animated__WEBPACK_IMPORTED_MODULE_3__["default"]);
     }
 
     switch (theme) {
@@ -128009,6 +128066,8 @@ class AmGaugeChart extends React.PureComponent {
         clockHand.showValue(score, 1000, _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__.ease.cubicOut);
       });
     }
+
+    return chart;
   }
 
   componentDidMount() {
@@ -128064,6 +128123,7 @@ class AmStackedBarChart extends React.PureComponent {
 
   StackedBarChart() {
     var theme = this.props.theme,
+        animated = this.props.animated,
         threeD = this.props.threeD,
         chartLegend = this.props.legend,
         category = this.props.category,
@@ -128094,6 +128154,10 @@ class AmStackedBarChart extends React.PureComponent {
       }
 
       Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+    }
+
+    if (animated) {
+      _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__.useTheme(_amcharts_amcharts4_themes_animated__WEBPACK_IMPORTED_MODULE_3__["default"]);
     }
 
     switch (theme) {
@@ -128418,6 +128482,7 @@ class AmStackedBarChart extends React.PureComponent {
 
       columnHoverState.properties.fillOpacity = 1;
     });
+    return chart;
   }
 
   componentDidMount() {
@@ -128473,6 +128538,7 @@ class AmBoxplotChart extends React.PureComponent {
 
   BoxplotChart() {
     var theme = this.props.theme,
+        animated = this.props.animated,
         category = this.props.category,
         isDate = this.props.isDate,
         minDate = isDate ? _utils__WEBPACK_IMPORTED_MODULE_13__.toDate(this.props.minDate).getTime() : null,
@@ -128515,6 +128581,10 @@ class AmBoxplotChart extends React.PureComponent {
       }
 
       Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+    }
+
+    if (animated) {
+      _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__.useTheme(_amcharts_amcharts4_themes_animated__WEBPACK_IMPORTED_MODULE_3__["default"]);
     }
 
     switch (theme) {
@@ -128751,6 +128821,8 @@ class AmBoxplotChart extends React.PureComponent {
         hoverState.properties.opacity = 1; // visible when hovered
       }
     }
+
+    return chart;
   }
 
   componentDidMount() {
@@ -128806,6 +128878,7 @@ class AmPieChart extends React.PureComponent {
 
   PieChart() {
     var theme = this.props.theme,
+        animated = this.props.animated,
         threeD = this.props.threeD,
         chartLegend = this.props.legend,
         category = this.props.category,
@@ -128826,6 +128899,10 @@ class AmPieChart extends React.PureComponent {
       }
 
       Shiny.setInputValue(shinyId + ":rAmCharts4.dataframe", dataCopy);
+    }
+
+    if (animated) {
+      _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__.useTheme(_amcharts_amcharts4_themes_animated__WEBPACK_IMPORTED_MODULE_3__["default"]);
     }
 
     switch (theme) {
@@ -129048,6 +129125,7 @@ class AmPercentageBarChart extends React.PureComponent {
 
   PercentageBarChart() {
     var theme = this.props.theme,
+        animated = this.props.animated,
         chartLegend = this.props.legend,
         category = this.props.category,
         categories = this.props.data[category],
@@ -129064,6 +129142,10 @@ class AmPercentageBarChart extends React.PureComponent {
       if (shinyId === undefined) {
         shinyId = $(document.getElementById(chartId)).parent().attr("id");
       }
+    }
+
+    if (animated) {
+      _amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__.useTheme(_amcharts_amcharts4_themes_animated__WEBPACK_IMPORTED_MODULE_3__["default"]);
     }
 
     switch (theme) {
