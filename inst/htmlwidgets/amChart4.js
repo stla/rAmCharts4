@@ -121871,7 +121871,7 @@ var createAxis = function createAxis(XY, am4charts, am4core, chart, axisSettings
   }
 
   if (XY === "X") {
-    if (cursor && (cursor === true || !cursor.axes || ["x", "xy"].indexOf(cursor.axes)) > -1) {
+    if (cursor && (cursor === true || !cursor.axes || ["x", "xy"].indexOf(cursor.axes) > -1)) {
       if (cursor.tooltip) Axis.tooltip = Tooltip(am4core, chart, 0, cursor.tooltip);
       if (cursor.extraTooltipPrecision) Axis.extraTooltipPrecision = cursor.extraTooltipPrecision.x;
       if (cursor.renderer && cursor.renderer.x) Axis.adapter.add("getTooltipText", cursor.renderer.x);
@@ -121880,7 +121880,7 @@ var createAxis = function createAxis(XY, am4charts, am4core, chart, axisSettings
       Axis.cursorTooltipEnabled = false;
     }
   } else {
-    if (cursor && (cursor === true || !cursor.axes || ["y", "xy"].indexOf(cursor.axes)) > -1) {
+    if (cursor && (cursor === true || !cursor.axes || ["y", "xy"].indexOf(cursor.axes) > -1)) {
       if (cursor.tooltip) Axis.tooltip = Tooltip(am4core, chart, 0, cursor.tooltip);
       if (cursor.extraTooltipPrecision) Axis.extraTooltipPrecision = cursor.extraTooltipPrecision.y;
       if (cursor.renderer && cursor.renderer.y) Axis.adapter.add("getTooltipText", cursor.renderer.y);
@@ -124060,15 +124060,19 @@ class AmLineChart extends React.PureComponent {
         YAxis.renderer.minWidth = 60;
         */
 
-    if (cursor && (cursor === true || !cursor.axes || ["y", "xy"].indexOf(cursor.axes)) > -1) {
-      if (cursor.tooltip) YAxis.tooltip = _utils__WEBPACK_IMPORTED_MODULE_13__.Tooltip(_amcharts_amcharts4_core__WEBPACK_IMPORTED_MODULE_1__, chart, 0, cursor.tooltip);
-      if (cursor.extraTooltipPrecision) YAxis.extraTooltipPrecision = cursor.extraTooltipPrecision.y;
-      if (cursor.renderer && cursor.renderer.y) YAxis.adapter.add("getTooltipText", cursor.renderer.y);
-    } else {
-      YAxis.cursorTooltipEnabled = false;
-    }
-    /* ~~~~\  horizontal line  /~~~~ */
+    /*    if (cursor &&
+          (cursor === true || !cursor.axes || ["y", "xy"].indexOf(cursor.axes)) > -1) {
+          if (cursor.tooltip)
+            YAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
+          if (cursor.extraTooltipPrecision)
+            YAxis.extraTooltipPrecision = cursor.extraTooltipPrecision.y;
+          if (cursor.renderer && cursor.renderer.y)
+            YAxis.adapter.add("getTooltipText", cursor.renderer.y);
+        } else {
+          YAxis.cursorTooltipEnabled = false;
+        } */
 
+    /* ~~~~\  horizontal line  /~~~~ */
 
     if (hline) {
       var range = YAxis.axisRanges.create();
@@ -124115,6 +124119,10 @@ class AmLineChart extends React.PureComponent {
         default:
           chart.cursor.xAxis = XAxis;
           chart.cursor.yAxis = YAxis;
+      }
+
+      if (cursor.maxTooltipDistance !== undefined) {
+        chart.cursor.maxTooltipDistance = cursor.maxTooltipDistance;
       }
     }
     /* ~~~~\  legend  /~~~~ */
@@ -124892,6 +124900,10 @@ class AmScatterChart extends React.PureComponent {
         default:
           chart.cursor.xAxis = XAxis;
           chart.cursor.yAxis = YAxis;
+      }
+
+      if (cursor.maxTooltipDistance !== undefined) {
+        chart.cursor.maxTooltipDistance = cursor.maxTooltipDistance;
       }
     }
     /* ~~~~\  legend  /~~~~ */
