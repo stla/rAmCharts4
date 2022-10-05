@@ -1,3 +1,10 @@
+# rAmCharts4 1.6.1 (2022-10-05)
+
+New option `maxTooltipDistance` for the cursor of line charts and scatter 
+charts. This option allows to limit the number of displayed tooltips for 
+charts with a date x-axis.
+
+
 # rAmCharts4 1.6.0 (2022-09-22)
 
 * Upgraded 'amcharts4'.
