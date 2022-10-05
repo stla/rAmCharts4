@@ -160,7 +160,7 @@
 #' @param cursor option to add a cursor on the chart; \code{FALSE} for no
 #'   cursor, \code{TRUE} for a cursor for both axes with default settings
 #'   for the axes tooltips,
-#'   otherwise a named list with four possible fields: a field
+#'   otherwise a named list with five possible fields: a field
 #'   \code{axes} to specify the axes for which the cursor is requested, can be
 #'   \code{"x"}, \code{"y"}, or \code{"xy"},
 #'   a field \code{tooltip} to set the style of the axes tooltips, this
@@ -168,9 +168,12 @@
 #'   a field \code{extraTooltipPrecision}, a named list of the form
 #'   \code{list(x = i, y = j)} where \code{i} and \code{j} are the desired
 #'   numbers of additional decimals for the tooltips on the x-axis and
-#'   on the y-axis respectively, and a field \code{modifier}, a list with two
-#'   possible fields, \code{x} and \code{y}, which defines modifiers for the
-#'   values displayed in the tooltips; a modifier is some JavaScript code
+#'   on the y-axis respectively, a field \code{maxTooltipDistance}, the radius
+#'   in pixels of the ball around the mouse cursor in which tooltips are
+#'   displayed, or \code{-1} to display only one tooltip,
+#'   and finally a field \code{modifier}, a list with two possible fields,
+#'   \code{x} and \code{y}, which defines modifiers for the values displayed
+#'   in the axes tooltips; a modifier is some JavaScript code
 #'   given a string, which performs a modification of a string named
 #'   \code{text}, e.g. \code{"text = '[font-style:italic]' + text + '[/]';"};
 #'   see the first example for an example of \code{modifier}

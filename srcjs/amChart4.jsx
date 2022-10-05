@@ -1773,7 +1773,7 @@ class AmLineChart extends React.PureComponent {
         YAxis.max = maxY;
         YAxis.renderer.minWidth = 60;
         */
-    if (cursor &&
+/*    if (cursor &&
       (cursor === true || !cursor.axes || ["y", "xy"].indexOf(cursor.axes)) > -1) {
       if (cursor.tooltip)
         YAxis.tooltip = utils.Tooltip(am4core, chart, 0, cursor.tooltip);
@@ -1783,7 +1783,7 @@ class AmLineChart extends React.PureComponent {
         YAxis.adapter.add("getTooltipText", cursor.renderer.y);
     } else {
       YAxis.cursorTooltipEnabled = false;
-    }
+    } */
 
 
     /* ~~~~\  horizontal line  /~~~~ */
@@ -1827,6 +1827,9 @@ class AmLineChart extends React.PureComponent {
         default:
           chart.cursor.xAxis = XAxis;
           chart.cursor.yAxis = YAxis;
+      }
+      if(cursor.maxTooltipDistance !== undefined) {
+        chart.cursor.maxTooltipDistance = cursor.maxTooltipDistance;
       }
     }
 
@@ -2580,6 +2583,9 @@ class AmScatterChart extends React.PureComponent {
         default:
           chart.cursor.xAxis = XAxis;
           chart.cursor.yAxis = YAxis;
+      }
+      if(cursor.maxTooltipDistance !== undefined) {
+        chart.cursor.maxTooltipDistance = cursor.maxTooltipDistance;
       }
     }
 

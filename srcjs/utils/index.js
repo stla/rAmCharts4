@@ -383,7 +383,7 @@ export const createAxis = function(
 
   if(XY === "X") {
     if(cursor &&
-      (cursor === true || !cursor.axes || ["x","xy"].indexOf(cursor.axes)) > -1)
+      (cursor === true || !cursor.axes || ["x","xy"].indexOf(cursor.axes) > -1))
     {
       if(cursor.tooltip)
         Axis.tooltip = Tooltip(am4core, chart, 0, cursor.tooltip);
@@ -398,7 +398,7 @@ export const createAxis = function(
     }
   } else {
     if(cursor &&
-      (cursor === true || !cursor.axes || ["y","xy"].indexOf(cursor.axes)) > -1)
+      (cursor === true || !cursor.axes || ["y","xy"].indexOf(cursor.axes) > -1))
     {
       if(cursor.tooltip)
         Axis.tooltip = Tooltip(am4core, chart, 0, cursor.tooltip);
